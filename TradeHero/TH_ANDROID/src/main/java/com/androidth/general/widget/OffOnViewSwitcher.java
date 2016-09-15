@@ -30,7 +30,7 @@ public class OffOnViewSwitcher extends LinearLayout
     private static final int ANIM_DELAY = 300;
 
     @Bind(R.id.off_on_view_switcher) ViewSwitcher offOnViewSwitcher;
-    private boolean mIsOn;
+    private boolean mIsOn = false;
     private PublishSubject<OffOnViewSwitcherEvent> mSwitchSubject;
 
     public OffOnViewSwitcher(Context context)
@@ -116,6 +116,10 @@ public class OffOnViewSwitcher extends LinearLayout
         {
             mSwitchSubject.onNext(new OffOnViewSwitcherEvent(isFromUser, mIsOn));
         }
+    }
+
+    public boolean getIsOn(){
+        return this.mIsOn;
     }
 
     protected void setupAnimationToBeUsed(boolean animate)

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.utils.Constants;

@@ -13,11 +13,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidth.general.R;
@@ -69,6 +72,7 @@ public class GuideAuthenticationFragment extends Fragment
     @Bind(R.id.login_text) ImageView loginText;
     @Bind(R.id.login_logo) ImageView loginLogo;
     @Bind(R.id.entry_carrdview) CardView cardView;
+    @Bind(R.id.privacy_policy_tv) TextView privacyUrlLink;
 
     @NonNull final int[] guideRes = new int[] {
             R.layout.guide_1,
@@ -126,7 +130,6 @@ public class GuideAuthenticationFragment extends Fragment
     @Override public View onCreateView(LayoutInflater inflater, @Nullable
     ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-
         return inflater.inflate(R.layout.fragment_entry_authentication, container, false);
     }
 
@@ -134,6 +137,14 @@ public class GuideAuthenticationFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        String privacy = getActivity().getString(R.string.th_privacy_terms_url);
+        String urlLink = "<a href=\""+privacy+"\">Read our privacy policy</a> ";
+
+        privacyUrlLink.setText(
+                Html.fromHtml(urlLink));
+        privacyUrlLink.setMovementMethod(LinkMovementMethod.getInstance());
+
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {

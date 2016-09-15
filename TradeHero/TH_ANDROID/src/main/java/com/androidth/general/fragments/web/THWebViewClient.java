@@ -1,11 +1,14 @@
 package com.androidth.general.fragments.web;
 
+import com.androidth.general.R;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.support.v7.app.AlertDialog;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
@@ -98,7 +101,23 @@ public class THWebViewClient extends WebViewClient
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
     {
-        // TODO, maybe we should not ignore ssl error if we are in production mode, to protect our user
-        handler.proceed();
+
+        //must follow Google Play Store requirement
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("SSL Error Received");
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                handler.proceed();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                handler.cancel();
+            }
+        });
+        final AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

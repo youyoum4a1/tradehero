@@ -118,7 +118,7 @@ public class LiveSignUpMainFragment extends BaseFragment
     }
 
     private void setActionBarImage(String url){
-        setActionBarCustomImage(getActivity(), url, false);
+        setActionBarCustomImage(getActivity(), url, true);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

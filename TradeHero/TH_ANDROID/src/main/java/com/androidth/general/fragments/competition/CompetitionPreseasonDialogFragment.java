@@ -212,7 +212,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
                     @Override public void onError(Throwable e)
                     {
-                        Timber.e(e, "error on fetching provider %d", providerId.key);
+                        Timber.e("error on fetching provider %d", providerId.key);
                     }
 
                     @Override public void onNext(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair)
@@ -231,7 +231,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
                     @Override public void onError(Throwable e)
                     {
                         showError();
-                        Timber.e(e, "Error loading preseason for providerId %d", providerId.key);
+//                        Timber.e(e, "Error loading preseason for providerId %d", providerId.key);
+                        Timber.e("Error loading preseason for providerId %d", providerId.key);
                     }
 
                     @Override public void onNext(Pair<ProviderId, CompetitionPreSeasonDTO> providerIdCompetitionPreSeasonDTOPair)

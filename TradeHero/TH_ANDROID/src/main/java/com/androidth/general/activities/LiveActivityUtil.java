@@ -1,15 +1,20 @@
 package com.androidth.general.activities;
 
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.fragments.timeline.MeTimelineFragment;
+import com.androidth.general.fragments.trade.BuySellStockFragment;
 import com.androidth.general.fragments.trending.TileType;
+import com.androidth.general.fragments.trending.TrendingMainFragment;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -17,6 +22,8 @@ import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.androidth.general.network.service.DummyAyondoLiveServiceWrapper;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import javax.inject.Inject;
 
@@ -106,7 +113,9 @@ public class LiveActivityUtil
 
         for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {
-            if (f instanceof DashboardFragment && f.isVisible() && ((DashboardFragment) f).shouldShowLiveTradingToggle())
+            if (f instanceof DashboardFragment && f.isVisible()
+                    && ((DashboardFragment) f).shouldShowLiveTradingToggle()
+                    && canShowLiveTradingToggle(f))
             {
                 item.setVisible(true);
                 break;
@@ -130,7 +139,9 @@ public class LiveActivityUtil
             }
         }
 
-        //changeBarColor(event);
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+            changeBarColor(event);
+        }
     }
 
     private void changeBarColor(OffOnViewSwitcherEvent event)
@@ -144,6 +155,10 @@ public class LiveActivityUtil
             DashboardActivity dashboardActivity = (DashboardActivity) activity;
             dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
                     dashboardActivity.getResources().getColor(event.isOn ? R.color.general_red_live_status_bar : R.color.tradehero_blue_status_bar));
+
+            if(event.isFromUser){
+//                YoYo.with(Techniques.BounceInLeft).playOn(dashboardActivity.drawerLayout);
+            }
 
             for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
             {
@@ -189,10 +204,17 @@ public class LiveActivityUtil
     public void onTrendingTileClicked(TileType tileType)
     {
         //Disable live toggling for now
-//        if (tileType.equals(TileType.LiveToggle))
-//        {
+        if (tileType.equals(TileType.LiveToggle))
+        {
             switchLive(true, true);
-//        }
+        }
     }
 
+    public OffOnViewSwitcher getLiveSwitcher() {
+        return liveSwitcher;
+    }
+
+    public boolean canShowLiveTradingToggle(Fragment f){
+        return f instanceof TrendingMainFragment || f instanceof MeTimelineFragment || f instanceof BuySellStockFragment;
+    }
 }

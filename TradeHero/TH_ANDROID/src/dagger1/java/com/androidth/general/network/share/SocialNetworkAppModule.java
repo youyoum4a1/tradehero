@@ -38,12 +38,12 @@ public class SocialNetworkAppModule
         return Arrays.asList(PUBLIC_PROFILE);
     }
 
-    @Provides @Singleton IWXAPI createWeChatAPI(Context context)
-    {
-        IWXAPI weChatApi = WXAPIFactory.createWXAPI(context, SocialConstants.WECHAT_APP_ID, false);
-        weChatApi.registerApp(SocialConstants.WECHAT_APP_ID);
-        return weChatApi;
-    }
+//    @Provides @Singleton IWXAPI createWeChatAPI(Context context)
+//    {
+//        IWXAPI weChatApi = WXAPIFactory.createWXAPI(context, SocialConstants.WECHAT_APP_ID, false);
+//        weChatApi.registerApp(SocialConstants.WECHAT_APP_ID);
+//        return weChatApi;
+//    }
 
     @Provides(type = Provides.Type.SET_VALUES) @ShareDestinationId Set<Integer> providesShareDestinationFromResources(Context context)
     {

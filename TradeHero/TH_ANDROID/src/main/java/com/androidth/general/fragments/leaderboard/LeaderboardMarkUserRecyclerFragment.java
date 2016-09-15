@@ -352,7 +352,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     protected LeaderboardMarkedUserItemDisplayDto createNotRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
         return new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId,
-                requisite.currentUserProfileDTO);
+                requisite.currentUserProfileDTO, requisite.capAt);
     }
 
     protected LeaderboardMarkedUserItemDisplayDto createRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)

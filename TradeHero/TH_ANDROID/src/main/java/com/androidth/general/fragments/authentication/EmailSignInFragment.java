@@ -31,6 +31,7 @@ import com.androidth.general.api.users.password.ForgotPasswordDTO;
 import com.androidth.general.api.users.password.ForgotPasswordFormDTO;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.AuthDataUtil;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.network.service.SessionServiceWrapper;
@@ -306,7 +307,12 @@ public class EmailSignInFragment extends Fragment
 
             @Override public void onError(Throwable e)
             {
-                Timber.e(e, "Failed to listen to validation message");
+                try{
+                    THToast.show(e.getMessage());
+                }catch (Exception exception){
+                    THToast.show(exception.getMessage());
+//                    Timber.e(e, "Failed to listen to validation message");
+                }
             }
         };
     }

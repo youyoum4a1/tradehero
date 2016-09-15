@@ -259,13 +259,17 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
             @Override
             public void onError(Throwable e) {
-                Log.e(getTag(), "Email verify error "+e.getMessage());
+//                Log.e(getTag(), "Email verify error "+e.getMessage());
 //                new TimberOnErrorAction1("Failed on sending email verification");
-                String errorMessage = e.getMessage();
-                if(e instanceof RetrofitError){
-                    errorMessage = getStringFromResponse(((RetrofitError)e).getResponse());
-                    Log.e(getTag(),"Email verify error:"+ errorMessage);
-                }
+                String errorMessage = "Email verify error";
+                try{
+                    errorMessage = e.getMessage();
+                    if(e instanceof RetrofitError){
+                        errorMessage = getStringFromResponse(((RetrofitError)e).getResponse());
+                        Log.e(getTag(),"Email verify error:"+ errorMessage);
+                    }
+                }catch (Exception exception){}
+
                 dismissWithResult(errorMessage);
             }
 

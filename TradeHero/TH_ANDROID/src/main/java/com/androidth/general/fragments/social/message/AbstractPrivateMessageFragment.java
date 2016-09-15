@@ -330,9 +330,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
         @Override public void onError(Throwable e)
         {
-            if (e instanceof RetrofitError)
-            {
+            try{
                 THToast.show(new THException(e));
+            }catch (Exception exception){
+                THToast.show(exception.getMessage());
             }
         }
     }

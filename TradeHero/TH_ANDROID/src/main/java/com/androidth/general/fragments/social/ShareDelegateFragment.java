@@ -133,7 +133,11 @@ public class ShareDelegateFragment
 
         @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(e));
+            try{
+                THToast.show(new THException(e));
+            }catch (Exception exception){
+                THToast.show(exception.getMessage());
+            }
         }
     }
 

@@ -311,7 +311,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
                             @Override public void onError(Throwable e)
                             {
-                                Timber.e(e, "Failed to fetch list of watch list items");
+                                Timber.e("Failed to fetch list of watch list items");
                                 THToast.show(R.string.error_fetch_portfolio_list_info);
                             }
 
@@ -341,7 +341,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
                             @Override public void onError(Throwable e)
                             {
-                                Timber.e(e, "There was an error getting the alert ids");
+                                Timber.e("There was an error getting the alert ids");
                             }
 
                             @Override public void onNext(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
@@ -418,8 +418,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
             case FromProvider:
                 handleProviderTileOnClick((ProviderTileView) view);
                 break;
+            case LiveToggle:
+                liveActivityUtil.onTrendingTileClicked(item);
+                break;
         }
-        liveActivityUtil.onTrendingTileClicked(item);
+
     }
 
     private void handleProviderTileOnClick(ProviderTileView view)

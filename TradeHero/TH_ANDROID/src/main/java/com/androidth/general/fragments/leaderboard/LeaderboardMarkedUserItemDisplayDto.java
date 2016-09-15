@@ -36,6 +36,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     private boolean isFollowing;
     private boolean expanded;
     private boolean isMyOwnRanking;
+    Integer mCapAt;
 
     /**
      * This constructor can only be used for Header view (Current User Ranking) to show that we are loading required current user information
@@ -61,11 +62,12 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     }
 
     /**
-     * This constructor can only be used for Header view (Current User Ranking) to show that the user is no ranked
+     * This constructor can only be used for Header view (Current User Ranking) to show that the user is not ranked
      */
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileDTO currentUserProfileDTO)
+                                               @NonNull CurrentUserId currentUserId,
+                                               @NonNull UserProfileDTO currentUserProfileDTO,
+                                               Integer capAt)
     {
         super(resources);
         this.currentUserId = currentUserId;
@@ -82,6 +84,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
         this.isFollowing = false;
+        this.mCapAt = capAt;
     }
 
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
@@ -158,6 +161,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     {
         @Nullable final LeaderboardUserDTO currentLeaderboardUserDTO;
         @NonNull final UserProfileDTO currentUserProfileDTO;
+        final Integer capAt;
 
         public Requisite(
                 @NonNull Pair<LeaderboardKey, LeaderboardDTO> currentLeaderboardPair,
@@ -173,15 +177,18 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
             this(currentLeaderboardDTO.users == null || currentLeaderboardDTO.users.size() == 0
                             ? null
                             : currentLeaderboardDTO.users.get(0),
-                    currentUserProfileDTO);
+                    currentUserProfileDTO,
+                    currentLeaderboardDTO.getCapAt());
         }
 
         public Requisite(
                 @Nullable LeaderboardUserDTO currentLeaderboardUserDTO,
-                @NonNull UserProfileDTO currentUserProfileDTO)
+                @NonNull UserProfileDTO currentUserProfileDTO,
+                Integer capAt)
         {
             this.currentLeaderboardUserDTO = currentLeaderboardUserDTO;
             this.currentUserProfileDTO = currentUserProfileDTO;
+            this.capAt = capAt;
         }
     }
 }

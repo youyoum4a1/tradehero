@@ -357,11 +357,6 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
         //actionBar.setCustomView(actionBarLayout);*/
     }
 
-    @Override public boolean shouldShowLiveTradingToggle()
-    {
-        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         //actionBarLayout = null;
@@ -448,7 +443,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                                         {
                                             @Override public Boolean call(PositionDTO positionDTO)
                                             {
-                                                return positionDTO == null || positionDTO.portfolioId == portfolioCompactDTO.id;
+                                                return positionDTO == null || positionDTO.portfolioId.equals(portfolioCompactDTO.id);
                                             }
                                         }),
                                 new Func2<LiveQuoteDTO, PositionDTO, Boolean>()

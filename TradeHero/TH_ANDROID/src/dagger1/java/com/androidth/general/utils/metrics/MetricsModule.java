@@ -2,12 +2,11 @@ package com.androidth.general.utils.metrics;
 
 import android.content.Context;
 
-import com.mobileapptracker.MobileAppTracker;
-import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
 import com.androidth.general.base.THApp;
 import com.androidth.general.utils.Constants;
+import com.tune.Tune;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,8 +29,7 @@ public class MetricsModule
 {
     private static final String TAPSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
     private static final String TAPSTREAM_APP_NAME = "tradehero";
-    private static final String MAT_APP_ID = "19686";
-    private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
+
     private static final String LOCALYTICS_KEY =
             RELEASE ? (DOGFOOD_BUILD ? LOCALYTICS_APP_KEY_DEBUG : LOCALYTICS_APP_KEY_RELEASE) : null;
     public static final boolean LOCALYTICS_PUSH_ENABLED = RELEASE;
@@ -55,27 +53,31 @@ public class MetricsModule
     }
 
     // TapStream
-    @Provides @Singleton Api provideTapStream(THApp app, Config config)
+    @Provides @Singleton Tapstream provideTapStream(THApp app, Config config)
     {
-        Tapstream.create(app, TAPSTREAM_APP_NAME, TAPSTREAM_KEY, config);
+        Tapstream.create(app, config);
         return Tapstream.getInstance();
     }
 
     @Provides @Singleton Config provideTapStreamConfig(Context context)
     {
-        Config config = new Config();
+        Config config = new Config(TAPSTREAM_APP_NAME, TAPSTREAM_KEY);
         config.setFireAutomaticOpenEvent(false);//this will send twice
         config.setInstallEventName(context.getString(Constants.TAP_STREAM_TYPE.installResId));
         return config;
     }
 
-    // MobileAppTracker
-    @Provides @Singleton MobileAppTracker provideMobileAppTracker(Context context)
-    {
-        MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
-        MobileAppTracker mobileAppTrackerInstance = MobileAppTracker.getInstance();
-        mobileAppTrackerInstance.setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
-        mobileAppTrackerInstance.setDebugMode(!Constants.RELEASE);
-        return mobileAppTrackerInstance;
-    }
+//    // MobileAppTracker
+//    @Provides @Singleton Tune provideMobileAppTracker(Context context)
+//    {
+//        Tune mobileAppTrackerInstance = Tune.getInstance();
+//        mobileAppTrackerInstance.setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
+//        mobileAppTrackerInstance.setDebugMode(!Constants.RELEASE);
+//
+////        MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
+////        MobileAppTracker mobileAppTrackerInstance = MobileAppTracker.getInstance();
+////        mobileAppTrackerInstance.setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
+////        mobileAppTrackerInstance.setDebugMode(!Constants.RELEASE);
+//        return mobileAppTrackerInstance;
+//    }
 }

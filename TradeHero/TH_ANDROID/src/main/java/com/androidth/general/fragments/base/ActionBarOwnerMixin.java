@@ -156,6 +156,17 @@ public class ActionBarOwnerMixin
         }
     }
 
+    public void setActionBarColor(int resourceId)
+    {
+        if(actionBar != null) {
+            ColorDrawable colorDrawable = new ColorDrawable(resourceId);
+            actionBar.setBackgroundDrawable(colorDrawable);
+
+            actionBar.setBackgroundDrawable(
+                    new ColorDrawable(resourceId));
+        }
+    }
+
     public boolean shouldTouchHome()
     {
         return getKeyTouchHome(fragment.getArguments());

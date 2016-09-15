@@ -464,6 +464,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     {
         quoteRefreshProgressBar.clearAnimation();
         progressAnimation = null;
+        quoteObservable = null;
 
         ButterKnife.unbind(this);
         super.onDestroyView();
@@ -610,7 +611,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         {
                             @Override public boolean apply(PositionDTO positionDTO)
                             {
-                                return positionDTO.portfolioId == portfolioId.portfolioId
+                                return positionDTO.portfolioId.equals(portfolioId.portfolioId)
                                         && positionDTO.shares != null
                                         && positionDTO.shares != 0;
                             }

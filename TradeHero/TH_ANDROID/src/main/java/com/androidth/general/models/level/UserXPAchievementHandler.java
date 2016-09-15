@@ -58,7 +58,8 @@ public class UserXPAchievementHandler
 
                             @Override public void onError(Throwable e)
                             {
-                                Timber.e(e, "Failed to listen to LifecycleEvent");
+//                                Timber.e(e, "Failed to listen to LifecycleEvent");
+                                Timber.e("Failed to listen to LifecycleEvent");
                             }
                         }
                 ));

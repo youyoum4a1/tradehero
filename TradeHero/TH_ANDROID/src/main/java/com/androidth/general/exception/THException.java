@@ -34,6 +34,10 @@ public class THException extends Exception
 
     @Override public Throwable initCause(Throwable throwable)
     {
+        if(throwable==null){
+            //assume it is because of network
+            return super.initCause(new Throwable(ExceptionCode.NetworkError.toString()));
+        }
         this.code = ExceptionCode.UnknownError;
         if (throwable instanceof RetrofitError)
         {

@@ -336,9 +336,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             }
         });
 
-//        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
-//            mConfirm.setText(R.string.buy_sell_confirm_sell_now);
-//        }
+        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
+            mConfirm.setText(R.string.buy_sell_confirm_sell_now);
+        }else if (this.getClass() == BuyStockFragment.class || this.getClass() == BuyFXFragment.class) {
+            mConfirm.setText(R.string.buy_sell_confirm_buy_now);
+        }//else, it's "Confirm"
 
 //        mCashOrStockLeft.setText(getCashShareLabel());
 
@@ -604,8 +606,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         //make the dialog smaller
 //        int currentWidth = getResources().getDisplayMetrics().widthPixels;
 //        int currentHeight = getResources().getDisplayMetrics().heightPixels;
-//
-//        getDialog().getWindow().setLayout(Math.round(currentWidth*9/10), Math.round(currentHeight*9/10));
+
+//        getDialog().getWindow().setLayout(currentWidth, Math.round(currentHeight*8/10));
     }
 
     @NonNull
@@ -1446,12 +1448,16 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         @Override
         public void onError(Throwable e) {
             onCompleted();
-            Timber.e(e, "Failed to %s %s with %s", isBuy ? "buy" : "sell", securityId, transactionFormDTO);
-            THException thException = new THException(e);
-            THToast.show(thException);
 
-            if (buySellTransactionListener != null) {
-                buySellTransactionListener.onTransactionFailed(isBuy, thException);
+//            Timber.e(e, "Failed to %s %s with %s", isBuy ? "buy" : "sell", securityId, transactionFormDTO);
+            try{
+                THException thException = new THException(e);
+                THToast.show(thException);
+                if (buySellTransactionListener != null) {
+                    buySellTransactionListener.onTransactionFailed(isBuy, thException);
+                }
+            }catch (Exception exception){
+                THToast.show("Failed to buy/sell");
             }
         }
     }

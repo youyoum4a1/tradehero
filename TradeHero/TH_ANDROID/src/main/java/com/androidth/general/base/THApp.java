@@ -13,12 +13,16 @@ import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.dagger.AppModule;
+import com.androidth.general.utils.metrics.MetricsModule;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.flurry.android.FlurryAgent;
+import com.tune.Tune;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
@@ -30,16 +34,18 @@ import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import timber.log.Timber;
 
-
-
-
-
 public class THApp extends BaseApplication
         implements ExInjector
 {
     private static final int MEMORY_CACHE_SIZE = 2 * 1024 * 1024;
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024;
     private final String FLURRY_APIKEY = "K8Y3PD7T5M5BNM2X949X";
+
+    private static final String MAT_APP_ID = "19686";
+    private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
+
+    private static final String TWITTER_KEY = "j79q8diGnadXdcOFZJ6K13UTL";
+    private static final String TWITTER_SECRET = "TrhCrSePLTF8yCmfsTvU7B3RoOQLgFf2zz0QXJd7KIeJ6WESZ9";
 
     public static Context context;
 
@@ -52,17 +58,15 @@ public class THApp extends BaseApplication
     {
         super.onCreate();
 
-        CrashlyticsCore crashlytics = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
-
-        Fabric.with(this, new Crashlytics.Builder().core(crashlytics).build());
-        ActivityBuildTypeUtil.startCrashReports(this);
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);//new
 
         setupRealm();
 
         context = getApplicationContext();
+
+        setupFabricWithTwitter();
+        setupTune();
 
         Timber.plant(TimberUtil.createTree());
 
@@ -89,7 +93,7 @@ public class THApp extends BaseApplication
 
 
         // TODO: For Kenanga Challenge, can remove after that.
-        AppsFlyerLib.getInstance().startTracking(this,"pEuxjZE2GpyRXXwFjHHRRU");
+        AppsFlyerLib.getInstance().startTracking(this, MetricsModule.APP_FLYER_KEY);
 
     }
 
@@ -143,5 +147,20 @@ public class THApp extends BaseApplication
     private void setupRealm(){
         Realm.setDefaultConfiguration(new RealmConfiguration.Builder(this)
                 .name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build());
+    }
+
+    private void setupFabricWithTwitter(){
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        CrashlyticsCore crashlytics = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+
+        Fabric.with(this, new TwitterCore(authConfig), new Crashlytics(), new Crashlytics.Builder().core(crashlytics).build());
+
+        ActivityBuildTypeUtil.startCrashReports(context);
+    }
+
+    private void setupTune(){
+        Tune.init(this, MAT_APP_ID, MAT_APP_KEY);
+        Tune.getInstance().setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
+        Tune.getInstance().setDebugMode(!Constants.RELEASE);
     }
 }

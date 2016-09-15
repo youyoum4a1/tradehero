@@ -28,9 +28,9 @@ class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisp
     }
 
     public CompetitionLeaderboardItemDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO)
+            @NonNull UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO, Integer capAt)
     {
-        super(resources, currentUserId, currentUserProfileDTO);
+        super(resources, currentUserId, currentUserProfileDTO, capAt);
         this.providerDTO = providerDTO;
         this.prizeSize = 0;
     }
@@ -62,6 +62,7 @@ class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisp
     {
         @NonNull final ProviderDTO providerDTO;
         @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
+        final Integer capAt;
 
         public Requisite(@NonNull LeaderboardMarkedUserItemDisplayDto.Requisite parent,
                 @NonNull Pair<ProviderId, ProviderDTO> providerPair,
@@ -79,9 +80,10 @@ class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisp
                 @NonNull ProviderDTO providerDTO,
                 @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
         {
-            super(currentLeaderboardUserDTO, currentUserProfileDTO);
+            super(currentLeaderboardUserDTO, currentUserProfileDTO, competitionLeaderboardDTO.leaderboard.getCapAt());
             this.providerDTO = providerDTO;
             this.competitionLeaderboardDTO = competitionLeaderboardDTO;
+            this.capAt = this.competitionLeaderboardDTO.leaderboard.getCapAt();
         }
     }
 }

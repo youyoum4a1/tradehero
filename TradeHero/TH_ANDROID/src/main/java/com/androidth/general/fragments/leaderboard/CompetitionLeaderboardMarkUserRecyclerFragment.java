@@ -326,7 +326,8 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             if (requisite.currentLeaderboardUserDTO == null)
             {
                 return new CompetitionLeaderboardOwnRankingDisplayDTO(getResources(), currentUserId,
-                        requisite.currentUserProfileDTO, thisRequisite.providerDTO);
+                        requisite.currentUserProfileDTO, thisRequisite.providerDTO,
+                        ((CompetitionLeaderboardItemDisplayDTO.Requisite) requisite).capAt);
             }
         }
         return super.createNotRankedOwnRankingDTO(requisite);

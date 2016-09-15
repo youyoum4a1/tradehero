@@ -339,7 +339,8 @@ public class XpToast extends RelativeLayout
 
         @Override public void onError(Throwable e)
         {
-            Timber.e("Unable to get xp level definition: %s", e);
+//            Timber.e("Unable to get xp level definition: %s", e);
+            Timber.e("Unable to get xp level definition");
             //Release flag from broadcast utils.
             isLevelDefError = true;
             cleanUp();

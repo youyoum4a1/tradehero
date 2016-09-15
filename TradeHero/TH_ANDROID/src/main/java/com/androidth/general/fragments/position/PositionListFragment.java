@@ -1014,18 +1014,23 @@ public class PositionListFragment
         {
             @SuppressLint("NewApi") @Override public void onGlobalLayout()
             {
-                ViewTreeObserver observer = inflatedView.getViewTreeObserver();
-                if (observer != null)
-                {
-                    if (SDKUtils.isJellyBeanOrHigher())
+                if(inflatedView!=null){
+                    ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+                    if (observer != null)
                     {
-                        observer.removeOnGlobalLayoutListener(this);
+                        if (SDKUtils.isJellyBeanOrHigher())
+                        {
+                            observer.removeOnGlobalLayoutListener(this);
+                        }
+                        else
+                        {
+                            observer.removeGlobalOnLayoutListener(this);
+                        }
                     }
-                    else
-                    {
-                        observer.removeGlobalOnLayoutListener(this);
-                    }
+                }else{
+                    Log.d(getTag(), "Inflated view is null");
                 }
+
                 int headerHeight = inflatedView.getMeasuredHeight();
                 Timber.d("Header Height %d", headerHeight);
                 positionRecyclerView.setPadding(

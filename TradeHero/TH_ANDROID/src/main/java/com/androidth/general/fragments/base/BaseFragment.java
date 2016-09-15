@@ -255,13 +255,18 @@ public class BaseFragment extends Fragment
     public final void setActionBarTitle(String string)
     {
         actionBarOwnerMixin.setActionBarTitle(string);
-        actionBarOwnerMixin.setCustomView(null);
+//        actionBarOwnerMixin.setCustomView(null);
     }
 
     public final void setActionBarColor(String hexColor)
     {
         String color = hexColor.startsWith("#") ? hexColor : "#".concat(hexColor);
         actionBarOwnerMixin.setActionBarColor(color);
+    }
+
+    public final void setActionBarColor(int resourceId)
+    {
+        actionBarOwnerMixin.setActionBarColor(resourceId);
     }
 
     public final void setActionBarTitle(@StringRes int stringResId)

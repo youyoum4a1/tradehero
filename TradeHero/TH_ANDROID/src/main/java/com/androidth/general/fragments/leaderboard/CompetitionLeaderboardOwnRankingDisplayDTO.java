@@ -32,9 +32,9 @@ public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeade
     }
 
     public CompetitionLeaderboardOwnRankingDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO)
+            @NonNull UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO, Integer capAt)
     {
-        super(resources, currentUserId, currentUserProfileDTO, providerDTO);
+        super(resources, currentUserId, currentUserProfileDTO, providerDTO, capAt);
         infoButtonContainerVisibility = View.GONE;
         infoText = "";
         infoTextFormat = "";

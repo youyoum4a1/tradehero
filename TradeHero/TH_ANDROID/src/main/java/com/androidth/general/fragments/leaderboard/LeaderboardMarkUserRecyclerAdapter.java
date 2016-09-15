@@ -316,11 +316,16 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
             {
                 this.currentDto = (LeaderboardMarkedUserItemDisplayDto) dto;
                 lbmuDisplayName.setText(this.currentDto.lbmuDisplayName);
-                lbmuRoi.setText(this.currentDto.lbmuRoi);
                 lbmurRoiPeriod.setVisibility(this.currentDto.lbmuRoiPeriodVisibility);
                 lbmurRoiPeriod.setText(this.currentDto.lbmuRoiPeriod);
                 lbmuPosition.setText(this.currentDto.lbmuRanking);
                 lbmuPosition.setTextColor(this.currentDto.lbmuPositionColor);
+                if(this.currentDto.mCapAt!=null){
+                    lbmuRoi.setText("You are not ranked (>"+this.currentDto.mCapAt+")");
+                }else{
+                    lbmuRoi.setText(this.currentDto.lbmuRoi);
+                }
+
                 if (this.currentDto.lbmuDisplayPicture != null)
                 {
                     picasso.load(this.currentDto.lbmuDisplayPicture)

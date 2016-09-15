@@ -487,37 +487,37 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>com.wechat</groupId>
-      <artifactId>wechatlib</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.wechat</groupId>-->
+      <!--<artifactId>wechatlib</artifactId>-->
+      <!--<version>1.0</version>-->
+      <!--<scope>system</scope>-->
+      <!--<systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>-->
+    <!--</dependency>-->
 
-    <dependency>
-      <groupId>com.tapstream.sdk</groupId>
-      <artifactId>tapstream</artifactId>
-      <version>2.6.1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/Tapstream.jar</systemPath>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.tapstream.sdk</groupId>-->
+      <!--<artifactId>tapstream</artifactId>-->
+      <!--<version>2.6.1</version>-->
+      <!--<scope>system</scope>-->
+      <!--<systemPath>${project.basedir}/libs/Tapstream.jar</systemPath>-->
+    <!--</dependency>-->
 
-    <dependency>
-      <groupId>com.tendcloud.tenddata</groupId>
-      <artifactId>TalkingDataAnalytics</artifactId>
-      <version>1.1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/TalkingDataAnalytics.jar</systemPath>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.tendcloud.tenddata</groupId>-->
+      <!--<artifactId>TalkingDataAnalytics</artifactId>-->
+      <!--<version>1.1.0</version>-->
+      <!--<scope>system</scope>-->
+      <!--<systemPath>${project.basedir}/libs/TalkingDataAnalytics.jar</systemPath>-->
+    <!--</dependency>-->
 
-    <dependency>
-      <groupId>com.mobileapptracker</groupId>
-      <artifactId>MobileAppTracker</artifactId>
-      <version>3.2.3</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/MobileAppTracker-3.2.3.jar</systemPath>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.mobileapptracker</groupId>-->
+      <!--<artifactId>MobileAppTracker</artifactId>-->
+      <!--<version>3.2.3</version>-->
+      <!--<scope>system</scope>-->
+      <!--<systemPath>${project.basedir}/libs/MobileAppTracker-3.2.3.jar</systemPath>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>com.sina.weibo</groupId>

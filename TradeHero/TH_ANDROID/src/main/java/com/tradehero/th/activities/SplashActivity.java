@@ -27,9 +27,9 @@ import com.androidth.general.utils.metrics.MetricsModule;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-import com.mobileapptracker.MobileAppTracker;
-import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
+import com.tapstream.sdk.Tapstream;
+import com.tune.Tune;
 
 import javax.inject.Inject;
 
@@ -46,8 +46,7 @@ public class SplashActivity extends BaseActivity
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreens;
 
-    @Inject Lazy<Api> tapStream;
-    @Inject MobileAppTracker mobileAppTracker;
+    @Inject Lazy<Tapstream> tapStream;
     //TODO Change Analytics
     //@Inject
     //Analytics analytics;
@@ -101,8 +100,8 @@ public class SplashActivity extends BaseActivity
         setupRealm();
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 
-        mobileAppTracker.setReferralSources(this);
-        mobileAppTracker.measureSession();
+        Tune.getInstance().setReferralSources(this);
+        Tune.getInstance().measureSession();
 
         THAppsFlyer.setAppsFlyerKey(this, MetricsModule.APP_FLYER_KEY);
         THAppsFlyer.sendTracking(this);

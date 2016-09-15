@@ -11,33 +11,33 @@
     android:background="@color/white"
     >
 
-  <LinearLayout
-      android:id="@+id/authentication_buttons"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:orientation="vertical"
-      android:layout_gravity="center"
-      >
-      <ImageView
-          android:id="@+id/login_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_medium"
-          android:src="@drawable/logo_th_text"
-          android:layout_gravity="center_horizontal"
-          android:contentDescription="@null"
-          />
-      <ImageView
-          android:id="@+id/login_logo"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_medium"
-          android:src="@drawable/splash_logo"
-          android:layout_gravity="center_horizontal"
-          android:contentDescription="@null"
-          />
-  </LinearLayout>
+    <LinearLayout
+        android:id="@+id/authentication_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+        <ImageView
+            android:id="@+id/login_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:src="@drawable/logo_th_text"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@null"
+            />
+        <ImageView
+            android:id="@+id/login_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:src="@drawable/splash_logo"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@null"
+            />
+    </LinearLayout>
 
     <android.support.v7.widget.CardView
         android:id="@+id/entry_carrdview"
@@ -46,76 +46,84 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="@dimen/margin_small"
-        >
-        <include layout="@layout/authentication_social_auth_button_first"
-            />
-        <com.twitter.sdk.android.core.identity.TwitterLoginButton
-            android:id="@+id/twitter_login_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/margin_small"/>
+            android:orientation="vertical"
+            android:layout_margin="@dimen/margin_small"
+            >
+            <include layout="@layout/authentication_social_auth_button_first"
+                />
+            <com.twitter.sdk.android.core.identity.TwitterLoginButton
+                android:id="@+id/twitter_login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/margin_small"/>
 
 
-        <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:orientation="horizontal">
-          <android.support.v7.widget.AppCompatButton
-              android:layout="@dimen/margin_small"
-              android:id="@+id/authentication_email_sign_in_link"
-              android:layout_gravity="left|start"
-              android:textSize="14sp"
-              android:textAppearance="?android:attr/textAppearanceMedium"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
-              android:textAllCaps="true"
-              android:layout_marginRight="16dp"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:background="@drawable/sign_up_selector"
-              android:text="@string/email_login_in_short"
-              android:textColor="@color/black"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatButton
+                    android:layout="@dimen/margin_small"
+                    android:id="@+id/authentication_email_sign_in_link"
+                    android:layout_gravity="left|start"
+                    android:textSize="14sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textAllCaps="true"
+                    android:layout_marginRight="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/sign_up_selector"
+                    android:text="@string/email_login_in_short"
+                    android:textColor="@color/black"
 
-              android:gravity="center"
+                    android:gravity="center"
 
-              />
-        <android.support.v7.widget.AppCompatButton
-          android:id="@+id/authentication_email_sign_up_link"
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_gravity="end|right"
-          android:paddingLeft="16dp"
-          android:paddingRight="16dp"
-          android:textAllCaps="true"
-          android:textSize="14sp"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:layout_marginBottom="@dimen/margin_small"
-          android:background="@android:color/holo_green_dark"
-          android:text="@string/email_register_short"
-          android:gravity="center"
-          android:textColor="@color/white"
-          />
-
-
-      </LinearLayout>
+                    />
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/authentication_email_sign_up_link"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="end|right"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textAllCaps="true"
+                    android:textSize="14sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:background="@android:color/holo_green_dark"
+                    android:text="@string/email_register_short"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    />
 
 
+            </LinearLayout>
 
-  </LinearLayout>
+
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/privacy_policy_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Read our Privacy Policy"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:linksClickable="true" />
 
 
 </LinearLayout>

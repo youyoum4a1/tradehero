@@ -181,3 +181,13 @@
 }
 
 -keep public class * extends java.lang.Exception
+
+#for Tune
+-keep public class com.tune.** { public *; }
+-keep public class com.google.android.gms.ads.identifier.** { *; }
+-keep public class com.google.android.gms.gcm.** { *; }
+-keep public class com.google.android.gms.common.** { *; }
+
+-keepclassmembers class ** {
+    public void onEvent(**);
+}

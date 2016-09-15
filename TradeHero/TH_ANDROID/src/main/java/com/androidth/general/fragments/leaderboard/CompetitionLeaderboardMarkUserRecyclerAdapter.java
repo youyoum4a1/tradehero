@@ -96,8 +96,13 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
                 infoText.setText((displayDTO).infoText);
                 if (displayDTO.rule != null && displayDTO.textColorSpan != null)
                 {
-                    this.lbmuRoi.setText(createSpan(displayDTO.rule, displayDTO.textColorSpan));
-                    this.lbmuRoi.setMovementMethod(LinkMovementMethod.getInstance());
+                    if(displayDTO.mCapAt!=null){
+                        this.lbmuRoi.setText("You are not ranked (>"+displayDTO.mCapAt+")");
+                    }else{
+                        this.lbmuRoi.setText(createSpan(displayDTO.rule, displayDTO.textColorSpan));
+                        this.lbmuRoi.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
+
                 }
             }
             else

@@ -131,7 +131,7 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
         {
             @Override public boolean apply(PositionDTO positionDTO)
             {
-                return positionDTO.portfolioId == portfolioId.key
+                return positionDTO.portfolioId.equals(portfolioId.key)
                         && positionDTO.shares != null
                         && positionDTO.shares < 0;
             }
