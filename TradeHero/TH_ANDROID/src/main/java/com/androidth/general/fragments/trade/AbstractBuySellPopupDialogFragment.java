@@ -1415,9 +1415,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //                shareFacebookClient(isBuy);
 //            }
 
-            if (shareDelegateFragment.isShareToWeChat()) {
-                shareToWeChat(mCommentsEditText.getText().toString(), isBuy);
-            }
+//            if (shareDelegateFragment.isShareToWeChat()) {
+//                shareToWeChat(mCommentsEditText.getText().toString(), isBuy);
+//            }
 
             String positionType = null;
 
@@ -1494,30 +1494,30 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //        startActivity(shareIntent);
 //    }
 
-    protected void shareToWeChat(String commentString, boolean isTransactionTypeBuy) {
-        WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.id = usedDTO.securityCompactDTO.id;
-        weChatDTO.type = WeChatMessageType.Trade;
-        if (usedDTO.securityCompactDTO.imageBlobUrl != null && usedDTO.securityCompactDTO.imageBlobUrl.length() > 0) {
-            weChatDTO.imageURL = usedDTO.securityCompactDTO.imageBlobUrl;
-        }
-        if (isTransactionTypeBuy) {
-            weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
-                    + usedDTO.securityCompactDTO.name + " " + getString(
-                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getAskPrice();
-        } else {
-            weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-                    + usedDTO.securityCompactDTO.name + " " + mQuantityEditText.getText() + getString(
-                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getBidPrice();
-        }
-        if (commentString != null && !commentString.isEmpty()) {
-            weChatDTO.title = commentString + '\n' + weChatDTO.title;
-        }
-
-        Intent intent = new Intent(getActivity(), WXEntryActivity.class);
-        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
-        startActivity(intent);
-    }
+//    protected void shareToWeChat(String commentString, boolean isTransactionTypeBuy) {
+//        WeChatDTO weChatDTO = new WeChatDTO();
+//        weChatDTO.id = usedDTO.securityCompactDTO.id;
+//        weChatDTO.type = WeChatMessageType.Trade;
+//        if (usedDTO.securityCompactDTO.imageBlobUrl != null && usedDTO.securityCompactDTO.imageBlobUrl.length() > 0) {
+//            weChatDTO.imageURL = usedDTO.securityCompactDTO.imageBlobUrl;
+//        }
+//        if (isTransactionTypeBuy) {
+//            weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
+//                    + usedDTO.securityCompactDTO.name + " " + getString(
+//                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getAskPrice();
+//        } else {
+//            weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
+//                    + usedDTO.securityCompactDTO.name + " " + mQuantityEditText.getText() + getString(
+//                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getBidPrice();
+//        }
+//        if (commentString != null && !commentString.isEmpty()) {
+//            weChatDTO.title = commentString + '\n' + weChatDTO.title;
+//        }
+//
+//        Intent intent = new Intent(getActivity(), WXEntryActivity.class);
+//        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
+//        startActivity(intent);
+//    }
 
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO, String positionType) {
         DeviceUtil.dismissKeyboard(getActivity());

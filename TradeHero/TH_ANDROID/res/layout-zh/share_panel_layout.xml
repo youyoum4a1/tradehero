@@ -7,24 +7,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
+  <!--<Space android:layout_width="0dp"-->
+  <!--android:layout_weight="1"-->
+  <!--android:layout_height="wrap_content"/>-->
+
+  <Space android:layout_width="20sp"
       android:layout_height="wrap_content"/>
 
-  <ToggleButton
-      android:id="@+id/btn_share_wechat"
+  <com.androidth.general.common.widget.SocialLinkToggleButton
+      android:id="@+id/btn_share_fb"
       android:layout_width="@dimen/share_button_w_h"
       android:layout_height="@dimen/share_button_w_h"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
-      android:background="@drawable/ic_wechat"
+      android:background="@drawable/ic_share_fb"
       android:checked="false"
       android:textOff=""
       android:textOn=""
+      android:enabled="false"
+      app:networkType="facebook"
+      />
+
+  <!--<Space android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"/>
+
+  <com.androidth.general.common.widget.SocialLinkToggleButton
+      android:id="@+id/btn_share_tw"
+      android:layout_width="@dimen/share_button_w_h"
+      android:layout_height="@dimen/share_button_w_h"
+      android:contentDescription="@null"
+      android:scaleType="fitCenter"
+      android:background="@drawable/ic_share_tw"
+      android:checked="false"
+      android:textOff=""
+      android:textOn=""
+      android:visibility="invisible"
+      android:enabled="false"
+      app:networkType="twitter"
       />
 
   <Space android:layout_width="0dp"
       android:layout_weight="1"
+      android:visibility="invisible"
       android:layout_height="wrap_content"/>
 
   <com.androidth.general.common.widget.SocialLinkToggleButton
@@ -37,30 +62,53 @@
       android:checked="false"
       android:textOff=""
       android:textOn=""
+      android:visibility="invisible"
       android:enabled="false"
-      app:networkType="twitter"
-      />
+      app:networkType="linkedin"
+      />-->
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
+  <!--<Space android:layout_width="0dp"-->
+  <!--android:layout_weight="1"-->
+  <!--android:visibility="invisible"-->
+  <!--android:layout_height="wrap_content"/>-->
+
+  <Space android:layout_width="30sp"
       android:layout_height="wrap_content"/>
 
-  <com.androidth.general.common.widget.SocialLinkToggleButton
-      android:id="@+id/btn_share_wb"
-      android:layout_width="@dimen/share_button_w_h"
-      android:layout_height="@dimen/share_button_w_h"
-      android:contentDescription="@null"
-      android:scaleType="fitCenter"
-      android:background="@drawable/ic_share_wb"
-      android:checked="false"
-      android:textOff=""
-      android:textOn=""
-      android:enabled="false"
-      app:networkType="weibo"
-      />
+  <!--<ToggleButton-->
+  <!--android:id="@+id/btn_share_wechat"-->
+  <!--android:layout_width="@dimen/share_button_w_h"-->
+  <!--android:layout_height="@dimen/share_button_w_h"-->
+  <!--android:contentDescription="@null"-->
+  <!--android:scaleType="fitCenter"-->
+  <!--android:background="@drawable/ic_wechat"-->
+  <!--android:checked="false"-->
+  <!--android:textOff=""-->
+  <!--android:textOn=""-->
+  <!--/>-->
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
-      android:layout_height="wrap_content"/>
+  <!--<Space android:layout_width="0dp"&ndash;&gt;-->
+  <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+  <!--&lt;!&ndash;android:layout_height="wrap_content"/>-->
+
+  <!--<Space android:layout_width="30sp"-->
+  <!--android:layout_height="wrap_content"/>-->
+
+  <!--<com.androidth.general.common.widget.SocialLinkToggleButton-->
+  <!--android:id="@+id/btn_share_wb"-->
+  <!--android:layout_width="@dimen/share_button_w_h"-->
+  <!--android:layout_height="@dimen/share_button_w_h"-->
+  <!--android:contentDescription="@null"-->
+  <!--android:scaleType="fitCenter"-->
+  <!--android:background="@drawable/ic_share_wb"-->
+  <!--android:checked="false"-->
+  <!--android:textOff=""-->
+  <!--android:textOn=""-->
+  <!--android:enabled="false"-->
+  <!--app:networkType="weibo"-->
+  <!--/>-->
+
+  <!--<Space android:layout_width="30sp"-->
+  <!--android:layout_height="wrap_content"/>-->
 
 </merge>

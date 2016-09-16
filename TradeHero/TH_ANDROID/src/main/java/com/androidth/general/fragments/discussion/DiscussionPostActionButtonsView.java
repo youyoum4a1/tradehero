@@ -33,8 +33,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Bind(R.id.btn_share_fb) ToggleButton facebookShareButton;
     //@Bind(R.id.btn_share_tw) ToggleButton twitterShareButton;
     //@Bind(R.id.btn_share_li) ToggleButton linkedInShareButton;
-    @Bind(R.id.btn_share_wb) ToggleButton weiboShareButton;
-    @Bind(R.id.btn_share_wechat) ToggleButton weChatShareButton;
+//    @Bind(R.id.btn_share_wb) ToggleButton weiboShareButton;
+//    @Bind(R.id.btn_share_wechat) ToggleButton weChatShareButton;
     @Bind(R.id.btn_location) ToggleButton locationShareButton;
     @Bind(R.id.switch_share_public) ToggleButton isPublic;
     @Bind(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
@@ -67,8 +67,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             initSocialButton(facebookShareButton, SocialNetworkEnum.FB);
             //initSocialButton(twitterShareButton, SocialNetworkEnum.TW);
             //initSocialButton(linkedInShareButton, SocialNetworkEnum.LN);
-            initSocialButton(weChatShareButton, SocialNetworkEnum.WECHAT);
-            initSocialButton(weiboShareButton, SocialNetworkEnum.WB);
+//            initSocialButton(weChatShareButton, SocialNetworkEnum.WECHAT);
+//            initSocialButton(weiboShareButton, SocialNetworkEnum.WB);
         }
     }
 
@@ -107,7 +107,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @SuppressWarnings("UnusedDeclaration")
     @OnCheckedChanged({
             R.id.btn_share_fb,
-            R.id.btn_share_wb,
+//            R.id.btn_share_wb,
     })
     public void onSocialNetworkCheckedChanged(@NonNull CompoundButton compoundButton, boolean isChecked)
     {
@@ -124,17 +124,17 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnCheckedChanged(R.id.btn_share_wechat)
-    public void onWeChatCheckedChanged(@NonNull CompoundButton compoundButton, boolean isChecked)
-    {
-        SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
-        if (socialNetworkEnum != null)
-        {
-            socialSharePreferenceHelper.updateSocialSharePreference(socialNetworkEnum, isChecked);
-            compoundButton.setChecked(isChecked);
-        }
-    }
+//    @SuppressWarnings("UnusedDeclaration")
+//    @OnCheckedChanged(R.id.btn_share_wechat)
+//    public void onWeChatCheckedChanged(@NonNull CompoundButton compoundButton, boolean isChecked)
+//    {
+//        SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
+//        if (socialNetworkEnum != null)
+//        {
+//            socialSharePreferenceHelper.updateSocialSharePreference(socialNetworkEnum, isChecked);
+//            compoundButton.setChecked(isChecked);
+//        }
+//    }
 
     private void askToLinkSocial(
             @NonNull final CompoundButton compoundButton,
@@ -157,7 +157,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.publishToFb = facebookShareButton.isChecked();
         //publishableFormDTO.publishToTw = twitterShareButton.isChecked();
         //publishableFormDTO.publishToLi = linkedInShareButton.isChecked();
-        publishableFormDTO.publishToWb = weiboShareButton.isChecked();
+//        publishableFormDTO.publishToWb = weiboShareButton.isChecked();
 
         publishableFormDTO.isPublic = isPublic.isChecked();
 
@@ -182,8 +182,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         facebookShareButton.setVisibility(GONE);
         //twitterShareButton.setVisibility(GONE);
         //linkedInShareButton.setVisibility(GONE);
-        weChatShareButton.setVisibility(GONE);
-        weiboShareButton.setVisibility(GONE);
+//        weChatShareButton.setVisibility(GONE);
+//        weiboShareButton.setVisibility(GONE);
     }
 
     public void setReturnFragmentName(@NonNull String returnFragmentName)

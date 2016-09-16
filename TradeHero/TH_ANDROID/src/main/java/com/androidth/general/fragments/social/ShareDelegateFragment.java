@@ -52,10 +52,14 @@ public class ShareDelegateFragment
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected SocialShareHelper socialShareHelper;
 
-    @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
+//    @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
+//    @Nullable @Bind({
+//            R.id.btn_share_fb,
+//            R.id.btn_share_wb})
+//    SocialLinkToggleButton[] socialLinkingButtons;
+
     @Nullable @Bind({
-            R.id.btn_share_fb,
-            R.id.btn_share_wb})
+            R.id.btn_share_fb})
     SocialLinkToggleButton[] socialLinkingButtons;
 
     @Nullable protected UserProfileDTO userProfileDTO;
@@ -84,7 +88,7 @@ public class ShareDelegateFragment
 
         socialSharePreferenceHelper.load();
         fetchUserProfile();
-        registerWeChatButton();
+//        registerWeChatButton();
         registerSocialButtons();
     }
 
@@ -141,34 +145,34 @@ public class ShareDelegateFragment
         }
     }
 
-    private void registerWeChatButton()
-    {
-        unsubscribeWeChatButton();
-        weChatLinkingSubscription = AppObservable.bindSupportFragment(
-                parentFragment,
-                initialShareButtonState(SocialNetworkEnum.WECHAT)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMap(new Func1<Boolean, Observable<OnClickEvent>>()
-                        {
-                            @Override public Observable<OnClickEvent> call(Boolean checked)
-                            {
-                                mBtnShareWeChat.setChecked(checked);
-                                return ViewObservable.clicks(mBtnShareWeChat, false);
-                            }
-                        }))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<OnClickEvent>()
-                        {
-                            @Override public void call(OnClickEvent event)
-                            {
-                                socialSharePreferenceHelper.updateSocialSharePreference(
-                                        SocialNetworkEnum.WECHAT,
-                                        ((ToggleButton) event.view()).isChecked());
-                            }
-                        },
-                        new ToastOnErrorAction1());
-    }
+//    private void registerWeChatButton()
+//    {
+//        unsubscribeWeChatButton();
+//        weChatLinkingSubscription = AppObservable.bindSupportFragment(
+//                parentFragment,
+//                initialShareButtonState(SocialNetworkEnum.WECHAT)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .flatMap(new Func1<Boolean, Observable<OnClickEvent>>()
+//                        {
+//                            @Override public Observable<OnClickEvent> call(Boolean checked)
+//                            {
+//                                mBtnShareWeChat.setChecked(checked);
+//                                return ViewObservable.clicks(mBtnShareWeChat, false);
+//                            }
+//                        }))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                        new Action1<OnClickEvent>()
+//                        {
+//                            @Override public void call(OnClickEvent event)
+//                            {
+//                                socialSharePreferenceHelper.updateSocialSharePreference(
+//                                        SocialNetworkEnum.WECHAT,
+//                                        ((ToggleButton) event.view()).isChecked());
+//                            }
+//                        },
+//                        new ToastOnErrorAction1());
+//    }
 
     private void registerSocialButtons()
     {
@@ -398,10 +402,10 @@ public class ShareDelegateFragment
         return false;
     }
 
-    public boolean isShareToWeChat()
-    {
-        return mBtnShareWeChat.isChecked();
-    }
+//    public boolean isShareToWeChat()
+//    {
+//        return mBtnShareWeChat.isChecked();
+//    }
 
     @NonNull public List<SocialNetworkEnum> getEnabledSharePreferences()
     {

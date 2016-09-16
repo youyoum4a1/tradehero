@@ -37,18 +37,18 @@
       app:networkType="linkedin"
       />-->
 
-  <ToggleButton
-      android:id="@+id/btn_share_wechat"
-      style="@style/TH.ShareButtons"
-      android:background="@drawable/ic_wechat"
-      />
+  <!--<ToggleButton-->
+      <!--android:id="@+id/btn_share_wechat"-->
+      <!--style="@style/TH.ShareButtons"-->
+      <!--android:background="@drawable/ic_wechat"-->
+      <!--/>-->
 
-  <com.androidth.general.common.widget.SocialLinkToggleButton
-      android:id="@+id/btn_share_wb"
-      style="@style/TH.ShareButtons"
-      android:background="@drawable/ic_share_wb"
-      app:networkType="weibo"
-      />
+  <!--<com.androidth.general.common.widget.SocialLinkToggleButton-->
+      <!--android:id="@+id/btn_share_wb"-->
+      <!--style="@style/TH.ShareButtons"-->
+      <!--android:background="@drawable/ic_share_wb"-->
+      <!--app:networkType="weibo"-->
+      <!--/>-->
 
   <ToggleButton
       android:id="@+id/btn_location"
