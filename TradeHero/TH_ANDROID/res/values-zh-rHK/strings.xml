@@ -1074,7 +1074,7 @@
   <string name="service_retry">失敗，重新嘗試%1$d更多次times\n%2$s</string>
   <string name="settings">設置</string>
   <string name="settings_about">商標或被版權保護的文字或圖片，僅限用於個人研究或學習，禁止涉及商業用途。我們保留最終所有權與解釋權。</string>
-  <string name="settings_about_copyright">© 版權2012–2014 上海邁和信息科技有限公司</string>
+  <string name="settings_about_copyright">© 版權2012–2016 上海邁和信息科技有限公司</string>
   <string name="settings_about_patents_pending">專利申請中</string>
   <string name="settings_about_registered_company">新加坡總公司執照號201003309N</string>
   <string name="settings_about_title">關於</string>
@@ -1195,7 +1195,7 @@
   <string name="sms_verification_resend">重發驗證碼</string>
   <string name="sms_verification_send_fail">發送驗證碼失敗</string>
   <string name="sms_verification_send_fail_title">請關閉對話並重試</string>
-  <string name="sms_verification_sms_content">歡迎來到全民股神實盤交易版本。你的驗證碼是s\n\n開啟全民股神應用並使用該驗證碼來驗證你的手機號吧。</string>
+  <string name="sms_verification_sms_content">歡迎來到全民股神實盤交易版本。你的驗證碼是%s\n\n開啟全民股神應用並使用該驗證碼來驗證你的手機號吧。</string>
   <string name="sms_verification_status">短信狀態：%s</string>
   <string name="sms_verification_title">驗證你的手機號碼</string>
   <string name="social_followers">粉絲</string>
