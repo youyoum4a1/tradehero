@@ -91,12 +91,12 @@ TASK com.tradehero.th id=667
     Fragments Created Menus:
       #0: LiveSignUpMainFragment{f2b7d19 #0 id=0x7f1100ba}
     Back Stack:
-      #0: BackStackEntry{6baae8e #0 com.androidth.general.fragments.live.LiveSignUpMainFragment}
-        mName=com.androidth.general.fragments.live.LiveSignUpMainFragment mIndex=0 mCommitted=true
+      #0: BackStackEntry{6baae8e #0 com.androidth.general.fragments.kyc.LiveSignUpMainFragment}
+        mName=com.androidth.general.fragments.kyc.LiveSignUpMainFragment mIndex=0 mCommitted=true
         Operations:
           Op #0: REPLACE LiveSignUpMainFragment{f2b7d19 #0 id=0x7f1100ba}
     Back Stack Indices:
-      #0: BackStackEntry{6baae8e #0 com.androidth.general.fragments.live.LiveSignUpMainFragment}
+      #0: BackStackEntry{6baae8e #0 com.androidth.general.fragments.kyc.LiveSignUpMainFragment}
     FragmentManager misc state:
       mHost=android.support.v4.app.FragmentActivity$HostCallbacks@ff811de
       mContainer=android.support.v4.app.FragmentActivity$HostCallbacks@ff811de

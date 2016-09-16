@@ -11,7 +11,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.androidth.general.R;
-import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+import com.androidth.general.fragments.kyc.LiveSignUpMainFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;

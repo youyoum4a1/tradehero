@@ -201,7 +201,7 @@
           android:gravity="center_vertical"
           >
 
-        <com.androidth.general.fragments.live.ayondo.CustomSpinnerSelection
+        <com.androidth.general.fragments.kyc.CustomSpinnerSelection
             android:id="@+id/country_code_spinner"
             style="@style/TH.Spinner"
             android:layout_width="match_parent"

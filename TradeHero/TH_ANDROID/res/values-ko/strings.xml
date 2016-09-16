@@ -112,7 +112,7 @@
   <string name="contest_center_tab_joined">Joined</string>
   <string name="contest_no_joined">Oops!\n You have not joined any competition yet.\nChoose one from the active tab and start playing!</string>
   <string name="continue_free_follow">XXX로 계속하기 \ 무료 팔로우</string>
-  <string name="currency">KRW</string>
+  <string name="currency">Currency</string>
   <string name="current_endpoint">Current Endpoint: </string>
   <string name="dashboard_alerts">Alerts</string>
   <string name="dashboard_community">소셜</string>

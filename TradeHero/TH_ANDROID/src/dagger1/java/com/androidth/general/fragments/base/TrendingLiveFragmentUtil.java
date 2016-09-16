@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import com.androidth.general.R;
 import com.androidth.general.activities.LiveActivityUtil;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
-import com.androidth.general.fragments.live.LiveCallToActionFragment;
+import com.androidth.general.fragments.kyc.LiveCallToActionFragment;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
 import com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference;
 

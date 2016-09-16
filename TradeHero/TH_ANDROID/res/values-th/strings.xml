@@ -158,7 +158,7 @@
   <string name="contest_center_tab_joined">รายการที่เข้าร่วม</string>
   <string name="contest_no_joined">ขอโทษค่ะ!\n คุณยังไม่ได้เข้าร่วมในการแข่งขันใดๆเลย\nเลือกหนึ่งการแข่งขันจากแท็บที่เปิดใช้งาน แล้วเริ่มเล่นเลย!</string>
   <string name="continue_free_follow">ดำเนินการต่อด้วย\nการติดตามแบบฟรี</string>
-  <string name="currency">US$</string>
+  <string name="currency">Currency</string>
   <string name="current_endpoint">จุดปลายในปัจจุบัน: </string>
   <string name="dashboard_alerts">Alerts</string>
   <string name="dashboard_community">บอร์ดผู้นำ</string>

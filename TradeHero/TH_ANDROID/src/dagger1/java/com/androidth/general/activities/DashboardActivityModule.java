@@ -25,7 +25,7 @@ import com.androidth.general.fragments.competition.ProviderVideoListFragment;
 import com.androidth.general.fragments.competition.RedeemFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
 import com.androidth.general.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+import com.androidth.general.fragments.kyc.LiveSignUpMainFragment;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.position.PositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;

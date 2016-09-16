@@ -231,7 +231,7 @@
   <string name="continue_free_follow">继续nFree的关注</string>
   <string name="country">国家</string>
   <string name="create">创造</string>
-  <string name="currency">美元$</string>
+  <string name="currency">货币</string>
   <string name="current_endpoint">目前端口: </string>
   <string name="dashboard_admin_settings">管理员设置</string>
   <string name="dashboard_alerts">预警</string>
