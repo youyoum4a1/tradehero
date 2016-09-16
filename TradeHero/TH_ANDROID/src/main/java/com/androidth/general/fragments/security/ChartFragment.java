@@ -243,7 +243,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        HierarchyInjector.inject(this);
+        try{
+            HierarchyInjector.inject(this);
+        }catch (Exception e){
+            //might have empty DashboardTabHost
+            e.printStackTrace();
+        }
 
         SecurityCompactDTO securityCompactDTO = securityCompactCacheRx.getCachedValue(securityId);
         chartDTO = chartDTOFactory.createChartDTO(securityCompactDTO);
