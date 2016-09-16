@@ -357,7 +357,6 @@ dependencies {
         transitive = true;
     }
     compile 'com.appsflyer:af-android-sdk:4+@aar'
-//    releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"//jeff
     //  googleplayCompile 'com.android.support:multidex:1.0.1'//jeff
     //  samsungCompile 'com.android.support:multidex:1.0.1' //jeff
     //provided 'proguard:annotations:4.6'
