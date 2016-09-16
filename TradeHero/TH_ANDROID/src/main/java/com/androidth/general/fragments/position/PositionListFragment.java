@@ -1029,6 +1029,7 @@ public class PositionListFragment
                     }
                 }else{
                     Log.d(getTag(), "Inflated view is null");
+                    return;
                 }
 
                 int headerHeight = inflatedView.getMeasuredHeight();
