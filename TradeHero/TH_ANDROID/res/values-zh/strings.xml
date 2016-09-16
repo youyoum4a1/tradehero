@@ -1076,7 +1076,7 @@
   <string name="service_retry">失败，重新尝试%1$d更多次times\n%2$s</string>
   <string name="settings">设置</string>
   <string name="settings_about">商标或被版权保护的文字或图片，仅限用于个人研究或学习，禁止涉及商业用途。我们保留最终所有权与解释权。</string>
-  <string name="settings_about_copyright">© 版权 2012–2014 上海迈和信息科技有限公司</string>
+  <string name="settings_about_copyright">© 版权 2012–2016 上海迈和信息科技有限公司</string>
   <string name="settings_about_patents_pending">专利申请中</string>
   <string name="settings_about_registered_company">新加坡总公司执照号 201003309N</string>
   <string name="settings_about_title">关于</string>

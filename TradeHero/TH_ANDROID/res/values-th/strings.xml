@@ -698,7 +698,7 @@
   <string name="settings">การตั้งค่า</string>
   <string name="settings_about">การใช้เครื่องหมายการค้าหรือรูปภาพลิขสิทธิ์ เป็นไปเพื่อการวิจัย การศึกษา การอธิบาย และ/หรือ การระบุบ่งชี้ อย่างเป็นธรรมและสมเหตุสมผล เครื่องหมายการค้าหรือรูปภาพดังกล่าว ยังคงเป็นของเจ้าของที่เกี่ยวข้องแต่เพียงผู้เดียว
   </string>
-  <string name="settings_about_copyright">© สงวนลิขสิทธิ์ 2012–2014 บริษัท My Manisku จำกัด</string>
+  <string name="settings_about_copyright">© สงวนลิขสิทธิ์ 2012–2016 บริษัท My Manisku จำกัด</string>
   <string name="settings_about_patents_pending">สิทธิบัตรอยู่ในระหว่างการพิจารณา</string>
   <string name="settings_about_registered_company">จดทะเบียนบริษัทสิงคโปร์เลขที่ 201003309N</string>
   <string name="settings_about_title">เกี่ยวกับ</string>
