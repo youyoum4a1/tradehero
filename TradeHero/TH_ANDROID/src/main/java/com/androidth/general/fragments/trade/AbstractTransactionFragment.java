@@ -1224,7 +1224,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 //                extras,
 //                String.format(
 //                        getString(R.string.traded_facebook_share_message),
-//                        mQuantityEditText.getText(),
+//                        mMiddleNumber.getText(),
 //                        usedDTO.securityCompactDTO.name,
 //                        SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
 //                        getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
@@ -1260,7 +1260,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 //                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getAskPrice();
 //        } else {
 //            weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-//                    + usedDTO.securityCompactDTO.name + " " + mQuantityEditText.getText() + getString(
+//                    + usedDTO.securityCompactDTO.name + " " + mMiddleNumber.getText() + getString(
 //                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getBidPrice();
 //        }
 //        if (commentString != null && !commentString.isEmpty()) {

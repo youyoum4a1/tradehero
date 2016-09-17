@@ -1,11 +1,9 @@
 package com.androidth.general.fragments.trade;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.util.Log;
@@ -20,9 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
@@ -45,8 +41,6 @@ import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
-import com.androidth.general.api.share.wechat.WeChatDTO;
-import com.androidth.general.api.share.wechat.WeChatMessageType;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
@@ -54,10 +48,7 @@ import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.DashboardNavigator;
-import com.androidth.general.fragments.base.BaseDialogFragment;
 import com.androidth.general.fragments.base.BaseShareableDialogFragment;
-import com.androidth.general.fragments.base.DashboardFragment;
-import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.androidth.general.fragments.discussion.TransactionEditCommentFragment;
@@ -78,21 +69,15 @@ import com.androidth.general.persistence.position.PositionListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
-import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.rx.view.adapter.AdapterViewObservable;
-import com.androidth.general.rx.view.adapter.OnSelectedEvent;
-import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
-import com.androidth.general.wxapi.WXEntryActivity;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -138,13 +123,15 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected TextView securitySymbol;
 
     @Bind(R.id.vtrade_value)
-    protected TextView mTradeValueTextView;
+    protected TextView mLeftNumber;
 
     @Bind(R.id.vquantity)
-    protected EditText mQuantityEditText;
+    protected EditText mMiddleNumber;
 
     @Bind(R.id.vcash_left)
-    protected TextView mCashShareLeftTextView;
+    protected TextView mRightNumber;
+
+    @Bind(R.id.dialog_trade_value_label) protected TextView mTradeValue;
 
     @Bind(R.id.seek_bar) protected SeekBar mSeekBar;
 
@@ -312,8 +299,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             topNormalView.setVisibility(View.VISIBLE);
         }
 
-        mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
-        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mMiddleNumber.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
+        mMiddleNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
@@ -336,7 +323,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             }
         });
 
-        mTradeValueTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mLeftNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 hasTradeValueTextFieldFocus = hasFocus;
@@ -392,7 +379,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         getPortfolioCompactObservable(),
                         getQuoteObservable(),
                         getCloseablePositionObservable(),
-                        WidgetObservable.text(mTradeValueTextView),
+                        WidgetObservable.text(mLeftNumber),
                         new Func4<PortfolioCompactDTO, LiveQuoteDTO, PositionDTO, OnTextChangeEvent, Integer>() {
                             @Override
                             public Integer call(PortfolioCompactDTO portfolioCompactDTO, LiveQuoteDTO quoteDTO, PositionDTO positionDTO,
@@ -401,7 +388,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 Double tradeValue = 0.0;
 
                                 if (hasTradeValueTextFieldFocus) {
-                                    String tradeValueText = mTradeValueTextView.getText().toString().replace(",", "");
+                                    String tradeValueText = mLeftNumber.getText().toString().replace(",", "");
 
                                     if (tradeValueText.isEmpty()) {
                                         return 0;
@@ -417,7 +404,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                                     // selling current open position (sell)
                                     if (positionDTO != null) {
-                                        String quantityText = mQuantityEditText.getText().toString();
+                                        String quantityText = mMiddleNumber.getText().toString();
                                         Integer quantityValue = Integer.parseInt(quantityText);
 
                                         if (quantityValue.equals(getMaxSellableShares(portfolioCompactDTO, quoteDTO, positionDTO))) {
@@ -425,7 +412,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                                     getTradeValueText(portfolioCompactDTO, quoteDTO, quantityValue).replace(",", "");
 
                                             if (!calculateTradeValueText.equals(tradeValueText)) {
-                                                mTradeValueTextView.setText(calculateTradeValueText);
+                                                mLeftNumber.setText(calculateTradeValueText);
                                             }
 
                                             return quantityValue;
@@ -450,7 +437,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                                     .withOutSign()
                                                     .build().toString();
 
-                                            mTradeValueTextView.setText(tradeValueText);
+                                            mLeftNumber.setText(tradeValueText);
                                         }
                                     }
                                 }
@@ -469,7 +456,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         .doOnNext(new Action1<Integer>() {
                             @Override
                             public void call(Integer integer) {
-                                mQuantityEditText.setText(integer.toString());
+                                mMiddleNumber.setText(integer.toString());
                             }
                         })
                         .subscribe()
@@ -678,14 +665,16 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                                 updateDisplay();
 
-                                mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+                                mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 if (clamped != null)
                                 {
-                                    mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
+                                    mRightNumber.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
                                 }
 
                                 if(securityCompactDTO!=null && securityCompactDTO instanceof FxSecurityCompactDTO){
                                     isFx = true;
+//                                    mTradeValue.setText(getString(R.string.buy_sell_fx_quantity));
+//                                    mSymbolCashValue.setVisibility(View.INVISIBLE);
                                 }else{
                                     isFx = false;
                                 }
@@ -706,7 +695,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 }
 
 //
-//                                mCashShareLeftTextView.setText(getCashLeftLabelResId(closeablePosition));
+//                                mRightNumber.setText(getCashLeftLabelResId(closeablePosition));
 //                                mProfitLossView.setVisibility(
 //                                        getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped) == null ? View.GONE
 //                                                : View.VISIBLE);
@@ -940,17 +929,17 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                             boolean updateText;
                             try {
-                                updateText = clampedQuantity != Integer.parseInt(mQuantityEditText.getEditableText().toString());
+                                updateText = clampedQuantity != Integer.parseInt(mMiddleNumber.getEditableText().toString());
                             } catch (NumberFormatException e) {
                                 updateText = true;
                             }
                             if (updateText) {
                                 if(clampedQuantity==0){
-                                    mQuantityEditText.setText(String.valueOf(""));
+                                    mMiddleNumber.setText(String.valueOf(""));
                                 }else{
-                                    mQuantityEditText.setText(String.valueOf(clampedQuantity));
+                                    mMiddleNumber.setText(String.valueOf(clampedQuantity));
                                 }
-                                mQuantityEditText.setSelection(mQuantityEditText.getText().length());
+                                mMiddleNumber.setSelection(mMiddleNumber.getText().length());
                             }
                         }
                     }
@@ -1023,7 +1012,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         updateDisplay();
 
         if (!hasTradeValueTextFieldFocus) {
-            mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+            mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
         }
 
 //        mTradeSymbol.setText(portfolioCompactDTO.currencyDisplay);
@@ -1034,7 +1023,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         enableUI();
 
 //        if (clamped != null) {
-//            mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
+//            mRightNumber.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
 //        }
 
         updateDisplay();
@@ -1199,6 +1188,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             Double priceRefCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
             if (priceRefCcy != null) {
                 double value = quantity * priceRefCcy;
+                if (portfolioCompactDTO.leverage != null && portfolioCompactDTO.leverage != 0) {
+                    value /= portfolioCompactDTO.leverage;
+                }
                 THSignedNumber thTradeValue = THSignedNumber.builder(value)
                         .withOutSign()
                         .build();
@@ -1225,7 +1217,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     public String getQuantityString() {
-        return mQuantityEditText.getText().toString();
+        return mMiddleNumber.getText().toString();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -1298,7 +1290,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     && usedDTO.securityCompactDTO.lotSize!=null){
 
                 mConfirm.setEnabled(usedDTO.clampedQuantity != null && usedDTO.clampedQuantity != 0 && hasValidInfo()
-                && Integer.parseInt(mQuantityEditText.getText().toString()) % usedDTO.securityCompactDTO.lotSize ==0) ;
+                && Integer.parseInt(mMiddleNumber.getText().toString()) % usedDTO.securityCompactDTO.lotSize ==0) ;
 
             }else{
                 mConfirm.setEnabled(usedDTO.clampedQuantity != null && usedDTO.clampedQuantity != 0 && hasValidInfo());
@@ -1510,7 +1502,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //                extras,
 //                String.format(
 //                        getString(R.string.traded_facebook_share_message),
-//                        mQuantityEditText.getText(),
+//                        mMiddleNumber.getText(),
 //                        usedDTO.securityCompactDTO.name,
 //                        SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
 //                        getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
@@ -1546,7 +1538,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getAskPrice();
 //        } else {
 //            weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-//                    + usedDTO.securityCompactDTO.name + " " + mQuantityEditText.getText() + getString(
+//                    + usedDTO.securityCompactDTO.name + " " + mMiddleNumber.getText() + getString(
 //                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getBidPrice();
 //        }
 //        if (commentString != null && !commentString.isEmpty()) {
@@ -1691,13 +1683,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     private void disableUI(){
-        mQuantityEditText.setEnabled(false);
+        mMiddleNumber.setEnabled(false);
         mSeekBar.setEnabled(false);
         mConfirm.setEnabled(false);
     }
 
     private void enableUI(){
-        mQuantityEditText.setEnabled(true);
+        mMiddleNumber.setEnabled(true);
         if(!mSeekBar.isEnabled()){//not yet enabled
             YoYo.with(Techniques.Pulse).playOn(mSeekBar);
         }
