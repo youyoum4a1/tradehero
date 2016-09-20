@@ -118,12 +118,16 @@ public class TrendingMainFragment extends DashboardFragment
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
-    private TrendingLiveFragmentUtil trendingLiveFragmentUtil;
+    public TrendingLiveFragmentUtil trendingLiveFragmentUtil;
     private OffOnViewSwitcher stockFxSwitcher;
     private ExchangeSpinner exchangeSpinner;
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
     private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
+
+    private boolean isInLiveMode;
+
+    private UserProfileDTO userProfileDTO;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -253,6 +257,12 @@ public class TrendingMainFragment extends DashboardFragment
 
             @Override public void onPageScrollStateChanged(int i)
             {
+                if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE
+                        && trendingLiveFragmentUtil!=null){
+                    if(trendingLiveFragmentUtil.getLiveFragmentContainer().getVisibility()==View.VISIBLE){
+                        trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
+                    }
+                }
             }
         });
 
@@ -293,26 +303,38 @@ public class TrendingMainFragment extends DashboardFragment
         trendingLiveFragmentUtil.onResume();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
+    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
-//        if(isLive){
-//            trendingLiveFragmentUtil.setCallToActionFragmentVisible();
-//        }else{
-//            trendingLiveFragmentUtil.setCallToActionFragmentGone();
-//        }
+        super.onLiveTradingChanged(event);
 
-        super.onLiveTradingChanged(isLive);
-        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
-            if(isLive){
-                YoYo.with(Techniques.FadeInLeft).duration(500).playOn(tabViewPager);
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser){
+
+            userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
+
+            if(event.isClickedFromTrending
+                    || userProfileDTO.getUserLiveAccounts()==null){
+                /*
+                if clicked from trending or doesnt have a live account yet,
+                show or unshow to registration page
+                */
+                if(event.isOn){
+                    trendingLiveFragmentUtil.setCallToActionFragmentVisible(tabViewPager);
+                }else{
+                    trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
+                }
+
             }else{
-                YoYo.with(Techniques.FadeInRight).duration(500).playOn(tabViewPager);
+                //switch from virtual to live, or vice versa
+                if(event.isOn){//switched from virtual to live
+                    YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager);
+                }else{
+                    YoYo.with(Techniques.ZoomInRight).duration(800).playOn(tabViewPager);
+                    trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
+                }
             }
         }
 
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
-
-
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -362,8 +384,8 @@ public class TrendingMainFragment extends DashboardFragment
         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
 
             try{
-                boolean isLive = trendingLiveFragmentUtil.getLiveActivityUtil().getLiveSwitcher().getIsOn();
-                colorId = isLive? getActivity().getResources().getColor(R.color.general_red_live) : getActivity().getResources().getColor(R.color.general_brand_color);
+                isInLiveMode = trendingLiveFragmentUtil.getLiveActivityUtil().getLiveSwitcher().getIsOn();
+                colorId = isInLiveMode? getActivity().getResources().getColor(R.color.general_red_live) : getActivity().getResources().getColor(R.color.general_brand_color);
                 setActionBarColor(colorId);
             }catch (Exception e){
                 //not yet set up

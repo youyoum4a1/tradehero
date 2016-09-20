@@ -4,7 +4,7 @@ import com.androidth.general.utils.Constants;
 
 public class NetworkConstants
 {
-    public static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/";//"thvm-hadoop.cloudapp.net";//
+    public static final String TRADEHERO_PROD_ENDPOINT = "https://dev.tradehero.mobi/";//"thvm-hadoop.cloudapp.net";//
     //http://192.168.1.10:1857/
     //https://www.tradehero.mobi/
     public static final String TRADEHERO_PROD_API_ENDPOINT = TRADEHERO_PROD_ENDPOINT + "api/";

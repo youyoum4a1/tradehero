@@ -57,6 +57,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.MultiScrollListener;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -270,8 +271,8 @@ abstract public class TimelineFragment extends DashboardFragment {
     }
 
     @Override
-    public void onLiveTradingChanged(boolean isLive) {
-        super.onLiveTradingChanged(isLive);
+    public void onLiveTradingChanged(OffOnViewSwitcherEvent event) {
+        super.onLiveTradingChanged(event);
         //liveFragmentUtil.setCallToAction(isLive);
     }
 

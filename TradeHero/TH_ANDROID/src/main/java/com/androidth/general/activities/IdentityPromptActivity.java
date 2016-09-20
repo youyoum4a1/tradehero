@@ -115,18 +115,21 @@ public class IdentityPromptActivity extends BaseActivity
         isJoiningCompetition = getIntent().getBooleanExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);
 
         countryCode = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).countryCode;
-        if(providerDTO.providerCountries.length == 1)
-        {
-            countryCode = providerDTO.providerCountries[0];
+
+        if(providerDTO!=null && providerDTO.providerCountries!=null) {
+
+            if(providerDTO.providerCountries.length == 1){
+                countryCode = providerDTO.providerCountries[0];
+            }
+
+            String color = providerDTO.hexColor.startsWith("#") ? providerDTO.hexColor : "#".concat(providerDTO.hexColor);
+            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(color));
+            imgActionBar.setBackground(colorDrawable);
         }
 
 //        picasso.load(providerDTO.navigationLogoUrl)
 //                .into(imgActionBar);
 
-        String color = providerDTO.hexColor.startsWith("#") ? providerDTO.hexColor : "#".concat(providerDTO.hexColor);
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(color));
-
-        imgActionBar.setBackground(colorDrawable);
 
         // temp not working, need check
 
