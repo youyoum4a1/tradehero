@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.competition;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.StateListDrawable;
@@ -39,6 +40,7 @@ import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.base.THApp;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
@@ -78,12 +80,16 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -249,6 +255,9 @@ public class MainCompetitionFragment extends DashboardFragment
             }
         });
         this.webViewFragment = null;
+
+        Map<String, String> eventDetails = new HitBuilders.EventBuilder().setCategory("Action").setAction("Competition").build();
+        GAnalyticsProvider.sendGAEvents(getActivity(), "MainCompetitionFragment", eventDetails);
     }
 
     @Override public void onPause()

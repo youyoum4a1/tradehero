@@ -173,6 +173,17 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
     </activity>
 
+    <receiver android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
+        android:enabled="true"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER" />
+      </intent-filter>
+    </receiver>
+    <service android:name="com.google.android.gms.analytics.CampaignTrackingService"
+        android:enabled="true"
+        android:exported="false" />
+
     <receiver
         android:name="com.tune.TuneTracker"
         android:exported="true">

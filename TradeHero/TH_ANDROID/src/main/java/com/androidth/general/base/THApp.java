@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.androidth.general.BuildConfig;
+import com.androidth.general.R;
 import com.androidth.general.activities.ActivityBuildTypeUtil;
 import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
@@ -20,9 +21,13 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.flurry.android.FlurryAgent;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.tune.Tune;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
+
+import java.util.HashMap;
 
 import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
@@ -49,6 +54,8 @@ public class THApp extends BaseApplication
 
     public static Context context;
 
+    private Tracker mTracker;
+
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject UserXPAchievementHandler userXPAchievementHandler;
 
@@ -67,6 +74,7 @@ public class THApp extends BaseApplication
 
         setupFabricWithTwitter();
         setupTune();
+        setupGoogleAnalytics();
 
         Timber.plant(TimberUtil.createTree());
 
@@ -162,5 +170,80 @@ public class THApp extends BaseApplication
         Tune.init(this, MAT_APP_ID, MAT_APP_KEY);
         Tune.getInstance().setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
         Tune.getInstance().setDebugMode(!Constants.RELEASE);
+    }
+
+
+    /**
+     * Google Anaylytics
+     */
+    // The following line should be changed to include the correct property id.
+    private static final String PROPERTY_ID = "UA-XXXXX-Y";
+
+    /**
+     * Enum used to identify the tracker that needs to be used for tracking.
+     *
+     * A single tracker is usually enough for most purposes. In case you do need multiple trackers,
+     * storing them all in Application object helps ensure that they are created only once per
+     * application instance.
+     */
+
+    /**
+     * Gets the default {@link Tracker} for this {@link Application}.
+     * @return tracker
+     */
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+        }
+        return mTracker;
+    }
+
+    public enum TrackerName {
+        APP_TRACKER, // Tracker used only in this app.
+        GLOBAL_TRACKER, // Tracker used by all the apps from a company. eg: roll-up tracking.
+        ECOMMERCE_TRACKER, // Tracker used by all ecommerce transactions from a company.
+    }
+
+    HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
+
+    public THApp() {
+        super();
+    }
+
+    public synchronized Tracker getTracker(TrackerName trackerId) {
+        if (!mTrackers.containsKey(trackerId)) {
+
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(PROPERTY_ID)
+                    : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.global_tracker)
+                    : analytics.newTracker(R.xml.ga_tracker_config);
+            mTrackers.put(trackerId, t);
+
+        }
+        return mTrackers.get(trackerId);
+    }
+
+    private void setupGoogleAnalytics(){
+        if(BuildConfig.DEBUG){
+            GoogleAnalytics.getInstance(this).setDryRun(true);
+        }
+        //not yet used
+//        GoogleAnalytics.getInstance(this).setAppOptOut(true);
+//
+//        SharedPreferences userPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        userPrefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener () {
+//
+//            @Override
+//            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+//                if (key.equals(TRACKING_PREF_KEY)) {
+//                    GoogleAnalytics.getInstance(getApplicationContext()).setAppOptOut(sharedPreferences.getBoolean(key, false));
+//                } else {
+//                    // Any additional changed preference handling.
+//                }
+//            }
+//        });
     }
 }
