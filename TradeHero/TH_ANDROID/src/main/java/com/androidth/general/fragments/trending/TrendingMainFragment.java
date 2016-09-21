@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -33,9 +34,13 @@ import com.androidth.general.api.market.ExchangeIntegerId;
 import com.androidth.general.api.market.ExchangeListType;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.api.security.CompositeExchangeSecurityDTO;
+import com.androidth.general.api.security.SecurityTypeDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.api.users.DisplayNameDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
@@ -44,10 +49,13 @@ import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.base.TrendingLiveFragmentUtil;
 import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.androidth.general.fragments.market.ExchangeSpinner;
+import com.androidth.general.fragments.market.SecurityTypeSpinner;
 import com.androidth.general.fragments.position.FXMainPositionListFragment;
 import com.androidth.general.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTOList;
+import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.persistence.live.CompositeExchangeSecurityCacheRx;
 import com.androidth.general.persistence.market.ExchangeCompactListCacheRx;
 import com.androidth.general.persistence.market.ExchangeMarketPreference;
 import com.androidth.general.persistence.prefs.PreferredExchangeMarket;
@@ -121,13 +129,16 @@ public class TrendingMainFragment extends DashboardFragment
     public TrendingLiveFragmentUtil trendingLiveFragmentUtil;
     private OffOnViewSwitcher stockFxSwitcher;
     private ExchangeSpinner exchangeSpinner;
-    private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
+    private DTOAdapterNew<DTO> exchangeAdapter;
+    private DTOAdapterNew<DTO> securitTypeAdapter;
     private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
 
-    private boolean isInLiveMode;
-
+    //Live-related
     private UserProfileDTO userProfileDTO;
+    private boolean isInLiveMode;
+    private SecurityTypeSpinner securityTypeSpinner;
+    @Inject CompositeExchangeSecurityCacheRx compositeExchangeSecurityCacheRx;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -234,6 +245,7 @@ public class TrendingMainFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         trendingLiveFragmentUtil = new TrendingLiveFragmentUtil(this, view);
+
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int i, float v, int i2)
@@ -327,9 +339,14 @@ public class TrendingMainFragment extends DashboardFragment
                 //switch from virtual to live, or vice versa
                 if(event.isOn){//switched from virtual to live
                     YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager);
+                    securityTypeSpinner.setVisibility(View.VISIBLE);
+                    stockFxSwitcher.setVisibility(View.INVISIBLE);
+
                 }else{
                     YoYo.with(Techniques.ZoomInRight).duration(800).playOn(tabViewPager);
                     trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
+                    stockFxSwitcher.setVisibility(View.VISIBLE);
+                    securityTypeSpinner.setVisibility(View.GONE);
                 }
             }
         }
@@ -408,6 +425,7 @@ public class TrendingMainFragment extends DashboardFragment
             setActionBarTitle("");
             setupStockFxSwitcher(view);
             setupExchangeSpinner(view);
+            setupSecurityTypeSpinner(view);
             actionBarOwnerMixin.setCustomView(view);
         }
     }
@@ -807,5 +825,139 @@ public class TrendingMainFragment extends DashboardFragment
         {
             return TrendingFXTabType.values().length;
         }
+    }
+
+    /**
+     * Live security types dropdown spinner
+     */
+    private void setupSecurityTypeSpinner(View view)
+    {
+        securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
+//        securityTypeSpinner.setVisibility(View.VISIBLE);
+
+        if(isInLiveMode){
+            securityTypeSpinner.setVisibility(View.VISIBLE);
+            stockFxSwitcher.setVisibility(View.INVISIBLE);
+        }
+
+        if (lastType == TrendingTabType.FX)
+        {
+            securityTypeSpinner.setVisibility(View.GONE);
+            return;
+        }
+        else if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
+        {
+            securityTypeSpinner.setVisibility(View.GONE);
+            return;
+        }
+
+        securitTypeAdapter = new TrendingFilterSpinnerIconAdapter(
+                getActivity(),
+                R.layout.trending_filter_spinner_item_short);
+
+        securitTypeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+        securityTypeSpinner.setAdapter(securitTypeAdapter);
+
+        securityTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+//                onExchangeSelected(parent, view, position, id);
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        });
+
+//        SecurityTypeDTO dto = new SecurityTypeDTO();
+//        dto.name = "Sample name";
+//        dto.id = 1;
+//        dto.isEnabled = true;
+//        dto.imageUrl = "https://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/sectypes/bond.jpeg";
+//        securitTypeAdapter.add(dto);
+//        securitTypeAdapter.notifyDataSetChanged();
+
+        CompositeExchangeSecurityDTO compositeExchangeSecurityDTO = null;
+
+        if(compositeExchangeSecurityDTO==null){
+            compositeExchangeSecurityCacheRx.fetch(currentUserId.toUserBaseKey()).subscribe(new Action1<CompositeExchangeSecurityDTO>() {
+                @Override
+                public void call(CompositeExchangeSecurityDTO compositeExchangeSecurityDTO) {
+                    Log.v(getTag(), "!!!"+compositeExchangeSecurityDTO);
+                    securitTypeAdapter.addAll(compositeExchangeSecurityDTO.getSecurityTypes());
+                    securitTypeAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }else{
+
+            Log.v(getTag(), "!!!22"+compositeExchangeSecurityDTO);
+            securitTypeAdapter.addAll(compositeExchangeSecurityDTO.getSecurityTypes());
+            securitTypeAdapter.notifyDataSetChanged();
+        }
+
+//        ExchangeListType key = new ExchangeListType();
+//        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindSupportFragment(
+//                this,
+//                Observable.combineLatest(
+//                        exchangeCompactListCache.getOne(key)
+//                                .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>())
+//                                .map(new Func1<ExchangeCompactDTOList, ExchangeCompactSpinnerDTOList>()
+//                                {
+//                                    @Override public ExchangeCompactSpinnerDTOList call(ExchangeCompactDTOList exchangeDTOs)
+//                                    {
+//                                        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
+//                                                getResources(),
+//                                                ExchangeCompactDTOUtil.filterAndOrderForTrending(
+//                                                        exchangeDTOs,
+//                                                        new ExchangeCompactDTODescriptionNameComparator<>()));
+//                                        // Adding the "All" choice
+//                                        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
+//                                        return spinnerList;
+//                                    }
+//                                })
+//                                .startWith(exchangeCompactSpinnerDTOList != null
+//                                        ? Observable.just(exchangeCompactSpinnerDTOList)
+//                                        : Observable.<ExchangeCompactSpinnerDTOList>empty())
+//                                .distinctUntilChanged(),
+//                        userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+//                        new Func2<ExchangeCompactSpinnerDTOList, UserProfileDTO, Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO>>()
+//                        {
+//                            @Override
+//                            public Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO> call(
+//                                    ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs,
+//                                    UserProfileDTO userProfileDTO)
+//                            {
+//                                Country defaultCountry = userProfileDTO.getCountry();
+//                                return Pair.create(
+//                                        exchangeCompactSpinnerDTOs,
+//                                        defaultCountry == null
+//                                                ? null
+//                                                : exchangeCompactSpinnerDTOs.findFirstDefaultFor(defaultCountry));
+//                            }
+//                        }))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                        new Action1<Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO>>()
+//                        {
+//                            @Override public void call(Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO> pair)
+//                            {
+//                                exchangeCompactSpinnerDTOList = pair.first;
+//                                exchangeAdapter.addAll(pair.first);
+//                                exchangeAdapter.notifyDataSetChanged();
+//                                handleExchangeRouting(pair.second);
+//                            }
+//                        },
+//                        new TimberAndToastOnErrorAction1(
+//                                getString(R.string.error_fetch_exchange_list_info),
+//                                "Error fetching the list of exchanges")));
+    }
+
+    protected void onSecurityTypeSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+//        ExchangeCompactSpinnerDTO dto = (ExchangeCompactSpinnerDTO) parent.getItemAtPosition(position);
+//        preferredExchangeMarket.set(dto.getExchangeIntegerId());
+//        exchangeSpinnerDTOSubject.onNext(dto);
     }
 }

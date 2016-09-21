@@ -1,8 +1,13 @@
 package com.androidth.general.network.service;
 
+import android.support.annotation.NonNull;
+
 import com.androidth.general.api.market.ExchangeCompactDTOList;
 import com.androidth.general.api.market.SectorCompactDTOList;
 import com.androidth.general.api.market.SectorDTOList;
+import com.androidth.general.api.security.CompositeExchangeSecurityDTO;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import retrofit.http.GET;
 import retrofit.http.Query;
 import rx.Observable;
@@ -20,4 +25,8 @@ public interface MarketServiceRx
     @GET("/sectors") Observable<SectorDTOList> getSectors(
             @Query("topNStocks") int topNStocks);
     //</editor-fold>
+
+    @GET("/v2/exchanges")
+    @RxLogObservable Observable<CompositeExchangeSecurityDTO> getLiveExchangeSecurityTypes();
+
 }

@@ -6,6 +6,9 @@ import com.androidth.general.api.market.ExchangeListType;
 import com.androidth.general.api.market.SectorCompactDTOList;
 import com.androidth.general.api.market.SectorDTOList;
 import com.androidth.general.api.market.SectorListType;
+import com.androidth.general.api.security.CompositeExchangeSecurityDTO;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -38,5 +41,10 @@ import rx.Observable;
     {
         return marketServiceRx.getSectors(sectorListType.topNStocks);
     }
-    //</editor-fold>
+
+    @NonNull
+    public @RxLogObservable Observable<CompositeExchangeSecurityDTO> getLiveExchangeSecurityTypes()
+    {
+        return marketServiceRx.getLiveExchangeSecurityTypes();
+    }
 }
