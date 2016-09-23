@@ -3,6 +3,7 @@ package com.androidth.general.fragments.discussion;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -61,6 +63,9 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Inject protected AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject protected DiscussionFragmentUtil discussionFragmentUtil;
     @Inject protected FragmentOuterElements fragmentElements;
+
+//    protected SubscriptionList onDestroyViewSubscriptions;
+//    protected SubscriptionList onStopSubscriptions;
 
     protected DiscussionSetAdapter discussionListAdapter;
     protected DiscussionKey discussionKey;
@@ -96,7 +101,10 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        discussionList.setOnScrollListener(new MultiScrollListener(fragmentElements.getListViewScrollListener(), createListScrollListener()));
+
+        if(fragmentElements!=null){
+            discussionList.setOnScrollListener(new MultiScrollListener(fragmentElements.getListViewScrollListener(), createListScrollListener()));
+        }
 
         onDestroyViewSubscriptions.add(getTopicViewObservable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,14 +122,24 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                         },
                         new TimberOnErrorAction1("Failed to get topic view")));
 
-        mentionTaggedStockHandler.setDiscussionPostContent(postCommentText);
+        try{
+            mentionTaggedStockHandler.setDiscussionPostContent(postCommentText);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         subscribeHasSelected();
         if (postCommentView != null)
         {
             postCommentView.linkWith(discussionKey);
             postCommentView.setCommentPostedListener(createCommentPostedListener());
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) postCommentView.getLayoutParams();
-            params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, fragmentElements.getMovableBottom().getHeight());
+            if(fragmentElements!=null){
+                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, fragmentElements.getMovableBottom().getHeight());
+            }else{
+                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 10);
+            }
+
             postCommentView.setLayoutParams(params);
         }
 
@@ -138,30 +156,42 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
         registerUserActions();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
     @Override public void onResume()
     {
         super.onResume();
-        if (fragmentElements == null)
-        {
-            Timber.e(new NullPointerException(), "Re-injecting");
-            HierarchyInjector.inject(this);
-        }
+//        if (fragmentElements == null)
+//        {
+//            Timber.e(new NullPointerException(), "Re-injecting");
+//            HierarchyInjector.inject(this);
+//        }
         mentionTaggedStockHandler.collectSelection();
-        fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
+
+        if(fragmentElements!=null){
+            fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
             {
-                if (postCommentView != null)
+                @Override public void onTranslate(float x, float y)
                 {
-                    postCommentView.setTranslationY(y);
+                    if (postCommentView != null)
+                    {
+                        postCommentView.setTranslationY(y);
+                    }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     @Override public void onPause()
     {
-        fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(null);
+        if(fragmentElements!=null){
+            fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(null);
+        }
+
         super.onPause();
     }
 

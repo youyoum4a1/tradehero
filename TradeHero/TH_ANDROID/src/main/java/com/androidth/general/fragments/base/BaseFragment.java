@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -75,11 +76,17 @@ public class BaseFragment extends Fragment
     }
 
     @CallSuper
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
         HierarchyInjector.inject(this);
     }
+
+//    @Override public void onAttach(Activity activity)
+//    {
+//        super.onAttach(activity.getApplicationContext());
+//        HierarchyInjector.inject(this);
+//    }
 
     @CallSuper
     @Override public void onCreate(Bundle savedInstanceState)

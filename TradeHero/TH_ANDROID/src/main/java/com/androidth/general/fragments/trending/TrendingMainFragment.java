@@ -2,6 +2,7 @@ package com.androidth.general.fragments.trending;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -173,9 +174,9 @@ public class TrendingMainFragment extends DashboardFragment
         return "trending-fx/trade-fx";
     }
 
-    @Override public void onAttach(Activity activity)
+    @Override public void onAttach(Context context)
     {
-        super.onAttach(activity);
+        super.onAttach(context);
         initUserProfileObservable();
     }
 

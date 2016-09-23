@@ -13,9 +13,8 @@ import dagger.Module;
                 AbstractDiscussionItemViewHolder.class,
                 DiscussionItemViewHolder.class,
                 TimelineItemViewHolder.class,
-                AbstractDiscussionFragment.class,
+//                AbstractDiscussionFragment.class,
 
-                SecurityDiscussionFragment.class,
                 SecurityDiscussionFragment.class,
                 SecurityDiscussionItemViewLinear.class,
                 SecurityDiscussionCommentFragment.class,

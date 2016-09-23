@@ -118,7 +118,11 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         {
             cachedValuesLock.lock();
             cachedValue = cachedValues.get(key);
-        } finally
+        } catch(Exception e){
+            e.printStackTrace();
+            cachedValue = null;
+
+        }finally
         {
             cachedValuesLock.unlock();
         }

@@ -308,7 +308,7 @@ public class FXMainFragment extends AbstractBuySellFragment
 
                 case FRAGMENT_ID_DISCUSS:
                     fragment = new SecurityDiscussionFragment();
-                    SecurityDiscussionFragment.setHasOptionMenu(args, false);
+//                    SecurityDiscussionFragment.setHasOptionMenu(args, false);
                     SecurityDiscussionFragment.putSecurityId(args, securityId);
                     break;
 

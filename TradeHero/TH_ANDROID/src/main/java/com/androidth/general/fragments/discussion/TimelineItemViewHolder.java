@@ -88,14 +88,15 @@ public class TimelineItemViewHolder
     @Nullable @OnClick(R.id.timeline_vendor_picture)
     protected void handleSecurityClicked(View view)
     {
-        if (viewDTO != null)
-        {
-            SecurityId vendorSecurityId = ((DTO) viewDTO).vendorSecurityId;
-            if (vendorSecurityId != null)
-            {
-                userActionSubject.onNext(new SecurityUserAction(viewDTO.discussionDTO, vendorSecurityId));
-            }
-        }
+        //disabled for now since it crashes
+//        if (viewDTO != null)
+//        {
+//            SecurityId vendorSecurityId = ((DTO) viewDTO).vendorSecurityId;
+//            if (vendorSecurityId != null)
+//            {
+//                userActionSubject.onNext(new SecurityUserAction(viewDTO.discussionDTO, vendorSecurityId));
+//            }
+//        }
     }
 
     public static class Requisite

@@ -19,8 +19,6 @@ import com.androidth.general.fragments.news.SecurityNewsfeedFragment;
 import com.androidth.general.fragments.position.SecurityPositionListFragment;
 import com.androidth.general.models.chart.ChartTimeSpan;
 
-import timber.log.Timber;
-
 public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
 {
     public static final int FRAGMENT_ID_CHART = 0;
@@ -93,8 +91,10 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 break;
             case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();
-                SecurityDiscussionFragment.setHasOptionMenu(args, false);
+//                SecurityDiscussionFragment.setHasOptionMenu(args, false);
                 SecurityDiscussionFragment.putSecurityId(args, securityId);
+//                fragment = new DiscoveryDiscussionFragment();
+
                 break;
             case FRAGMENT_ID_NEWS:
                 fragment = new SecurityNewsfeedFragment();
@@ -109,8 +109,9 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 break;
 
             default:
-                Timber.w("Not supported index " + position);
-                throw new UnsupportedOperationException("Not implemented");
+//                Timber.w("Not supported index " + position);
+//                throw new UnsupportedOperationException("Not implemented");
+                return null;
         }
 
         fragments[position] = fragment;

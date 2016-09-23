@@ -108,6 +108,8 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     @ColorRes private static final int COLOR_RES_UNWATCHED = R.color.darker_grey;
     @ColorRes private static final int COLOR_RES_WATCHED = R.color.watchlist_button_color;
 
+    String actionbarText;
+
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
 
@@ -118,7 +120,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     {
         return inflater.inflate(R.layout.fragment_stock_buy_sell, container, false);
     }
-    String actionbarText;
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
