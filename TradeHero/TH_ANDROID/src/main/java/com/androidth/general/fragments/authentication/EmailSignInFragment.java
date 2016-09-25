@@ -222,7 +222,7 @@ public class EmailSignInFragment extends Fragment
                         Log.v(getTag(), "Login failed: "+throwable.getMessage());
                         new SnackbarOnErrorAction1(coordinatorLayout,
                                 "Unable to login with provided credentials.",
-                                Snackbar.LENGTH_SHORT).call(throwable);
+                                Snackbar.LENGTH_LONG).call(throwable);
                     }
                 })
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
