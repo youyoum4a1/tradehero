@@ -89,7 +89,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    compileSdkVersion 23
+    compileSdkVersion 24
 
     buildToolsVersion "${BUILD_TOOLS_VERSION}"
     //useOldManifestMerger=true
@@ -106,7 +106,7 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         applicationId "com.androidth.general"
         versionCode project.ext.versionBuild
         versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
@@ -342,7 +342,7 @@ dependencies {
     compile "com.facebook.android:facebook-android-sdk:${FACEBOOK_SDK_VERSION}"
 
     compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
-    compile "com.android.support:support-compat:${SUPPORT_V4_VERSION}"
+//    compile "com.android.support:support-compat:${SUPPORT_V4_VERSION}"
     compile "com.android.support:support-v13:${SUPPORT_V13_VERSION}"
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
