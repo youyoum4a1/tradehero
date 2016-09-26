@@ -1,6 +1,7 @@
 package com.androidth.general.models.sms.twilio;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.androidth.general.models.sms.SMSId;
 import com.androidth.general.models.sms.SMSRequest;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 
 import retrofit.RetrofitError;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class TwilioServiceWrapper implements SMSServiceWrapper
@@ -35,7 +37,13 @@ public class TwilioServiceWrapper implements SMSServiceWrapper
     @NonNull @Override public Observable<SMSSentConfirmationDTO> sendMessage(@NonNull SMSRequest request)
     {
         return sendMessage((TwilioSMSRequest) request)
-                .cast(SMSSentConfirmationDTO.class);
+                .cast(SMSSentConfirmationDTO.class)
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v("", "!!! Twilio error:"+throwable.getLocalizedMessage());
+                    }
+                });
     }
 
     @NonNull public Observable<TwilioSMSSentConfirmationDTO> getMessageStatus(

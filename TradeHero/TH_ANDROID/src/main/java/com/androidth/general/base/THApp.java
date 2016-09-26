@@ -177,7 +177,7 @@ public class THApp extends BaseApplication
      * Google Anaylytics
      */
     // The following line should be changed to include the correct property id.
-    private static final String PROPERTY_ID = "UA-XXXXX-Y";
+    private static final String PROPERTY_ID = "UA-76287359-3";
 
     /**
      * Enum used to identify the tracker that needs to be used for tracking.
@@ -188,14 +188,14 @@ public class THApp extends BaseApplication
      */
 
     /**
-     * Gets the default {@link Tracker} for this {@link Application}.
+     * Gets the default {@link Tracker} for this {link Application}.
      * @return tracker
      */
     synchronized public Tracker getDefaultTracker() {
         if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-            mTracker = analytics.newTracker(R.xml.global_tracker);
+            mTracker = analytics.newTracker(R.xml.ga_global_tracker);
         }
         return mTracker;
     }
@@ -216,19 +216,25 @@ public class THApp extends BaseApplication
         if (!mTrackers.containsKey(trackerId)) {
 
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(PROPERTY_ID)
-                    : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.global_tracker)
-                    : analytics.newTracker(R.xml.ga_tracker_config);
+            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.ga_app_tracker)
+                    : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)
+                    : analytics.newTracker(R.xml.ga_global_tracker);
             mTrackers.put(trackerId, t);
-
         }
+
         return mTrackers.get(trackerId);
     }
 
     private void setupGoogleAnalytics(){
-        if(BuildConfig.DEBUG){
-            GoogleAnalytics.getInstance(this).setDryRun(true);
-        }
+//        if(BuildConfig.DEBUG){
+//            GoogleAnalytics.getInstance(this).setDryRun(true);
+//        }
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        Tracker t = analytics.newTracker(R.xml.ga_app_tracker);
+        mTrackers.put(TrackerName.APP_TRACKER, t);
+//        t.enableAutoActivityTracking(true);
+
         //not yet used
 //        GoogleAnalytics.getInstance(this).setAppOptOut(true);
 //

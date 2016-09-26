@@ -102,6 +102,7 @@ public class THRouter extends Router
             return params;
         }
         return super.paramsForUrl(url);
+
     }
 
     @Override public Router registerRoutes(Class<?>... targets)

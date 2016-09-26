@@ -78,6 +78,7 @@ import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.ExceptionUtils;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.widget.validation.KYCVerifyButton;
@@ -191,6 +192,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private Pattern emailPattern;
 
     Observable<ArrayList<ProviderQuestionnaireDTO>> proQuesList;
+
+    private List<String> cityLists = new ArrayList<>();
+    private List<String> howYouKnowThLists = new ArrayList<>();
+    LollipopArrayAdapter<String> howYouKnowTHAdapter;
+    LollipopArrayAdapter<String> cityListAdapter;
+    ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOz;
+    ProviderQuestionnaireAnswerDto[] proQueAns = new ProviderQuestionnaireAnswerDto[2];
 
     HubProxy proxy;
     SignalRManager signalRManager;
@@ -321,12 +329,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         });
     }
 
-    private List<String> cityLists = new ArrayList<>();
-    private List<String> howYouKnowThLists = new ArrayList<>();
-    LollipopArrayAdapter<String> howYouKnowTHAdapter;
-    LollipopArrayAdapter<String> cityListAdapter;
-    ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOz;
-    ProviderQuestionnaireAnswerDto[] proQueAns = new ProviderQuestionnaireAnswerDto[2];
+    @Override
+    public void onResume() {
+        super.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_1);
+    }
+
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
             final Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)

@@ -22,6 +22,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.R;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,12 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_3, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_3);
     }
 
     @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)

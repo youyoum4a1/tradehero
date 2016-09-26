@@ -58,6 +58,7 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
@@ -234,7 +235,6 @@ public class TrendingMainFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        setupGoogleAnalytics();
         trendingLiveFragmentUtil = new TrendingLiveFragmentUtil(this, view);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
@@ -297,6 +297,8 @@ public class TrendingMainFragment extends DashboardFragment
         super.onResume();
         thRouter.inject(this, getArguments());
         trendingLiveFragmentUtil.onResume();
+
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.TRENDING_SCREEN);
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
@@ -791,18 +793,5 @@ public class TrendingMainFragment extends DashboardFragment
         {
             return TrendingFXTabType.values().length;
         }
-    }
-
-
-    private void setupGoogleAnalytics(){
-        // Get tracker.
-        Tracker t = ((THApp) getActivity().getApplication()).getTracker(
-                THApp.TrackerName.APP_TRACKER);
-
-// Set screen name.
-        t.setScreenName(getActivity().getClass().getName());
-
-// Send a screen view.
-        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

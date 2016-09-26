@@ -68,6 +68,7 @@ import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.ProgressDialogUtil;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.widget.DocumentActionWidget;
 import com.androidth.general.widget.DocumentActionWidgetAction;
 import com.androidth.general.widget.DocumentActionWidgetActionType;
@@ -208,9 +209,15 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         //});
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_5);
+    }
+
     @Override protected List<Subscription> onInitAyondoSubscription(final Observable<LiveBrokerDTO> brokerDTOObservable,
-            Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
-            Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
+                                                                    Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
+                                                                    Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
         providerId = providerDTO.id;

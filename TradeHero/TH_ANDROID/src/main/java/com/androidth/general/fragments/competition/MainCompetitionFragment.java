@@ -256,8 +256,8 @@ public class MainCompetitionFragment extends DashboardFragment
         });
         this.webViewFragment = null;
 
-        Map<String, String> eventDetails = new HitBuilders.EventBuilder().setCategory("Action").setAction("Competition").build();
-        GAnalyticsProvider.sendGAEvents(getActivity(), "MainCompetitionFragment", eventDetails);
+//        Map<String, String> eventDetails = new HitBuilders.EventBuilder().setCategory("Action").setAction("Competition").build();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_MAIN_PAGE);
     }
 
     @Override public void onPause()

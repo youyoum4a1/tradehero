@@ -26,6 +26,7 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.widget.KYCAddressWidget;
 import com.androidth.general.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -67,6 +68,12 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_4, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_4);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

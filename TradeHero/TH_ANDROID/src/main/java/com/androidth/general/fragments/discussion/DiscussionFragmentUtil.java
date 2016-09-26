@@ -136,14 +136,14 @@ public class DiscussionFragmentUtil
             //TODO Change Analytics
             //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
             SecurityId securityId = ((SecurityUserAction) userAction).securityId;
-            if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
-            {
-                thRouter.open("fx-security/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
-            }
-            else
-            {
-                thRouter.open("stock-security/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
-            }
+//            if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
+//            {
+//                thRouter.open("fx-security/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
+//            }
+//            else
+//            {
+//                thRouter.open("stock-security/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
+//            }
             return Observable.empty();
         }
         else if (userAction instanceof PlayerUserAction)
