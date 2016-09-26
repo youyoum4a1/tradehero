@@ -238,17 +238,18 @@ public class EmailSignInFragment extends Fragment
         onStopSubscriptions.add(AppObservable.bindSupportFragment(this, passwordValidator.getValidationMessageObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createValidatorObserver(password)));
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, getFieldsValidationObservable())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean areFieldsValid)
-                            {
-                                loginButton.setEnabled(areFieldsValid);
-                            }
-                        },
-                        new TimberOnErrorAction1("Error in validation")));
+        
+//        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, getFieldsValidationObservable())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                        new Action1<Boolean>()
+//                        {
+//                            @Override public void call(Boolean areFieldsValid)
+//                            {
+//                                loginButton.setEnabled(areFieldsValid);
+//                            }
+//                        },
+//                        new TimberOnErrorAction1("Error in validation")));
         onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 ViewObservable.clicks(loginButton, false)
