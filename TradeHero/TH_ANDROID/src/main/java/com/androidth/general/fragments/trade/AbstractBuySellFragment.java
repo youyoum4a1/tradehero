@@ -512,15 +512,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 }
                             }
                         }, SignatureContainer2.class);
-
-
                     }
 
 //            signalRManager.getConnection().start().done(actionVoid -> {
 //                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
 //            });
 
-                }));
+                }, new TimberOnErrorAction1("SignalR prices error")));
     }
 
     @NonNull protected Requisite createRequisite()
