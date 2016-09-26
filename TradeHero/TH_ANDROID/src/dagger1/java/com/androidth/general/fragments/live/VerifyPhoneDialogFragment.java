@@ -305,6 +305,12 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                 .startWith(smsSentConfirmationDTO);
                     }
                 })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v(getTag(), "!!!-- Twilio"+throwable.getLocalizedMessage());
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends SMSSentConfirmationDTO>>()
                 {
@@ -315,18 +321,23 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                         {
                             message = getString(R.string.sms_verification_send_fail);
                         }
-                        return AlertDialogRxUtil.build(getActivity())
-                                .setTitle(R.string.sms_verification_send_fail_title)
-                                .setMessage(message)
-                                .setNegativeButton(R.string.ok)
-                                .build()
-                                .flatMap(new Func1<OnDialogClickEvent, Observable<SMSSentConfirmationDTO>>()
-                                {
-                                    @Override public Observable<SMSSentConfirmationDTO> call(OnDialogClickEvent clickEvent)
+                        try{
+                            return AlertDialogRxUtil.build(getActivity())
+                                    .setTitle(R.string.sms_verification_send_fail_title)
+                                    .setMessage(message)
+                                    .setNegativeButton(R.string.ok)
+                                    .build()
+                                    .flatMap(new Func1<OnDialogClickEvent, Observable<SMSSentConfirmationDTO>>()
                                     {
-                                        return Observable.error(throwable);
-                                    }
-                                });
+                                        @Override public Observable<SMSSentConfirmationDTO> call(OnDialogClickEvent clickEvent)
+                                        {
+                                            return Observable.error(throwable);
+                                        }
+                                    });
+                        }catch (Exception e){
+                            return null;
+                        }
+
                     }
                 })
                 .startWith(new EmptySMSSentConfirmationDTO(mFormattedNumber, "Fake", R.string.sms_verification_button_empty_submitting))
