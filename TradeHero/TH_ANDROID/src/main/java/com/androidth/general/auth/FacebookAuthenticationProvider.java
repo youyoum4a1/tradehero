@@ -287,8 +287,10 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
                                 @Override
                                 public void onCompleted(JSONObject object, GraphResponse response) {
                                     try{
-                                        String  email= object.getString("email");
-                                        Timber.d("user email ", email);
+                                        if (object != null) {
+                                            String  email= object.getString("email");
+                                            Timber.d("user email ", email);
+                                        }
                                     } catch (JSONException e) {
                                         // TODO Auto-generated catch block
                                         e.printStackTrace();
