@@ -246,7 +246,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 if(userProfileDTO!=null && userProfileDTO.email!=null && email != null)
                     email.setText(userProfileDTO.email, TextView.BufferType.EDITABLE);
             }
-        });
+        }, new TimberOnErrorAction1("Live Step 1: user profile cache get() failed."));
 
         email.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_NEXT &&
@@ -314,7 +314,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                     setupCompetitionCustomization(providerDTO);
                 }
-            });
+            }, new TimberOnErrorAction1("Live Step 1: provider cache get() failed."));
             onDestroySubscriptions.add(subscription);
         }
 
@@ -390,7 +390,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                 }
             }
-        });
+        }, new TimberOnErrorAction1("Live Step 1: provider questions list fetch failed."));
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         title.setAdapter(adapter);
@@ -403,7 +403,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                                 })
-                        .subscribe(this::onNext));
+                        .subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: first name text field observe failed.")));
 
         subscriptions.add(
                 WidgetObservable.text(lastName).withLatestFrom(liveBrokerSituationDTOObservable,
@@ -411,7 +411,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             KYCAyondoForm updated = KYCAyondoFormFactory.fromLastNameEvent(onTextChangeEvent);
 
                             return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                        }).subscribe(this::onNext));
+                        }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: last name text field observe failed.")));
 
         subscriptions.add(
                 WidgetObservable.text(nricNumber)
@@ -433,7 +433,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     KYCAyondoForm updated = KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
 
                                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                                }).subscribe(this::onNext));
+                                }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: nric text field observe failed.")));
 
         subscriptions.add(
                 WidgetObservable.text(dob).withLatestFrom(liveBrokerSituationDTOObservable,
@@ -441,7 +441,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             KYCAyondoForm updated = KYCAyondoFormFactory.fromDobEvent(onTextChangeEvent);
 
                             return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                        }).subscribe(this::onNext));
+                        }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: DOB selected failed.")));
 
         subscriptions.add(
                 AdapterViewObservable.selects(title).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
@@ -450,7 +450,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                     }
-                }).subscribe(this::onNext));
+                }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: gender selected failed.")));
         /*AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
             public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
                 KYCAyondoForm updated = KYCAyondoFormFactory.fromHowYouKnowTHEvent(onSelectedEvent);
@@ -467,7 +467,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                                 return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                             }
-                        }).subscribe(this::onNext));
+                        }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: phone country selected failed.")));
 
         subscriptions.add(
                 AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
@@ -479,7 +479,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
 
                     }
-                }).subscribe(this::onNext));
+                }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: how you know th selected failed.")));
 
         subscriptions.add(
                 AdapterViewObservable.selects(spinnerResidenceState).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
@@ -491,7 +491,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
 
                     }
-                }).subscribe(this::onNext));
+                }).subscribe(this::onNext, new TimberOnErrorAction1("Live Step 1: residence state selected failed.")));
 
 
         subscriptions.add(
@@ -581,7 +581,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                     break;
                             }
-                        }));
+                        }, new TimberOnErrorAction1("Live Step 1: nric verify button clicked failed.")));
 
         subscriptions.add(
                 ViewObservable.clicks(phoneVerifyButton)
@@ -596,7 +596,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 case VALIDATE:
                                     offerToEnterCode();
                             }
-                        }));
+                        }, new TimberOnErrorAction1("Live Step 1: phone verify button clicked failed.")));
 
 
         //AdapterViewObservable.selects(spinnerNationality).subscribe(KYCAyondoFormFactory::fromNationalityEvent);
@@ -1032,7 +1032,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             break;
                     }
                     }
-                }));
+                }, new TimberOnErrorAction1("Live Step 1: email verify button clicked failed.")));
 
         Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;

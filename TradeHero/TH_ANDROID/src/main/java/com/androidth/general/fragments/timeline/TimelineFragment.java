@@ -513,7 +513,7 @@ abstract public class TimelineFragment extends DashboardFragment {
                             return;
                         }
                     }
-                }));
+                }, new TimberOnErrorAction1("Timeline Fragment: provider cache rx failed.")));
                 return;
             }
         }

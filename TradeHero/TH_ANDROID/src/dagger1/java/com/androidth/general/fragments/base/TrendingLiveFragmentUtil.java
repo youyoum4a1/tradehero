@@ -13,6 +13,7 @@ import com.androidth.general.fragments.live.LiveCallToActionFragment;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
 import com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference;
 
+import com.androidth.general.rx.TimberOnErrorAction1;
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -55,7 +56,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
                 //setCallToActionFragmentGone();
                 liveActivityUtil.switchLive(false);
             }
-        });
+        }, new TimberOnErrorAction1("Live Later button subscription failed."));
 
         if (!callToActionFragment.isAdded())
         {
