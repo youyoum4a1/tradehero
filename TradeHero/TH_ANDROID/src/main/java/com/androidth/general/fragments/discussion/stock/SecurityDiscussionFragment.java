@@ -484,7 +484,7 @@ public class SecurityDiscussionFragment extends Fragment
                             {
                                 discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
                             }
-                        }));
+                        }, new TimberOnErrorAction1("Register user actions error")));
     }
 
     @NonNull private Observable<UserDiscussionAction> getUserActionObservable()
