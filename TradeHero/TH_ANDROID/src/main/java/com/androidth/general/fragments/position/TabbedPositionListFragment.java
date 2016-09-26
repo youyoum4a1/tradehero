@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
@@ -252,6 +254,12 @@ public class TabbedPositionListFragment extends DashboardFragment
         {
             tabViewPager.setCurrentItem(selectedTabIndex);
         }
+
+        if(this instanceof CompetitionLeaderboardPositionListFragment){
+            //means it is inside the competition
+            tabViewPager.addOnPageChangeListener(new CompetitionPositionTabPageListener());
+        }
+
     }
 
     private class TabbedPositionPageAdapter extends FragmentPagerAdapter
@@ -329,6 +337,37 @@ public class TabbedPositionListFragment extends DashboardFragment
             {
                 return getString(STOCK_TYPES[position].stockTitle);
             }
+        }
+
+    }
+
+    private class CompetitionPositionTabPageListener implements ViewPager.OnPageChangeListener{
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            Log.v(getTag(), "!!!Position "+position);
+            switch (position){
+                case 0:
+                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_PORT_OPEN);
+                    break;
+                case 1:
+                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_PORT_CLOSE);
+                    break;
+                default:
+                    break;
+
+            }
+
         }
     }
 }
