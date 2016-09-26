@@ -111,13 +111,18 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         }
 
         T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, showHomeAsUp);
-        executePending();
+        try{
+            executePending();
+            onFragmentChanged(activity, fragmentClass, args);
+            return fragment;
 
-        onFragmentChanged(activity, fragmentClass, args);
-        return fragment;
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
-    private void executePending()
+    private void executePending() throws IllegalStateException
     {
         try
         {
@@ -125,6 +130,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         } catch (java.lang.IllegalStateException e)
         {
             Timber.d("executePending " + e.toString());
+            throw new IllegalStateException(e);
         }
     }
 
@@ -134,10 +140,14 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
         if (!isBackStackEmpty())
         {
-            executePending();
+            try{
+                executePending();
+                onFragmentChanged(activity, getCurrentFragment().getClass(), null);
+                Timber.d("BackStack count %d", manager.getBackStackEntryCount());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        onFragmentChanged(activity, getCurrentFragment().getClass(), null);
-        Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }
 
     public boolean hasBackStackName(String backStackName)
