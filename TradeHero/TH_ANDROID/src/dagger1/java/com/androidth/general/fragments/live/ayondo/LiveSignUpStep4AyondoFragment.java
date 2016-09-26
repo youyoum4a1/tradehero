@@ -95,7 +95,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         pickLocation(PICK_LOCATION_REQUEST_PRIMARY);
                     }
-                }));
+                }, new TimberOnErrorAction1("Live Step 4: first pick location clicked observable failed.")));
 
         subscriptions.add(secondaryWidget.getPickLocationClickedObservable()
                 .subscribe(new Action1<OnClickEvent>()
@@ -104,7 +104,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         pickLocation(PICK_LOCATION_REQUEST_SECONDARY);
                     }
-                }));
+                }, new TimberOnErrorAction1("Live Step 4: second pick location clicked observable failed.")));
 
         subscriptions.add(
                 Observable.combineLatest(

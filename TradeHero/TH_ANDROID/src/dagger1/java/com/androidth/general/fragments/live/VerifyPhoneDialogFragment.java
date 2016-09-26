@@ -253,7 +253,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                             {
                                 validateAgainstExpected(code);
                             }
-                        })
+                        }, new TimberOnErrorAction1("Verify Phone Dialog Fragment Click Failed."))
         );
 
         requestFocusShowKeyboard();
