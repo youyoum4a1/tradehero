@@ -99,7 +99,10 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onCreateOptionsMenu(menu, inflater);
         thRouter.inject(this);
         inflater.inflate(R.menu.settings_menu, menu);
-        providerCacheRx.get(new ProviderId(getProviderId(getArguments()))).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+        providerCacheRx.get(new ProviderId(getProviderId(getArguments())))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
             @Override
             public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
                 ProviderDTO providerDTO = providerIdProviderDTOPair.second;
@@ -114,7 +117,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                 setActionBarColor(providerDTO.hexColor);
                 setActionBarImage(notificationLogoUrl);
             }
-        });
+        }, new TimberOnErrorAction1("Live Signup provider error"));
     }
 
     private void setActionBarImage(String url){

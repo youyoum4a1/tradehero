@@ -36,6 +36,8 @@ import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.ReplaceWithFunc1;
+import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.neovisionaries.i18n.CountryCode;
@@ -284,7 +286,7 @@ public class IdentityPromptActivity extends BaseActivity
                     }
                 }
             }
-        });
+        }, new TimberOnErrorAction1("Country code error"));
     }
 
 

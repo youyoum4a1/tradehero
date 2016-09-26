@@ -3,6 +3,7 @@ package com.androidth.general.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
@@ -37,7 +38,11 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
+import rx.plugins.RxJavaErrorHandler;
+import rx.plugins.RxJavaPlugins;
 import timber.log.Timber;
+
+import static rx.plugins.RxJavaPlugins.*;
 
 public class THApp extends BaseApplication
         implements ExInjector
@@ -102,6 +107,19 @@ public class THApp extends BaseApplication
 
         // TODO: For Kenanga Challenge, can remove after that.
         AppsFlyerLib.getInstance().startTracking(this, MetricsModule.APP_FLYER_KEY);
+
+
+        //no use?
+//        RxJavaPlugins.getInstance().registerErrorHandler(new RxJavaErrorHandler() {
+//            @Override
+//            public void handleError(Throwable e) {
+//                try{
+//                    Log.w("MyError",e);
+//                }catch (Exception e1){
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
 
     }
 

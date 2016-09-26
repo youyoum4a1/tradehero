@@ -176,7 +176,20 @@ public class SecurityDiscussionFragment extends Fragment
 
         mentionTaggedStockHandler.setHasSelectedItemFragment(null);
         mentionTaggedStockHandler = null;
+
+        if(onDestroyViewSubscriptions!=null){
+            onDestroyViewSubscriptions.unsubscribe();
+        }
+
         super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(onStopSubscriptions!=null){
+            onStopSubscriptions.unsubscribe();
+        }
     }
 
     @Override
@@ -471,8 +484,7 @@ public class SecurityDiscussionFragment extends Fragment
                             {
                                 discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
                             }
-                        },
-                        new ToastOnErrorAction1()));
+                        }));
     }
 
     @NonNull private Observable<UserDiscussionAction> getUserActionObservable()
