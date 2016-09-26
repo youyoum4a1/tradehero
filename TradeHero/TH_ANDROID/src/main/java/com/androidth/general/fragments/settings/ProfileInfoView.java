@@ -366,45 +366,54 @@ public class ProfileInfoView extends LinearLayout
 
     private void populateCredentials()
     {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
-        if (accounts != null && accounts.length > 0)
-        {
-            String emailValue = null, passwordValue = null;
-            for (Account account : accounts)
+        try{
+            Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+
+            if (accounts != null && accounts.length > 0)
             {
-                if (account.name != null)
+                String emailValue = null, passwordValue = null;
+                for (Account account : accounts)
                 {
-                    String currentPassword = accountManager.getPassword(account);
-                    if (currentPassword != null)
+                    if (account.name != null)
                     {
+                        String currentPassword = accountManager.getPassword(account);
+                        if (currentPassword != null)
+                        {
+                            emailValue = account.name;
+                            passwordValue = currentPassword;
+
+                            // TODO what if we have more than 1 account with both email & pass
+                            break;
+                        }
+
                         emailValue = account.name;
-                        passwordValue = currentPassword;
-
-                        // TODO what if we have more than 1 account with both email & pass
-                        break;
                     }
-
-                    emailValue = account.name;
                 }
-            }
 
-            if (emailValue != null)
-            {
-                this.emailValidator.setText(emailValue);
+                if (emailValue != null)
+                {
+                    this.emailValidator.setText(emailValue);
+                }
+                this.email.setText(emailValue);
+                if (passwordValue != null)
+                {
+                    this.passwordValidator.setText(passwordValue);
+                }
+                this.password.setText(passwordValue);
+                if (passwordValue != null)
+                {
+                    //this.confirmPasswordValidator.setText(passwordValue);
+                }
+                //this.confirmPasswordValidator.setMainPassword(passwordValue);
+                //this.confirmPassword.setText(passwordValue);
             }
-            this.email.setText(emailValue);
-            if (passwordValue != null)
-            {
-                this.passwordValidator.setText(passwordValue);
-            }
-            this.password.setText(passwordValue);
-            if (passwordValue != null)
-            {
-                //this.confirmPasswordValidator.setText(passwordValue);
-            }
-            //this.confirmPasswordValidator.setMainPassword(passwordValue);
-            //this.confirmPassword.setText(passwordValue);
+        }catch (SecurityException e){
+            //permission not granted
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @SuppressWarnings("UnusedDeclaration")

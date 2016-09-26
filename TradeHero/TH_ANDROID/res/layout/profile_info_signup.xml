@@ -34,7 +34,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
                         android:hint="@string/user_profile_first_name"
-                        android:inputType="text"
+                        android:inputType="textPersonName|textCapWords"
                         />
                 </android.support.design.widget.TextInputLayout>
 
@@ -49,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
                         android:hint="@string/user_profile_last_name"
-                        android:inputType="text" />
+                        android:inputType="textPersonName|textCapWords" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
