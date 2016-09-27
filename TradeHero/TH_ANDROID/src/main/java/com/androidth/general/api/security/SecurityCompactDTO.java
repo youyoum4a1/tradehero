@@ -58,24 +58,28 @@ public class SecurityCompactDTO implements DTO, Parcelable
     private final long createdAtNanoTime = System.nanoTime();
     public Integer id;
     public String symbol;
+    public Integer securityType;
     public String name;
+    public String country;
+    public Integer exchangeId;
     public String exchange;
     public String yahooSymbol;
+    public String reutersSymbol;
+    public String chartDataSource;
     public String currencyDisplay;
     public String currencyISO;
     @Nullable public Double marketCap;
     @Nullable public Double lastPrice;
+    public Double risePercent;
     public String imageBlobUrl;
-
-    private Date lastPriceDateEST;
     //// EDT/EST converted to UTC
     @Nullable public Date lastPriceDateAndTimeUtc;
-
     @Nullable public Double toUSDRate;
     public Date toUSDRateDate;
 
-    public boolean active;
+    private Date lastPriceDateEST;
 
+    public boolean active;
     public Double askPrice;
     public Double bidPrice;
     public Double volume;
@@ -99,9 +103,10 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public String exchangeClosingTimeLocal;
     //
     public String secTypeDesc;
-    public Double risePercent;
+
 
     protected String timeTillNextExchangeOpen;
+    protected String timeTillNextExchangeOpenSeconds;
 
     public String marker;
     public Boolean isCFD;
@@ -113,7 +118,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public Integer sortorderOverall;
     public Integer UnderlyingSecurityId;
     @Nullable public Integer lotSize;
-
+    public Integer max_lot;
+    public Integer min_lot;
 
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
@@ -138,13 +144,19 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
         this.id = other.id;
         this.symbol = other.symbol;
+        this.securityType = other.securityType;
         this.name = other.name;
+        this.country = other.country;
+        this.exchangeId = other.exchangeId;
         this.exchange = other.exchange;
         this.yahooSymbol = other.yahooSymbol;
+        this.reutersSymbol = other.reutersSymbol;
+        this.chartDataSource = other.chartDataSource;
         this.currencyDisplay = other.currencyDisplay;
         this.currencyISO = other.currencyISO;
         this.marketCap = other.marketCap;
         this.lastPrice = other.lastPrice;
+        this.risePercent = other.risePercent;
         this.imageBlobUrl = other.imageBlobUrl;
         this.lastPriceDateEST = other.lastPriceDateEST;
         this.lastPriceDateAndTimeUtc = other.lastPriceDateAndTimeUtc;
@@ -167,9 +179,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.exchangeTimezoneMsftName = other.exchangeTimezoneMsftName;
         this.exchangeOpeningTimeLocal = other.exchangeOpeningTimeLocal;
         this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
-        this.secTypeDesc = other.secTypeDesc;
-        this.risePercent = other.risePercent;
+        this.timeTillNextExchangeOpenSeconds = other.timeTillNextExchangeOpenSeconds;
         this.timeTillNextExchangeOpen = other.timeTillNextExchangeOpen;
+        this.secTypeDesc = other.secTypeDesc;
     }
     //</editor-fold>
 
