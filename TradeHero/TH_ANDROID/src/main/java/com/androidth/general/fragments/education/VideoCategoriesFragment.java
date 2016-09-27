@@ -15,6 +15,7 @@ import com.androidth.general.api.education.VideoCategoryDTO;
 import com.androidth.general.api.education.VideoCategoryDTOList;
 import com.androidth.general.fragments.BasePagedListRxFragment;
 import com.androidth.general.persistence.education.PaginatedVideoCategoryCacheRx;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,7 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
         super.onResume();
         //TODO Change Analytics
         //analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_ACADEMY);
     }
 
     @Override @NonNull protected PagedViewDTOAdapterImpl<VideoCategoryDTO, VideoCategoryView> createItemViewAdapter()

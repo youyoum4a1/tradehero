@@ -19,6 +19,8 @@ import com.androidth.general.fragments.BasePagedRecyclerRxFragment;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.web.WebViewFragment;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
+
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.functions.Action1;
@@ -49,6 +51,12 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
     {
         super.onStart();
         scheduleRequestData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_NEWSFEED);
     }
 
     @NonNull @Override protected PagedRecyclerAdapter<NewsfeedDisplayDTO> createItemViewAdapter()

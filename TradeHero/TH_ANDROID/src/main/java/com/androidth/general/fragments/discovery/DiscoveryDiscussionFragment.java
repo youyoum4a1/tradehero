@@ -36,6 +36,7 @@ import com.androidth.general.rx.RxLoaderManager;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -97,6 +98,12 @@ public class DiscoveryDiscussionFragment extends Fragment
         View view = inflater.inflate(R.layout.discovery_discussion, container, false);
         initView(view);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_DISCUSSIONS);
     }
 
     @Override public void onStart()

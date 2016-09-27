@@ -1,6 +1,5 @@
 package com.androidth.general.fragments.live.ayondo;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,17 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.androidth.general.R;
-import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
@@ -40,14 +36,10 @@ import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.api.users.UserBaseKey;
-import com.androidth.general.api.users.UserProfileDTO;
-import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.LiveFormConfirmationFragment;
-import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.settings.ImageRequesterUtil;
 import com.androidth.general.models.fastfill.FastFillExceptionUtil;
 import com.androidth.general.models.fastfill.FastFillUtil;
@@ -55,9 +47,6 @@ import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
 import com.androidth.general.models.fastfill.ScannedDocument;
 import com.androidth.general.models.fastfill.jumio.NetverifyFastFillUtil;
-import com.androidth.general.network.LiveNetworkConstants;
-import com.androidth.general.network.retrofit.RequestHeaders;
-import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
@@ -73,8 +62,6 @@ import com.androidth.general.widget.DocumentActionWidget;
 import com.androidth.general.widget.DocumentActionWidgetAction;
 import com.androidth.general.widget.DocumentActionWidgetActionType;
 import com.androidth.general.widget.DocumentActionWidgetObservable;
-import com.androidth.general.widget.validation.KYCVerifyButton;
-import com.androidth.general.widget.validation.VerifyButtonState;
 import com.jumio.nv.NetverifySDK;
 import com.jumio.nv.data.document.NVDocumentType;
 import com.neovisionaries.i18n.CountryCode;
@@ -85,7 +72,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -100,11 +86,9 @@ import rx.android.view.ViewObservable;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Action2;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragment
@@ -212,7 +196,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_5);
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_KYC_5);
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(final Observable<LiveBrokerDTO> brokerDTOObservable,

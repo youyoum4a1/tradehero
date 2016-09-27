@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -117,6 +118,7 @@ public class TradeListFragment extends DashboardFragment
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     protected TradeListItemAdapter adapter;
+    private boolean isInCompetition;
 
     String actionBarColor;
 
@@ -185,7 +187,9 @@ public class TradeListFragment extends DashboardFragment
         tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
 
         if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
+            //is inside competition
             actionBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+            isInCompetition = true;
         }
     }
 
@@ -205,6 +209,12 @@ public class TradeListFragment extends DashboardFragment
                 buttonTrade.setTranslationY(y);
             }
         });
+
+        if(isInCompetition){
+            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TRADE_NOW);
+        }else{
+            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_TRADE_NOW);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

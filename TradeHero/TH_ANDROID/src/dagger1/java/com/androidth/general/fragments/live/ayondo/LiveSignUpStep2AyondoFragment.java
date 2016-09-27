@@ -27,7 +27,6 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_2);
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_KYC_2);
     }
 
     @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
