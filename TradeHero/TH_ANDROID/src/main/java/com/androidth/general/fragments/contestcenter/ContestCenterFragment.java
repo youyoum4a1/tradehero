@@ -33,6 +33,7 @@ import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -127,7 +128,11 @@ public class ContestCenterFragment extends DashboardFragment
                 competitionList.setVisibility(View.VISIBLE);
                 hackWebview.setVisibility(View.INVISIBLE);
                 competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
-
+                try{
+                    competitionList.findViewHolderForAdapterPosition(0).itemView.performClick();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             else{
                 String url = providerUtil.getLandingPage(providerDTO.getProviderId());
@@ -147,6 +152,8 @@ public class ContestCenterFragment extends DashboardFragment
 
                     return true;
                 });
+
+                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_JOIN_PAGE);
             }
         }
         else if(providerList != null && providerList.size() > 1) {
