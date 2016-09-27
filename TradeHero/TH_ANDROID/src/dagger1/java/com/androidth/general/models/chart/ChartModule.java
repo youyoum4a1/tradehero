@@ -1,5 +1,6 @@
 package com.androidth.general.models.chart;
 
+import com.androidth.general.models.chart.reuters.ReutersChartDTOFactory;
 import com.androidth.general.models.chart.yahoo.YahooChartDTOFactory;
 import dagger.Module;
 import dagger.Provides;
@@ -15,7 +16,7 @@ public class ChartModule
         super();
     }
 
-    @Provides ChartDTOFactory provideChartDTOFactory(YahooChartDTOFactory chartDTOFactory)
+    @Provides ChartDTOFactory provideChartDTOFactory(ChartDTOFactory chartDTOFactory)
     {
         return chartDTOFactory;
     }

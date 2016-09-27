@@ -49,6 +49,8 @@ import com.androidth.general.models.chart.ChartDTO;
 import com.androidth.general.models.chart.ChartDTOFactory;
 import com.androidth.general.models.chart.ChartSize;
 import com.androidth.general.models.chart.ChartTimeSpan;
+import com.androidth.general.models.chart.reuters.ReutersChartDTOFactory;
+import com.androidth.general.models.chart.yahoo.YahooChartDTOFactory;
 import com.androidth.general.models.number.THSignedMoney;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.number.THSignedPercentage;
@@ -170,7 +172,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
 
     @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Inject Picasso picasso;
-    @Inject ChartDTOFactory chartDTOFactory;
+    ChartDTOFactory chartDTOFactory;
     //TODO Change Analytics
     //@Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
@@ -251,6 +253,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         }
 
         SecurityCompactDTO securityCompactDTO = securityCompactCacheRx.getCachedValue(securityId);
+        if(securityCompactDTO.chartDataSource.equals("R")){
+            chartDTOFactory = new ReutersChartDTOFactory();
+        }else{
+            chartDTOFactory = new YahooChartDTOFactory();
+        }
+
         chartDTO = chartDTOFactory.createChartDTO(securityCompactDTO);
     }
 
