@@ -24,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/signup_layout_firstname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -39,6 +40,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/signup_layout_lastname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

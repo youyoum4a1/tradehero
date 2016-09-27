@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -41,6 +43,7 @@ import com.androidth.general.widget.validation.ValidatedView;
 import com.androidth.general.widget.validation.ValidationMessage;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -72,7 +75,8 @@ public class ProfileInfoView extends LinearLayout
     @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
     EmailValidator emailValidator;
 
-
+    @Bind(R.id.signup_layout_firstname) TextInputLayout firstNameLayout;
+    @Bind(R.id.signup_layout_lastname) TextInputLayout lastNameLayout;
 
     @Bind(R.id.authentication_sign_up_password) PasswordValidatedText password;
     @Bind(R.id.authentication_sign_up_password_til) TextInputLayout password_til;
@@ -508,6 +512,28 @@ public class ProfileInfoView extends LinearLayout
 
         );
     }
+
+    public ArrayList<Pair<View, String>> isAllFilledUp(){
+        ArrayList<Pair<View, String>> views = new ArrayList<>();
+        if(firstName.getText().toString().length()==0){
+            views.add(new Pair(firstNameLayout!=null? firstNameLayout: firstName, "First name"));
+        }
+        if(lastName.getText().toString().length()==0){
+            views.add(new Pair(lastNameLayout!=null? lastNameLayout: lastName, "Last name"));
+        }
+        if(email.getText().toString().length()==0){
+            views.add(new Pair(email_til, "Email"));
+        }
+        if(displayName.getText().toString().length()==0){
+            views.add(new Pair(displayName_til, "User name"));
+        }
+        if(password.getText().toString().length()==0){
+            views.add(new Pair(password_til, "Password"));
+        }
+
+        return views;
+    }
+
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null)
             return false;
