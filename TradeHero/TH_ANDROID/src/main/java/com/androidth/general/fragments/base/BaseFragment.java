@@ -72,7 +72,12 @@ public class BaseFragment extends Fragment
         {
             return DEFAULT_IS_OPTION_MENU_VISIBLE;
         }
-        return args.getBoolean(BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, DEFAULT_IS_OPTION_MENU_VISIBLE);
+        try{
+            return args.getBoolean(BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, DEFAULT_IS_OPTION_MENU_VISIBLE);
+        }catch (Exception e){
+            return false;
+        }
+
     }
 
     @CallSuper
