@@ -31,8 +31,6 @@ import com.androidth.general.models.sms.SMSRequestFactory;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
 import com.androidth.general.models.sms.SMSServiceWrapper;
 import com.androidth.general.models.sms.empty.EmptySMSSentConfirmationDTO;
-import com.androidth.general.models.sms.twilio.TwilioErrorCode;
-import com.androidth.general.models.sms.twilio.TwilioResponseStatusCode;
 import com.androidth.general.models.sms.twilio.TwilioRetrofitException;
 import com.androidth.general.models.sms.twilio.TwilioSMSId;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
