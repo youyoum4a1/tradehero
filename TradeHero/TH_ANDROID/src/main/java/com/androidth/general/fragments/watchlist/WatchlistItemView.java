@@ -262,8 +262,12 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             {
                 lastPrice = 0.0;
             }
-            // last price
-            positionLastAmount.setText(formatLastPrice(securityCompactDTO.currencyDisplay, lastPrice));
+
+            if(positionLastAmount!=null){//coz some layout might not have this
+                // last price
+                positionLastAmount.setText(formatLastPrice(securityCompactDTO.currencyDisplay, lastPrice));
+            }
+
         }
     }
 
