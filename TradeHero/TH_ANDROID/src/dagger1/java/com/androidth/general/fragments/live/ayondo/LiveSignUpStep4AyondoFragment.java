@@ -1,7 +1,6 @@
 package com.androidth.general.fragments.live.ayondo;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -73,7 +72,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_4);
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_KYC_4);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

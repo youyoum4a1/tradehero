@@ -332,7 +332,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.KYC_1);
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_KYC_1);
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,

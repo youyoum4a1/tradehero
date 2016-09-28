@@ -1,6 +1,5 @@
 package com.androidth.general.fragments.trending;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -37,11 +36,9 @@ import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
-import com.androidth.general.base.THApp;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
-import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.base.TrendingLiveFragmentUtil;
 import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
@@ -64,8 +61,6 @@ import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
@@ -298,7 +293,7 @@ public class TrendingMainFragment extends DashboardFragment
         thRouter.inject(this, getArguments());
         trendingLiveFragmentUtil.onResume();
 
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.TRENDING_SCREEN);
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_TRENDING_SCREEN);
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)

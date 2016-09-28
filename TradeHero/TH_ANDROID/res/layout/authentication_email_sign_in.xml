@@ -8,122 +8,123 @@
     android:id="@+id/coordinator"
     >
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:orientation="vertical"
-       app:layout_behavior="com.android.common.LinearLayoutBehavior"
-       >
-    <android.support.v7.widget.Toolbar
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?android:attr/actionBarSize"
-        android:background="@color/toolbar_color"
-        android:layout_gravity="top"
-        android:paddingLeft="16dp"
-        android:id="@+id/toolbar"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="com.android.common.LinearLayoutBehavior"
         >
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/actionBarSize"
             android:background="@color/toolbar_color"
-            android:clickable="true"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_gravity="left"
-                android:paddingRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_arrow_back_white_24dp"
-                android:id="@+id/arrow_back_button" />
-            <TextView
-                android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingLeft="16dp"
+            android:id="@+id/toolbar"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:background="@color/toolbar_color"
-                android:textColor="@color/white"
-                android:text="Login to account"
-                android:textSize="20sp"
-                />
+                android:clickable="true"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_gravity="left"
+                    android:paddingRight="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_arrow_back_white_24dp"
+                    android:id="@+id/arrow_back_button" />
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/toolbar_color"
+                    android:textColor="@color/white"
+                    android:text="Login to account"
+                    android:textSize="20sp"
+                    />
 
-        </LinearLayout>
+            </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/scroller"
-        android:fitsSystemWindows="true">
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="24dp"
-      android:paddingLeft="24dp"
-      android:paddingRight="24dp"
-      android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/scroller"
+            android:fitsSystemWindows="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/margin_small">
-      <com.androidth.general.widget.validation.ValidatedText
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:inputType="textEmailAddress"
-          android:focusable="true"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/authentication_sign_in_email_til"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <com.androidth.general.widget.validation.ValidatedText
+                        android:id="@+id/authentication_sign_in_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:focusable="true"
+                        android:hint="Email"/>
 
-          android:id="@+id/authentication_sign_in_email"
-          android:hint="Email"/>
+                </android.support.design.widget.TextInputLayout>
 
-    </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/et_pwd_login_til"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <com.androidth.general.widget.validation.ValidatedText
+                        android:id="@+id/et_pwd_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionSend"
+                        android:hint="Password"/>
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/margin_small">
-      <com.androidth.general.widget.validation.ValidatedText
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:inputType="textPassword"
-          android:id="@+id/et_pwd_login"
-          android:imeOptions="actionSend"
-          android:hint="Password"/>
+                </android.support.design.widget.TextInputLayout>
 
-    </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </ScrollView>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/authentication_sign_in_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:padding="10dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="Forgot password?"
+            android:textSize="12sp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:textColor="@android:color/black"
+            android:gravity="center" />
 
-  </LinearLayout>
-</ScrollView>
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/authentication_sign_in_forgot_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:padding="10dp"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="Forgot password?"
-        android:textSize="12sp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:textColor="@android:color/black"
-        android:gravity="center" />
-
-       <android.support.v7.widget.AppCompatButton
-           android:id="@+id/btn_login"
-           android:layout_gravity="bottom"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_marginLeft="@dimen/margin_small"
-           android:layout_marginRight="@dimen/margin_small"
-           android:textAllCaps="true"
-           android:textSize="14sp"
-           android:textAppearance="?android:attr/textAppearanceMedium"
-           android:padding="12dp"
-           android:background="@android:color/holo_green_dark"
-           android:textColor="@android:color/white"
-           android:text="Log in"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_login"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:textAllCaps="true"
+            android:textSize="14sp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:padding="12dp"
+            android:background="@android:color/holo_green_dark"
+            android:textColor="@android:color/white"
+            android:text="Log in"/>
 
 
-   </LinearLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 

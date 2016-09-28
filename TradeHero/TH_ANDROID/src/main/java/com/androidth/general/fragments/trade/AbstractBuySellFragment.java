@@ -71,6 +71,7 @@ import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import com.androidth.general.utils.route.THRouter;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
@@ -152,7 +153,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     private SignalRManager signalRManager;
 
+    Subscription quoteSubscription;
     String topBarColor;
+    private boolean isInCompetition;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
@@ -170,8 +173,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
         return new Requisite(requisiteBundle, portfolioCompactListCache, currentUserId);
     }
-
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -198,8 +199,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
         if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
             topBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+            isInCompetition = true;
         }else{
             topBarColor = null;
+            isInCompetition = false;
         }
 
         buySellBtnContainer.setVisibility(View.GONE);
@@ -217,8 +220,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setAnimation(progressAnimation);
     }
-
-    Subscription quoteSubscription;
 
     @Override public void onStart()
     {
@@ -431,6 +432,16 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             abstractBuySellPopupDialogFragment.populateComment();
             abstractBuySellPopupDialogFragment.getDialog().show();
+        }
+
+        if(isInCompetition){
+            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_BUY_SELL);
+        }else{
+            if(securityCompactDTO!=null && securityCompactDTO instanceof FxSecurityCompactDTO){
+                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FX_BUY_SELL);
+            }else{
+                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_BUY_SELL);
+            }
         }
     }
 
@@ -871,10 +882,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 //
 //                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
 
-
-
-
-
                     abstractBuySellPopupDialogFragment = AbstractStockTransactionFragment.newInstance(
                             isTransactionTypeBuy,
                             new AbstractBuySellPopupDialogFragment.Requisite(
@@ -883,10 +890,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     quoteDTO,
                                     closeUnits == null ? null : Math.abs(closeUnits)),
                             topBarColor);
+
+                    if(isTransactionTypeBuy){
+                        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FX_BUY_NOW);
+                    }else{
+                        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FX_SELL_NOW);
+                    }
                 }
                 else
                 {
-
                     abstractBuySellPopupDialogFragment = AbstractStockTransactionFragment.newInstance(
                             isTransactionTypeBuy,
                             new AbstractBuySellPopupDialogFragment.Requisite(
@@ -895,6 +907,20 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     quoteDTO,
                                     closeUnits == null ? null : Math.abs(closeUnits)),
                             topBarColor);
+
+                    if(isTransactionTypeBuy){
+                        if(isInCompetition){
+                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_BUY_NOW);
+                        }else{
+                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_BUY_NOW);
+                        }
+                    }else{
+                        if(isInCompetition){
+                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_SELL_NOW);
+                        }else{
+                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_SELL_NOW);
+                        }
+                    }
 
 //                    Bundle args = new Bundle();
 //                    Class klass = isTransactionTypeBuy ? BuyStockFragment.class : SellStockFragment.class;

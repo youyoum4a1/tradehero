@@ -10,10 +10,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import com.androidth.general.BuildConfig;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
 import com.androidth.general.activities.UpdateCenterActivity;
@@ -55,6 +55,7 @@ public class MeTimelineFragment extends TimelineFragment
         super.onResume();
         dtoCacheUtil.anonymousPrefetches();
         dtoCacheUtil.initialPrefetches();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_PROFILE_SCREEN);
     }
 
     @Override

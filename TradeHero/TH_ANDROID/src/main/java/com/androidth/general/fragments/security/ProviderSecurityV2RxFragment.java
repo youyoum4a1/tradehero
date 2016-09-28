@@ -1,23 +1,19 @@
 package com.androidth.general.fragments.security;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.common.SlidingTabLayout;
@@ -37,6 +33,7 @@ import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,11 +44,9 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class ProviderSecurityV2RxFragment extends BaseFragment
 {
@@ -167,6 +162,15 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     {
         ProviderSecurityV2PagerAdapter adapter = new ProviderSecurityV2PagerAdapter(getChildFragmentManager(), isSortAvailable);
         viewPager.setAdapter(adapter);
+        if(providerId!=null){
+            if(providerId.key.equals(55)){
+                //Kenanga
+                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_MOST_ACTIVE);
+                viewPager.addOnPageChangeListener(new CompetitionPositionTabPageListener());
+            }else if(providerId.key.equals(52)){
+                //academy
+            }
+        }
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabLayout.setDistributeEvenly(true);
         pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.general_tab_indicator_color));
@@ -332,6 +336,37 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
                     break;
             }
             return lhs.name.compareTo(rhs.name);//default
+        }
+    }
+
+    private class CompetitionPositionTabPageListener implements ViewPager.OnPageChangeListener{
+
+        @Override
+        public void onPageScrollStateChanged(int state) {}
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+        @Override
+        public void onPageSelected(int position) {
+            Log.v(getTag(), "!!!Position "+position);
+            switch (position){
+                case 0:
+                    Log.v(getTag(), "!!!Position "+"Most active");
+                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_MOST_ACTIVE);
+                    break;
+                case 1:
+                    Log.v(getTag(), "!!!Position "+"Top gainer");
+                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_TOP_GAINER);
+                    break;
+                case 2:
+                    Log.v(getTag(), "!!!Position "+"Top loser");
+                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_TOP_LOSER);
+                    break;
+                default:
+                    break;
+
+            }
         }
     }
 

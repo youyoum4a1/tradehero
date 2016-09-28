@@ -42,6 +42,7 @@ import com.androidth.general.persistence.prefs.THPreference;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.tradehero.route.Routable;
@@ -180,7 +181,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
-        //liveFragmentUtil.onResume();
+        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FOLLOW_STOCKS_HEROES);
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)

@@ -258,6 +258,7 @@ public class TabbedPositionListFragment extends DashboardFragment
         if(this instanceof CompetitionLeaderboardPositionListFragment){
             //means it is inside the competition
             tabViewPager.addOnPageChangeListener(new CompetitionPositionTabPageListener());
+            pagerSlidingTabStrip.setOnPageChangeListener(new CompetitionPositionTabPageListener());
         }
 
     }
@@ -344,14 +345,10 @@ public class TabbedPositionListFragment extends DashboardFragment
     private class CompetitionPositionTabPageListener implements ViewPager.OnPageChangeListener{
 
         @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
+        public void onPageScrollStateChanged(int state) {}
 
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
         @Override
         public void onPageSelected(int position) {
@@ -367,7 +364,6 @@ public class TabbedPositionListFragment extends DashboardFragment
                     break;
 
             }
-
         }
     }
 }

@@ -37,6 +37,10 @@ import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -205,7 +209,22 @@ public class EmailSignUpFragment extends Fragment
                 {
                     @Override public Observable<? extends UserFormDTO> call(OnClickEvent view1)
                     {
-                        return profileView.obtainUserFormDTO();
+                        ArrayList<Pair<View, String>> views = profileView.isAllFilledUp();
+                        if(views!=null && views.size()>0){
+                            for(Pair<View, String> pair: profileView.isAllFilledUp()){
+                                YoYo.with(Techniques.Shake).playOn(pair.first);
+                            }
+
+                            String message = views.get(0).second;
+                            if(message!=null){
+                                return Observable.error(new Exception(message+" is mandatory"));
+                            }else{
+                                return Observable.error(new Exception("All fields must be filled up"));
+                            }
+
+                        }else{
+                            return profileView.obtainUserFormDTO();
+                        }
                     }
                 })
                 .flatMap(new Func1<UserFormDTO, Observable<? extends Pair<AuthData, UserProfileDTO>>>()

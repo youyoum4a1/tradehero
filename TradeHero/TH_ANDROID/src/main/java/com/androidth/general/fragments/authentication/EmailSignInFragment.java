@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,7 @@ import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.SnackbarOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.rx.view.DismissDialogAction1;
@@ -50,6 +52,8 @@ import com.androidth.general.widget.validation.TextValidator;
 import com.androidth.general.widget.validation.ValidatedText;
 import com.androidth.general.widget.validation.ValidatedView;
 import com.androidth.general.widget.validation.ValidationMessage;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -92,6 +96,8 @@ public class EmailSignInFragment extends Fragment
     @Bind(R.id.coordinator) CoordinatorLayout coordinatorLayout;
     TextValidator emailValidator;
     @Bind(R.id.et_pwd_login) ValidatedText password;
+    @Bind(R.id.authentication_sign_in_email_til) TextInputLayout emailLayout;
+    @Bind(R.id.et_pwd_login_til) TextInputLayout passwordLayout;
     TextValidator passwordValidator;
     @Bind(R.id.btn_login) View loginButton;
     SubscriptionList onStopSubscriptions;
@@ -238,7 +244,7 @@ public class EmailSignInFragment extends Fragment
         onStopSubscriptions.add(AppObservable.bindSupportFragment(this, passwordValidator.getValidationMessageObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createValidatorObserver(password)));
-        
+
 //        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, getFieldsValidationObservable())
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe(
@@ -257,14 +263,28 @@ public class EmailSignInFragment extends Fragment
                         {
                             @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(OnClickEvent event)
                             {
-                                return EmailSignInFragment.this.handleClick(event);
+                                boolean hasEmptyField = false;
+                                if(email.getText().toString().isEmpty()){
+                                    YoYo.with(Techniques.Shake).playOn(emailLayout);
+                                    hasEmptyField = true;
+                                }
+                                if (password.getText().toString().isEmpty()){
+                                    YoYo.with(Techniques.Shake).playOn(passwordLayout);
+                                    hasEmptyField = true;
+                                }
+                                if(!hasEmptyField){
+                                    return EmailSignInFragment.this.handleClick(event);
+                                }else{
+                                    return Observable.error(new Exception("Username/password is empty"));
+                                }
                             }
                         })
                         .retry())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(new ToastOnErrorAction1())
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
-                        new EmptyAction1<Throwable>()));
+                        new ToastOnErrorAction1()));
 
     }
 
