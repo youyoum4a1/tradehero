@@ -409,7 +409,18 @@ public class EmailSignInFragment extends Fragment
                             AlertDialogRxUtil.build (getActivity())
                                     .setTitle(title)
                                     .setNegativeButton(R.string.ok)
-                                    .build().subscribe();
+                                    .build()
+                                    .doOnError(new Action1<Throwable>() {
+                                        @Override
+                                        public void call(Throwable throwable) {
+                                            if(throwable!=null){
+                                                new TimberOnErrorAction1(throwable.getMessage());
+                                            }else{
+                                                new TimberOnErrorAction1("Email sign in error");
+                                            }
+                                        }
+                                    })
+                                    .subscribe();
                         }));
     }
 

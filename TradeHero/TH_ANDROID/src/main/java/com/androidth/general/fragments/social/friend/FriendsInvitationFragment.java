@@ -43,6 +43,7 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.network.service.ProviderServiceRx;
 import com.androidth.general.persistence.competition.MyProviderReferralCacheRx;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
@@ -411,7 +412,18 @@ public class FriendsInvitationFragment extends BaseFragment
                                 {
                                     @Override public void run()
                                     {
-                                        myProviderReferralCacheRx.fetch(new ProviderId(providerId)).subscribe();
+                                        myProviderReferralCacheRx.fetch(new ProviderId(providerId))
+                                                .doOnError(new Action1<Throwable>() {
+                                                    @Override
+                                                    public void call(Throwable throwable) {
+                                                        if(throwable!=null){
+                                                            new TimberOnErrorAction1(throwable.getMessage());
+                                                        }else{
+                                                            new TimberOnErrorAction1("Friends invitation fragment error");
+                                                        }
+                                                    }
+                                                })
+                                                .subscribe();
                                     }
                                 });
 

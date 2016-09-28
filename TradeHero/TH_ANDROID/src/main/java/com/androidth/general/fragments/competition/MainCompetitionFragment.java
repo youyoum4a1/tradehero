@@ -102,6 +102,7 @@ import retrofit.client.Response;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func7;
 import rx.schedulers.Schedulers;
@@ -464,7 +465,18 @@ public class MainCompetitionFragment extends DashboardFragment
                         new TimberAndToastOnErrorAction1("Failed to get requisite")
                 ));
 
-        onStopSubscriptions.add(myProviderReferralCacheRx.get(providerId).subscribe());
+        onStopSubscriptions.add(myProviderReferralCacheRx.get(providerId)
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        if(throwable!=null){
+                            new TimberOnErrorAction1(throwable.getMessage());
+                        }else{
+                            new TimberOnErrorAction1("MainCompetitionFragment error");
+                        }
+                    }
+                })
+                .subscribe());
     }
 
     protected void displayListView()

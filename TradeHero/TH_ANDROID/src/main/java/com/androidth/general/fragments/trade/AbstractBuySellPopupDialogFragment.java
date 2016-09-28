@@ -69,6 +69,7 @@ import com.androidth.general.persistence.position.PositionListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.utils.StringUtils;
@@ -457,6 +458,16 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             @Override
                             public void call(Integer integer) {
                                 mMiddleNumber.setText(integer.toString());
+                            }
+                        })
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                if(throwable!=null){
+                                    new TimberOnErrorAction1(throwable.getMessage());
+                                }else{
+                                    new TimberOnErrorAction1("Abstract buy sell popup error");
+                                }
                             }
                         })
                         .subscribe()

@@ -21,6 +21,7 @@ import com.androidth.general.models.user.DTOProcessorUserLogin;
 import com.androidth.general.persistence.prefs.IsOnBoardShown;
 import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.ExceptionUtils;
 import com.facebook.AccessToken;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
@@ -29,6 +30,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
@@ -130,7 +132,18 @@ import timber.log.Timber;
                         switch (thException.getCode()){
                             case RenewSocialToken:
                                 try {
-                                    SessionServiceWrapper.this.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
+                                    SessionServiceWrapper.this.updateAuthorizationTokensRx(loginSignUpFormDTO)
+                                            .doOnError(new Action1<Throwable>() {
+                                                @Override
+                                                public void call(Throwable throwable) {
+                                                    if(throwable!=null){
+                                                        new TimberOnErrorAction1(throwable.getMessage());
+                                                    }else{
+                                                        new TimberOnErrorAction1("Session service wrapper error");
+                                                    }
+                                                }
+                                            })
+                                            .subscribe();
                                     return true;
                                 } catch (Exception ignored) {
                                     return false;

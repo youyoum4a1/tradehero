@@ -174,6 +174,16 @@ public class LiveSignUpMainFragment extends BaseFragment
                         .filter(situationDTO -> situationDTO.kycForm != null)
                         .throttleLast(3, TimeUnit.SECONDS)
                         .distinctUntilChanged()
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                if(throwable!=null){
+                                    new TimberOnErrorAction1(throwable.getMessage());
+                                }else{
+                                    new TimberOnErrorAction1("Live signup main fragment error");
+                                }
+                            }
+                        })
                         .subscribe());
 //                        .flatMap(situationDTO -> {
 //                            //noinspection ConstantConditions

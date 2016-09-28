@@ -252,14 +252,26 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         },
                         new EmptyAction1<Throwable>()));
 
-        onStopSubscriptions.add(Observable.create(new Observable.OnSubscribe<Void>() {
-
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-
-            }
-
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe());
+//        onStopSubscriptions.add(Observable.create(new Observable.OnSubscribe<Void>() {
+//
+//            @Override
+//            public void call(Subscriber<? super Void> subscriber) {
+//
+//            }
+//
+//        }).observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io())
+//                .doOnError(new Action1<Throwable>() {
+//
+//            @Override
+//            public void call(Throwable throwable) {
+//                if(throwable!=null){
+//                    new TimberOnErrorAction1(throwable.getMessage());
+//                }else{
+//
+//                }
+//            }
+//        }).subscribe());
 
         quoteSubscription =  Observable.combineLatest(
                 securityObservable.observeOn(AndroidSchedulers.mainThread()),

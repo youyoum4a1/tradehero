@@ -340,6 +340,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                                 mQuantityEditText.setText(integer.toString());
                             }
                         })
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                if(throwable!=null){
+                                    new TimberOnErrorAction1(throwable.getMessage());
+                                }
+                            }
+                        })
                         .subscribe()
         );
     }
