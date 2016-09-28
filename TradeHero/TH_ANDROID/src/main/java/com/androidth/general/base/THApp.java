@@ -3,7 +3,6 @@ package com.androidth.general.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
@@ -30,19 +29,15 @@ import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.HashMap;
 
-import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
-import rx.plugins.RxJavaErrorHandler;
-import rx.plugins.RxJavaPlugins;
 import timber.log.Timber;
-
-import static rx.plugins.RxJavaPlugins.*;
 
 public class THApp extends BaseApplication
         implements ExInjector

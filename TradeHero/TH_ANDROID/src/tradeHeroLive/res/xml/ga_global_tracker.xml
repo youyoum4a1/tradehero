@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <string name="ga_trackingId">UA-76287888-3</string>
+    <string name="ga_trackingId">UA-76287666-3</string>
     <string name="ga_sampleFrequency">100.0</string>
     <integer name="ga_sessionTimeout">1800</integer>
     <!--<bool name="ga_autoActivityTracking">true</bool>-->
