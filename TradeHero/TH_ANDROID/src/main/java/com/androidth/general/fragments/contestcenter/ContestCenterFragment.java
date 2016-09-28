@@ -107,6 +107,9 @@ public class ContestCenterFragment extends DashboardFragment
     private void fetchProviderIdList()
     {
         ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
+        if(multipleCompetitionDatas!=null){
+            multipleCompetitionDatas.clear();
+        }
         if(providerList != null && providerList.size()==1){
             ProviderDTO providerDTO = providerList.get(0);
             if(providerDTO.isUserEnrolled){
