@@ -149,4 +149,12 @@
   <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
   <string name="live_username_not_available">\'%1$s\' is not available</string>
 
+  <string name="achievement_xp_earned_format" translatable="false">+%s XP!</string>
+  <string name="achievement_level_up">LEVEL UP!</string>
+  <string name="achievements">Achievements</string>
+  <string name="achievement_share">Share!</string>
+  <string name="achievement_shared">@string/content_shared</string>
+  <string name="achievement_share_failed">Failed, try again?</string>
+  <string name="achievement_sharing">Sharing…</string>
+
 </resources>
