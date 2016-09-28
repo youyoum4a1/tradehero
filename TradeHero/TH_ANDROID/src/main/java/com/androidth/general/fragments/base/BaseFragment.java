@@ -58,7 +58,14 @@ public class BaseFragment extends Fragment
         {
             return DEFAULT_HAS_OPTION_MENU;
         }
-        return args.getBoolean(BUNDLE_KEY_HAS_OPTION_MENU, DEFAULT_HAS_OPTION_MENU);
+        try{
+            return args.getBoolean(BUNDLE_KEY_HAS_OPTION_MENU, DEFAULT_HAS_OPTION_MENU);
+        }catch (Exception e){
+            //RuntimeException Parcel android.os.Parcel
+            //Unmarshalling unknown type code 6357106 at offset 780
+            return false;
+        }
+
     }
 
     public static void putIsOptionMenuVisible(@NonNull Bundle args, boolean optionMenuVisible)
