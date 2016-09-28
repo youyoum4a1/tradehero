@@ -5,6 +5,7 @@ import android.util.Log;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.Constants;
 import com.google.gson.JsonElement;
 
@@ -79,13 +80,25 @@ public class SignalRManager {
                     }
 
                 }
+            }).onError(new ErrorCallback() {
+                @Override
+                public void onError(Throwable throwable) {
+                    if(throwable!=null){
+                        new TimberOnErrorAction1(throwable.getMessage());
+                    }else{
+                        new TimberOnErrorAction1("SignalRManager connection error");
+                    }
+
+                }
             });
+
             this.connection.reconnecting(new Runnable() {
                 @Override
                 public void run() {
                     Log.v("SignalR", "signalr Proxy reconnecting");
                 }
             });
+
             this.connection.reconnected(new Runnable() {
                 @Override
                 public void run() {
@@ -97,12 +110,14 @@ public class SignalRManager {
                     }
                 }
             });
+
             this.connection.received(new MessageReceivedHandler() {
                 @Override
                 public void onMessageReceived(JsonElement jsonElement) {
                     Log.v("SignalR", "Received! "+jsonElement);
                 }
             });
+
             this.connection.error(new ErrorCallback() {
                 @Override
                 public void onError(Throwable throwable) {
@@ -115,12 +130,14 @@ public class SignalRManager {
                     //Usual error: There was an error invoking Hub method 'portfoliohub.SubscribeToPortfolioUpdate'.
                 }
             });
+
             this.connection.closed(new Runnable() {
                 @Override
                 public void run() {
                     Log.v("SignalR", "Closed!");
                 }
             });
+
             this.connection.stateChanged(new StateChangedCallback() {
                 @Override
                 public void stateChanged(ConnectionState connectionState, ConnectionState connectionState1) {
