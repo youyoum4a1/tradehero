@@ -324,15 +324,15 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
 /**
  *https://www.twilio.com/docs/api/rest/request#post
- * 404 NOT FOUND: You know this one.
- * 429 TOO MANY REQUESTS: Your application is sending too many simultaneous requests.
- * 500 SERVER ERROR: We couldn't create or update the resource. Please try again.
+ 400 BAD REQUEST: The data given in the POST or PUT failed validation. Inspect the response body for details.
+ 401 UNAUTHORIZED: The supplied credentials, if any, are not sufficient to create or update the resource.
+ 404 NOT FOUND: You know this one.
+ 405 METHOD NOT ALLOWED: You can't POST or PUT to the resource.
+ 429 TOO MANY REQUESTS: Your application is sending too many simultaneous requests.
+ 500 SERVER ERROR: We couldn't create or update the resource. Please try again.
  */
 
-                                    if(status == 404 ||
-                                            status == 429 ||
-                                            status==500){
-
+                                    if(status >=400){
                                         Log.v(getTag(), "Twilio retrying status "+status);
                                         if(numOfRetries<maxRetry){
                                             Log.v(getTag(), "Twilio retrying");
