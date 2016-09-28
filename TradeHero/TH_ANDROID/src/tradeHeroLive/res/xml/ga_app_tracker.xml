@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="ga_trackingId">UA-76287666-3</string>
+    <string name="ga_appName">TradeHero</string>
+    <string name="ga_appVersion">5.7.0</string>
+
+    <string name="ga_sampleFrequency">100.0</string>
+    <integer name="ga_sessionTimeout">1800</integer>
+    <!--<bool name="ga_autoActivityTracking">true</bool>-->
+    <bool name="ga_anonymizeIp">false</bool>
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <!-- the Local LogLevel for Analytics -->
+    <string name="ga_logLevel">verbose</string>
+
+    <!-- how often the dispatcher should fire -->
+    <integer name="ga_dispatchPeriod">30</integer>
+
+    <!--<screenName name="com.tradehero.th.activities.SplashActivity">Home Screen</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.competition.MainCompetitionFragment">Competition Main Page</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.competition.CompetitionWebViewFragment">Join Competition Page</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment">KYC 1</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.live.ayondo.LiveSignUpStep2AyondoFragment">KYC 2</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.live.ayondo.LiveSignUpStep3AyondoFragment">KYC 3</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.live.ayondo.LiveSignUpStep4AyondoFragment">KYC 4</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.live.ayondo.LiveSignUpStep5AyondoFragment">KYC 5</screenName>-->
+    <!--<screenName name="com.androidth.general.fragments.trending.TrendingMainFragment">Trending Screen</screenName>-->
+
+    <!--<screenName name="com.example.SecondActivity">Second Screen</screenName>-->
+</resources>
