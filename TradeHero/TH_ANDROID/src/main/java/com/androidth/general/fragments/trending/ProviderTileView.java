@@ -3,12 +3,14 @@ package com.androidth.general.fragments.trending;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.androidth.general.R;
@@ -83,6 +85,7 @@ public class ProviderTileView extends LinearLayout
     @Override public void display(ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
+        Log.v("Picasso", "ProviderDTO= "+providerDTO);
         if (providerDTO != null)
         {
             String tileImage = providerDTO.isUserEnrolled ? providerDTO.tileJoinedImageUrl : providerDTO.tileImageUrl;
@@ -93,7 +96,17 @@ public class ProviderTileView extends LinearLayout
                             .placeholder(R.drawable.white_rounded_background_xml)
                             //.transform(backgroundTransformation)
                             .fit()
-                            .into(tileImageView);
+                            .into(tileImageView, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.v("Picasso", "Loaded success");
+                                }
+
+                                @Override
+                                public void onError() {
+                                    Log.v("Picasso", "Loaded fail");
+                                }
+                            });
                 }else{
 
                 }

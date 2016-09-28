@@ -242,9 +242,11 @@ public class ExtraTileAdapterNew extends BaseAdapter
     {
         this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE), getRandomisedTile());
     }
+
     protected void putCompetitionExtraTilePosition()
     {
         this.extraTiles.put(0, getCompetitionTile());
+        this.notifyDataSetChanged();
         //this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE)+8, getCompetitionTile());
     }
 

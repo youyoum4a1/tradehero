@@ -56,12 +56,12 @@ public class ContestCenterFragment extends DashboardFragment
     @Bind(R.id.hack_webview) WebView hackWebview;
     List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
     SingleCompetitionWebviewData singleCompetitionWebviewData;
-@Inject MainCompetitionFragment mainCompetitionFragment;
+    @Inject MainCompetitionFragment mainCompetitionFragment;
+    private boolean hasEntered;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-
         setActionBarTitle(R.string.dashboard_contest_center);
         setActionBarColor(getString(R.string.nav_bar_color_default));
         super.onCreateOptionsMenu(menu, inflater);
@@ -70,17 +70,16 @@ public class ContestCenterFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
         View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
         ButterKnife.bind(this, view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         competitionList.setLayoutManager(layoutManager);
-        fetchProviderIdList(container);
         return view;
     }
 
     @Override public void onResume() {
         super.onResume();
+        fetchProviderIdList();
     }
 
     @Override public void onStart(){
@@ -97,13 +96,15 @@ public class ContestCenterFragment extends DashboardFragment
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
+
     private class SingleCompetitionWebviewData {
         String webViewUrl;
         SingleCompetitionWebviewData(String webViewUrl){
             this.webViewUrl = webViewUrl;
         }
     }
-    private void fetchProviderIdList(ViewGroup container)
+
+    private void fetchProviderIdList()
     {
         ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
         if(providerList != null && providerList.size()==1){
@@ -122,14 +123,18 @@ public class ContestCenterFragment extends DashboardFragment
 //                ft.replace(container.getId(), mainCompetitionFragment);
 //                ft.commit();
 
-
                 multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
 
                 competitionList.setVisibility(View.VISIBLE);
                 hackWebview.setVisibility(View.INVISIBLE);
                 competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
                 try{
-                    competitionList.findViewHolderForAdapterPosition(0).itemView.performClick();
+//                    competitionList.findViewHolderForAdapterPosition(0).itemView.performClick();
+                    if(!hasEntered){
+                        handleCompetitionItemClicked(multipleCompetitionDatas.get(0));
+                        hasEntered = true;
+                    }
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
