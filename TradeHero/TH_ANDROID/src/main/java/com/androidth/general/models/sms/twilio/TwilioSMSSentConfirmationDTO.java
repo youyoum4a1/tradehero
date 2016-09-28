@@ -63,4 +63,9 @@ public class TwilioSMSSentConfirmationDTO implements SMSSentConfirmationDTO
     {
         return status != null && status.finalStatus;
     }
+
+    @Override
+    public boolean isSuccessful() {
+        return status!=null && status.success;
+    }
 }

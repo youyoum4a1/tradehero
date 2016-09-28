@@ -12,4 +12,5 @@ public interface SMSSentConfirmationDTO extends DTO
     @NonNull String getMessageBody();
     @StringRes int getStatusStringRes();
     boolean isFinalStatus();
+    boolean isSuccessful();
 }

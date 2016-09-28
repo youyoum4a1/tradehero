@@ -31,6 +31,9 @@ import com.androidth.general.models.sms.SMSRequestFactory;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
 import com.androidth.general.models.sms.SMSServiceWrapper;
 import com.androidth.general.models.sms.empty.EmptySMSSentConfirmationDTO;
+import com.androidth.general.models.sms.twilio.TwilioErrorCode;
+import com.androidth.general.models.sms.twilio.TwilioResponseStatusCode;
+import com.androidth.general.models.sms.twilio.TwilioRetrofitException;
 import com.androidth.general.models.sms.twilio.TwilioSMSId;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -46,6 +49,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -87,8 +91,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     @Bind(R.id.sms_sent_description) TextView sentDescription;
     @Bind(R.id.sms_sent_status) TextView sentStatus;
 
-
-
     private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
     public static String notificationLogoUrl = LiveSignUpMainFragment.notificationLogoUrl;
     public static String hexcolor = LiveSignUpMainFragment.hexColor;
@@ -98,6 +100,8 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     private SubscriptionList onDestroyViewSubscriptions;
     private String mFormattedNumber;
     private Subscription smsSubscription;
+    private final int maxRetry = 4;
+    private int numOfRetries;
 
     public static String getFormattedPhoneNumber(int dialingPrefix, String phoneNumber)
     {
@@ -150,6 +154,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mFormattedNumber = getFormattedPhoneNumber(mDialingPrefix, mPhoneNumber);
         mSMSConfirmationSubject = BehaviorSubject.create();
 
+        numOfRetries = 0;
 
     }
 
@@ -305,12 +310,61 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                 .startWith(smsSentConfirmationDTO);
                     }
                 })
+                .retryWhen((Observable<? extends Throwable> errors) -> {
+                    return errors.flatMap(new Func1<Throwable, Observable<?>>() {
+                        @Override
+                        public Observable<?> call(Throwable throwable) {
+
+                            Log.v(getTag(), "Twilio error" +throwable);
+                            if (throwable instanceof TwilioRetrofitException) {
+                                try{
+                                    TwilioRetrofitException twilioErr = (TwilioRetrofitException) throwable;
+
+                                    RetrofitError err = twilioErr.retrofitError;
+                                    Log.v(getTag(), "Twilio retrywhen "+err.getResponse());
+                                    int status = err.getResponse().getStatus();
+
+/**
+ *https://www.twilio.com/docs/api/rest/request#post
+ * 404 NOT FOUND: You know this one.
+ * 429 TOO MANY REQUESTS: Your application is sending too many simultaneous requests.
+ * 500 SERVER ERROR: We couldn't create or update the resource. Please try again.
+ */
+
+                                    if(status == 404 ||
+                                            status == 429 ||
+                                            status==500){
+
+                                        Log.v(getTag(), "Twilio retrying status "+status);
+                                        if(numOfRetries<maxRetry){
+                                            Log.v(getTag(), "Twilio retrying");
+                                            numOfRetries++;
+                                            return Observable.timer(DEFAULT_POLL_INTERVAL_MILLISEC, TimeUnit.MILLISECONDS)
+                                                    .just(createSMSSubscription());
+                                        }
+                                    }
+                                }catch (Exception e){
+                                    return Observable.error(throwable);
+                                }
+                            }
+                            return Observable.error(throwable);
+                        }
+
+                    });
+                })
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         Log.v(getTag(), "!!!-- Twilio"+throwable.getLocalizedMessage());
+                        if(throwable!=null){
+                            new TimberAndToastOnErrorAction1(throwable.getLocalizedMessage());
+                        }else{
+                            new TimberAndToastOnErrorAction1("Error sending SMS verification");
+                        }
+
                     }
                 })
+
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends SMSSentConfirmationDTO>>()
                 {
@@ -508,6 +562,9 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                         {
                             return Observable.just(smsSentConfirmationDTO);
                         }
+//                        else if (smsSentConfirmationDTO.isSuccessful()){
+//                            buttonResend.performClick();
+//                        }
                         return createRepeatableSMSConfirmation(smsId);
                     }
                 });

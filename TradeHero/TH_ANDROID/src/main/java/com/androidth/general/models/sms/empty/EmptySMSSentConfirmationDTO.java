@@ -44,4 +44,9 @@ public class EmptySMSSentConfirmationDTO implements SMSSentConfirmationDTO
     {
         return false;
     }
+
+    @Override
+    public boolean isSuccessful() {
+        return false;
+    }
 }
