@@ -342,16 +342,24 @@ public class TrendingMainFragment extends DashboardFragment
                 //switch from virtual to live, or vice versa
                 if(event.isOn){//switched from virtual to live
                     YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager);
-                    securityTypeSpinner.setVisibility(View.VISIBLE);
+                    if(securityTypeSpinner!=null){
+                        securityTypeSpinner.setVisibility(View.VISIBLE);
+                    }
                     stockFxSwitcher.setVisibility(View.INVISIBLE);
 
                 }else{
                     YoYo.with(Techniques.ZoomInRight).duration(800).playOn(tabViewPager);
                     trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
                     stockFxSwitcher.setVisibility(View.VISIBLE);
-                    securityTypeSpinner.setVisibility(View.GONE);
+                    if(securityTypeSpinner!=null){
+                        securityTypeSpinner.setVisibility(View.GONE);
+                    }
                 }
             }
+        }else{
+//            stockFxSwitcher.setVisibility(View.VISIBLE);
+//            securityTypeSpinner.setVisibility(View.GONE);
+//            trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
         }
 
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
@@ -428,7 +436,8 @@ public class TrendingMainFragment extends DashboardFragment
             setActionBarTitle("");
             setupStockFxSwitcher(view);
             setupExchangeSpinner(view);
-            setupSecurityTypeSpinner(view);
+//            setupSecurityTypeSpinner(view);
+            securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
             actionBarOwnerMixin.setCustomView(view);
         }
     }
@@ -836,21 +845,29 @@ public class TrendingMainFragment extends DashboardFragment
     private void setupSecurityTypeSpinner(View view)
     {
         securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
-//        securityTypeSpinner.setVisibility(View.VISIBLE);
 
         if(isInLiveMode){
             securityTypeSpinner.setVisibility(View.VISIBLE);
             stockFxSwitcher.setVisibility(View.INVISIBLE);
+        }else{
+            securityTypeSpinner.setVisibility(View.GONE);
+            stockFxSwitcher.setVisibility(View.VISIBLE);
         }
 
         if (lastType == TrendingTabType.FX)
         {
             securityTypeSpinner.setVisibility(View.GONE);
+            if(!isInLiveMode){
+                stockFxSwitcher.setVisibility(View.VISIBLE);
+            }
             return;
         }
         else if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
         {
             securityTypeSpinner.setVisibility(View.GONE);
+            if(!isInLiveMode){
+                stockFxSwitcher.setVisibility(View.VISIBLE);
+            }
             return;
         }
 
