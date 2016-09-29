@@ -63,6 +63,15 @@ public class GrayscaleTransformation implements Transformation
         Paint paint = new Paint(ANTI_ALIAS_FLAG);
         paint.setColorFilter(filter);
 
+        if(result==null){
+            try
+            {
+                return picasso.load(R.drawable.default_image).get();
+            } catch (IOException ignored2)
+            {
+                throw new RuntimeException("Failed to apply transformation! Missing resource.");
+            }
+        }
         Canvas canvas = new Canvas(result);
         canvas.drawBitmap(source, 0, 0, paint);
 
