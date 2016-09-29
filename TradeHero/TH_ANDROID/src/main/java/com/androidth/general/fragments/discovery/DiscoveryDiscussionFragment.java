@@ -103,7 +103,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_DISCUSSIONS);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_DISCUSSIONS);
     }
 
     @Override public void onStart()

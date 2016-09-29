@@ -1,18 +1,12 @@
 package com.androidth.general.fragments.competition;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.util.Pair;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.androidth.general.R;
@@ -40,7 +33,6 @@ import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
-import com.androidth.general.base.THApp;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
@@ -82,14 +74,11 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
-import com.google.android.gms.analytics.HitBuilders;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -258,7 +247,7 @@ public class MainCompetitionFragment extends DashboardFragment
         this.webViewFragment = null;
 
 //        Map<String, String> eventDetails = new HitBuilders.EventBuilder().setCategory("Action").setAction("Competition").build();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_MAIN_PAGE);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_MAIN_PAGE);
     }
 
     @Override public void onPause()
@@ -587,6 +576,7 @@ public class MainCompetitionFragment extends DashboardFragment
                 if (providerDTO != null && providerDTO.associatedPortfolio != null)
                 {
                     CompetitionLeaderboardPositionListFragment.putIsFX(args, providerDTO.associatedPortfolio.assetClass);
+                    GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_COMP_PORTFOLIO);
                 }
                 navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
             }

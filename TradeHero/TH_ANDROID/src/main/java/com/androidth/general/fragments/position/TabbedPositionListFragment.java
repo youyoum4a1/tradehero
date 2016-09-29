@@ -355,10 +355,12 @@ public class TabbedPositionListFragment extends DashboardFragment
             Log.v(getTag(), "!!!Position "+position);
             switch (position){
                 case 0:
-                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_PORT_OPEN);
+                    GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_PORT_OPEN);
+                    GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_OPEN);
                     break;
                 case 1:
-                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_PORT_CLOSE);
+                    GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_PORT_CLOSE);
+                    GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_CLOSE);
                     break;
                 default:
                     break;

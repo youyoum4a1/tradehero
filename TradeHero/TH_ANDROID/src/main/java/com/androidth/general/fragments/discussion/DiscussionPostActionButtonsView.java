@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.discussion;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import com.androidth.general.models.share.SocialShareHelper;
 import com.androidth.general.models.share.preference.SocialSharePreferenceHelper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
 import javax.inject.Inject;
 
@@ -118,6 +120,10 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             {
                 DiscussionPostActionButtonsView.this.askToLinkSocial(compoundButton, socialNetworkEnum);
                 isChecked = false;
+            }
+            if(isChecked){
+                //Google Analytics
+                GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_SHARE);
             }
             socialSharePreferenceHelper.updateSocialSharePreference(socialNetworkEnum, isChecked);
             compoundButton.setChecked(isChecked);

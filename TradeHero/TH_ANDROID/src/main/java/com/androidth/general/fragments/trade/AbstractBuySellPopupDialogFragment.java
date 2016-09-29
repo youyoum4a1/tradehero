@@ -73,6 +73,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.utils.StringUtils;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import com.daimajia.androidanimations.library.Techniques;
@@ -221,6 +222,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     Editable unSpannedComment;
 
     String topBarColor;
+    private boolean isInCompetition;
+    private boolean isBuy;
 
     @Nullable
     protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
@@ -274,8 +277,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
             topBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
             Log.v(getTag(), "HEX_COLOR="+topBarColor);
+            isInCompetition = true;
         }else{
             Log.v(getTag(), "HEX_COLOR nothing");
+            isInCompetition = false;
         }
     }
 
@@ -305,6 +310,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
+                if(isInCompetition){
+                    if(isBuy){
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_INPUT);
+                    }else{
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL_INPUT);
+                    }
+                }
                 if(usedDTO.securityCompactDTO!=null
                         && usedDTO.securityCompactDTO.lotSize!=null){
                     if(Integer.parseInt(textView.getText().toString()) % usedDTO.securityCompactDTO.lotSize != 0){
@@ -333,8 +345,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
         if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
+            isBuy = false;
         }else if (this.getClass() == BuyStockFragment.class || this.getClass() == BuyFXFragment.class) {
             mConfirm.setText(R.string.buy_sell_confirm_buy_now);
+            isBuy = true;
         }//else, it's "Confirm"
 
 //        mCashOrStockLeft.setText(getCashShareLabel());
@@ -355,6 +369,14 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 {
                     quantitySubject.onNext(progress);
                     mPriceSelectionMethod = AnalyticsConstants.Slider;
+
+                }
+                if(isInCompetition){
+                    if(isBuy){
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_MOVE_SLIDER);
+                    }else{
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL_MOVE_SLIDER);
+                    }
 
                 }
             }
@@ -1243,6 +1265,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         if(!mSeekBar.isEnabled()){
             return;
         }
+        if(isInCompetition){
+            if(isBuy){
+                GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_BUY_NOW);
+            }else{
+                GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL_SELL_NOW);
+            }
+        }
         updateConfirmButton(true);
         fireBuySellReport();
         launchBuySell();
@@ -1259,6 +1288,15 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             SecurityDiscussionEditPostFragment.putComment(bundle, unSpannedComment.toString());
         }
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
+
+        //Google Analtyics
+        if(isInCompetition){
+            if(isBuy){
+                GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_COMMENT);
+            }else{
+                GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL_COMMENT);
+            }
+        }
 
         getDialog().hide();
     }
@@ -1589,6 +1627,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 ProviderDTO providerDTO = providerCacheRx.getCachedValue(providerId);
                 args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerDTO.navigationLogoUrl);
                 args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, providerDTO.hexColor);
+                isInCompetition = true;
             }
 
             navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);

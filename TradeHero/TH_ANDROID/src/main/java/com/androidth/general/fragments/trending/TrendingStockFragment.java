@@ -54,7 +54,9 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -442,6 +444,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleCompetitionItemClicked(@Nullable ProviderDTO providerDTO)
     {
+        //Google Analytics Event
+        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_CLICK_TRENDING);
+
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();

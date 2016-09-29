@@ -55,7 +55,7 @@ public class MeTimelineFragment extends TimelineFragment
         super.onResume();
         dtoCacheUtil.anonymousPrefetches();
         dtoCacheUtil.initialPrefetches();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_PROFILE_SCREEN);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_PROFILE_SCREEN);
     }
 
     @Override

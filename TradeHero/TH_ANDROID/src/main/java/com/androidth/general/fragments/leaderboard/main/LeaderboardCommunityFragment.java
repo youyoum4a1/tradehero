@@ -181,7 +181,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FOLLOW_STOCKS_HEROES);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_FOLLOW_STOCKS_HEROES);
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)

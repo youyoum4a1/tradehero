@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.androidth.general.api.position.PositionStatus;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
@@ -211,9 +212,9 @@ public class TradeListFragment extends DashboardFragment
         });
 
         if(isInCompetition){
-            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TRADE_NOW);
+            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_TRADE_NOW);
         }else{
-            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_TRADE_NOW);
+            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_TRADE_NOW);
         }
     }
 
@@ -473,6 +474,13 @@ public class TradeListFragment extends DashboardFragment
             Bundle args = new Bundle();
             if(actionBarColor!=null){
                 args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, actionBarColor);
+                if(positionDTO!=null && positionDTO.positionStatus!=null){
+                    if(positionDTO.positionStatus == PositionStatus.CLOSED){
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_CLOSE_ENTER_TRADE);
+                    }else{
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_OPEN_ENTER_TRADE);
+                    }
+                }
             }
 
             AbstractBuySellFragment.putRequisite(

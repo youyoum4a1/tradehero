@@ -117,7 +117,7 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                         .doOnNext(new Action1<OnClickEvent>()
                         {
                             @Override public void call(OnClickEvent onClickEvent)
-                            {
+                            {//TODO GOOGLE ANALYTICS
                                 prevNextSubject.onNext(true);
                             }
                         }),

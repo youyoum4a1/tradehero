@@ -293,7 +293,7 @@ public class TrendingMainFragment extends DashboardFragment
         thRouter.inject(this, getArguments());
         trendingLiveFragmentUtil.onResume();
 
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_TRENDING_SCREEN);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_TRENDING_SCREEN);
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)

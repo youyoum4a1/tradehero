@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.competition;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -31,6 +33,8 @@ import com.androidth.general.utils.DateUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Actions;
@@ -49,6 +53,7 @@ public class AdView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     private Context context;
+//    private Activity activity;
 
     //<editor-fold desc="Constructors">
     public AdView(Context context, AttributeSet attrs)
@@ -106,6 +111,10 @@ public class AdView extends RelativeLayout
     {
         if (viewDTO != null && viewDTO.getAdDTO() != null)
         {
+
+            //Google Analytics Event
+            GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_CLICK_COMP_BANNER);
+
             Intent kycIntent = new Intent(this.context, SignUpLiveActivity.class);
             kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, viewDTO.providerId.key);
             kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);

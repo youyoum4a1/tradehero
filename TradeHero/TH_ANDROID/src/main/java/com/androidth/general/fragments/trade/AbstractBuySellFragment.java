@@ -3,7 +3,6 @@ package com.androidth.general.fragments.trade;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +19,12 @@ import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOUtil;
 import com.androidth.general.api.portfolio.PortfolioDTO;
-import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.portfolio.key.PortfolioCompactListKey;
 import com.androidth.general.api.position.PositionDTO;
-import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
-import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
@@ -47,7 +42,6 @@ import com.androidth.general.fragments.settings.AskForInviteDialogFragment;
 import com.androidth.general.fragments.settings.SendLoveBroadcastSignal;
 import com.androidth.general.fragments.trade.view.PortfolioSelectorView;
 import com.androidth.general.fragments.tutorial.WithTutorial;
-import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -72,9 +66,7 @@ import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
-import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import com.androidth.general.utils.route.THRouter;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.tradehero.route.RouteProperty;
 
 import java.util.concurrent.TimeUnit;
@@ -84,10 +76,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -447,12 +437,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
 
         if(isInCompetition){
-            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_BUY_SELL);
+            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_BUY_SELL);
         }else{
             if(securityCompactDTO!=null && securityCompactDTO instanceof FxSecurityCompactDTO){
-                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FX_BUY_SELL);
+                GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_FX_BUY_SELL);
             }else{
-                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_BUY_SELL);
+                GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_BUY_SELL);
             }
         }
     }
@@ -856,9 +846,19 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             case R.id.btn_buy:
                 isTransactionTypeBuy = true;
+                if(isInCompetition){
+                    GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY);
+                }else{
+                    //local
+                }
                 break;
             case R.id.btn_sell:
                 isTransactionTypeBuy = false;
+                if(isInCompetition){
+                    GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL);
+                }else{
+                    //local
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
@@ -904,9 +904,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                             topBarColor);
 
                     if(isTransactionTypeBuy){
-                        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FX_BUY_NOW);
+                        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_FX_BUY_NOW);
                     }else{
-                        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_FX_SELL_NOW);
+                        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_FX_SELL_NOW);
                     }
                 }
                 else
@@ -922,15 +922,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                     if(isTransactionTypeBuy){
                         if(isInCompetition){
-                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_BUY_NOW);
+                            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_BUY_NOW);
                         }else{
-                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_BUY_NOW);
+                            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_BUY_NOW);
                         }
                     }else{
                         if(isInCompetition){
-                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_SELL_NOW);
+                            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_SELL_NOW);
                         }else{
-                            GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_SELL_NOW);
+                            GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_SELL_NOW);
                         }
                     }
 

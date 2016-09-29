@@ -58,7 +58,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_KYC_2);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_KYC_2);
     }
 
     @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)

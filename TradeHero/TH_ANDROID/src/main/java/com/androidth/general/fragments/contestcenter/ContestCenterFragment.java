@@ -152,6 +152,9 @@ public class ContestCenterFragment extends DashboardFragment
                 webView.setOnTouchListener((v, event) -> {
                     if (event.getAction() == MotionEvent.ACTION_DOWN)
                     {
+                        //Google Analytics Event
+                        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_POPUP_SCREEN);
+
                         Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
                         kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerDTO.id);
                         kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
@@ -161,7 +164,7 @@ public class ContestCenterFragment extends DashboardFragment
                     return true;
                 });
 
-                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_JOIN_PAGE);
+                GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_JOIN_PAGE);
             }
         }
         else if(providerList != null && providerList.size() > 1) {
@@ -248,6 +251,9 @@ public class ContestCenterFragment extends DashboardFragment
     }
     private void handleCompetitionItemClicked(MultipleCompetitionData data)
     {
+        //Google Analytics Event
+        GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_TAB_COMP);
+
         if (navigator == null)
         {
             return;

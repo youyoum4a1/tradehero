@@ -165,7 +165,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
         if(providerId!=null){
             if(providerId.key.equals(55)){
                 //Kenanga
-                GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_MOST_ACTIVE);
+                GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_TAB_MOST_ACTIVE);
                 viewPager.addOnPageChangeListener(new CompetitionPositionTabPageListener());
             }else if(providerId.key.equals(52)){
                 //academy
@@ -353,15 +353,15 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
             switch (position){
                 case 0:
                     Log.v(getTag(), "!!!Position "+"Most active");
-                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_MOST_ACTIVE);
+                    GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_TAB_MOST_ACTIVE);
                     break;
                 case 1:
                     Log.v(getTag(), "!!!Position "+"Top gainer");
-                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_TOP_GAINER);
+                    GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_TAB_TOP_GAINER);
                     break;
                 case 2:
                     Log.v(getTag(), "!!!Position "+"Top loser");
-                    GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.COMP_TAB_TOP_LOSER);
+                    GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_TAB_TOP_LOSER);
                     break;
                 default:
                     break;

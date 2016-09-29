@@ -220,16 +220,16 @@ public class THApp extends BaseApplication
         ECOMMERCE_TRACKER, // Tracker used by all ecommerce transactions from a company.
     }
 
-    HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
+    static HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
 
     public THApp() {
         super();
     }
 
-    public synchronized Tracker getTracker(TrackerName trackerId) {
+    public static synchronized Tracker getTracker(TrackerName trackerId) {
         if (!mTrackers.containsKey(trackerId)) {
 
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
             Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.ga_app_tracker)
                     : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)
 //                    : (trackerId == TrackerName.COMPETITION_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)

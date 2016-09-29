@@ -56,7 +56,7 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
     @Override
     public void onResume() {
         super.onResume();
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_NEWSFEED);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_NEWSFEED);
     }
 
     @NonNull @Override protected PagedRecyclerAdapter<NewsfeedDisplayDTO> createItemViewAdapter()

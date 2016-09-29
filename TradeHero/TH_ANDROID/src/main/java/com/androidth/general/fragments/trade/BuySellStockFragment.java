@@ -49,6 +49,7 @@ import com.androidth.general.persistence.alert.AlertCompactListCacheRx;
 import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.StringUtils;
+import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -134,6 +135,11 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     @Nullable @OnClick(R.id.btn_watched)
     protected void onButtonWatchedClicked(View view)
     {
+        if(btnWatched!=null && btnWatched.getAlpha()==ALPHA_INACTIVE){
+            //Google Analytics
+            GAnalyticsProvider.sendGAActionEvent("Global", GAnalyticsProvider.ACTION_ADD_TO_FAVE);
+        }
+
         if (watchedList != null && securityId!=null)
         {
             handleAddToWatchlistRequested(securityId, watchedList.findFirstWhere(new Predicate<WatchlistPositionDTO>()
@@ -172,6 +178,11 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     @Nullable @OnClick(R.id.btn_alerted)
     protected void onButtonAlertedClicked(View view)
     {
+        if(btnAlerted!=null && btnAlerted.getAlpha()==ALPHA_INACTIVE){
+            //Google Analytics
+            GAnalyticsProvider.sendGAActionEvent("Global", GAnalyticsProvider.ACTION_ADD_ALERT);
+        }
+
         if (mappedAlerts != null && securityId!=null)
         {
             AlertCompactDTO alert = mappedAlerts.get(securityId);

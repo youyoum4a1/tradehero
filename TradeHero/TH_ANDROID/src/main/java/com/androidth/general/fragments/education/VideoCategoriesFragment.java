@@ -45,7 +45,7 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
         super.onResume();
         //TODO Change Analytics
         //analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
-        GAnalyticsProvider.sendGAScreen(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_ACADEMY);
+        GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_DISCOVER_ACADEMY);
     }
 
     @Override @NonNull protected PagedViewDTOAdapterImpl<VideoCategoryDTO, VideoCategoryView> createItemViewAdapter()
