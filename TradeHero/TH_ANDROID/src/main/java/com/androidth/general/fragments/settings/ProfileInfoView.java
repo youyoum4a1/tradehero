@@ -75,8 +75,8 @@ public class ProfileInfoView extends LinearLayout
     @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
     EmailValidator emailValidator;
 
-    @Bind(R.id.signup_layout_firstname) TextInputLayout firstNameLayout;
-    @Bind(R.id.signup_layout_lastname) TextInputLayout lastNameLayout;
+    TextInputLayout firstNameLayout;
+    TextInputLayout lastNameLayout;
 
     @Bind(R.id.authentication_sign_up_password) PasswordValidatedText password;
     @Bind(R.id.authentication_sign_up_password_til) TextInputLayout password_til;
@@ -118,6 +118,15 @@ public class ProfileInfoView extends LinearLayout
         super.onAttachedToWindow();
         ButterKnife.bind(this);
         displayProfileImage();
+
+        try{
+            firstNameLayout = (TextInputLayout) findViewById(R.id.signup_layout_firstname);
+            lastNameLayout = (TextInputLayout) findViewById(R.id.signup_layout_lastname);
+        }catch (Exception e){
+            //coz profile_info.xml does not have
+            e.printStackTrace();
+        }
+
 
         /*email.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
