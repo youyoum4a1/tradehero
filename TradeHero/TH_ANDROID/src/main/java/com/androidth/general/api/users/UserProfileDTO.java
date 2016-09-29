@@ -78,7 +78,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public PriceDTO accumulatedReferralAwards;
 
-    public UserLiveAccount userLiveAccount;
+    @JsonProperty("UserLiveAccounts")
+    public List<UserLiveAccount> userLiveAccounts;
 
     public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {
@@ -200,5 +201,9 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", tradesSharedCountFB=" + tradesSharedCountFB +
                 ", userAlertPlans=" + userAlertPlans +
                 '}';
+    }
+
+    public List<UserLiveAccount> getUserLiveAccounts() {
+        return userLiveAccounts;
     }
 }

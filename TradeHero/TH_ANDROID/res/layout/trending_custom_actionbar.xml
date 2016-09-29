@@ -20,6 +20,17 @@
       app:onText="@string/fx"
       />
 
+  <com.androidth.general.fragments.market.SecurityTypeSpinner
+      android:id="@+id/security_type_selection_menu"
+      android:layout_width="wrap_content"
+      android:layout_height="?attr/actionBarSize"
+      android:minWidth="@dimen/size_6"
+      style="@style/TH.Spinner"
+      android:layout_centerVertical="true"
+      android:gravity="center_vertical|right"
+      android:visibility="gone"
+      />
+
   <com.androidth.general.fragments.market.ExchangeSpinner
       android:id="@+id/exchange_selection_menu"
       android:layout_width="wrap_content"

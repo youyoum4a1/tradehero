@@ -11,15 +11,20 @@ import butterknife.Bind;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
+import com.androidth.general.api.security.SecurityTypeDTO;
+import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
+import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 public class TrendingFilterSpinnerItemView extends LinearLayout
-    implements DTOView<ExchangeCompactSpinnerDTO>
+    implements DTOView<DTO>
 {
     @Bind(R.id.trending_filter_spinner_item_label) TextView label;
     @Nullable @Bind(R.id.trending_filter_spinner_item_icon) ImageView icon;
 
-    @Nullable private ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO;
+    @Nullable private DTO compactSpinnerDTO;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSpinnerItemView(Context context)
@@ -44,14 +49,14 @@ public class TrendingFilterSpinnerItemView extends LinearLayout
         ButterKnife.bind(this);
     }
 
-    @Override public void display(ExchangeCompactSpinnerDTO dto)
+    @Override public void display(DTO dto)
     {
         linkWith(dto, true);
     }
 
-    public void linkWith(@Nullable ExchangeCompactSpinnerDTO dto, boolean andDisplay)
+    public void linkWith(@Nullable DTO dto, boolean andDisplay)
     {
-        this.exchangeCompactSpinnerDTO = dto;
+        this.compactSpinnerDTO = dto;
         if (andDisplay)
         {
             displayText();
@@ -63,19 +68,31 @@ public class TrendingFilterSpinnerItemView extends LinearLayout
     {
         if (label != null)
         {
-            if (exchangeCompactSpinnerDTO != null)
+            if (compactSpinnerDTO != null)
             {
-                if (exchangeCompactSpinnerDTO.desc != null)
-                {
-                    label.setText(exchangeCompactSpinnerDTO.desc);
+                if(compactSpinnerDTO instanceof ExchangeCompactSpinnerDTO){
+                    if (((ExchangeCompactSpinnerDTO) compactSpinnerDTO).desc != null)
+                    {
+                        label.setText(((ExchangeCompactSpinnerDTO) compactSpinnerDTO).desc);
+                    }
+                    else
+                    {
+                        label.setText(compactSpinnerDTO.toString());
+                    }
+                }else if(compactSpinnerDTO instanceof SecurityTypeDTO){
+                    if (((SecurityTypeDTO) compactSpinnerDTO).name != null)
+                    {
+                        label.setText(((SecurityTypeDTO) compactSpinnerDTO).name);
+                    }
+                    else
+                    {
+                        label.setText(compactSpinnerDTO.toString());
+                    }
+                }else{
+                    label.setText(R.string.na);
                 }
-                else
-                {
-                    label.setText(exchangeCompactSpinnerDTO.toString());
-                }
-            }
-            else
-            {
+
+            }else{
                 label.setText(R.string.na);
             }
         }
@@ -85,16 +102,25 @@ public class TrendingFilterSpinnerItemView extends LinearLayout
     {
         if (icon != null)
         {
-            if (exchangeCompactSpinnerDTO != null)
-            {
-                Drawable flagDrawable = exchangeCompactSpinnerDTO.getFlagDrawable();
-                if (flagDrawable != null)
+            if(compactSpinnerDTO instanceof ExchangeCompactSpinnerDTO){
+                if (compactSpinnerDTO != null)
                 {
-                    icon.setImageDrawable(flagDrawable);
-                    return;
+                    Drawable flagDrawable = ((ExchangeCompactSpinnerDTO) compactSpinnerDTO).getFlagDrawable();
+                    if (flagDrawable != null)
+                    {
+                        icon.setImageDrawable(flagDrawable);
+                        return;
+                    }
+                }else{
+                    icon.setImageResource(R.drawable.default_image);
                 }
+
+            }else if(compactSpinnerDTO instanceof SecurityTypeDTO){
+                Picasso.with(getContext()).load(((SecurityTypeDTO) compactSpinnerDTO).getImageUrl()).into(icon);
+
+            }else{
+                icon.setImageResource(R.drawable.default_image);
             }
-            icon.setImageResource(R.drawable.default_image);
         }
     }
 }

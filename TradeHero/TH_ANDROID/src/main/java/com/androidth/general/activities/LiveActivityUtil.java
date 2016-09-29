@@ -82,7 +82,7 @@ public class LiveActivityUtil
                                 {
                                     @Override public void call(OffOnViewSwitcherEvent event)
                                     {
-                                        liveSwitcher.setIsOn(event.isOn, false);
+                                        liveSwitcher.setIsOn(event.isOn, event.isFromUser);
                                     }
                                 }))
                         .doOnNext(new Action1<OffOnViewSwitcherEvent>()
@@ -135,7 +135,7 @@ public class LiveActivityUtil
         {
             if (f instanceof DashboardFragment && f.isVisible())
             {
-                ((DashboardFragment) f).onLiveTradingChanged(event.isOn);
+                ((DashboardFragment) f).onLiveTradingChanged(event);
             }
         }
 
@@ -156,15 +156,14 @@ public class LiveActivityUtil
             dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
                     dashboardActivity.getResources().getColor(event.isOn ? R.color.general_red_live_status_bar : R.color.tradehero_blue_status_bar));
 
-            if(event.isFromUser){
-//                YoYo.with(Techniques.BounceInLeft).playOn(dashboardActivity.drawerLayout);
-            }
-
             for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
             {
                 dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
                         .setBackgroundResource(
                                 event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+                if(event.isFromUser){
+                    YoYo.with(Techniques.BounceInLeft).playOn(dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i));
+                }
             }
         }
     }
@@ -193,12 +192,12 @@ public class LiveActivityUtil
 
     public void switchLive(boolean isLive)
     {
-        switchLive(isLive, false);
+        switchLive(false, isLive, false);
     }
 
-    private void switchLive(boolean isLive, boolean fromUser)
+    public void switchLive(boolean fromUser, boolean isLive, boolean isFromTile)
     {
-        isTradingLivePublishSubject.onNext(new OffOnViewSwitcherEvent(fromUser, isLive));
+        isTradingLivePublishSubject.onNext(new OffOnViewSwitcherEvent(fromUser, isLive, isFromTile));
     }
 
     public void onTrendingTileClicked(TileType tileType)
@@ -206,7 +205,14 @@ public class LiveActivityUtil
         //Disable live toggling for now
         if (tileType.equals(TileType.LiveToggle))
         {
-            switchLive(true, true);
+            switchLive(true, true, true);
+
+//            if(isLive){
+//                this.setCallToActionFragmentVisible();
+//            }else{
+//                trendingLiveFragmentUtil.setCallToActionFragmentGone();
+//            }
+
         }
     }
 

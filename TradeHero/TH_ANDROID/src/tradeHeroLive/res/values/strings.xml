@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="app_name">TH-Live</string>
+  <string name="app_name_dev">TH-Live-Dev</string>
+
   <string name="facebook_app_id">431745923529834</string>
   <string name="broker_name_none">No Broker</string>
   <string name="switch_to_live">Switch to Live</string>

@@ -11,6 +11,8 @@ import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.WrapperListAdapter;
 
+import com.androidth.general.BuildConfig;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
@@ -171,8 +173,9 @@ public class ExtraTileAdapterNew extends BaseAdapter
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         int offset = 0;
-        for (Integer extraPosition : extraTiles.keySet())
+        for (Integer ep : extraTiles.keySet())
         {
+            int extraPosition = ep.intValue();
             if (extraPosition < position)
             {
                 offset++;
@@ -281,7 +284,10 @@ public class ExtraTileAdapterNew extends BaseAdapter
             while (wrappedCount > maxExtraPosition + EXTRA_TILE_MIN_DISTANCE) {
                 maxExtraPosition += getNextExtraTileOffset();
                 extraTiles.put(maxExtraPosition, getCompetitionTile());
-                extraTiles.put(1, TileType.LiveToggle);
+
+                if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+                    extraTiles.put(maxExtraPosition>1? maxExtraPosition-1 : maxExtraPosition+1, TileType.LiveToggle);
+                }
             }
         }
     }

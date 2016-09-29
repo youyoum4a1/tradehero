@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import com.androidth.general.R;
 import com.androidth.general.api.kyc.KYCAddress;
 import com.androidth.general.api.market.Country;
-import com.androidth.general.fragments.live.CountrySpinnerAdapter;
+import com.androidth.general.fragments.kyc.adapter.CountrySpinnerAdapter;
 import com.neovisionaries.i18n.CountryCode;
 
 import java.util.List;

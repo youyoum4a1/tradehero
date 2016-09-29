@@ -624,7 +624,7 @@
     <item name="android:layout_height">@dimen/grid_item_height</item>
     <item name="android:layout_centerHorizontal">true</item>
     <item name="android:contentDescription">@null</item>
-    <item name="android:scaleType">centerCrop</item>
+    <item name="android:scaleType">fitXY</item>
   </style>
 
   <style name="TH.TrendingTileBottomText"

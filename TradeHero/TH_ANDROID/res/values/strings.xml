@@ -209,7 +209,7 @@
   <string name="tap_stream_type_ftp_open" translatable="false">android-tradehero-ftp-open</string>
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
-  <string name="currency">US$</string>
+  <string name="currency">Currency</string>
   <string name="invite_social_friend">Invite %s Friends</string>
   <string name="search_social_friend_hint">Search your friend</string>
 

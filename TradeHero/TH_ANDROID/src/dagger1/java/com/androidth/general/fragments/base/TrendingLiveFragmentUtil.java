@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import com.androidth.general.R;
 import com.androidth.general.activities.LiveActivityUtil;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
-import com.androidth.general.fragments.live.LiveCallToActionFragment;
+import com.androidth.general.fragments.kyc.LiveCallToActionFragment;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
 import com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference;
 
@@ -23,7 +23,8 @@ import rx.functions.Action1;
 public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 {
     @Bind(R.id.live_fragment_container) FrameLayout liveFragmentContainer;
-    @Nullable @Bind(R.id.pager) ViewPager pager;
+//    @Nullable @Bind(R.id.pager) ViewPager pager;
+
     @Nullable private LiveCallToActionFragment callToActionFragment;
 
     @Inject @ShowCallToActionFragmentPreference
@@ -40,7 +41,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 
 
 
-    public void setCallToActionFragmentVisible()
+    public void setCallToActionFragmentVisible(View viewToReplace)
     {
         liveFragmentContainer.setVisibility(View.VISIBLE);
         if (callToActionFragment == null)
@@ -53,19 +54,19 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         {
             @Override public void call(View view)
             {
-                //setCallToActionFragmentGone();
-                liveActivityUtil.switchLive(false);
+                setCallToActionFragmentGone(viewToReplace);
+                liveActivityUtil.switchLive(true, true, false);
             }
         }, new TimberOnErrorAction1("Live Later button subscription failed."));
 
         if (!callToActionFragment.isAdded())
         {
             fragment.getChildFragmentManager().beginTransaction().replace(R.id.live_fragment_container, callToActionFragment).commit();
-            pager.setVisibility(View.GONE);
+            viewToReplace.setVisibility(View.GONE);
         }
     }
 
-    public void setCallToActionFragmentGone()
+    public void setCallToActionFragmentGone(View viewToReplace)
     {
         if (callToActionFragment != null && callToActionFragment.isAdded())
         {
@@ -76,7 +77,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
             laterClickedSubscription.unsubscribe();
         }
         liveFragmentContainer.setVisibility(View.GONE);
-        pager.setVisibility(View.VISIBLE);
+        viewToReplace.setVisibility(View.VISIBLE);
     }
 
 
@@ -97,5 +98,9 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 
     public LiveActivityUtil getLiveActivityUtil() {
         return liveActivityUtil;
+    }
+
+    public FrameLayout getLiveFragmentContainer() {
+        return liveFragmentContainer;
     }
 }

@@ -184,9 +184,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_FOLLOW_STOCKS_HEROES);
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
+    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
-        super.onLiveTradingChanged(isLive);
+        super.onLiveTradingChanged(event);
         //liveFragmentUtil.setCallToAction(isLive);
     }
 

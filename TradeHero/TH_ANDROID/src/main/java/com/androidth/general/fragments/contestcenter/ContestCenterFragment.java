@@ -33,7 +33,11 @@ import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.utils.Constants;
+<<<<<<< HEAD
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
+=======
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
+>>>>>>> a304ee879741f2a663e1236392a0be12b7aa7071
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -86,8 +90,8 @@ public class ContestCenterFragment extends DashboardFragment
         super.onStart();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive) {
-        super.onLiveTradingChanged(isLive);
+    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event) {
+        super.onLiveTradingChanged(event);
     }
 
     @Override public void onDestroyView()

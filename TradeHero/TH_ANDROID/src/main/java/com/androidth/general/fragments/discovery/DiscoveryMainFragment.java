@@ -20,6 +20,7 @@ import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.metrics.AnalyticsDuration;
 import com.androidth.general.utils.route.THRouter;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
@@ -118,9 +119,9 @@ public class DiscoveryMainFragment extends DashboardFragment
         //liveFragmentUtil.onResume();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
+    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
-        super.onLiveTradingChanged(isLive);
+        super.onLiveTradingChanged(event);
         //liveFragmentUtil.setCallToAction(isLive);
     }
 

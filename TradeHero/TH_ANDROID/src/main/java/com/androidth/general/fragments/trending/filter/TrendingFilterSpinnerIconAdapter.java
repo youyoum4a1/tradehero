@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.androidth.general.adapters.ArrayDTOAdapterNew;
+import com.androidth.general.api.security.SecurityTypeDTO;
+import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 
 public class TrendingFilterSpinnerIconAdapter
-        extends ArrayDTOAdapterNew<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>
+        extends ArrayDTOAdapterNew<DTO, TrendingFilterSpinnerItemView>
 {
     @LayoutRes private int dropDownResId;
 

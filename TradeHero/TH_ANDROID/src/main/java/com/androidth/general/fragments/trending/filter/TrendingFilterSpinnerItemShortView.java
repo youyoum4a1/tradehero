@@ -9,14 +9,16 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
+import com.androidth.general.api.security.SecurityTypeDTO;
+import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 
 public class TrendingFilterSpinnerItemShortView extends LinearLayout
-        implements DTOView<ExchangeCompactSpinnerDTO>
+        implements DTOView<DTO>
 {
     @Bind(R.id.trending_filter_spinner_item_label) TextView label;
 
-    @Nullable private ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO;
+    @Nullable private DTO compactSpinnerDTO;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSpinnerItemShortView(Context context)
@@ -41,14 +43,14 @@ public class TrendingFilterSpinnerItemShortView extends LinearLayout
         ButterKnife.bind(this);
     }
 
-    @Override public void display(ExchangeCompactSpinnerDTO dto)
+    @Override public void display(DTO dto)
     {
         linkWith(dto, true);
     }
 
-    public void linkWith(@Nullable ExchangeCompactSpinnerDTO dto, boolean andDisplay)
+    public void linkWith(@Nullable DTO dto, boolean andDisplay)
     {
-        this.exchangeCompactSpinnerDTO = dto;
+        this.compactSpinnerDTO = dto;
         if (andDisplay)
         {
             displayText();
@@ -59,15 +61,16 @@ public class TrendingFilterSpinnerItemShortView extends LinearLayout
     {
         if (label != null)
         {
-            if (exchangeCompactSpinnerDTO != null)
+            if (compactSpinnerDTO != null)
             {
-                if (exchangeCompactSpinnerDTO.name != null)
-                {
-                    label.setText(exchangeCompactSpinnerDTO.name);
-                }
-                else
-                {
-                    label.setText(exchangeCompactSpinnerDTO.toString());
+                if(compactSpinnerDTO instanceof ExchangeCompactSpinnerDTO){
+                    if ((ExchangeCompactSpinnerDTO) compactSpinnerDTO != null) {
+                        label.setText(((ExchangeCompactSpinnerDTO)compactSpinnerDTO).name);
+                    }
+                }else if(compactSpinnerDTO instanceof SecurityTypeDTO){
+                    label.setText(((SecurityTypeDTO)compactSpinnerDTO).name);
+                }else{
+                    label.setText(compactSpinnerDTO.toString());
                 }
             }
             else

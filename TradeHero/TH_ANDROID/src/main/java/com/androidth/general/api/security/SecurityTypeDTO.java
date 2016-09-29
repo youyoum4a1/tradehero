@@ -2,6 +2,7 @@ package com.androidth.general.api.security;
 
 import android.support.annotation.NonNull;
 import com.androidth.general.common.persistence.DTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(
@@ -11,10 +12,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 public class SecurityTypeDTO implements DTO
 {
+    public static final String BUNDLE_KEY_NAME = SecurityTypeDTO.class.getName() + ".name";
     private final long createdAtNanoTime = System.nanoTime();
-    public Integer id;
-    public String name;
-    public String imageUrl;
+    @JsonProperty("Id") public Integer id;
+    @JsonProperty("Name") public String name;
+    @JsonProperty("ImageUrl") public String imageUrl;
+    @JsonProperty("IsEnabled") public Boolean isEnabled;
 
     public SecurityTypeDTO()
     {
@@ -27,15 +30,33 @@ public class SecurityTypeDTO implements DTO
         this.id = other.id;
         this.name = other.name;
         this.imageUrl = other.imageUrl;
+        this.isEnabled = other.isEnabled;
     }
-    //</editor-fold>
 
-    @Override public String toString()
-    {
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public String toString() {
         return "SecurityTypeDTO{" +
-                "id=" + id +
+                "createdAtNanoTime=" + createdAtNanoTime +
+                ", id=" + id +
                 ", name='" + name + '\'' +
-                ", imgUrl='" + imageUrl + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", isEnabled=" + isEnabled +
                 '}';
     }
 }

@@ -60,6 +60,7 @@
       android:layout_height="wrap_content"
       android:isScrollContainer="false"
       android:layout_alignParentTop="true">
+
     <LinearLayout
         style="@style/TradeHero.Live.SignUpInnerContainer"
         android:layout_width="match_parent"
@@ -109,6 +110,36 @@
 
       <!--</LinearLayout>-->
 
+      <!--starts currency view-->
+
+      <RelativeLayout
+          android:id="@+id/info_currency_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/kyc_currency_label"
+            style="@style/TH.Caption"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/currency"
+            />
+
+        <Spinner
+            android:id="@+id/kyc_currency_spinner"
+            style="@style/TH.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/clickable_element_min_dimen"
+            android:layout_below="@id/kyc_currency_label"
+            android:layout_marginRight="10sp" />
+
+      </RelativeLayout>
+<!--ends currency view-->
+
+
       <RelativeLayout
           android:id="@+id/info_identity_container"
           android:layout_width="match_parent"
@@ -116,7 +147,7 @@
           >
 
         <TextView
-            android:id="@+id/step_5_proof_label"
+            android:id="@+id/kyc_proof_identity_label"
             style="@style/TH.Caption"
             android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
@@ -131,7 +162,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/step_5_proof_label"
+            android:layout_below="@id/kyc_proof_identity_label"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_file_file_upload"
             android:enabled="true"
@@ -142,7 +173,7 @@
             style="@style/TH.Spinner"
             android:layout_width="match_parent"
             android:layout_height="@dimen/clickable_element_min_dimen"
-            android:layout_below="@id/step_5_proof_label"
+            android:layout_below="@id/kyc_proof_identity_label"
             android:layout_alignBaseline="@id/step_5_scan_id_button"
             android:layout_marginRight="10sp"
             android:layout_toLeftOf="@id/step_5_scan_id_button"

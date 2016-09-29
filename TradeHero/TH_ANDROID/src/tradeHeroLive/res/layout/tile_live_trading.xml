@@ -13,21 +13,21 @@
       style="@style/TH.TrendingTileImage"
       />
 
-  <TextView
-      android:id="@+id/extra_tile_text"
-      style="@style/TH.TrendingTileBottomText"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/tile_live_trading"
-      />
+  <!--<TextView-->
+      <!--android:id="@+id/extra_tile_text"-->
+      <!--style="@style/TH.TrendingTileBottomText"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:text="@string/tile_live_trading"-->
+      <!--/>-->
 
-  <TextView
-      android:id="@+id/extra_tile_text_top"
-      style="@style/Th.TrendingTileTopText"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_above="@id/extra_tile_text"
-      android:text="@string/tile_live_trading_top"
-      />
+  <!--<TextView-->
+      <!--android:id="@+id/extra_tile_text_top"-->
+      <!--style="@style/Th.TrendingTileTopText"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_above="@id/extra_tile_text"-->
+      <!--android:text="@string/tile_live_trading_top"-->
+      <!--/>-->
 
 </RelativeLayout>

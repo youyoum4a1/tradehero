@@ -12,6 +12,8 @@ import android.widget.ImageView;
 
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
+import com.androidth.general.widget.OffOnViewSwitcher;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 
 import javax.inject.Inject;
 
@@ -31,7 +33,11 @@ abstract public class DashboardFragment extends BaseFragment
         return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
     }
 
-    public void onLiveTradingChanged(boolean isLive)
+//    public void onLiveTradingChanged(boolean isLive)
+//    {
+//    }
+
+    public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
     }
 

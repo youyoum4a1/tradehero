@@ -12,7 +12,7 @@ import com.androidth.general.fragments.discussion.FragmentDiscussionModule;
 import com.androidth.general.fragments.education.FragmentEducationModule;
 import com.androidth.general.fragments.fxonboard.FragmentFxOnBoardModule;
 import com.androidth.general.fragments.leaderboard.FragmentLeaderboardModule;
-import com.androidth.general.fragments.live.FragmentGameLiveModule;
+import com.androidth.general.fragments.kyc.FragmentGameLiveModule;
 import com.androidth.general.fragments.location.FragmentLocationModule;
 import com.androidth.general.fragments.news.FragmentNewsModule;
 import com.androidth.general.fragments.onboarding.FragmentOnBoardModule;

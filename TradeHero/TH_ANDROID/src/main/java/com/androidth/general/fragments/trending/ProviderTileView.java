@@ -131,7 +131,7 @@ public class ProviderTileView extends LinearLayout
 
     private void makeItFancy(ShimmerFrameLayout layout){
         layout.setDropoff(0.6f);
-        layout.setBaseAlpha(0.6f);
+        layout.setBaseAlpha(1.0f);
         layout.setBackgroundColor(Color.TRANSPARENT);
         layout.setDuration(3000);
         layout.setTilt(30.0f);

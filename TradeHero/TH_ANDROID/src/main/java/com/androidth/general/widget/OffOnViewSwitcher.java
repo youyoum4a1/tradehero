@@ -31,6 +31,8 @@ public class OffOnViewSwitcher extends LinearLayout
 
     @Bind(R.id.off_on_view_switcher) ViewSwitcher offOnViewSwitcher;
     private boolean mIsOn = false;
+    private boolean mIsFromUserAction = false;
+
     private PublishSubject<OffOnViewSwitcherEvent> mSwitchSubject;
 
     public OffOnViewSwitcher(Context context)
@@ -109,7 +111,11 @@ public class OffOnViewSwitcher extends LinearLayout
     public void setIsOn(boolean isOn, boolean isFromUser)
     {
         boolean changed = this.mIsOn ^ isOn;
+        if(isFromUser){
+            changed = true;
+        }
         this.mIsOn = isOn;
+        this.mIsFromUserAction = isFromUser;
         setupAnimationToBeUsed(true);
         offOnViewSwitcher.setDisplayedChild(mIsOn ? 1 : 0);
         if (changed)
@@ -120,6 +126,10 @@ public class OffOnViewSwitcher extends LinearLayout
 
     public boolean getIsOn(){
         return this.mIsOn;
+    }
+
+    public boolean isFromUserAction(){
+        return this.mIsFromUserAction;
     }
 
     protected void setupAnimationToBeUsed(boolean animate)

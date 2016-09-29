@@ -1,4 +1,4 @@
-package com.androidth.general.fragments.live;
+package com.androidth.general.fragments.kyc;
 
 import dagger.Module;
 

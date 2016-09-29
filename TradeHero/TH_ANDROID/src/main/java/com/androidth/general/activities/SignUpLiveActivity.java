@@ -18,8 +18,12 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.androidth.general.R;
+<<<<<<< HEAD
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+=======
+import com.androidth.general.fragments.kyc.LiveSignUpMainFragment;
+>>>>>>> a304ee879741f2a663e1236392a0be12b7aa7071
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
