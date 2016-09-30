@@ -22,6 +22,7 @@ import com.androidth.general.models.share.SocialShareHelper;
 import com.androidth.general.models.share.preference.SocialSharePreferenceHelper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.ViewArrayObservable;
@@ -137,11 +138,17 @@ public class ShareDelegateFragment
 
         @Override public void onError(Throwable e)
         {
-            try{
-                THToast.show(new THException(e));
-            }catch (Exception exception){
-                THToast.show(exception.getMessage());
+            if(e!=null){
+                new TimberOnErrorAction1(e.getMessage());
+            }else{
+                new TimberOnErrorAction1("Share delegate fragment error");
             }
+//
+//            try{
+//                THToast.show(new THException(e));
+//            }catch (Exception exception){
+//                THToast.show(exception.getMessage());
+//            }
         }
     }
 

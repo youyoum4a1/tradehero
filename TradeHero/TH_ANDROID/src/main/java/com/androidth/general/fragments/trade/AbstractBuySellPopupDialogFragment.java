@@ -1536,6 +1536,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 if (buySellTransactionListener != null) {
                     buySellTransactionListener.onTransactionFailed(isBuy, thException);
                 }
+                onDestroyView();
+                onStop();
             }catch (Exception exception){
                 THToast.show("Failed to buy/sell");
             }

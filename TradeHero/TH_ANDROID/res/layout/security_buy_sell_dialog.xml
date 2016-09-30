@@ -118,7 +118,7 @@
         android:id="@+id/dialog_buy_sell_security_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="50sp"
+        android:maxHeight="45sp"
         android:adjustViewBounds="true"
         tools:src="@drawable/th_logo" />
 
@@ -128,7 +128,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         style="@style/TH.Subhead"
-        android:layout_marginTop="5sp"
+        android:layout_marginTop="3sp"
         tools:text="Padbury Mining Ltd"
         />
 

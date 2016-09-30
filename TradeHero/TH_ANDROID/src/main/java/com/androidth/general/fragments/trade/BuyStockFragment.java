@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.android.internal.util.Predicate;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class BuyStockFragment extends AbstractStockTransactionFragment
 {
@@ -109,6 +111,12 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v(getTag(), "!!!Buy error: "+throwable.getLocalizedMessage());
+                    }
+                })
                 .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
     }
 
