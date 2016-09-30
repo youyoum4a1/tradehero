@@ -21,6 +21,12 @@ public class RetrofitGameLiveProtectedModule
     {
         return adapter.create(LiveServiceRx .class);
     }
+
+    @Provides Live1BServiceRx provideLive1BServiceRx (@ForLive1B RestAdapter adapter)
+    {
+        return adapter.create(Live1BServiceRx .class);
+    }
+
     @Provides KycServicesRx provideKycServiceRx (@ForLive RestAdapter adapter)
     {
         return adapter.create(KycServicesRx .class);
