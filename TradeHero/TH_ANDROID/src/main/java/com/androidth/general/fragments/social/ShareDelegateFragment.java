@@ -139,7 +139,7 @@ public class ShareDelegateFragment
         @Override public void onError(Throwable e)
         {
             if(e!=null){
-                new TimberOnErrorAction1(e.getMessage());
+                new TimberOnErrorAction1(e.getMessage());//ArrayList error
             }else{
                 new TimberOnErrorAction1("Share delegate fragment error");
             }

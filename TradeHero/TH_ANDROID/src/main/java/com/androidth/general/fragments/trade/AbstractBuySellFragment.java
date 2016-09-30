@@ -1131,7 +1131,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 @NonNull CurrentUserId currentUserId)
         {
             this.securityId = getSecurityId(args.getBundle(KEY_SECURITY_ID));
-            this.securityIdNumber = getSecurityIdNumber(args);
+            this.securityIdNumber = securityId!=null? securityId.getSecurityIdNumber(): 0;
             this.applicablePortfolioIdSubject = createApplicablePortfolioIdSubject(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID),
                     securityId,
                     portfolioCompactListCache,
