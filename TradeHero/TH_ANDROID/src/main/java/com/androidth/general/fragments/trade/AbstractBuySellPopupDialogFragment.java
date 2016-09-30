@@ -1094,6 +1094,15 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
             @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition) {
+
+        if (portfolioCompactDTO.providerId != null) {
+            ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+            return PortfolioCompactDTOUtil.getMaxSellableShares(
+                    portfolioCompactDTO,
+                    quoteDTO,
+                    closeablePosition);//TODO Jeff
+        }
+
         return PortfolioCompactDTOUtil.getMaxSellableShares(
                 portfolioCompactDTO,
                 quoteDTO,

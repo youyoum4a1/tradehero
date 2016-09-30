@@ -706,14 +706,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         if (!poppedPortfolioChanged)
         {
             poppedPortfolioChanged = true;
-            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
-                    .setTitle(R.string.buy_sell_portfolio_changed_title)
-                    .setMessage(R.string.buy_sell_portfolio_changed_message)
-                    .setPositiveButton(R.string.ok)
-                    .build()
-                    .subscribe(
-                            new EmptyAction1<OnDialogClickEvent>(),
-                            new EmptyAction1<Throwable>()));
+            //TODO Jeff
+//            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+//                    .setTitle(R.string.buy_sell_portfolio_changed_title)
+//                    .setMessage(R.string.buy_sell_portfolio_changed_message)
+//                    .setPositiveButton(R.string.ok)
+//                    .build()
+//                    .subscribe(
+//                            new EmptyAction1<OnDialogClickEvent>(),
+//                            new EmptyAction1<Throwable>()));
         }
     }
 
