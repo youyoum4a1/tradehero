@@ -16,10 +16,17 @@ import javax.inject.Singleton;
 public class NetworkGameLiveModule
 {
     public static final String SERVER_LIVE_ENDPOINT_KEY = "SERVER_LIVE_ENDPOINT_KEY";
+    public static final String SERVER_LIVE_1B_ENDPOINT_KEY = "SERVER_LIVE_1B_ENDPOINT_KEY";
 
     @Provides @Singleton @ServerEndpointLive
     StringPreference provideEndpointPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new StringPreference(sharedPreferences, SERVER_LIVE_ENDPOINT_KEY, LiveNetworkConstants.TRADEHERO_LIVE_API_ENDPOINT);
+    }
+
+    @Provides @Singleton @ServerEndpointLive1B
+    StringPreference provide1BEndpointPreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new StringPreference(sharedPreferences, SERVER_LIVE_1B_ENDPOINT_KEY, LiveNetworkConstants.TRADEHERO_LIVE_1B_API_ENDPOINT);
     }
 }
