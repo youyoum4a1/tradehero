@@ -436,8 +436,8 @@ public class TrendingMainFragment extends DashboardFragment
             setActionBarTitle("");
             setupStockFxSwitcher(view);
             setupExchangeSpinner(view);
-//            setupSecurityTypeSpinner(view);
-            securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
+            setupSecurityTypeSpinner(view);
+        //    securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
             actionBarOwnerMixin.setCustomView(view);
         }
     }
@@ -846,23 +846,34 @@ public class TrendingMainFragment extends DashboardFragment
     {
         securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
 
-        if(isInLiveMode){
+        if(isInLiveMode)
+        {
+
             securityTypeSpinner.setVisibility(View.VISIBLE);
             stockFxSwitcher.setVisibility(View.INVISIBLE);
-        }else{
-            securityTypeSpinner.setVisibility(View.GONE);
-            stockFxSwitcher.setVisibility(View.VISIBLE);
+        }
+        else // if in virtual mode
+        {
+            if (lastType == TrendingTabType.FX)
+            {
+                securityTypeSpinner.setVisibility(View.GONE);
+                if(!isInLiveMode){
+                    stockFxSwitcher.setVisibility(View.VISIBLE);
+                }
+                return;
+            }
+            else if (lastType == TrendingTabType.STOCK)
+            {
+                securityTypeSpinner.setVisibility(View.VISIBLE);
+                if(!isInLiveMode){
+                    stockFxSwitcher.setVisibility(View.VISIBLE);
+                }
+                return;
+            }
         }
 
-        if (lastType == TrendingTabType.FX)
-        {
-            securityTypeSpinner.setVisibility(View.GONE);
-            if(!isInLiveMode){
-                stockFxSwitcher.setVisibility(View.VISIBLE);
-            }
-            return;
-        }
-        else if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
+        // only show FX/Stock, Equity/FX/Commodity/Index, Exchanges options in Trending, price action, unusual vol, All
+        if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
         {
             securityTypeSpinner.setVisibility(View.GONE);
             if(!isInLiveMode){
