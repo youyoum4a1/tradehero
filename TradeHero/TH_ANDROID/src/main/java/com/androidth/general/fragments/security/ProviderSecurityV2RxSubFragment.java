@@ -172,10 +172,22 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 //        ProviderSecurityV2RxSubFragment.items = items;
 //    }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            onResume();
+        }
+    }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        if (!getUserVisibleHint()) {
+            return;
+        }
+
         setHubConnection();
     }
 
@@ -350,12 +362,12 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         }
         List<SecurityCompactDTO> visibleList = new ArrayList<>();
         //If visible child is not fully visible, getTop returns negative value
-        if(listView.getChildAt(first).getTop() < 0){
-            first++;
-        }
-        if(listView.getChildAt(last).getBottom() > listView.getHeight()){
-            last--;
-        }
+        //if(listView.getChildAt(first).getTop() < 0){
+        //    first++;
+        //}
+        //if(listView.getChildAt(last).getBottom() > listView.getHeight()){
+        //    last--;
+        //}
         SimpleSecurityItemViewAdapter adapter = (SimpleSecurityItemViewAdapter) listView.getAdapter();
         while (first <= last){
              SecurityCompactDTO dto = (SecurityCompactDTO) adapter.getItem(first);
@@ -364,6 +376,10 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             //item.
         }
         return visibleList;
+    }
+
+    public void updateHubConnection() {
+        setHubConnection();
     }
 
 }
