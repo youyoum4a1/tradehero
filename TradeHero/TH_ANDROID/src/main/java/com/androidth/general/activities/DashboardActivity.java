@@ -148,7 +148,7 @@ public class DashboardActivity extends BaseActivity
     @Bind(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
     @Bind(R.id.drawer_content_container) ViewGroup drawerContents;
     @Bind(R.id.left_drawer) ViewGroup leftDrawerContainer;
-    @Bind(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
+    @Bind(android.R.id.tabhost) public DashboardTabHost dashboardTabHost;
 
     private Subscription notificationFetchSubscription;
 

@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.androidth.general.R;
+import com.androidth.general.activities.DashboardActivity;
+import com.androidth.general.fragments.DashboardTabHost;
 import com.androidth.general.api.competition.AdDTO;
 import com.androidth.general.api.competition.CompetitionDTOList;
 import com.androidth.general.api.competition.CompetitionPreSeasonDTO;
@@ -193,6 +195,11 @@ public class MainCompetitionFragment extends DashboardFragment
         //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
         applicablePortfolioId = getApplicablePortfolioId(getArguments());
+
+        if (getActivity() instanceof DashboardActivity) {
+            DashboardActivity dashboardActivity = (DashboardActivity)getActivity();
+            dashboardActivity.dashboardTabHost.animateHide();
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
