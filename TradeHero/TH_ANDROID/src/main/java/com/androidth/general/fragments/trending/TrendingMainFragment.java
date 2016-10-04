@@ -341,7 +341,7 @@ public class TrendingMainFragment extends DashboardFragment
             }else{
                 //switch from virtual to live, or vice versa
                 if(event.isOn){//switched from virtual to live
-                    YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager);
+                    YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager); 
                     if(securityTypeSpinner!=null){
                         securityTypeSpinner.setVisibility(View.VISIBLE);
                     }
@@ -352,7 +352,7 @@ public class TrendingMainFragment extends DashboardFragment
                     trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
                     stockFxSwitcher.setVisibility(View.VISIBLE);
                     if(securityTypeSpinner!=null){
-                        securityTypeSpinner.setVisibility(View.GONE);
+                        securityTypeSpinner.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -839,13 +839,13 @@ public class TrendingMainFragment extends DashboardFragment
         }
     }
 
-    /**
+    /**setupSecurityTypeSpinner
      * Live security types dropdown spinner
      */
     private void setupSecurityTypeSpinner(View view)
     {
         securityTypeSpinner = (SecurityTypeSpinner) view.findViewById(R.id.security_type_selection_menu);
-
+        isInLiveMode = trendingLiveFragmentUtil.getLiveActivityUtil().getLiveSwitcher().getIsOn();
         if(isInLiveMode)
         {
 
@@ -854,26 +854,12 @@ public class TrendingMainFragment extends DashboardFragment
         }
         else // if in virtual mode
         {
-            if (lastType == TrendingTabType.FX)
-            {
-                securityTypeSpinner.setVisibility(View.GONE);
-                if(!isInLiveMode){
-                    stockFxSwitcher.setVisibility(View.VISIBLE);
-                }
-                return;
-            }
-            else if (lastType == TrendingTabType.STOCK)
-            {
-                securityTypeSpinner.setVisibility(View.VISIBLE);
-                if(!isInLiveMode){
-                    stockFxSwitcher.setVisibility(View.VISIBLE);
-                }
-                return;
-            }
-        }
+            securityTypeSpinner.setVisibility(View.INVISIBLE);
+            stockFxSwitcher.setVisibility(View.VISIBLE);
 
-        // only show FX/Stock, Equity/FX/Commodity/Index, Exchanges options in Trending, price action, unusual vol, All
-        if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
+        }
+        
+        if (lastType == TrendingTabType.FX)
         {
             securityTypeSpinner.setVisibility(View.GONE);
             if(!isInLiveMode){
@@ -881,12 +867,21 @@ public class TrendingMainFragment extends DashboardFragment
             }
             return;
         }
-
+        else if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
+        {
+            securityTypeSpinner.setVisibility(View.GONE);
+            if(!isInLiveMode){
+                stockFxSwitcher.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
         securitTypeAdapter = new TrendingFilterSpinnerIconAdapter(
                 getActivity(),
                 R.layout.trending_filter_spinner_item_short);
 
         securitTypeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+
+
         securityTypeSpinner.setAdapter(securitTypeAdapter);
 
         securityTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
