@@ -377,9 +377,4 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         }
         return visibleList;
     }
-
-    public void updateHubConnection() {
-        setHubConnection();
-    }
-
 }
