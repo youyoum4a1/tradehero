@@ -226,20 +226,27 @@ public class DashboardActivity extends BaseActivity
         //}
 
         // TODO: remove hardcoded providerId and need to handle user go to KYC view before network return
-        liveServiceWrapper.getLeadWithProviderId(new ProviderId(55)).subscribe(new Action1<AyondoLeadDTO>()
+        UserProfileDTO profileDTO = userProfileCache.get().getCachedValue(new UserBaseKey(currentUserId.get()));
+
+        if (profileDTO != null && profileDTO.enrolledProviders != null && !profileDTO.enrolledProviders.isEmpty())
         {
-            @Override public void call(AyondoLeadDTO leadDTO)
+            ProviderDTO providerDTO = profileDTO.enrolledProviders.get(0);
+
+            liveServiceWrapper.getLeadWithProviderId(new ProviderId(providerDTO.id)).subscribe(new Action1<AyondoLeadDTO>()
             {
-                LiveBrokerSituationDTO dto = liveBrokerSituationPreference.get();
-                liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(dto.broker, leadDTO.getKYCAyondoForm()));
-            }
-        }, new Action1<Throwable>()
-        {
-            @Override public void call(Throwable throwable)
+                @Override public void call(AyondoLeadDTO leadDTO)
+                {
+                    LiveBrokerSituationDTO dto = liveBrokerSituationPreference.get();
+                    liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(dto.broker, leadDTO.getKYCAyondoForm()));
+                }
+            }, new Action1<Throwable>()
             {
-                Timber.e("Get Lead error: " + throwable.getMessage());
-            }
-        });
+                @Override public void call(Throwable throwable)
+                {
+                    Timber.e("Get Lead error: " + throwable.getMessage());
+                }
+            });
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
