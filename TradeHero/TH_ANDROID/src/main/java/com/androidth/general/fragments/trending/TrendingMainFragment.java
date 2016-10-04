@@ -322,44 +322,54 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onLiveTradingChanged(event);
 
-        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser){
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser) {
 
             userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
 
-            if(event.isClickedFromTrending
-                    || userProfileDTO.getUserLiveAccounts()==null){
+            ///// securityType and stock/fx spinner settings
+            if(event.isOn) { // If LIVE, show securityType and hide stock/fx
+                if(securityTypeSpinner!=null){
+                    securityTypeSpinner.setVisibility(View.VISIBLE);
+                }
+                stockFxSwitcher.setVisibility(View.INVISIBLE);
+            }
+            else // If VIRTUAL, show stock/fx and hide securityType
+            {
+                stockFxSwitcher.setVisibility(View.VISIBLE);
+                if(securityTypeSpinner!=null){
+                    securityTypeSpinner.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            ///// registration page and tab view pages
+            if(event.isClickedFromTrending || userProfileDTO.getUserLiveAccounts()==null) {
                 /*
                 if clicked from trending or doesnt have a live account yet,
-                show or unshow to registration page
+                show or unshow registration page
                 */
                 if(event.isOn){
                     trendingLiveFragmentUtil.setCallToActionFragmentVisible(tabViewPager);
+
                 }else{
                     trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
                 }
 
-            }else{
+            } else { // user has live account...and not clicked from trending
                 //switch from virtual to live, or vice versa
-                if(event.isOn){//switched from virtual to live
-                    YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager); 
-                    if(securityTypeSpinner!=null){
-                        securityTypeSpinner.setVisibility(View.VISIBLE);
-                    }
-                    stockFxSwitcher.setVisibility(View.INVISIBLE);
-
-                }else{
+                if(event.isOn) {//switched from virtual to live
+                    YoYo.with(Techniques.ZoomInLeft).duration(800).playOn(tabViewPager);
+                }
+                else {
                     YoYo.with(Techniques.ZoomInRight).duration(800).playOn(tabViewPager);
                     trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
-                    stockFxSwitcher.setVisibility(View.VISIBLE);
-                    if(securityTypeSpinner!=null){
-                        securityTypeSpinner.setVisibility(View.INVISIBLE);
-                    }
                 }
             }
         }else{
 //            stockFxSwitcher.setVisibility(View.VISIBLE);
-//            securityTypeSpinner.setVisibility(View.GONE);
-//            trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
+//            if(securityTypeSpinner!=null){
+//                securityTypeSpinner.setVisibility(View.INVISIBLE);
+//            }
+        //    trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
         }
 
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
