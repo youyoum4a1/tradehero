@@ -20,6 +20,18 @@ public class AyondoLeadUserIdentityDTO
     @JsonProperty("IdentificationDocument") @Nullable public final AyondoIdentityDocumentType identificationDocument;
     @JsonProperty("IdentificationNumber") @Nullable public final String identificationNumber;
 
+    public AyondoLeadUserIdentityDTO() {
+        super();
+        this.dob = "";
+        this.firstName = "";
+        this.lastName = "";
+        this.middleName = "";
+        this.ayondoGender = AyondoGender.MALE;
+        this.nationality = CountryCode.TH;
+        this.identificationDocument = AyondoIdentityDocumentType.PASSPORT;
+        this.identificationNumber = "";
+    }
+
     public AyondoLeadUserIdentityDTO(KYCAyondoForm kycAyondoForm)
     {
         this.dob = kycAyondoForm.getDob();

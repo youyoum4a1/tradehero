@@ -27,8 +27,13 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
+import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
+import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.notification.NotificationDTO;
 import com.androidth.general.api.notification.NotificationKey;
 import com.androidth.general.api.system.SystemStatusKey;
@@ -54,10 +59,12 @@ import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.androidth.general.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.androidth.general.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.androidth.general.models.time.AppTiming;
+import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.notification.NotificationCacheRx;
 import com.androidth.general.persistence.prefs.IsFxShown;
 import com.androidth.general.persistence.prefs.IsOnBoardShown;
+import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
@@ -131,6 +138,9 @@ public class DashboardActivity extends BaseActivity
     @Inject LeftDrawerMenuItemClickListener leftDrawerMenuItemClickListener;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
+    @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
@@ -208,6 +218,28 @@ public class DashboardActivity extends BaseActivity
 
         // TODO: For Kenanga challenge, can remove after that
         AppsFlyerLib.getInstance().setCustomerUserId(currentUserId.get().toString());
+
+        //if (liveBrokerSituationPreference.get().kycForm != null) {
+        //    Timber.d("JAMES - NOT NULL");
+        //} else {
+        //    Timber.d("JAMES - NULL");
+        //}
+
+        // TODO: remove hardcoded providerId and need to handle user go to KYC view before network return
+        liveServiceWrapper.getLeadWithProviderId(new ProviderId(55)).subscribe(new Action1<AyondoLeadDTO>()
+        {
+            @Override public void call(AyondoLeadDTO leadDTO)
+            {
+                LiveBrokerSituationDTO dto = liveBrokerSituationPreference.get();
+                liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(dto.broker, leadDTO.getKYCAyondoForm()));
+            }
+        }, new Action1<Throwable>()
+        {
+            @Override public void call(Throwable throwable)
+            {
+                Timber.e("Get Lead error: " + throwable.getMessage());
+            }
+        });
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)

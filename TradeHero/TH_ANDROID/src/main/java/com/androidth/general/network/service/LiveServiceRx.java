@@ -7,6 +7,8 @@ import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.StepStatusesDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
+import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireDTO;
 import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
@@ -99,6 +101,11 @@ public interface LiveServiceRx {
     @GET("/competition/rewardreferrar/{referralCode}/{providerId}")
     Observable<String> redeemReferralCode(
             @Path("referralCode") String referralCode,
+            @Path("providerId") int providerId
+    );
+
+    @GET("/kyc/ayondo/getLead/{providerId}")
+    Observable<AyondoLeadDTO> getLead(
             @Path("providerId") int providerId
     );
 }
