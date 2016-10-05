@@ -195,11 +195,6 @@ public class MainCompetitionFragment extends DashboardFragment
         //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
         applicablePortfolioId = getApplicablePortfolioId(getArguments());
-
-        if (getActivity() instanceof DashboardActivity) {
-            DashboardActivity dashboardActivity = (DashboardActivity)getActivity();
-            dashboardActivity.dashboardTabHost.animateHide();
-        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -216,6 +211,14 @@ public class MainCompetitionFragment extends DashboardFragment
 
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
+
+        if (getActivity() instanceof DashboardActivity) {
+            DashboardActivity dashboardActivity = (DashboardActivity)getActivity();
+
+            if (dashboardActivity.dashboardTabHost != null) {
+                dashboardActivity.dashboardTabHost.animateHide();
+            }
+        }
     }
 
     //<editor-fold desc="ActionBar">
