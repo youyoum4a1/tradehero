@@ -207,7 +207,9 @@ public class MainCompetitionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 //        this.progressBar.setVisibility(View.VISIBLE);
-        this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
+
+        // when single competition auto push, this will cause the tab bar cover trade now button - james 
+//        this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
 
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
