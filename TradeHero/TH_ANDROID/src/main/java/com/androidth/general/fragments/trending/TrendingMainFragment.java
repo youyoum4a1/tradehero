@@ -871,7 +871,7 @@ public class TrendingMainFragment extends DashboardFragment
         
         if (lastType == TrendingTabType.FX)
         {
-            securityTypeSpinner.setVisibility(View.GONE);
+            securityTypeSpinner.setVisibility(View.INVISIBLE);
             if(!isInLiveMode){
                 stockFxSwitcher.setVisibility(View.VISIBLE);
             }
@@ -879,7 +879,7 @@ public class TrendingMainFragment extends DashboardFragment
         }
         else if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
         {
-            securityTypeSpinner.setVisibility(View.GONE);
+            securityTypeSpinner.setVisibility(View.INVISIBLE);
             if(!isInLiveMode){
                 stockFxSwitcher.setVisibility(View.VISIBLE);
             }
