@@ -127,7 +127,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @Bind(R.id.vtrade_value)
     protected TextView mLeftNumber;
 
-    @Bind(R.id.vquantity)
+    @Nullable @Bind(R.id.vquantity)
     protected EditText mMiddleNumber;
 
     @Bind(R.id.vcash_left)
@@ -1744,13 +1744,19 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     private void disableUI(){
-        mMiddleNumber.setEnabled(false);
+        if (mMiddleNumber != null)
+        {
+            mMiddleNumber.setEnabled(false);
+        }
         mSeekBar.setEnabled(false);
         mConfirm.setEnabled(false);
     }
 
     private void enableUI(){
-        mMiddleNumber.setEnabled(true);
+        if (mMiddleNumber != null)
+        {
+            mMiddleNumber.setEnabled(true);
+        }
         if(!mSeekBar.isEnabled()){//not yet enabled
             YoYo.with(Techniques.Pulse).playOn(mSeekBar);
         }
