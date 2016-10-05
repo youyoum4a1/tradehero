@@ -68,10 +68,11 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 
     public void setCallToActionFragmentGone(View viewToReplace)
     {
-        if (callToActionFragment != null && callToActionFragment.isAdded())
-        {
-            fragment.getChildFragmentManager().beginTransaction().remove(callToActionFragment).commit();
-        }
+// comment out first, this caused 'java.lang.IllegalStateException FragmentManager is already executing transactions' when user switch from Live to Virtual and then to FX
+//        if (callToActionFragment != null && callToActionFragment.isAdded())
+//        {
+//        //    fragment.getChildFragmentManager().beginTransaction().remove(callToActionFragment).commit();
+//        }
         if (laterClickedSubscription != null)
         {
             laterClickedSubscription.unsubscribe();
