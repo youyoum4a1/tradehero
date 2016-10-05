@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -49,14 +50,16 @@ public class ContestCenterFragment extends DashboardFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;// Why?
 
-
+    @Inject MainCompetitionFragment mainCompetitionFragment;
     @Inject ProviderListCacheRx providerListCache;
     @Inject ProviderUtil providerUtil;
-    @Bind(R.id.competition_list) RecyclerView competitionList;
+
+    @Nullable @Bind(R.id.competition_list) RecyclerView competitionList;
     @Bind(R.id.hack_webview) WebView hackWebview;
+
     List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
     SingleCompetitionWebviewData singleCompetitionWebviewData;
-    @Inject MainCompetitionFragment mainCompetitionFragment;
+
     private boolean hasEntered;
 
     @Override
@@ -72,8 +75,13 @@ public class ContestCenterFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
         ButterKnife.bind(this, view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        competitionList.setLayoutManager(layoutManager);
+
+        if (competitionList != null)
+        {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            competitionList.setLayoutManager(layoutManager);
+        }
+
         return view;
     }
 
@@ -92,7 +100,11 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        competitionList.invalidate();
+        if (competitionList != null)
+        {
+            competitionList.invalidate();
+        }
+
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
