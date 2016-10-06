@@ -31,6 +31,7 @@ import com.androidth.general.models.sms.SMSRequestFactory;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
 import com.androidth.general.models.sms.SMSServiceWrapper;
 import com.androidth.general.models.sms.empty.EmptySMSSentConfirmationDTO;
+import com.androidth.general.models.sms.nexmo.NexmoSMSStatus;
 import com.androidth.general.models.sms.twilio.TwilioRetrofitException;
 import com.androidth.general.models.sms.twilio.TwilioSMSId;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
@@ -209,10 +210,17 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                    {
                                        @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                                        {
+//                                           sentStatus.setText(getResources().getString(
+//                                                   R.string.sms_verification_status,
+//                                                   getResources().getString(
+//                                                           smsSentConfirmationDTO.getStatusStringRes())));
+
                                            sentStatus.setText(getResources().getString(
                                                    R.string.sms_verification_status,
-                                                   getResources().getString(
-                                                           smsSentConfirmationDTO.getStatusStringRes())));
+                                                   NexmoSMSStatus.getStatus(smsSentConfirmationDTO.getStatusStringRes())));
+
+//                                           //TODO Jeff get status for Nexmo
+//                                           sentStatus.setVisibility(View.INVISIBLE);
 
                                            buttonResend.setEnabled(smsSentConfirmationDTO.isFinalStatus());
                                        }
@@ -288,26 +296,30 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                 {
                     @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                     {
+                        Log.v(getTag(), "!!!SMS id"+smsSentConfirmationDTO);
+                        Log.v(getTag(), "!!!SMS id"+smsSentConfirmationDTO.getMessageId());
                         if (smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)
                         {
                             LiveSignUpStep1AyondoFragment liveSignUpStep1AyondoFragment;
-
+                            Log.v(getTag(), "!!!SMS id instanceof");
                             if (getParentFragment() instanceof LiveSignUpStep1AyondoFragment)
                             {
+                                Log.v(getTag(), "!!!SMS id inserting");
                                 liveSignUpStep1AyondoFragment = (LiveSignUpStep1AyondoFragment) getParentFragment();
                                 liveSignUpStep1AyondoFragment.setSmsId(((TwilioSMSId) smsSentConfirmationDTO.getSMSId()).id);
                             }
                         }
                     }
                 })
-                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
-                {
-                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                    {
-                        return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
-                                .startWith(smsSentConfirmationDTO);
-                    }
-                })
+//                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
+//                {
+                //Status check
+//                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+//                    {
+//                        return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
+//                                .startWith(smsSentConfirmationDTO);
+//                    }
+//                })
                 .retryWhen((Observable<? extends Throwable> errors) -> {
                     return errors.flatMap(new Func1<Throwable, Observable<?>>() {
                         @Override

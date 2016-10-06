@@ -29,7 +29,7 @@ public class TwilioModule
                         {
                             request.addHeader("Authorization", "Basic " + Base64.encodeToString(
                                     (TwilioConstants.TWILIO_TH_ACCOUNT + ":" + TwilioConstants.TWILIO_TH_PASSWORD).getBytes("UTF-8"), Base64.NO_WRAP));
-                        } catch (UnsupportedEncodingException e)
+                        } catch (Exception e)
                         {
                             e.printStackTrace();
                         }

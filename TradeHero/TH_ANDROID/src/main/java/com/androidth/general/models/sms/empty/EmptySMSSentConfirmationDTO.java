@@ -1,6 +1,7 @@
 package com.androidth.general.models.sms.empty;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.androidth.general.models.sms.SMSId;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
@@ -48,5 +49,11 @@ public class EmptySMSSentConfirmationDTO implements SMSSentConfirmationDTO
     @Override
     public boolean isSuccessful() {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public String getMessageId() {
+        return null;
     }
 }

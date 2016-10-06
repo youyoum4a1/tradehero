@@ -469,6 +469,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             copy.setBuySellTransactionListener(null);
         }
+        if(quoteSubscription!=null){
+            quoteSubscription.unsubscribe();
+        }
+
 
         super.onStop();
     }
