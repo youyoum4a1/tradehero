@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 public class NexmoSMSSentConfirmationDTO implements SMSSentConfirmationDTO
 {
-    @JsonProperty("message-count") public int messageCount;
+    @JsonProperty("message-count") public Integer messageCount;
     @JsonProperty("messages") public ArrayList<HashMap<String, String>> messages;
 
     public NexmoSMSSentConfirmationDTO()
@@ -64,13 +64,13 @@ public class NexmoSMSSentConfirmationDTO implements SMSSentConfirmationDTO
 
     @Override public boolean isFinalStatus()
     {
-//        return status != null && status.finalStatus;
-        return false;
+        return messages != null && messageCount!=null && messageCount>0 && messages.size()>0;
+//        return true;
     }
 
     @Override
     public boolean isSuccessful() {
 //        return status!=null && status.success;
-        return false;
+        return true;
     }
 }
