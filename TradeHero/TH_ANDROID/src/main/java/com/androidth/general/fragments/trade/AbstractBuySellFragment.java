@@ -486,6 +486,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         quoteRepeatSubject.onCompleted();
+        if(abstractBuySellPopupDialogFragment!=null){
+            try{
+                abstractBuySellPopupDialogFragment.dismiss();
+            }catch (Exception e){}
+
+        }
+
         abstractBuySellPopupDialogFragment = null;
         super.onDestroy();
     }
