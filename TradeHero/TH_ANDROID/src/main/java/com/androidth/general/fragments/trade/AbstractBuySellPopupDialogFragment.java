@@ -1748,8 +1748,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         {
             mMiddleNumber.setEnabled(false);
         }
-        mSeekBar.setEnabled(false);
-        mConfirm.setEnabled(false);
+        if(mSeekBar!=null){
+            mSeekBar.setEnabled(false);
+        }
+        if(mConfirm!=null){
+            mConfirm.setEnabled(false);
+        }
+
     }
 
     private void enableUI(){
