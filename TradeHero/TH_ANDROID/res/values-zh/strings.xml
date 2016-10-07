@@ -147,6 +147,7 @@
   <string name="buy_sell_bid_with_bracket">(买入)</string>
   <string name="buy_sell_button_buy">买入 @ %1$s %2$s</string>
   <string name="buy_sell_button_sell">卖出 @ %1$s %2$s</string>
+  <string name="buy_sell_button_last_price">最后成交价 @ %1$s %2$s</string>
   <string name="buy_sell_cash_available">可用现金</string>
   <string name="buy_sell_cash_left">剩余现金</string>
   <string name="buy_sell_confirm_buy_comment">你对于这个交易的见解</string>

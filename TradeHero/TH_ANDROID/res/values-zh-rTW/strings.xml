@@ -147,6 +147,7 @@
   <string name="buy_sell_bid_with_bracket">(買入)</string>
   <string name="buy_sell_button_buy">買入 @ %1$s %2$s</string>
   <string name="buy_sell_button_sell">賣出 @ %1$s %2$s</string>
+  <string name="buy_sell_button_last_price">最後成交價 @ %1$s %2$s</string>
   <string name="buy_sell_cash_available">可用現金</string>
   <string name="buy_sell_cash_left">剩餘現金</string>
   <string name="buy_sell_confirm_buy_comment">你對於這個交易的見解</string>

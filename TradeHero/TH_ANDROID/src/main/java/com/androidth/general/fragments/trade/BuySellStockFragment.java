@@ -83,6 +83,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     @Bind(R.id.exchange_name) TextView exchangeName;
     @Bind(R.id.buy_price) TextView buyPrice;
     @Bind(R.id.sell_price) TextView sellPrice;
+    @Bind(R.id.last_price) TextView lastPrice;
 
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -475,23 +476,24 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
 
     public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
     {
-        if (buyPrice != null && sellPrice != null)
+        if (buyPrice != null && sellPrice != null && lastPrice != null)
         {
             String display = securityCompactDTO.currencyDisplay;
             String bPrice;
             String sPrice;
-            THSignedNumber bthSignedNumber;
-            THSignedNumber sthSignedNumber;
+            String lPrice;
+            THSignedNumber thSignedNumber;
+//            THSignedNumber sthSignedNumber;
             if (ask == null)
             {
                 bPrice = getString(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
-                bthSignedNumber = THSignedNumber.builder(ask)
+                thSignedNumber = THSignedNumber.builder(ask)
                         .withOutSign()
                         .build();
-                bPrice = bthSignedNumber.toString();
+                bPrice = thSignedNumber.toString();
             }
 
             if (bid == null)
@@ -500,15 +502,28 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
             }
             else
             {
-                sthSignedNumber = THSignedNumber.builder(bid)
+                thSignedNumber = THSignedNumber.builder(bid)
                         .withOutSign()
                         .build();
-                sPrice = sthSignedNumber.toString();
+                sPrice = thSignedNumber.toString();
             }
+
+            if(securityCompactDTO.lastPrice!=null){
+                thSignedNumber = THSignedNumber.builder(securityCompactDTO.lastPrice)
+                        .withOutSign()
+                        .build();
+                lPrice = thSignedNumber.toString();
+            }else{
+                lPrice = "--";
+            }
+
             String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
             String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
+            String lastPriceText = getString(R.string.buy_sell_button_last_price, display, lPrice);
+
             buyPrice.setText(buyPriceText);
             sellPrice.setText(sellPriceText);
+            lastPrice.setText(lastPriceText);
         }
 
         displayStockRoi(securityCompactDTO);
