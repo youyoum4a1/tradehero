@@ -116,6 +116,7 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -545,19 +546,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                                     .subscribeOn(Schedulers.newThread())
                                                                     .observeOn(AndroidSchedulers.mainThread())
                                                                     .subscribe(aBoolean -> {
-                                                                        if(aBoolean.equals(true)) {
+                                                                        if (aBoolean.equals(true)) {
                                                                             nricVerifyButton.setState(VerifyButtonState.FINISH);
                                                                             nricNumber.setError(null);
 
-                                                                            if(verifiedPublishIdNumber!=null){
+                                                                            if (verifiedPublishIdNumber != null) {
                                                                                 //update KYC form
                                                                                 verifiedPublishIdNumber.onNext(queryParameters.get(LiveServiceWrapper.INPUT).toString());
                                                                             }
 
-                                                                            if(hasClickedJoinButton){
+                                                                            if (hasClickedJoinButton) {
                                                                                 onClickedJoinButton();
                                                                             }
-                                                                        }else{
+                                                                        } else {
                                                                             Toast.makeText(getActivity(), "NRIC verification failed", Toast.LENGTH_SHORT).show();
                                                                         }
 
@@ -566,7 +567,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                                         @Override
                                                                         public void call(Throwable throwable) {
                                                                             progress.dismiss();
-                                                                            String errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
+                                                                            String errorMessage = "!!!";
+                                                                            if(throwable!=null){
+                                                                                errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
+                                                                            }
+
                                                                             nricVerifyButton.setState(VerifyButtonState.ERROR);
                                                                             nricNumber.setError(errorMessage, noErrorIconDrawable);
                                                                             LiveSignUpStep1AyondoFragment.this.requestFocusAndShowKeyboard(nricNumber);
@@ -1618,7 +1623,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
 
-        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
+                liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm)
+                .subscribe(
                 brokerApplicationDTO -> {
                     liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
                             .subscribe(aBoolean -> {
@@ -1685,5 +1691,20 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(maxDate, selected);
         dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
         dpf.show(getChildFragmentManager(), dpf.getClass().getName());
+    }
+
+    @Override
+    protected void onNextButtonEnabled(KYCAyondoForm kycForm) {
+        if(!kycForm.getFirstName().isEmpty()
+                && !kycForm.getLastName().isEmpty()
+                && !kycForm.getEmail().isEmpty()
+                && !kycForm.getMobileNumber().isEmpty()
+                && !kycForm.getIdentificationNumber().isEmpty()){
+
+            btnNext.setEnabled(true);
+        }else{
+            btnNext.setEnabled(false);
+        }
+
     }
 }
