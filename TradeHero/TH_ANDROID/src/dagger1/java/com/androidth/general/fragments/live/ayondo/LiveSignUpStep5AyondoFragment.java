@@ -2,6 +2,7 @@ package com.androidth.general.fragments.live.ayondo;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,7 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.ReplaceWithFunc1;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.rx.dialog.AlertDialogRx;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
@@ -704,7 +707,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public Observable<BrokerApplicationDTO> call(KYCAyondoForm kycAyondoForm)
                     {
-                        return liveServiceWrapper.submitApplication(kycAyondoForm, providerDTO.id);
+                        if(checkRequiredFields(kycAyondoForm)){
+                            return liveServiceWrapper.submitApplication(kycAyondoForm, providerDTO.id);
+                        }else{
+                            return Observable.error(new Throwable("Please fill-up all the required fields."));
+                        }
                     }
                 })
                 .finallyDo(new Action0()
@@ -743,7 +750,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public void call(Throwable throwable)
                     {
-                        THToast.show(new THException(throwable));
+//                        THToast.show(new THException(throwable));
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                        dialog.setMessage(throwable!=null? throwable.getMessage(): "Submit application error");
+                        dialog.setNeutralButton("Got it", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        dialog.show();
+
                     }
                 }));
 
@@ -804,6 +820,15 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         //        }));
 
         return subscriptions;
+    }
+
+    private boolean checkRequiredFields(KYCAyondoForm kycAyondoForm) {
+        return kycAyondoForm.getFirstName().length()>0 &&
+                kycAyondoForm.getIdentificationNumber().length()>0 &&
+                kycAyondoForm.getEmail().length()>0 &&
+                kycAyondoForm.getAddresses()!=null &&
+                kycAyondoForm.getAddresses().size()>0;
+
     }
 
     @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
