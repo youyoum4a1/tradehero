@@ -627,7 +627,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
         if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment))
         {
-            getDialog().hide();
+            if(getDialog()!=null){
+                getDialog().hide();
+            }
         }
 
         //make the dialog smaller
