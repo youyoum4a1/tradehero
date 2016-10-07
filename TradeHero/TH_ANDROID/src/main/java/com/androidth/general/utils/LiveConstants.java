@@ -7,4 +7,5 @@ import com.androidth.general.utils.metrics.tapstream.TapStreamType;
 public class LiveConstants
 {
     public static boolean isInLiveMode;
+    public static boolean hasLiveAccount;
 }

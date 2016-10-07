@@ -28,4 +28,10 @@ public interface Live1BServiceRx {
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
+
+    @POST("/securities/{exchange}/{securitySymbol}/sell")
+    Observable<SecurityPositionTransactionDTO> sell(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
 }

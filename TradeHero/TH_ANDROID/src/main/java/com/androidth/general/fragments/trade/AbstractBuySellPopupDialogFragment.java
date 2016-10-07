@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.trade;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,9 +21,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -52,6 +55,7 @@ import com.androidth.general.fragments.base.BaseShareableDialogFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.androidth.general.fragments.discussion.TransactionEditCommentFragment;
+import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
@@ -59,6 +63,7 @@ import com.androidth.general.fragments.social.ShareDelegateFragment;
 import com.androidth.general.models.number.THSignedMoney;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
+import com.androidth.general.network.service.Live1BServiceWrapper;
 import com.androidth.general.network.service.QuoteServiceWrapper;
 import com.androidth.general.network.service.SecurityServiceWrapper;
 import com.androidth.general.network.share.SocialSharer;
@@ -72,6 +77,7 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.GraphicUtil;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
@@ -79,6 +85,8 @@ import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -90,6 +98,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import dagger.Lazy;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -178,6 +188,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject
     SecurityServiceWrapper securityServiceWrapper;
+    @Inject
+    Live1BServiceWrapper live1BServiceWrapper;
     @Inject
     PositionListCacheRx positionCompactListCache;
     @Inject
@@ -1758,5 +1770,39 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         public PositionDTOCompact closeablePosition;
         @Nullable
         public Integer clampedQuantity;
+    }
+
+    protected void pushLiveLogin(RetrofitError error)
+    {
+        LiveConstants.hasLiveAccount = true;
+        try {
+            if (LiveConstants.hasLiveAccount) {
+                JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
+                // user has a live account, but not logged in, redirect to the extracted json URL
+                Bundle args = getArguments();
+                String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
+                args.putString(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
+                LiveViewFragment liveViewFragment = new LiveViewFragment();
+                liveViewFragment.setArguments(args);
+                liveViewFragment.putUrl(args, redirectURL);
+
+                try {
+                    unsubscribe(buySellSubscription);
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+
+                navigator.get().pushFragment(LiveViewFragment.class, args);
+                dismiss();
+
+            } else {
+                Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
+                startActivity(kycIntent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error in redirection: " + e.getStackTrace().toString() , Toast.LENGTH_LONG).show();
+        }
     }
 }

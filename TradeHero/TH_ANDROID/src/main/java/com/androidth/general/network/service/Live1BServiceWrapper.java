@@ -36,14 +36,21 @@ import com.androidth.general.api.live.LiveBrokerKnowledge;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.api.market.Country;
+import com.androidth.general.api.position.SecurityPositionTransactionDTO;
+import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.api.security.TransactionFormDTO;
+import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
+import com.androidth.general.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.service.ayondo.LiveServiceAyondoRx;
+import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.androidth.general.utils.GraphicUtil;
+import com.androidth.general.utils.SecurityUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,6 +61,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import retrofit.client.Response;
 import retrofit.http.Path;
 import rx.Observable;
@@ -75,16 +83,22 @@ public class Live1BServiceWrapper
     @NonNull private final LiveBrokerSituationPreference liveBrokerSituationPreference;
     @NonNull private final PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
+    @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
+    @NonNull private final CurrentUserId currentUserId;
     @Inject public Live1BServiceWrapper(
             @NonNull Live1BServiceRx live1BServiceRx,
             @NonNull LiveServiceAyondoRx liveServiceAyondoRx,
             @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
-            @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference)
+            @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NonNull CurrentUserId currentUserId)
     {
         this.live1BServiceRx = live1BServiceRx;
         this.liveServiceAyondoRx = liveServiceAyondoRx;
         this.liveBrokerSituationPreference = liveBrokerSituationPreference;
         this.phoneNumberVerifiedPreference = phoneNumberVerifiedPreference;
+        this.portfolioCache = portfolioCache;
+        this.currentUserId = currentUserId;
     }
 
     @NonNull public Observable<LiveAvailabilityDTO> getAvailability()
@@ -110,6 +124,70 @@ public class Live1BServiceWrapper
 //        }
 //        return liveServiceRx.applyLiveBroker(brokerId.key, kycForm);
 //    }
+
+    //<editor-fold desc="Buy or Sell Security">
+    @NonNull public Observable<SecurityPositionTransactionDTO> doTransactionRx(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO,
+            boolean isBuy)
+    {
+        if (isBuy)
+        {
+            return buyRx(securityId, transactionFormDTO);
+        }
+        return sellRx(securityId, transactionFormDTO);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Buy Security">
+    @NonNull public Observable<SecurityPositionTransactionDTO> buyRx(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO)
+    {
+        Observable<SecurityPositionTransactionDTO> buyResult;
+//        if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
+//        {
+//            buyResult = this.live1BServiceRx.buy.securityServiceRx.buyFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
+//        }
+//        else
+//        {
+//            buyResult = this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
+//        }
+
+        buyResult = this.live1BServiceRx.buy(securityId.getExchange(),securityId.getSecuritySymbol(),transactionFormDTO);
+        return buyResult
+                .map(new DTOProcessorSecurityPositionTransactionUpdated(
+                        securityId,
+                        currentUserId.toUserBaseKey(),
+                        portfolioCache.get()));
+    }
+    //</editor-fold>
+
+
+//    //<editor-fold desc="Sell Security">
+    @NonNull public Observable<SecurityPositionTransactionDTO> sellRx(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO)
+    {
+        Observable<SecurityPositionTransactionDTO> sellResult;
+//        if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
+//        {
+//            sellResult = this.securityServiceRx.sellFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
+//        }
+//        else
+//        {
+//            sellResult = this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
+//        }
+        // ToDo update to .sell when the URL is working for SELL
+        sellResult = this.live1BServiceRx.buy(securityId.getExchange(),securityId.getSecuritySymbol(),transactionFormDTO);
+        return sellResult
+                .map(new DTOProcessorSecurityPositionTransactionUpdated(
+                        securityId,
+                        currentUserId.toUserBaseKey(),
+                        portfolioCache.get()));
+    }
+    //</editor-fold>
+
 
     @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituation()
     {

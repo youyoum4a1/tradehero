@@ -63,6 +63,7 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
@@ -343,6 +344,8 @@ public class TrendingMainFragment extends DashboardFragment
 
             ///// registration page and tab view pages
             if(event.isClickedFromTrending || userProfileDTO.getUserLiveAccounts()==null) {
+
+                LiveConstants.hasLiveAccount = userProfileDTO.getUserLiveAccounts()==null ? false : true;
                 /*
                 if clicked from trending or doesnt have a live account yet,
                 show or unshow registration page

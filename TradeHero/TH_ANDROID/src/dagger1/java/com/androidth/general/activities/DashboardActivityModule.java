@@ -26,6 +26,7 @@ import com.androidth.general.fragments.competition.RedeemFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
 import com.androidth.general.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.androidth.general.fragments.kyc.LiveSignUpMainFragment;
+import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.position.PositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
@@ -95,6 +96,7 @@ import dagger.Provides;
                 BuySellStockFragment.class,
                 CompetitionWebViewFragment.class,
                 DiscoveryMainFragment.class,
+                LiveViewFragment.class,
 //                FacebookShareActivity.class,
                 FollowersFragment.class,
                 FriendsInvitationFragment.class,

@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -17,11 +20,15 @@ import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.rx.view.DismissDialogAction0;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
+
+import retrofit.RetrofitError;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class SellStockFragment extends AbstractStockTransactionFragment
 {
@@ -117,6 +124,33 @@ public class SellStockFragment extends AbstractStockTransactionFragment
                 getActivity().getString(R.string.processing),
                 getActivity().getString(R.string.alert_dialog_please_wait),
                 true);
+
+        if(LiveConstants.isInLiveMode)
+        {
+            return AppObservable.bindSupportFragment(
+                    this,
+                    live1BServiceWrapper.doTransactionRx(requisite.securityId, transactionFormDTO, IS_BUY))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                    .doOnError(new Action1<Throwable>()
+                    {
+                        @Override
+                        public void call(Throwable throwable) {
+                            if(throwable!=null) {
+                                if(throwable instanceof RetrofitError) {
+                                    RetrofitError error = (RetrofitError) throwable;
+                                    Log.d("SellStockFragmentError", error.getResponse() + " " + error.toString());
+                                    if(error.getResponse()!=null && error.getResponse().getStatus()==302)
+                                        pushLiveLogin(error);
+                                    else
+                                        Toast.makeText(getContext(),"Error in stock sale: " + error.getBody().toString(),Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    })
+                    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+        }
 
         return AppObservable.bindSupportFragment(
                 this,
