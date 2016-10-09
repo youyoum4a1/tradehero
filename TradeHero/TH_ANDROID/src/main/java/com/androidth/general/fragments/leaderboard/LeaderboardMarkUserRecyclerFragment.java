@@ -399,12 +399,14 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
             Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> receivedPair)
     {
         int page = receivedPair.first.page == null ? FIRST_PAGE : receivedPair.first.page;
-        int rank = (page - FIRST_PAGE) * perPage;
-        for (LeaderboardItemDisplayDTO dto : receivedPair.second)
-        {
-            rank++;
-            dto.setRanking(rank);
-        }
+
+        //disable as the rank must be from ordinalPosition
+//        int rank = (page - FIRST_PAGE) * perPage;
+//        for (LeaderboardItemDisplayDTO dto : receivedPair.second)
+//        {
+//            rank++;
+//            dto.setRanking(dto.ranking);
+//        }
         return super.onMap(receivedPair);
     }
 
