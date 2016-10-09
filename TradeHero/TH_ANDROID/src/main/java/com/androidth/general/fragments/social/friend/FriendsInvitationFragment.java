@@ -575,6 +575,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent.setType("vnd.android-dir/mms-sms");
                 intent.putExtra(Intent.EXTRA_TEXT, getShareTextWithURL());
                 intent.setData(Uri.parse("sms:"));
+                intent.putExtra("sms_body", getShareTextWithURL());
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
