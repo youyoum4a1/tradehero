@@ -446,10 +446,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                         double maxTradeValue = portfolioCompactDTO.cashBalance;
 
                                         if (portfolioCompactDTO.providerId != null) {
-
                                             ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
-
-                                            if (providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
+                                            if (providerDTO!=null && providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
                                                 maxTradeValue = providerDTO.maxLimitPerTrade;
                                             }
                                         }
@@ -714,6 +712,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     isFx = false;
                                 }
 
+                                ProviderDTO providerDTO = null;
+                                if (portfolioCompactDTO.providerId != null) {
+                                    providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+                                }
+
                                 if(closeablePosition!=null){//is selling
                                     mSymbolCashLeft.setVisibility(View.INVISIBLE);
                                     if(isFx){
@@ -721,6 +724,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     }else{
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_share_left));
                                     }
+                                    if(providerDTO!=null && mSeekBar.getMax()>providerDTO.maxLimitPerTrade){
+                                        mSeekBar.setMax(providerDTO.maxLimitPerTrade.intValue());
+                                    }
+
                                 }else{
                                     if(isFx){
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_fx_cash_left));
@@ -728,6 +735,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_cash_left));
                                     }
                                 }
+
+
 
 //
 //                                mRightNumber.setText(getCashLeftLabelResId(closeablePosition));
@@ -897,9 +906,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 .flatMap(new Func1<PositionDTO, Observable<Integer>>() {
                     @Override
                     public Observable<Integer> call(@Nullable final PositionDTO closeablePosition) {
+
+                        //if selling
                         if (closeablePosition != null && closeablePosition.shares != null) {
                             return Observable.just(Math.abs(closeablePosition.shares));
                         }
+
                         return Observable.combineLatest(
                                 getPortfolioCompactObservable(),
                                 getQuoteObservable(),

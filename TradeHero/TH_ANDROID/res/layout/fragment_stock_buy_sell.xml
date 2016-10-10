@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/last_price"
                 android:textAppearance="@android:style/TextAppearance.Small"
-                android:text="Last Price @ --" />
+                android:text="Last @ --" />
         </LinearLayout>
 
         <LinearLayout
