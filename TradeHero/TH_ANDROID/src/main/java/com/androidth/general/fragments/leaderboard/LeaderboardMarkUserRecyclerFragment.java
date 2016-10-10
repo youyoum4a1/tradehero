@@ -36,6 +36,8 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.widget.MultiRecyclerScrollListener;
 import com.androidth.general.widget.list.SingleExpandingListViewListener;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import retrofit.RetrofitError;
@@ -298,8 +300,8 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                         new Action1<Throwable>()
                         {
                             @Override public void call(Throwable throwable)
-                            {
-                                updateCurrentRankView(null);
+                            {//if illegalStateException, ignore!!!
+//                                updateCurrentRankView(null);
                             }
                         }));
     }
@@ -400,13 +402,21 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     {
         int page = receivedPair.first.page == null ? FIRST_PAGE : receivedPair.first.page;
 
-        //disable as the rank must be from ordinalPosition
-//        int rank = (page - FIRST_PAGE) * perPage;
-//        for (LeaderboardItemDisplayDTO dto : receivedPair.second)
-//        {
-//            rank++;
-//            dto.setRanking(dto.ranking);
-//        }
+        ArrayList<LeaderboardItemDisplayDTO> dtoArrayList = receivedPair.second;
+        if(dtoArrayList!=null
+                && dtoArrayList.size()>1
+                && dtoArrayList.get(0).ranking == dtoArrayList.get(1).ranking){
+
+            int rank = (page - FIRST_PAGE) * perPage;
+            for (LeaderboardItemDisplayDTO dto : receivedPair.second)
+            {
+                rank++;
+                dto.setRanking(rank);
+            }
+        }else{
+            //disable as the rank must be from ordinalPosition
+        }
+
         return super.onMap(receivedPair);
     }
 
