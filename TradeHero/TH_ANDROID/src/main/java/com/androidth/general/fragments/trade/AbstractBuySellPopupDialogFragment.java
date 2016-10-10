@@ -1774,7 +1774,6 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     protected void pushLiveLogin(RetrofitError error)
     {
-        LiveConstants.hasLiveAccount = true;
         try {
             if (LiveConstants.hasLiveAccount) {
                 JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
