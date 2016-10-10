@@ -65,7 +65,8 @@ import rx.functions.Action1;
     //<editor-fold desc="Get Provider">
     @NonNull public Observable<ProviderPrizePoolDTO> getProviderPrizePoolRx(@NonNull ProviderId providerId)
     {
-        return this.providerServiceRx.getProviderPrizePool(providerId.key);
+//        return this.providerServiceRx.getProviderPrizePool(providerId.key);
+        return Observable.error(new Throwable("No prize pool for now"));
     }
 
     @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
