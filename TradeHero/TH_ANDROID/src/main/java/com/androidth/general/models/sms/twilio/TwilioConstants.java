@@ -16,7 +16,8 @@ public class TwilioConstants
 
     public static final String TWILIO_TH_ACCOUNT = "c47190ce";
     public static final String TWILIO_TH_PASSWORD = "1ceb3f5c0497384a";
-    public static final String TWILIO_TH_FROM_PHONE_NUMBER = "+14792823122";
+//    public static final String TWILIO_TH_FROM_PHONE_NUMBER = "+14792823122";
+public static final String TWILIO_TH_FROM_PHONE_NUMBER = "TradeHero"; //as suggested by Nexmo
 
     public static final String TWILIO_TH_PATH = "2010-04-01/Accounts/" + TWILIO_TH_ACCOUNT;
     public static final String TWILIO_API_ENDPOINT = TWILIO_ENDPOINT;
