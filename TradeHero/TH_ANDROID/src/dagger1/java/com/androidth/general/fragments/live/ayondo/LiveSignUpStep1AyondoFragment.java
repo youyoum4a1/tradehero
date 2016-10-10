@@ -512,7 +512,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 case VALIDATE:
                                     if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
                                         KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
-
                                         ProgressDialog progress = new ProgressDialog(getContext());
                                         progress.setMessage("Verifying NRIC...");
                                         progress.show();
@@ -1622,8 +1621,31 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         progress.show();
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
+        KYCAyondoForm ayondoForm = (KYCAyondoForm)kycForm;
+        if (ayondoForm != null)
+        {
+            String email_text = email.getText().toString();
+            String phoneNumber_text = phoneNumber.getText().toString();
+            String firstName_text = firstName.getText().toString();
+            String lastName_text = lastName.getText().toString();
+            String nric_text = nricNumber.getText().toString();
+            String dob_text = dob.getText().toString();
+            Country phoneCountryCode = ((CountrySpinnerAdapter.DTO)spinnerPhoneCountryCode.getSelectedItem()).country;
+            Gender gender = Gender.values()[title.getSelectedItemPosition()];
 
-                liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm)
+            ayondoForm.setEmail(email_text);
+            ayondoForm.setVerifiedEmailAddress(email_text);
+            ayondoForm.setFirstName(firstName_text);
+            ayondoForm.setLastName(lastName_text);
+            ayondoForm.setMobileNumber(phoneNumber_text);
+            ayondoForm.setVerifiedMobileNumber(phoneNumber_text);
+            ayondoForm.setPhonePrimaryCountryCode(phoneCountryCode);
+            ayondoForm.setGender(gender);
+            ayondoForm.setIdentificationNumber(nric_text);
+            ayondoForm.setDob(dob_text);
+        }
+
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm)
                 .subscribe(
                 brokerApplicationDTO -> {
                     liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
