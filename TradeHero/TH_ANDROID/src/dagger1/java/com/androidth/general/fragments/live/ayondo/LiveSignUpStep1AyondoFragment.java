@@ -1695,15 +1695,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override
     protected void onNextButtonEnabled(KYCAyondoForm kycForm) {
-        if(!kycForm.getFirstName().isEmpty()
+        if(kycForm.getFirstName() != null
+                && kycForm.getLastName() != null
+                && kycForm.getEmail() != null
+                && kycForm.getMobileNumber() != null
+                && kycForm.getIdentificationNumber() != null
+                && !kycForm.getFirstName().isEmpty()
                 && !kycForm.getLastName().isEmpty()
                 && !kycForm.getEmail().isEmpty()
                 && !kycForm.getMobileNumber().isEmpty()
                 && !kycForm.getIdentificationNumber().isEmpty()){
 
-            btnNext.setEnabled(true);
+            if (btnNext != null)
+            {
+                btnNext.setEnabled(true);
+            }
         }else{
-            btnNext.setEnabled(false);
+            if (btnNext != null)
+            {
+                btnNext.setEnabled(false);
+            }
         }
 
     }
