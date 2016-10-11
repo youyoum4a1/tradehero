@@ -848,6 +848,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         usedDTO.quoteDTO = quoteDTO;
                         mStockPriceTextView.setText(String.valueOf(getLabel(quoteDTO)));
                         mMarketPriceSymbol.setText(quoteDTO.getCurrencyDisplay());
+
+                        if(mConfirm.getText().toString().toLowerCase().contains(getString(R.string.buy_sell_confirm_buy_now).toLowerCase()))
+                            mConfirm.setText(getString(R.string.buy_sell_confirm_buy_now) + " @ " + quoteDTO.getCurrencyDisplay() + " " + String.valueOf(getLabel(quoteDTO)));
+                        if(mConfirm.getText().toString().toLowerCase().contains(getString(R.string.buy_sell_confirm_sell_now).toLowerCase()))
+                            mConfirm.setText(getString(R.string.buy_sell_confirm_sell_now) + " @ " + quoteDTO.getCurrencyDisplay() + " " + String.valueOf(getLabel(quoteDTO)));
                     }
                 })
                 .share();
