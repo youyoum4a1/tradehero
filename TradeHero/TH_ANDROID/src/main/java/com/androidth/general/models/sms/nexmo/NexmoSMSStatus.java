@@ -18,7 +18,7 @@ public class NexmoSMSStatus
     private static ArrayList<HashMap<Integer, String>> statuses = new ArrayList<>();
 
     private static HashMap<Integer, String> getStatuses(){
-        status.put(0, "Success");
+        status.put(0, "Success!");
         status.put(1, "Throttled");
         status.put(2, "Missing params");
         status.put(3, "Invalid params");

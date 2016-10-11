@@ -9,12 +9,7 @@ import com.androidth.general.models.sms.SMSId;
 import com.androidth.general.models.sms.SMSRequest;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
 import com.androidth.general.models.sms.SMSServiceWrapper;
-import com.androidth.general.models.sms.twilio.TwilioConstants;
 import com.androidth.general.models.sms.twilio.TwilioRetrofitException;
-import com.androidth.general.models.sms.twilio.TwilioSMSId;
-import com.androidth.general.models.sms.twilio.TwilioSMSRequest;
-import com.androidth.general.models.sms.twilio.TwilioSMSSentConfirmationDTO;
-import com.androidth.general.models.sms.twilio.TwilioServiceRx;
 
 import javax.inject.Inject;
 
@@ -34,20 +29,33 @@ public class NexmoServiceWrapper implements SMSServiceWrapper
     }
 
     @NonNull public Observable<NexmoSMSSentConfirmationDTO> sendMessage(
-            @NonNull TwilioSMSRequest request)
+            @NonNull NexmoSMSRequest request)
     {
-        return nexmoServiceRx.sendMessage(
-                TwilioConstants.TWILIO_TH_ACCOUNT,
-                TwilioConstants.TWILIO_TH_PASSWORD,
-                request.getFromNumberOrName(),
-                request.getToNumber(),
-                request.getMessageBody())
-                .onErrorResumeNext(getThrowableReprocessor());
+        if(request.getLanguageCode()!=null && request.getLanguageCode().toLowerCase().contains("zh")){
+            return nexmoServiceRx.sendMessage(
+                    NexmoConstants.API_KEY,
+                    NexmoConstants.API_SECRET,
+                    request.getFromNumberOrName(),
+                    request.getToNumber(),
+                    request.getMessageBody(),
+                    "zh-cn")
+                    .onErrorResumeNext(getThrowableReprocessor());
+
+        }else{
+            return nexmoServiceRx.sendMessage(
+                    NexmoConstants.API_KEY,
+                    NexmoConstants.API_SECRET,
+                    request.getFromNumberOrName(),
+                    request.getToNumber(),
+                    request.getMessageBody())
+                    .onErrorResumeNext(getThrowableReprocessor());
+        }
+
     }
 
     @NonNull @Override public Observable<SMSSentConfirmationDTO> sendMessage(@NonNull SMSRequest request)
     {
-        return sendMessage((TwilioSMSRequest) request)
+        return sendMessage((NexmoSMSRequest) request)
                 .cast(SMSSentConfirmationDTO.class)
                 .doOnError(new Action1<Throwable>() {
                     @Override
@@ -56,13 +64,6 @@ public class NexmoServiceWrapper implements SMSServiceWrapper
                     }
                 });
     }
-
-//    @NonNull public Observable<TwilioSMSSentConfirmationDTO> getMessageStatus(
-//            @NonNull TwilioSMSId sid)
-//    {
-//        return nexmoServiceRx.getMessageStatus(sid.id)
-//                .onErrorResumeNext(getThrowableReprocessor());
-//    }
 
     @Nullable @Override public Observable<SMSSentConfirmationDTO> getMessageStatus(@NonNull SMSId id)
     {
