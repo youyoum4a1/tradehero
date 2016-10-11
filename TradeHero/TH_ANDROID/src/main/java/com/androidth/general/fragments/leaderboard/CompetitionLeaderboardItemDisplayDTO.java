@@ -66,12 +66,12 @@ class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisp
 
         public Requisite(@NonNull LeaderboardMarkedUserItemDisplayDto.Requisite parent,
                 @NonNull Pair<ProviderId, ProviderDTO> providerPair,
-                @NonNull Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
+                @NonNull CompetitionLeaderboardDTO competitionLeaderboard)
         {
             this(parent.currentLeaderboardUserDTO,
                     parent.currentUserProfileDTO,
                     providerPair.second,
-                    competitionLeaderboardPair.second);
+                    competitionLeaderboard);
         }
 
         public Requisite(
