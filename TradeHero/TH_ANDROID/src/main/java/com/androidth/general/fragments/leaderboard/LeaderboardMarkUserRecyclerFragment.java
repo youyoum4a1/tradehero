@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -301,7 +302,14 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                         {
                             @Override public void call(Throwable throwable)
                             {//if illegalStateException, ignore!!!
-//                                updateCurrentRankView(null);
+                                throwable.printStackTrace();
+                                Log.v(getTag(), "!!!1"+throwable.getLocalizedMessage());
+                                Log.v(getTag(), "!!!2"+throwable.getCause().getLocalizedMessage());
+                                Log.v(getTag(), "!!!3"+throwable.getMessage());
+                                if(throwable!=null && throwable instanceof RuntimeException){
+                                    Log.v(getTag(), "!!!4");
+                                }
+                                updateCurrentRankView(null);
                             }
                         }));
     }
