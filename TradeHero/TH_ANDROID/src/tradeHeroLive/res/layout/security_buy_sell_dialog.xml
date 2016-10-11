@@ -494,7 +494,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 style="@style/TH.Body"
-                android:text="111"
+                android:text="1"
                 android:layout_column="1"
                 />
         </TableRow>

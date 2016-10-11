@@ -134,6 +134,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @Bind(R.id.dialog_buy_sell_security_symbol)
     protected TextView securitySymbol;
 
+    @Bind(R.id.dialog_buy_sell_quantity)
+    protected TextView buySellQuantity;
+
     @Bind(R.id.vtrade_value)
     protected TextView mLeftNumber;
 
@@ -492,6 +495,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             @Override
                             public void call(Integer integer) {
                                 mMiddleNumber.setText(integer.toString());
+                                buySellQuantity.setText(integer.toString());
                             }
                         })
                         .doOnError(new Action1<Throwable>() {
@@ -988,6 +992,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     mMiddleNumber.setText(String.valueOf(""));
                                 }else{
                                     mMiddleNumber.setText(String.valueOf(clampedQuantity));
+                                    buySellQuantity.setText(String.valueOf(clampedQuantity));
                                 }
                                 mMiddleNumber.setSelection(mMiddleNumber.getText().length());
                             }
