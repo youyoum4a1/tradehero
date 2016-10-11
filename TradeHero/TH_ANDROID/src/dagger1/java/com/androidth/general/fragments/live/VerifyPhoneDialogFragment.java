@@ -41,6 +41,7 @@ import com.androidth.general.utils.AlertDialogRxUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -291,11 +292,15 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         return smsServiceWrapper.sendMessage(
                 SMSRequestFactory.create(
                         mFormattedNumber,
-                        getString(R.string.sms_verification_sms_content, mExpectedCode)))
+                        String.format("Please enter %s into TradeHero within the next 30 minutes.", mExpectedCode),
+//                        getString(R.string.sms_verification_sms_content,
+//                                mExpectedCode),
+                        Locale.getDefault().getLanguage()))//language is not working, so set it to default English
                 .doOnNext(new Action1<SMSSentConfirmationDTO>()
                 {
                     @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                     {
+                        Log.v(getTag(), "!!!SMS message"+getString(R.string.sms_verification_sms_content, mExpectedCode));
                         Log.v(getTag(), "!!!SMS id"+smsSentConfirmationDTO);
                         Log.v(getTag(), "!!!SMS id"+smsSentConfirmationDTO.getMessageId());
                         if (smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)

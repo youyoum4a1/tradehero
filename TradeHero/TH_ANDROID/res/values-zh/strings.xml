@@ -1198,7 +1198,7 @@
   <string name="sms_verification_resend">重发验证码</string>
   <string name="sms_verification_send_fail">发送验证码失败</string>
   <string name="sms_verification_send_fail_title">请关闭对话并重试</string>
-  <string name="sms_verification_sms_content">欢迎来到全民股神 实盘交易版本。你的验证码是%s\n\n开启全民股神应用并使用该验证码来验证你的手机号吧。</string>
+  <string name="sms_verification_sms_content">欢迎来到全民股神实盘交易版本。你的验证码是%s\n\n开启全民股神应用并使用该验证码来验证你的手机号吧。</string>
   <string name="sms_verification_status">短信状态：%s</string>
   <string name="sms_verification_title">验证你的手机号码</string>
   <string name="social_followers">粉丝</string>
