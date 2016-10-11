@@ -234,6 +234,7 @@ public class THApp extends BaseApplication
                     : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)
 //                    : (trackerId == TrackerName.COMPETITION_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)
                     :analytics.newTracker(R.xml.ga_global_tracker);
+
             mTrackers.put(trackerId, t);
         }
 
@@ -247,6 +248,7 @@ public class THApp extends BaseApplication
 
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
         Tracker t = analytics.newTracker(R.xml.ga_app_tracker);
+        t.enableAdvertisingIdCollection(true);
         mTrackers.put(TrackerName.APP_TRACKER, t);
 //        t.enableAutoActivityTracking(true);
 
