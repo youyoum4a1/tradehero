@@ -2,9 +2,11 @@ package com.androidth.general.fragments.trade;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.util.Log;
@@ -82,6 +84,8 @@ import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
+import com.androidth.general.widget.OffOnViewSwitcher;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.squareup.picasso.Picasso;
@@ -104,6 +108,8 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
@@ -184,6 +190,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //    protected Spinner mPortfolioSpinner;
 //    @Bind(R.id.cash_or_stock_left)
 //    protected TextView mCashOrStockLeft;
+    @Bind(R.id.switch_live_virtual)
+    protected OffOnViewSwitcher liveVirtualSwitcher;
 
     @Inject
     SecurityCompactCacheRx securityCompactCache;
@@ -225,6 +233,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
 
     protected Subscription buySellSubscription;
+
+    protected Observable<OffOnViewSwitcherEvent> liveVirtualObservable;
+
     protected Requisite requisite;
     protected BuySellTransactionListener buySellTransactionListener;
 
@@ -297,6 +308,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             Log.v(getTag(), "HEX_COLOR nothing");
             isInCompetition = false;
         }
+
     }
 
     @Override
@@ -510,6 +522,29 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         })
                         .subscribe()
         );
+
+        liveVirtualSwitcher.getSwitchObservable()
+            .subscribe(
+                new Action1<OffOnViewSwitcherEvent>() {
+                    @Override
+                    public void call(final OffOnViewSwitcherEvent offOnViewSwitcherEvent) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(liveVirtualSwitcher.getIsOn()) {
+                                    topBarView.setBackgroundColor(getResources().getColor(R.color.general_red_live));
+                                    mConfirm.setBackgroundColor(getResources().getColor(R.color.general_red_live));
+                                }
+                                else {
+                                    topBarView.setBackgroundColor(getResources().getColor(R.color.general_brand_color));
+                                    mConfirm.setBackgroundColor(getResources().getColor(R.color.general_brand_color));
+                                }
+                            }
+                        });
+
+                    }
+                });
     }
 
     private void setupCompetitionDisplay(Integer providerId) {
@@ -1812,6 +1847,20 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             }
         } catch (Exception e) {
             Toast.makeText(getContext(), "Error in redirection: " + e.getStackTrace().toString() , Toast.LENGTH_LONG).show();
+        }
+    }
+
+    protected void onLiveTradingChange()
+    {
+        if(liveVirtualSwitcher.getIsOn()) // live
+        {
+            Toast.makeText(getContext(), "RED", Toast.LENGTH_LONG);
+            // red
+        }
+        else //
+        {
+            // green
+            Toast.makeText(getContext(), "GREEN", Toast.LENGTH_LONG);
         }
     }
 }
