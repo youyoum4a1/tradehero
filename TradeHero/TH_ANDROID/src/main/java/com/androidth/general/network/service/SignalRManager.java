@@ -88,7 +88,6 @@ public class SignalRManager {
                     }else{
                         new TimberOnErrorAction1("SignalRManager connection error");
                     }
-
                 }
             });
 
@@ -110,7 +109,6 @@ public class SignalRManager {
                     }
                 }
             });
-
             this.connection.received(new MessageReceivedHandler() {
                 @Override
                 public void onMessageReceived(JsonElement jsonElement) {
@@ -156,7 +154,8 @@ public class SignalRManager {
     public void startConnection(String invokeWith, String[] args){
         if (invokeWith != null) {
             //step 2, setup connection
-            this.connection.start().done(new Action<Void>() {
+            this.connection.start()
+                    .done(new Action<Void>() {
                 @Override
                 public void run(Void aVoid) throws Exception {
                     Log.v("SignalR", "signalr Proxy invoked started "+invokeWith);
@@ -166,6 +165,15 @@ public class SignalRManager {
                         hubProxy.invoke(invokeWith, null, currentUserId.get());
                     }
 
+                }
+            }).onError(new ErrorCallback() {
+                @Override
+                public void onError(Throwable throwable) {
+                    if(throwable!=null){
+                        new TimberOnErrorAction1(throwable.getMessage());
+                    }else{
+                        new TimberOnErrorAction1("SignalRManager connection error 1");
+                    }
                 }
             });
             this.connection.reconnecting(new Runnable() {

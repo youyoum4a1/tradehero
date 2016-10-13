@@ -82,10 +82,11 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     boolean itemClicked = false;
 
     public String[] getSecurityIds(List<SecurityCompactDTO> items){
-        if(items==null){
+        List<SecurityCompactDTO> mItems = items;
+        if(mItems==null){
             return null;
         }
-        Iterator<SecurityCompactDTO> iterator = items.iterator();
+        Iterator<SecurityCompactDTO> iterator = mItems.iterator();
         ArrayList<String > stringArray = new ArrayList<>();
 
         while (iterator.hasNext()) {
@@ -94,7 +95,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
         String[] strings = new String[stringArray.size()];
         stringArray.toArray(strings);
-        Log.i("Items",strings.length+"");
 
         return strings;
     }
