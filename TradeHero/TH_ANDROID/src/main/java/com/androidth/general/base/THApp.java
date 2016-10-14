@@ -3,6 +3,7 @@ package com.androidth.general.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
@@ -22,6 +23,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.flurry.android.FlurryAgent;
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 import com.tune.Tune;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -54,7 +56,7 @@ public class THApp extends BaseApplication
 
     public static Context context;
 
-    private Tracker mTracker;
+    private static Tracker mTracker;
 
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject UserXPAchievementHandler userXPAchievementHandler;
@@ -86,6 +88,7 @@ public class THApp extends BaseApplication
                 .subscribe(
                         initialisationCompleteDTO -> {
                             // Nothing to do
+                            Log.v("CustomAirshipReceiver", "Received: "+initialisationCompleteDTO.toString());
                         },
                         throwable -> {
                             // Likely to happen as long as the server expects credentials on this one
@@ -227,13 +230,20 @@ public class THApp extends BaseApplication
     }
 
     public static synchronized Tracker getTracker(TrackerName trackerId) {
+
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            mTracker = analytics.newTracker(R.xml.ga_global_tracker);
+        }
+
         if (!mTrackers.containsKey(trackerId)) {
 
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
             Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.ga_app_tracker)
                     : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)
 //                    : (trackerId == TrackerName.COMPETITION_TRACKER) ? analytics.newTracker(R.xml.ga_global_tracker)
-                    :analytics.newTracker(R.xml.ga_global_tracker);
+                    :analytics.newTracker(R.xml.ga_app_tracker);
 
             mTrackers.put(trackerId, t);
         }
@@ -247,9 +257,13 @@ public class THApp extends BaseApplication
 //        }
 
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        Tracker t = analytics.newTracker(R.xml.ga_app_tracker);
-        t.enableAdvertisingIdCollection(true);
-        mTrackers.put(TrackerName.APP_TRACKER, t);
+        analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+
+        mTracker = analytics.newTracker(R.xml.ga_app_tracker);
+        mTracker.enableAdvertisingIdCollection(true);
+
+        mTrackers.put(TrackerName.APP_TRACKER, mTracker);
+
 //        t.enableAutoActivityTracking(true);
 
         //not yet used
