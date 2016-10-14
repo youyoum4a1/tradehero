@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.live1b.PositionTransactionDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.position.PositionDTO;
@@ -19,6 +20,7 @@ import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedNumber;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
@@ -127,6 +129,7 @@ public class SellStockFragment extends AbstractStockTransactionFragment
 
         if(LiveConstants.isInLiveMode)
         {
+
             return AppObservable.bindSupportFragment(
                     this,
                     live1BServiceWrapper.doTransactionRx(requisite.securityId, transactionFormDTO, IS_BUY))
@@ -149,7 +152,14 @@ public class SellStockFragment extends AbstractStockTransactionFragment
                             }
                         }
                     })
-                    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+                    .subscribe(new Action1<PositionTransactionDTO>() {
+                                   @Override
+                                   public void call(PositionTransactionDTO positionTransactionDTO) {
+                                       Toast.makeText(getContext(), positionTransactionDTO.toString(), Toast.LENGTH_LONG);
+                                   }
+                               }
+
+                            , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
         }
 
         return AppObservable.bindSupportFragment(

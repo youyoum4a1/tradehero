@@ -63,10 +63,12 @@ import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.DeviceUtil;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.tradehero.route.RouteProperty;
 
 import java.util.concurrent.TimeUnit;
@@ -180,6 +182,20 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRepeatSubject = PublishSubject.create();
         quoteRepeatDelayedObservable = quoteRepeatSubject.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
     }
+    @Override  public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
+    {
+        super.onLiveTradingChanged(event);
+        if(LiveConstants.isInLiveMode) {
+            int liveColor = getResources().getColor(R.color.general_red_live);
+            buyBtn.setBackgroundColor(liveColor);
+            sellBtn.setBackgroundColor(liveColor);
+        }
+        else {
+            int virtualColor = getResources().getColor(R.color.general_brand_color);
+            buyBtn.setBackgroundColor(virtualColor);
+            sellBtn.setBackgroundColor(virtualColor);
+        }
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -209,6 +225,18 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.setMax((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setAnimation(progressAnimation);
+
+
+        if(LiveConstants.isInLiveMode) {
+            int liveColor = getResources().getColor(R.color.general_red_live);
+            buyBtn.setBackgroundColor(liveColor);
+            sellBtn.setBackgroundColor(liveColor);
+        }
+        else {
+            int virtualColor = getResources().getColor(R.color.general_brand_color);
+            buyBtn.setBackgroundColor(virtualColor);
+            sellBtn.setBackgroundColor(virtualColor);
+        }
     }
 
     @Override public void onStart()

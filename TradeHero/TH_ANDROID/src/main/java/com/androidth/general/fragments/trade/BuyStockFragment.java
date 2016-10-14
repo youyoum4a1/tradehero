@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.live1b.PositionTransactionDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.position.PositionDTO;
@@ -25,6 +26,7 @@ import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.network.service.SecurityServiceWrapper;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.ExceptionUtils;
 import com.androidth.general.utils.LiveConstants;
@@ -125,29 +127,49 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
 
         if(LiveConstants.isInLiveMode)
         {
-            return AppObservable.bindSupportFragment(
-                this,
-                live1BServiceWrapper.doTransactionRx(requisite.securityId, transactionFormDTO, IS_BUY))
-                .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new DismissDialogAction0(progressDialog))
-                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
-                .doOnError(new Action1<Throwable>()
-                {
-                    @Override
-                    public void call(Throwable throwable) {
-                       if(throwable!=null) {
-                           if(throwable instanceof RetrofitError) {
-                               RetrofitError error = (RetrofitError) throwable;
-                               Log.d("BuyStockFragmentError", error.getResponse() + " " + error.toString());
-                               if(error.getResponse()!=null && error.getResponse().getStatus()==302)
-                                    pushLiveLogin(error);
-                               else
-                                   Toast.makeText(getContext(),"Error in stock purchase: " + error.getBody().toString(),Toast.LENGTH_LONG).show();
-                           }
-                       }
-                    }
-                })
-                .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+            Log.d("BuyStockFragment.java", "getTransactionSubscription requisite.securityId: " + requisite.securityId);
+            try {
+                return AppObservable.bindSupportFragment(
+                        this,
+                        live1BServiceWrapper.doTransactionRx(requisite.securityId, transactionFormDTO, IS_BUY))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .finallyDo(new DismissDialogAction0(progressDialog))
+                        .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                if (throwable != null) {
+                                    if (throwable instanceof RetrofitError) {
+
+                                        RetrofitError error = (RetrofitError) throwable;
+                                        Log.d("BuyStockFragment.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+                                        if (error.getResponse() != null && error.getResponse().getStatus() == 302)
+                                            pushLiveLogin(error);
+                                        else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+                                            Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                        else {
+                                            Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                            Log.d("BuyStockFragment.java", "Error in stock purchase " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+                        .subscribe(new Action1<PositionTransactionDTO>() {
+                                       @Override
+                                       public void call(PositionTransactionDTO positionTransactionDTO) {
+                                           Toast.makeText(getContext(), positionTransactionDTO.toString(), Toast.LENGTH_LONG);
+                                       }
+                                   }
+
+                        , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+            }
+            catch (IllegalStateException ex) {
+                Toast.makeText(getContext(), "Error connecting to service: " + ex.toString(), Toast.LENGTH_LONG).show();
+                return null;
+            }
         }
 
         return AppObservable.bindSupportFragment(

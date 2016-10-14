@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -118,6 +119,16 @@ public class SecurityItemView extends RelativeLayout
     @Override public void display(final SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
+//
+//        Log.d("SecurityItemView.java",
+//                "display: -> symbol_ay: " + securityCompactDTO.symbol_ay
+//                        + "  | id_ay: " + securityCompactDTO.id_ay
+//                        + " | name: " + securityCompactDTO.name
+//                        + " | id: " + securityCompactDTO.id
+//                        + " | symbol: " + securityCompactDTO.symbol
+//                        + " | isCFD: " + securityCompactDTO.isCFD
+//        );
+
 
         displayStockName();
         displayExchangeSymbol();

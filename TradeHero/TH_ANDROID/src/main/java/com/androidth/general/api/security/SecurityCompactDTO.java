@@ -68,6 +68,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public String chartDataSource;
     public String currencyDisplay;
     public String currencyISO;
+    public String symbol_ay;
+    public String id_ay;
     @Nullable public Double marketCap;
     @Nullable public Double lastPrice;
     public Double risePercent;
@@ -182,6 +184,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.timeTillNextExchangeOpenSeconds = other.timeTillNextExchangeOpenSeconds;
         this.timeTillNextExchangeOpen = other.timeTillNextExchangeOpen;
         this.secTypeDesc = other.secTypeDesc;
+
+        this.id_ay = other.id_ay;
+        this.symbol_ay = other.symbol_ay;
     }
     //</editor-fold>
 
@@ -258,23 +263,32 @@ public class SecurityCompactDTO implements DTO, Parcelable
         return new TillExchangeOpenDuration(createdAtNanoTime, days, hours, minutes, seconds);
     }
 
-    @Override public String toString()
-    {
+    @Override
+    public String toString() {
         return "SecurityCompactDTO{" +
-                "id=" + id +
+                "createdAtNanoTime=" + createdAtNanoTime +
+                ", id=" + id +
                 ", symbol='" + symbol + '\'' +
+                ", securityType=" + securityType +
                 ", name='" + name + '\'' +
+                ", country='" + country + '\'' +
+                ", exchangeId=" + exchangeId +
                 ", exchange='" + exchange + '\'' +
                 ", yahooSymbol='" + yahooSymbol + '\'' +
+                ", reutersSymbol='" + reutersSymbol + '\'' +
+                ", chartDataSource='" + chartDataSource + '\'' +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", currencyISO='" + currencyISO + '\'' +
+                ", symbol_ay='" + symbol_ay + '\'' +
+                ", id_ay='" + id_ay + '\'' +
                 ", marketCap=" + marketCap +
                 ", lastPrice=" + lastPrice +
+                ", risePercent=" + risePercent +
                 ", imageBlobUrl='" + imageBlobUrl + '\'' +
-                ", lastPriceDateEST=" + lastPriceDateEST +
                 ", lastPriceDateAndTimeUtc=" + lastPriceDateAndTimeUtc +
                 ", toUSDRate=" + toUSDRate +
                 ", toUSDRateDate=" + toUSDRateDate +
+                ", lastPriceDateEST=" + lastPriceDateEST +
                 ", active=" + active +
                 ", askPrice=" + askPrice +
                 ", bidPrice=" + bidPrice +
@@ -293,6 +307,20 @@ public class SecurityCompactDTO implements DTO, Parcelable
                 ", exchangeOpeningTimeLocal='" + exchangeOpeningTimeLocal + '\'' +
                 ", exchangeClosingTimeLocal='" + exchangeClosingTimeLocal + '\'' +
                 ", secTypeDesc='" + secTypeDesc + '\'' +
+                ", timeTillNextExchangeOpen='" + timeTillNextExchangeOpen + '\'' +
+                ", timeTillNextExchangeOpenSeconds='" + timeTillNextExchangeOpenSeconds + '\'' +
+                ", marker='" + marker + '\'' +
+                ", isCFD=" + isCFD +
+                ", minShort=" + minShort +
+                ", maxShort=" + maxShort +
+                ", minLong=" + minLong +
+                ", maxLong=" + maxLong +
+                ", sortorderInExchange=" + sortorderInExchange +
+                ", sortorderOverall=" + sortorderOverall +
+                ", UnderlyingSecurityId=" + UnderlyingSecurityId +
+                ", lotSize=" + lotSize +
+                ", max_lot=" + max_lot +
+                ", min_lot=" + min_lot +
                 '}';
     }
 

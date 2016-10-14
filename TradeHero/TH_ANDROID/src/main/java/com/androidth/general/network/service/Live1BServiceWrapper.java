@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.key.ProviderSecurityListType;
 import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
@@ -35,10 +36,25 @@ import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerKnowledge;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
+import com.androidth.general.api.live1b.NewOrderSingleDTO;
+import com.androidth.general.api.live1b.OrderSideEnum;
+import com.androidth.general.api.live1b.PositionDTO;
+import com.androidth.general.api.live1b.PositionTransactionDTO;
 import com.androidth.general.api.market.Country;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
+import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TransactionFormDTO;
+import com.androidth.general.api.security.key.ExchangeSectorSecurityListType;
+import com.androidth.general.api.security.key.ExchangeSectorSecurityListTypeNew;
+import com.androidth.general.api.security.key.SearchSecurityListType;
+import com.androidth.general.api.security.key.SecurityListType;
+import com.androidth.general.api.security.key.TrendingAllSecurityListType;
+import com.androidth.general.api.security.key.TrendingBasicSecurityListType;
+import com.androidth.general.api.security.key.TrendingFxSecurityListType;
+import com.androidth.general.api.security.key.TrendingPriceSecurityListType;
+import com.androidth.general.api.security.key.TrendingSecurityListType;
+import com.androidth.general.api.security.key.TrendingVolumeSecurityListType;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
@@ -46,6 +62,7 @@ import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
 import com.androidth.general.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.service.ayondo.LiveServiceAyondoRx;
+import com.androidth.general.persistence.SingleCacheMaxSize;
 import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.prefs.PhoneNumberVerifiedPreference;
@@ -60,6 +77,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import dagger.Lazy;
 import retrofit.client.Response;
@@ -70,6 +88,7 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 
+@Singleton
 public class Live1BServiceWrapper
 {
     private static final int AYONDO_MINIMUM_AGE = 21;
@@ -126,16 +145,19 @@ public class Live1BServiceWrapper
 //    }
 
     //<editor-fold desc="Buy or Sell Security">
-    @NonNull public Observable<SecurityPositionTransactionDTO> doTransactionRx(
+    @NonNull public Observable<PositionTransactionDTO> doTransactionRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO,
             boolean isBuy)
     {
-        if (isBuy)
-        {
-            return buyRx(securityId, transactionFormDTO);
-        }
-        return sellRx(securityId, transactionFormDTO);
+//        if (isBuy)
+//        {
+//            return buyRx(securityId, transactionFormDTO);
+//        }
+//        return sellRx(securityId, transactionFormDTO);
+        OrderSideEnum orderSide = isBuy ? OrderSideEnum.getOrderSideEnumFromId('1') : OrderSideEnum.getOrderSideEnumFromId('2');
+
+        return buyNewOrder(securityId.getSecuritySymbol(), orderSide, transactionFormDTO.quantity);
     }
     //</editor-fold>
 
@@ -164,7 +186,23 @@ public class Live1BServiceWrapper
     //</editor-fold>
 
 
-//    //<editor-fold desc="Sell Security">
+    //<editor-fold desc="New Order Single Security">
+    @NonNull public Observable<PositionTransactionDTO> buyNewOrder(
+            @NonNull String securityId,
+            @NonNull OrderSideEnum orderSideEnum,
+            @NonNull float quantity)
+    {
+        Observable<PositionTransactionDTO> buyResult;
+
+        NewOrderSingleDTO newOrderSingleDTO = new NewOrderSingleDTO(securityId,orderSideEnum, quantity);
+
+        buyResult = this.live1BServiceRx.newOrder(newOrderSingleDTO);
+        return buyResult;
+    }
+    //</editor-fold>
+
+
+    //    //<editor-fold desc="Sell Security">
     @NonNull public Observable<SecurityPositionTransactionDTO> sellRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
@@ -369,6 +407,96 @@ public class Live1BServiceWrapper
 //    {
 //        return liveServiceRx.getAdditionalQuestionnaires(providerId);
 //    }
+
+    //<editor-fold desc="Get Securities">
+    @NonNull public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
+    {
+        Observable<SecurityCompactDTOList> received = null;
+        if (key instanceof TrendingSecurityListType)
+        {
+            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
+            if (trendingKey instanceof TrendingBasicSecurityListType)
+            {
+                received = this.live1BServiceRx.getTrendingSecurities(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingPriceSecurityListType)
+            {
+                received = this.live1BServiceRx.getTrendingSecuritiesByPrice(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingVolumeSecurityListType)
+            {
+                received = this.live1BServiceRx.getTrendingSecuritiesByVolume(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingAllSecurityListType)
+            {
+                received = this.live1BServiceRx.getTrendingSecuritiesAllInExchange(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
+            }
+        }
+//        else if (key instanceof TrendingFxSecurityListType)
+//        {
+//            // FIXME when the server offers pagination
+//            if (key.page != null && key.page == 1)
+//            {
+//                received = this.live1BServiceRx.getFXSecurities();
+//            }
+//            else
+//            {
+//                received = Observable.just(new SecurityCompactDTOList());
+//            }
+//        }
+        else if (key instanceof SearchSecurityListType)
+        {
+            SearchSecurityListType searchKey = (SearchSecurityListType) key;
+            received = this.live1BServiceRx.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
+        }
+//        else if (key instanceof ProviderSecurityListType)
+//        {
+//            received = providerServiceWrapper.getProviderSecuritiesRx((ProviderSecurityListType) key);
+//        }
+//        else if (key instanceof ExchangeSectorSecurityListType)
+//        {
+//            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
+//            received = this.securityServiceRx.getBySectorAndExchange(
+//                    exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
+//                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
+//                    key.page,
+//                    key.perPage);
+//        }
+//        else if (key instanceof ExchangeSectorSecurityListTypeNew)
+//        {
+//            ExchangeSectorSecurityListTypeNew exchangeKey = (ExchangeSectorSecurityListTypeNew) key;
+//            received = this.securityServiceRx.getBySectorsAndExchanges(
+//                    exchangeKey.getCommaSeparatedExchangeIds(),
+//                    exchangeKey.getCommaSeparatedSectorIds(),
+//                    exchangeKey.getPage(),
+//                    exchangeKey.perPage);
+//        }
+//        else
+//        {
+//            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
+//        }
+        return received;
+    }
+
 
     @NonNull public static List<Country> createNoBusinessNationalities()
     {

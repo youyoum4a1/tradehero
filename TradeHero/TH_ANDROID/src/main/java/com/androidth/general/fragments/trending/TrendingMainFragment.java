@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -322,6 +323,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
         super.onLiveTradingChanged(event);
+        // TODO force reload cache whenever user toggles
 
         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser) {
 
@@ -340,6 +342,7 @@ public class TrendingMainFragment extends DashboardFragment
                 if(securityTypeSpinner!=null){
                     securityTypeSpinner.setVisibility(View.INVISIBLE);
                 }
+
             }
 
             ///// registration page and tab view pages
@@ -373,6 +376,7 @@ public class TrendingMainFragment extends DashboardFragment
 //                securityTypeSpinner.setVisibility(View.INVISIBLE);
 //            }
         //    trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
+
         }
 
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);

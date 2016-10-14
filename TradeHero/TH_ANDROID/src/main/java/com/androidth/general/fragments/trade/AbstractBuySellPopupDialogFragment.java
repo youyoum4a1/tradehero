@@ -89,6 +89,7 @@ import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.squareup.picasso.Picasso;
+import com.twitter.sdk.android.core.internal.TwitterCollection;
 
 import org.json.JSONObject;
 
@@ -542,9 +543,21 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 }
                             }
                         });
-
                     }
                 });
+
+
+        if(LiveConstants.isInLiveMode) {
+            liveVirtualSwitcher.setIsOn(true, true);
+            int liveColor = getResources().getColor(R.color.general_red_live);
+            topBarView.setBackgroundColor(liveColor);
+            mConfirm.setBackgroundColor(liveColor);
+        }
+        else {
+            int virtualColor = getResources().getColor(R.color.general_brand_color);
+            topBarView.setBackgroundColor(virtualColor);
+            mConfirm.setBackgroundColor(virtualColor);
+        }
     }
 
     private void setupCompetitionDisplay(Integer providerId) {
@@ -1417,6 +1430,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     usedDTO.quoteDTO,
                     requisite.getPortfolioIdObservable().toBlocking().first(),
                     usedDTO.clampedQuantity);
+            com.androidth.general.api.live1b.PositionDTO positionDTO = new com.androidth.general.api.live1b.PositionDTO();
             if (transactionFormDTO != null) {
                 unsubscribe(buySellSubscription);
                 buySellSubscription = getTransactionSubscription(transactionFormDTO);
@@ -1448,6 +1462,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 portfolioId.key
         );
     }
+
 
     protected void fireBuySellReport() {
         //TODO Change Analytics
@@ -1819,9 +1834,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     protected void pushLiveLogin(RetrofitError error)
     {
+        LiveConstants.hasLiveAccount = true; // debugging
         try {
             if (LiveConstants.hasLiveAccount) {
+
                 JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
+
+                Log.d("pushLiveLogin", error.getResponse().getBody().toString() + " " + buySellStockError.toString());
                 // user has a live account, but not logged in, redirect to the extracted json URL
                 Bundle args = getArguments();
                 String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
@@ -1829,13 +1848,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 LiveViewFragment liveViewFragment = new LiveViewFragment();
                 liveViewFragment.setArguments(args);
                 liveViewFragment.putUrl(args, redirectURL);
-
+                Log.d("pushLiveLogin2", "REDIRECT URL->> " + redirectURL );
                 try {
                     unsubscribe(buySellSubscription);
                 }
                 catch(Exception ex)
                 {
-                    ex.printStackTrace();
+                    Log.d("printStackTrace", ex.toString());
                 }
 
                 navigator.get().pushFragment(LiveViewFragment.class, args);
@@ -1847,20 +1866,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             }
         } catch (Exception e) {
             Toast.makeText(getContext(), "Error in redirection: " + e.getStackTrace().toString() , Toast.LENGTH_LONG).show();
-        }
-    }
-
-    protected void onLiveTradingChange()
-    {
-        if(liveVirtualSwitcher.getIsOn()) // live
-        {
-            Toast.makeText(getContext(), "RED", Toast.LENGTH_LONG);
-            // red
-        }
-        else //
-        {
-            // green
-            Toast.makeText(getContext(), "GREEN", Toast.LENGTH_LONG);
+            Log.d("pushLiveLoginCatchError", e.toString());
         }
     }
 }

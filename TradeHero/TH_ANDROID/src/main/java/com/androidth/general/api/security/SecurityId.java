@@ -13,10 +13,13 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
     private final static String BUNDLE_KEY_SECURITY_ID = SecurityId.class.getName() + ".securityId";
+    private final static String BUNDLE_KEY_AYONDO_ID = SecurityId.class.getName() + ".id_ay";
+
 
     String exchange;
     String securitySymbol;
     int securityIdNumber;
+    String ayondoId;
 
     //<editor-fold desc="Constructors">
     public SecurityId() {}
@@ -27,12 +30,21 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
         this.securitySymbol = securitySymbol;
         this.securityIdNumber = securityIdNumber;
     }
+    public SecurityId(final String exchange, final String securitySymbol, final int securityIdNumber, final String ayondoId)
+    {
+        this.exchange = exchange;
+        this.securitySymbol = securitySymbol;
+        this.securityIdNumber = securityIdNumber;
+        this.ayondoId = ayondoId;
+    }
+
 
     public SecurityId(@NonNull Bundle args)
     {
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
         this.securityIdNumber = args.getInt(BUNDLE_KEY_SECURITY_ID);
+        this.ayondoId = args.getString(BUNDLE_KEY_AYONDO_ID);
     }
     //</editor-fold>
 
@@ -46,9 +58,9 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
         return exchange;
     }
 
-    public int getSecurityIdNumber() {
-        return securityIdNumber;
-    }
+    public int getSecurityIdNumber() { return securityIdNumber; }
+
+    public String getAyondoId() { return ayondoId;}
 
     /**
      * Parse security raw info, follow this form: id_exchangeName_securitySymbol into securityId
