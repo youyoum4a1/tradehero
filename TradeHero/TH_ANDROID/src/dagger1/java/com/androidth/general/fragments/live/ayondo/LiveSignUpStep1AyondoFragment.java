@@ -1645,7 +1645,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             ayondoForm.setDob(dob_text);
         }
 
-        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm)
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), ayondoForm)
                 .subscribe(
                 brokerApplicationDTO -> {
                     liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
