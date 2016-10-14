@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.base.THApp;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
@@ -19,6 +21,7 @@ import com.androidth.general.persistence.prefs.AuthHeader;
 import com.androidth.general.persistence.prefs.FirstLaunch;
 import com.androidth.general.persistence.prefs.ResetHelpScreens;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.metrics.MetricsModule;
@@ -28,6 +31,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tune.Tune;
+import com.urbanairship.AirshipReceiver;
 
 import javax.inject.Inject;
 
@@ -56,6 +60,9 @@ public class SplashActivity extends BaseActivity
     @Nullable Subscription userProfileSubscription;
     @Nullable Uri deepLink;
 
+    boolean isFromPush;
+    String uaMessage;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         AppTiming.splashCreate = System.currentTimeMillis();
@@ -77,11 +84,23 @@ public class SplashActivity extends BaseActivity
                     getResources().getColor(R.color.authentication_guide_bg_color));
         }
 
-        deepLink = getIntent().getData();
+        if(getIntent()!=null && getIntent().getAction()!=null){
+            if(getIntent().getAction().equals(CustomAirshipReceiver.NOTIFICATION_OPENED)
+                    && getIntent().hasExtra(CustomAirshipReceiver.MESSAGE)){
 
+                isFromPush = true;
+                uaMessage = getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
+            }
+        }
+
+        deepLink = getIntent().getData();
         if (deepLink != null)
         {
-            ActivityHelper.launchDashboardWithFinish(this, deepLink);
+            if(isFromPush && uaMessage!=null){
+                ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
+            }else{
+                ActivityHelper.launchDashboardWithFinish(this, deepLink);
+            }
         }
     }
 
@@ -111,7 +130,12 @@ public class SplashActivity extends BaseActivity
 
         if (firstLaunchPreference.get() || resetHelpScreens.get() || authToken == null)
         {
-            ActivityHelper.launchAuthentication(this, deepLink);
+            if(isFromPush && uaMessage!=null){
+                ActivityHelper.launchAuthentication(this, deepLink);
+            }else{
+                ActivityHelper.launchAuthentication(this, deepLink, uaMessage);
+            }
+
             firstLaunchPreference.set(false);
             resetHelpScreens.set(false);
             finish();
@@ -127,7 +151,12 @@ public class SplashActivity extends BaseActivity
                                 @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
                                 {
                                     dtoCacheUtil.prefetchesUponLogin(pair.second);
-                                    ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
+                                    if(isFromPush && uaMessage!=null){
+                                        ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink, uaMessage);
+                                    }else{
+                                        ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
+                                    }
+
                                 }
                             },
                             new Action1<Throwable>()

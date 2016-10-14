@@ -13,7 +13,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -67,6 +69,7 @@ import com.androidth.general.persistence.prefs.IsOnBoardShown;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
@@ -80,6 +83,7 @@ import com.androidth.general.utils.metrics.ForAnalytics;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.utils.route.THRouter;
 import com.appsflyer.AppsFlyerLib;
+import com.google.android.gms.analytics.CampaignTrackingReceiver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -247,6 +251,8 @@ public class DashboardActivity extends BaseActivity
                 }
             });
         }
+
+        checkIfFromPush(getIntent());
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -396,6 +402,8 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
+                Log.v("GAv4", "On received intent");
+                new CampaignTrackingReceiver().onReceive(context, intent);
                 updateNetworkStatus();
             }
         };
@@ -744,5 +752,13 @@ public class DashboardActivity extends BaseActivity
         Fragment currentFragmentName = activityModule.navigator.getCurrentFragment();
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
         ActivityBuildTypeUtil.flagLowMemory();
+    }
+
+    private void checkIfFromPush(Intent intent){
+        if(intent!=null
+                && intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
+
+            CustomAirshipReceiver.createDialog(this, getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE));
+        }
     }
 }
