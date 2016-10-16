@@ -32,14 +32,14 @@
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait">
 
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
+      <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.VIEW"/>-->
+        <!--<category android:name="android.intent.category.DEFAULT"/>-->
+        <!--<category android:name="android.intent.category.BROWSABLE"/>-->
 
-        <data android:scheme="@string/intent_scheme"/>
-        <data android:scheme="provider-enroll"/>
-      </intent-filter>
+        <!--<data android:scheme="@string/intent_scheme"/>-->
+        <!--<data android:scheme="providers-enroll"/>-->
+      <!--</intent-filter>-->
 
     </activity>
 

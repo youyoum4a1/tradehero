@@ -71,6 +71,7 @@ import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
@@ -260,6 +261,20 @@ public class MainCompetitionFragment extends DashboardFragment
 
 //        Map<String, String> eventDetails = new HitBuilders.EventBuilder().setCategory("Action").setAction("Competition").build();
         GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_MAIN_PAGE);
+
+        String fromPushMessage = null;
+        if(getArguments().containsKey(CustomAirshipReceiver.MESSAGE)){
+            fromPushMessage = getArguments().getString(CustomAirshipReceiver.MESSAGE);
+            getArguments().remove(CustomAirshipReceiver.MESSAGE);
+
+        }else if(getActivity().getIntent().hasExtra(CustomAirshipReceiver.MESSAGE)){
+            fromPushMessage = getActivity().getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
+            getActivity().getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+        }
+
+        if(fromPushMessage!=null && !fromPushMessage.isEmpty()){
+            CustomAirshipReceiver.createDialog(getContext(), getArguments().getString(CustomAirshipReceiver.MESSAGE));
+        }
     }
 
     @Override public void onPause()

@@ -42,12 +42,12 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 @Routable({
-        "providers-enroll/:enrollProviderId",
+//        "providers-enroll/:enrollProviderId",
         "providers-enroll/:enrollProviderId/pages/:encodedUrl",
 })
 public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
 {
-    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+//    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @RouteProperty("encodedUrl") protected String encodedUrl;
     @Inject THRouter thRouter;
     @Inject ProviderUtil providerUtil;

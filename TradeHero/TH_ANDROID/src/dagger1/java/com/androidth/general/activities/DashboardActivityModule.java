@@ -23,6 +23,7 @@ import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.competition.ProviderVideoListFragment;
 import com.androidth.general.fragments.competition.RedeemFragment;
+import com.androidth.general.fragments.contestcenter.ContestCenterFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
 import com.androidth.general.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.androidth.general.fragments.live.LiveSignUpMainFragment;
@@ -123,7 +124,8 @@ import dagger.Provides;
 //                SignUpLiveActivity.class,
                 LiveSignUpMainFragment.class,
                 IdentityPromptActivity.class,
-                LiveActivityUtil.getRoutableKYC()
+                LiveActivityUtil.getRoutableKYC(),
+                ContestCenterFragment.class
         );
         DiscoveryMainFragment.registerAliases(router);
         StoreScreenFragment.registerAliases(router);

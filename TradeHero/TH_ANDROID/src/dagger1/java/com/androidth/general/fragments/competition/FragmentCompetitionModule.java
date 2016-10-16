@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.competition;
 
 import com.androidth.general.fragments.competition.zone.FragmentCompetitionZoneModule;
+
 import dagger.Module;
 
 @Module(

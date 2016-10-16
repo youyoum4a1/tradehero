@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,14 +31,19 @@ import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
+import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
+import com.androidth.general.receivers.CustomAirshipReceiver;
+import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +52,20 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
+@Routable({
+        "providers-enroll/:enrollProviderId"
+})
 public class ContestCenterFragment extends DashboardFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;// Why?
+
+    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
 
     @Inject MainCompetitionFragment mainCompetitionFragment;
     @Inject ProviderListCacheRx providerListCache;
@@ -60,7 +77,13 @@ public class ContestCenterFragment extends DashboardFragment
     List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
     SingleCompetitionWebviewData singleCompetitionWebviewData;
 
+    private String uaMessage;
+    private boolean hasRetried;
+
     private boolean hasEntered;
+
+    private Subscription providerSubscription;
+    private ProviderDTOList currentProviderDTOs;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -87,7 +110,15 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Override public void onResume() {
         super.onResume();
-        fetchProviderIdList();
+        if(getActivity().getIntent().hasExtra(CustomAirshipReceiver.MESSAGE)){
+            uaMessage = getActivity().getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
+            if(uaMessage==null || uaMessage.isEmpty()){
+                uaMessage = null;
+            }
+            getActivity().getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);//remove after getting it
+        }
+        fetchProviderIdList(providerListCache.getCachedValue(new ProviderListKey()));
+
     }
 
     @Override public void onStart(){
@@ -116,9 +147,46 @@ public class ContestCenterFragment extends DashboardFragment
         }
     }
 
-    private void fetchProviderIdList()
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(providerSubscription!=null){
+            try{
+                providerSubscription.unsubscribe();
+            }catch (Exception e){}
+        }
+    }
+
+    private void fetchProviderIdList(ProviderDTOList providerDTOs)
     {
-        ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
+        ProviderDTOList providerList = providerDTOs;
+        Log.v("", "Fetching provider..........");
+
+        if((providerList==null || providerList.size()<1)
+                && !hasRetried){
+
+            hasRetried = true;
+
+            Log.v("", "Fetching provider!!!!!..........");
+
+            providerSubscription = providerListCache.get(new ProviderListKey())
+                    .map(new PairGetSecond<ProviderListKey, ProviderDTOList>())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            new Action1<ProviderDTOList>()
+                            {
+                                @Override public void call(ProviderDTOList list)
+                                {
+                                    Log.v("CustomAirshipReceiver", "Fetching provider got it! "+list.size());
+                                    fetchProviderIdList(list);
+                                }
+                            },
+                            new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list)));
+
+            return;
+
+        }
         if(multipleCompetitionDatas!=null){
             multipleCompetitionDatas.clear();
         }
@@ -138,6 +206,7 @@ public class ContestCenterFragment extends DashboardFragment
 //                ft.replace(container.getId(), mainCompetitionFragment);
 //                ft.commit();
 
+                Log.v("CustomAirshipReceiver", "User enrolled");
                 multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
 
                 competitionList.setVisibility(View.VISIBLE);
@@ -148,6 +217,7 @@ public class ContestCenterFragment extends DashboardFragment
                     if(!hasEntered){
                         handleCompetitionItemClicked(multipleCompetitionDatas.get(0));
                         hasEntered = true;
+                        return;//otherwise, uaMessage checking below is checked
                     }
 
                 }catch (Exception e){
@@ -159,6 +229,7 @@ public class ContestCenterFragment extends DashboardFragment
                 singleCompetitionWebviewData = new SingleCompetitionWebviewData(url);
                 hackWebview.setVisibility(View.VISIBLE);
                 competitionList.setVisibility(View.INVISIBLE);
+                Log.v(getTag(), "Setting provider webview");
                 WebView webView = setWebView(hackWebview);
                 webView.loadUrl(singleCompetitionWebviewData.webViewUrl);
                 webView.setOnTouchListener((v, event) -> {
@@ -192,11 +263,17 @@ public class ContestCenterFragment extends DashboardFragment
             //if providerlist is null
             hackWebview.setVisibility(View.VISIBLE);
             competitionList.setVisibility(View.INVISIBLE);
+            Log.v(getTag(), "Setting empty webview");
             WebView webView = setWebView(hackWebview);
             webView.loadUrl(NetworkConstants.NO_COMPETITION);
+        }
 
+        if(uaMessage!=null){
+            CustomAirshipReceiver.createDialog(getContext(), uaMessage);
+            uaMessage = null;
         }
     }
+
     private class MultipleCompetitionData{
         String imageUrl;
         boolean isEnrolled;
@@ -276,10 +353,17 @@ public class ContestCenterFragment extends DashboardFragment
             competitionList.getAdapter().notifyDataSetChanged();
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, data.providerId);
+            if(uaMessage!=null){
+                args.putString(CustomAirshipReceiver.MESSAGE, uaMessage);
+            }
             navigator.get().pushFragment(MainCompetitionFragment.class, args);
         }
         else if(data!=null && !data.isEnrolled) {
             Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
+            if(uaMessage!=null){
+                kycIntent.putExtra(CustomAirshipReceiver.MESSAGE, uaMessage);
+            }
+
             kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, data.intProviderId);
             kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
             startActivity(kycIntent);

@@ -2,6 +2,7 @@ package com.androidth.general.receivers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.util.Log;
 import com.androidth.general.R;
 import com.androidth.general.activities.SplashActivity;
 import com.urbanairship.AirshipReceiver;
+import com.urbanairship.actions.ActionValue;
 import com.urbanairship.push.PushMessage;
 
 /**
@@ -20,6 +22,7 @@ public class CustomAirshipReceiver extends AirshipReceiver {
     public static String NOTIFICATION_OPENED = "Urban Airship Notification Opened";
 
     public static String MESSAGE = "Message";
+    public static String DEEPLINK = "Deeplink";
 
     private static final String TAG = "CustomAirshipReceiver";
 
@@ -58,6 +61,13 @@ public class CustomAirshipReceiver extends AirshipReceiver {
         Intent intent = new Intent(context, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(NOTIFICATION_OPENED);
+        if(notificationInfo.getMessage().getActions().containsKey("^d")){
+            ActionValue data = notificationInfo.getMessage().getActions().get("^d");
+            Uri uri = Uri.parse(data.getString());
+            intent.setData(uri);
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(CustomAirshipReceiver.MESSAGE, notificationInfo.getMessage().getAlert());
         context.startActivity(intent);
 
@@ -71,7 +81,7 @@ public class CustomAirshipReceiver extends AirshipReceiver {
 
         // Return false here to allow Urban Airship to auto launch the launcher
         // activity for foreground notification action buttons
-        return false;
+        return true;
     }
 
     @Override

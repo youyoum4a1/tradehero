@@ -164,6 +164,9 @@ public class DashboardActivity extends BaseActivity
     private CompositeSubscription onPauseSubscriptions;
 
     private LiveActivityUtil liveActivityUtil;
+    private boolean hasLaunched;
+
+    private Intent intent;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -208,7 +211,8 @@ public class DashboardActivity extends BaseActivity
             activityModule.navigator.goToTab(RootFragmentType.getInitialTab());
         }
 
-        if (getIntent() != null)
+        intent = getIntent();
+        if (intent != null)
         {
             processNotificationDataIfPresence(getIntent().getExtras());
         }
@@ -251,8 +255,6 @@ public class DashboardActivity extends BaseActivity
                 }
             });
         }
-
-        checkIfFromPush(getIntent());
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -486,7 +488,8 @@ public class DashboardActivity extends BaseActivity
                             }
                         }));
 
-        if (!launchActions(getIntent()))
+        //handling the deep link
+        if (!launchActions(intent))
         {
             // get providers for enrollment page
             onPauseSubscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
@@ -552,6 +555,24 @@ public class DashboardActivity extends BaseActivity
                         AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getSupportFragmentManager());
                     }
                 }, new EmptyAction1<Throwable>()));
+
+        if(intent!=null && !hasLaunched){
+            if(intent.getData()!=null){
+                thRouter.open(intent.getData().getHost()+intent.getData().getPath(), this);
+//            }else if(intent.hasExtra(CustomAirshipReceiver.DEEPLINK)){
+//                Uri deepLink = intent.getParcelableExtra(CustomAirshipReceiver.DEEPLINK);
+//                try{
+////                    Bundle bundle = new Bundle();
+////                    bundle.putInt("enrollProviderId", 55);
+//                    thRouter.open(deepLink.getHost()+deepLink.getPath(), bundle);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+
+            }else{
+                checkIfFromPush(intent);
+            }
+        }
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -689,9 +710,11 @@ public class DashboardActivity extends BaseActivity
         }
 
         Uri data = intent.getData();
+        Bundle extras = intent.getExtras();
         if (data != null)
         {
-            thRouter.open(data, null, this);
+            hasLaunched = true;
+            thRouter.open(data, extras!=null? extras:null, this);
             intent.setData(null);
             drawerLayout.closeDrawers();
             return true;
@@ -758,7 +781,11 @@ public class DashboardActivity extends BaseActivity
         if(intent!=null
                 && intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
 
-            CustomAirshipReceiver.createDialog(this, getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE));
+            String message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+            if(message!=null && !message.isEmpty()){
+                CustomAirshipReceiver.createDialog(this, message);
+                getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+            }
         }
     }
 }

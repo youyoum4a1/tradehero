@@ -73,7 +73,7 @@ public class ActivityHelper
         {
             localIntent.setData(deepLink);
         }
-
+        localIntent.putExtra(CustomAirshipReceiver.DEEPLINK, deepLink);
         localIntent.putExtra(CustomAirshipReceiver.MESSAGE, uaMessage);
 
         fromActivity.startActivity(localIntent);

@@ -13,7 +13,6 @@ import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
-import com.androidth.general.base.THApp;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
@@ -26,12 +25,17 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.metrics.MetricsModule;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
+import com.androidth.general.utils.route.THRouter;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tune.Tune;
 import com.urbanairship.AirshipReceiver;
+import com.urbanairship.util.UriUtils;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -62,6 +66,8 @@ public class SplashActivity extends BaseActivity
 
     boolean isFromPush;
     String uaMessage;
+
+    public static final String DEEP_LINK_PROVIDERS_ENROLL = "providers-enroll";
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -94,13 +100,10 @@ public class SplashActivity extends BaseActivity
         }
 
         deepLink = getIntent().getData();
-        if (deepLink != null)
+        if (deepLink != null && getIntent().getAction().equals(CustomAirshipReceiver.NOTIFICATION_OPENED))
         {
-            if(isFromPush && uaMessage!=null){
-                ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
-            }else{
-                ActivityHelper.launchDashboardWithFinish(this, deepLink);
-            }
+            openDeepLink(getIntent().getData());
+
         }
     }
 
@@ -156,7 +159,6 @@ public class SplashActivity extends BaseActivity
                                     }else{
                                         ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
                                     }
-
                                 }
                             },
                             new Action1<Throwable>()
@@ -191,4 +193,20 @@ public class SplashActivity extends BaseActivity
         return false;
     }
 
+    private void openDeepLink(Uri deepLink){
+
+        String host = deepLink.getHost();//providers-enroll
+        Bundle options = new Bundle();
+        Map<String, List<String>> queryParameters = UriUtils.getQueryParameters(deepLink);
+
+        if (DEEP_LINK_PROVIDERS_ENROLL.equals(host) && uaMessage!=null) {
+            ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
+//            thRouter.open(deepLink.getPath(), getApplicationContext());
+        }else{
+            if(isFromPush && uaMessage!=null){
+                ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
+            }
+        }
+
+    }
 }
