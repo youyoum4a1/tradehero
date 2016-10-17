@@ -6,6 +6,8 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import com.androidth.general.utils.LiveConstants;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.androidth.general.common.persistence.DTO;
@@ -68,8 +70,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public String chartDataSource;
     public String currencyDisplay;
     public String currencyISO;
+    public String parentCurrencyISO;
     public String symbol_ay;
-    public String id_ay;
+    public Integer id_ay;
     @Nullable public Double marketCap;
     @Nullable public Double lastPrice;
     public Double risePercent;
@@ -187,6 +190,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
         this.id_ay = other.id_ay;
         this.symbol_ay = other.symbol_ay;
+        this.parentCurrencyISO = other.parentCurrencyISO;
     }
     //</editor-fold>
 
@@ -232,6 +236,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     @NonNull public SecurityId getSecurityId()
     {
+        if(LiveConstants.isInLiveMode)
+            return new SecurityId(exchange, symbol_ay, id_ay);
         return new SecurityId(exchange, symbol, id);
     }
 
@@ -279,6 +285,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
                 ", chartDataSource='" + chartDataSource + '\'' +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", currencyISO='" + currencyISO + '\'' +
+                ", parentCurrencyISO='" + parentCurrencyISO  + '\'' +
                 ", symbol_ay='" + symbol_ay + '\'' +
                 ", id_ay='" + id_ay + '\'' +
                 ", marketCap=" + marketCap +
