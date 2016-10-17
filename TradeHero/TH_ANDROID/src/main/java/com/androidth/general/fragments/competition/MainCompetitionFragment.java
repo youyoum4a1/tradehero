@@ -273,7 +273,7 @@ public class MainCompetitionFragment extends DashboardFragment
         }
 
         if(fromPushMessage!=null && !fromPushMessage.isEmpty()){
-            CustomAirshipReceiver.createDialog(getContext(), getArguments().getString(CustomAirshipReceiver.MESSAGE));
+            CustomAirshipReceiver.createDialog(getContext(), fromPushMessage);
         }
     }
 

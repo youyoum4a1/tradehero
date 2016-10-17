@@ -356,6 +356,7 @@ public class ContestCenterFragment extends DashboardFragment
             if(uaMessage!=null){
                 args.putString(CustomAirshipReceiver.MESSAGE, uaMessage);
             }
+            uaMessage = null;
             navigator.get().pushFragment(MainCompetitionFragment.class, args);
         }
         else if(data!=null && !data.isEnrolled) {
@@ -366,6 +367,7 @@ public class ContestCenterFragment extends DashboardFragment
 
             kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, data.intProviderId);
             kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
+            uaMessage = null;
             startActivity(kycIntent);
         }
 

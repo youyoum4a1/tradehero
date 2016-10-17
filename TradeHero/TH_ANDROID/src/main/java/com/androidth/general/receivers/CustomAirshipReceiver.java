@@ -63,7 +63,9 @@ public class CustomAirshipReceiver extends AirshipReceiver {
         intent.setAction(NOTIFICATION_OPENED);
         if(notificationInfo.getMessage().getActions().containsKey("^d")){
             ActionValue data = notificationInfo.getMessage().getActions().get("^d");
-            Uri uri = Uri.parse(data.getString());
+            String url = data.getString();
+            url = url.replace("TradeHero-Android", context.getString(R.string.intent_scheme));
+            Uri uri = Uri.parse(url);
             intent.setData(uri);
         }
 
