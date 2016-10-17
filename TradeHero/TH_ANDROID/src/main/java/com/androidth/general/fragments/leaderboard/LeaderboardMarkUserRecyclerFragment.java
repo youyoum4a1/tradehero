@@ -302,13 +302,15 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                         {
                             @Override public void call(Throwable throwable)
                             {//if illegalStateException, ignore!!!
-                                throwable.printStackTrace();
-                                Log.v(getTag(), "!!!1"+throwable.getLocalizedMessage());
-                                Log.v(getTag(), "!!!2"+throwable.getCause().getLocalizedMessage());
-                                Log.v(getTag(), "!!!3"+throwable.getMessage());
-                                if(throwable!=null && throwable instanceof RuntimeException){
-                                    Log.v(getTag(), "!!!4");
+                                if(throwable!=null){
+                                    throwable.printStackTrace();
                                 }
+
+//                                Log.v(getTag(), "!!!1"+throwable.getLocalizedMessage());
+//                                Log.v(getTag(), "!!!3"+throwable.getMessage());
+//                                if(throwable!=null && throwable instanceof RuntimeException){
+//                                    Log.v(getTag(), "!!!4");
+//                                }
                                 updateCurrentRankView(null);
                             }
                         }));
