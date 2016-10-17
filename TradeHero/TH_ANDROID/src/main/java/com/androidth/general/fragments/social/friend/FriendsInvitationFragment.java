@@ -445,10 +445,12 @@ public class FriendsInvitationFragment extends BaseFragment
                             {
                                 String errorMessage = throwable.getMessage();
 
-                                if (throwable instanceof RetrofitError) {
-                                    RetrofitError error = (RetrofitError) throwable;
-                                    errorMessage = new String(((TypedByteArray)error.getResponse().getBody()).getBytes()).replace("\"", "");
-                                }
+                                try{
+                                    if (throwable instanceof RetrofitError) {
+                                        RetrofitError error = (RetrofitError) throwable;
+                                        errorMessage = new String(((TypedByteArray)error.getResponse().getBody()).getBytes()).replace("\"", "");
+                                    }
+                                }catch (Exception e){}
 
                                 // configure UI display error
                                 messageViewIconView.setImageResource(R.drawable.red_alert);
