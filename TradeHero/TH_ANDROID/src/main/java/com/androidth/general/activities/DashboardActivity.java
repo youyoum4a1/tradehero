@@ -565,8 +565,12 @@ public class DashboardActivity extends BaseActivity
                         message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
                     }
 
-                    CustomAirshipReceiver.createDialog(this, message, url);
+                    getIntent().setData(null);
                     getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+                    CustomAirshipReceiver.createDialogWithListener(this, message);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
                 }else{
                     thRouter.open(intent.getData().getHost()+intent.getData().getPath(), this);
                 }

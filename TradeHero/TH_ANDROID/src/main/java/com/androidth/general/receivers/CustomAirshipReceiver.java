@@ -1,5 +1,6 @@
 package com.androidth.general.receivers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -103,18 +104,21 @@ public class CustomAirshipReceiver extends AirshipReceiver {
         dialog.show();
     }
 
-    public static void createDialog(Context context, String message, String url){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public static void createDialogWithListener(Activity activity, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setIcon(R.drawable.th_app_logo);
         builder.setMessage(message);
         builder.setCancelable(false);
-        builder.setNegativeButton(context.getString(R.string.tab_to_dismiss), null);
-        builder.setPositiveButton("Open link", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(activity.getString(R.string.tab_to_dismiss), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                context.startActivity(intent);
+                if(activity.getIntent()!=null){
+                    try{
+                        activity.getIntent().removeExtra(MESSAGE);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
