@@ -85,6 +85,7 @@ public class ContestCenterFragment extends DashboardFragment
 
     private Subscription providerSubscription;
     private ProviderDTOList currentProviderDTOs;
+    protected ProgressDialog progressDialog;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -106,6 +107,7 @@ public class ContestCenterFragment extends DashboardFragment
             competitionList.setLayoutManager(layoutManager);
         }
 
+        progressDialog = ProgressDialog.show(getContext(), "Loading","Please wait ...",true);//for webview
         return view;
     }
 
@@ -161,15 +163,18 @@ public class ContestCenterFragment extends DashboardFragment
     private void fetchProviderIdList(ProviderDTOList providerDTOs)
     {
         ProviderDTOList providerList = providerDTOs;
-        Log.v("", "Fetching provider..........");
+        Log.v("Positions", "Fetching provider...."+providerList.size()+":has"+hasRetried);
 
         if((providerList==null || providerList.size()<1)
                 && !hasRetried){
 
             hasRetried = true;
 
-            Log.v("", "Fetching provider!!!!!..........");
+            Log.v("Positions", "Fetching provider!!!!!..........");
 
+            if(providerSubscription!=null){
+                providerSubscription.unsubscribe();
+            }
             providerSubscription = providerListCache.get(new ProviderListKey())
                     .map(new PairGetSecond<ProviderListKey, ProviderDTOList>())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -179,7 +184,7 @@ public class ContestCenterFragment extends DashboardFragment
                             {
                                 @Override public void call(ProviderDTOList list)
                                 {
-                                    Log.v("CustomAirshipReceiver", "Fetching provider got it! "+list.size());
+                                    Log.v("Positions", "Fetching provider got it! "+list.size());
                                     fetchProviderIdList(list);
                                 }
                             },
@@ -207,7 +212,7 @@ public class ContestCenterFragment extends DashboardFragment
 //                ft.replace(container.getId(), mainCompetitionFragment);
 //                ft.commit();
 
-                Log.v("CustomAirshipReceiver", "User enrolled");
+                Log.v("Positions", "User enrolled");
                 multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
 
                 competitionList.setVisibility(View.VISIBLE);
@@ -230,7 +235,7 @@ public class ContestCenterFragment extends DashboardFragment
                 singleCompetitionWebviewData = new SingleCompetitionWebviewData(url);
                 hackWebview.setVisibility(View.VISIBLE);
                 competitionList.setVisibility(View.INVISIBLE);
-                Log.v(getTag(), "Setting provider webview");
+                Log.v("Positions", "Setting provider webview");
                 WebView webView = setWebView(hackWebview);
                 webView.loadUrl(singleCompetitionWebviewData.webViewUrl);
                 webView.setOnTouchListener((v, event) -> {
@@ -256,6 +261,7 @@ public class ContestCenterFragment extends DashboardFragment
                 ProviderDTO providerDTO = providerList.get(i);
                 multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
             }
+            Log.v("Positions", "Setting multiple competition");
             competitionList.setVisibility(View.VISIBLE);
             hackWebview.setVisibility(View.INVISIBLE);
             competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
@@ -264,7 +270,7 @@ public class ContestCenterFragment extends DashboardFragment
             //if providerlist is null
             hackWebview.setVisibility(View.VISIBLE);
             competitionList.setVisibility(View.INVISIBLE);
-            Log.v(getTag(), "Setting empty webview");
+            Log.v("Positions", "Setting empty webview");
             WebView webView = setWebView(hackWebview);
             webView.loadUrl(NetworkConstants.NO_COMPETITION);
         }
@@ -408,14 +414,19 @@ public class ContestCenterFragment extends DashboardFragment
         WebChromeClient webChromeClient = new WebChromeClient();
         webView.setWebChromeClient(webChromeClient);
         webView.setWebViewClient(new WebViewClient(){
-            ProgressDialog progressDialog = ProgressDialog.show(getContext(), "Loading","Please wait ...",true);
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
-                progressDialog.show();
+                Log.v("Positions", "Loading webview "+url);
+                if(!progressDialog.isShowing()){
+                    progressDialog.show();
+                }
+
             }
             @Override
             public void onPageFinished(WebView view, String url) {
+                Log.v("Positions", "Loading webview done");
                 progressDialog.dismiss();
             }
 
