@@ -1,6 +1,7 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
 import com.androidth.general.api.competition.ProviderId;
@@ -38,8 +39,9 @@ import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.api.live1b.NewOrderSingleDTO;
 import com.androidth.general.api.live1b.OrderSideEnum;
-import com.androidth.general.api.live1b.PositionDTO;
+import com.androidth.general.api.live1b.PositionDto;
 import com.androidth.general.api.live1b.PositionTransactionDTO;
+import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.api.market.Country;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
@@ -67,6 +69,7 @@ import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.androidth.general.utils.GraphicUtil;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.SecurityUtils;
 
 import java.io.File;
@@ -89,29 +92,35 @@ import timber.log.Timber;
 
 
 @Singleton
-public class Live1BServiceWrapper
-{
+public class Live1BServiceWrapper {
     private static final int AYONDO_MINIMUM_AGE = 21;
 
     // for dynamic query
     // enum?
     public static final String PROVIDER_ID = "{providerId}";
     public static final String INPUT = "{input}";
-    @NonNull private final Live1BServiceRx live1BServiceRx;
-    @NonNull private final LiveServiceAyondoRx liveServiceAyondoRx;
-    @NonNull private final LiveBrokerSituationPreference liveBrokerSituationPreference;
-    @NonNull private final PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
+    @NonNull
+    private final Live1BServiceRx live1BServiceRx;
+    @NonNull
+    private final LiveServiceAyondoRx liveServiceAyondoRx;
+    @NonNull
+    private final LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @NonNull
+    private final PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
-    @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
-    @NonNull private final CurrentUserId currentUserId;
-    @Inject public Live1BServiceWrapper(
+    @NonNull
+    private final Lazy<PortfolioCacheRx> portfolioCache;
+    @NonNull
+    private final CurrentUserId currentUserId;
+
+    @Inject
+    public Live1BServiceWrapper(
             @NonNull Live1BServiceRx live1BServiceRx,
             @NonNull LiveServiceAyondoRx liveServiceAyondoRx,
             @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
             @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NonNull CurrentUserId currentUserId)
-    {
+            @NonNull CurrentUserId currentUserId) {
         this.live1BServiceRx = live1BServiceRx;
         this.liveServiceAyondoRx = liveServiceAyondoRx;
         this.liveBrokerSituationPreference = liveBrokerSituationPreference;
@@ -120,15 +129,15 @@ public class Live1BServiceWrapper
         this.currentUserId = currentUserId;
     }
 
-    @NonNull public Observable<LiveAvailabilityDTO> getAvailability()
-    {
+    @NonNull
+    public Observable<LiveAvailabilityDTO> getAvailability() {
         return liveServiceAyondoRx.getAvailability()
                 .cast(LiveAvailabilityDTO.class);
         // .merge() with other specific ones when time comes
     }
 
-    @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
-    {
+    @NonNull
+    public Observable<LiveTradingSituationDTO> getLiveTradingSituation() {
         //Generic calls for multi brokers
         return live1BServiceRx.getLiveTradingSituation();
     }
@@ -145,11 +154,11 @@ public class Live1BServiceWrapper
 //    }
 
     //<editor-fold desc="Buy or Sell Security">
-    @NonNull public Observable<PositionTransactionDTO> doTransactionRx(
+    @NonNull
+    public Observable<String> doTransactionRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO,
-            boolean isBuy)
-    {
+            boolean isBuy) {
 //        if (isBuy)
 //        {
 //            return buyRx(securityId, transactionFormDTO);
@@ -157,7 +166,7 @@ public class Live1BServiceWrapper
 //        return sellRx(securityId, transactionFormDTO);
         OrderSideEnum orderSide = isBuy ? OrderSideEnum.getOrderSideEnumFromId('1') : OrderSideEnum.getOrderSideEnumFromId('2');
 
-        return buyNewOrder(securityId.getSecuritySymbol(), orderSide, transactionFormDTO.quantity);
+        return buyNewOrder(String.valueOf(securityId.getAyondoId()), orderSide, transactionFormDTO.quantity);
     }
     //</editor-fold>
 
@@ -187,20 +196,27 @@ public class Live1BServiceWrapper
 
 
     //<editor-fold desc="New Order Single Security">
-    @NonNull public Observable<PositionTransactionDTO> buyNewOrder(
+    @NonNull public Observable<String> buyNewOrder(
             @NonNull String securityId,
             @NonNull OrderSideEnum orderSideEnum,
             @NonNull float quantity)
     {
-        Observable<PositionTransactionDTO> buyResult;
+        Observable<String> buyResult;
 
         NewOrderSingleDTO newOrderSingleDTO = new NewOrderSingleDTO(securityId,orderSideEnum, quantity);
 
         buyResult = this.live1BServiceRx.newOrder(newOrderSingleDTO);
+
+        Log.d(".java", "buyNewOrder: securityId used for order: " + securityId + " islive? : " + LiveConstants.isInLiveMode);
         return buyResult;
     }
     //</editor-fold>
 
+    @NonNull public Observable<String> getPositions()
+    {
+        Log.d(".java", "getPositions() is live mode? : " + LiveConstants.isInLiveMode);
+        return this.live1BServiceRx.getOMPositions("");
+    }
 
     //    //<editor-fold desc="Sell Security">
     @NonNull public Observable<SecurityPositionTransactionDTO> sellRx(

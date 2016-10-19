@@ -106,8 +106,8 @@ public interface Live1BServiceRx {
             @Path("validateURL") String validateURL
     );
 
-    @GET("/om/Positions")
-    Observable<LiveTradingSituationDTO> getPositions();
+    @POST("/om/Positions")
+    Observable<String> getOMPositions (@Body Object dummy);
 
     @POST("/securities/{exchange}/{securitySymbol}/buy")
     Observable<SecurityPositionTransactionDTO> buy(
@@ -122,7 +122,7 @@ public interface Live1BServiceRx {
             @Body() TransactionFormDTO transactionFormDTO);
 
     @POST("/om/NewOrder")
-    Observable<PositionTransactionDTO> newOrder(
+    Observable<String> newOrder(
             @Body() NewOrderSingleDTO newOrderSingleDTO);
 
     @POST("/om/PaymentTransferId/{PaymentTransferIdRequestDTO}")

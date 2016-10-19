@@ -21,7 +21,9 @@ import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TransactionFormDTO;
+import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedNumber;
@@ -127,7 +129,8 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
 
         if(LiveConstants.isInLiveMode)
         {
-            Log.d("BuyStockFragment.java", "getTransactionSubscription requisite.securityId: " + requisite.securityId);
+            SecurityId sid = requisite.securityId;
+            Log.d("BuyStockFragment.java", "getTransactionSubscription requisite.securityId.ayondoId: " + sid.getAyondoId() + " securityId.id: " + sid.getSecurityIdNumber());
             try {
                 return AppObservable.bindSupportFragment(
                         this,
@@ -149,7 +152,7 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                             Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
                                         else {
                                             Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                                            Log.d("BuyStockFragment.java", "Error in stock purchase " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+                                            Log.d("BuyStockFragment.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
 
                                         }
                                     }
@@ -157,10 +160,11 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                             }
                         })
                         //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
-                        .subscribe(new Action1<PositionTransactionDTO>() {
+                        .subscribe(new Action1<String>() {
                                        @Override
-                                       public void call(PositionTransactionDTO positionTransactionDTO) {
-                                           Toast.makeText(getContext(), positionTransactionDTO.toString(), Toast.LENGTH_LONG);
+                                       public void call(String positionTransactionResult) {
+                                           Log.d("BuyStockFragment.java", "Success stock purchase, result: " + positionTransactionResult);
+                                           Toast.makeText(getContext(), positionTransactionResult.toString(), Toast.LENGTH_LONG);
                                        }
                                    }
 

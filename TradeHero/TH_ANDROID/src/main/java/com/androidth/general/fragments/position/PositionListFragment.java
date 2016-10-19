@@ -18,13 +18,19 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ViewAnimator;
 
+import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
+import com.androidth.general.network.service.Live1BServiceWrapper;
 import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.LiveConstants;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -33,7 +39,6 @@ import com.androidth.general.common.utils.THToast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 import com.tradehero.route.InjectRoute;
 import com.androidth.general.R;
 import com.androidth.general.activities.HelpActivity;
@@ -107,6 +112,8 @@ import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.MultiRecyclerScrollListener;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +126,8 @@ import butterknife.ButterKnife;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -167,6 +176,8 @@ public class PositionListFragment
 
     @Bind(R.id.btn_help) ImageView btnHelp;
     @Bind(R.id.position_list_header_stub) ViewStub headerStub;
+
+    @Inject Live1BServiceWrapper live1BServiceWrapper;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -475,6 +486,28 @@ public class PositionListFragment
                                     }
                                 },
                                 new TimberAndToastOnErrorAction1("Failed to listen to user action")));
+
+//        if(LiveConstants.isInLiveMode) {
+            connectOrderManagementSignalR();
+
+//            live1BServiceWrapper.getPositions()
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError(new Action1<Throwable>() {
+//                        @Override
+//                        public void call(Throwable throwable) {
+//                            Log.d(".java", "getPositions Error " + throwable.toString());
+//                        }
+//                    })
+//                    .subscribe(new Action1<String>() {
+//                                   @Override
+//                                   public void call(String responseString) {
+//                                       Log.d(".java", "getPositions success " + responseString);
+//                                   }
+//                               }
+//
+//                    );
+   //     }
     }
 
     @Override public void onPause()
@@ -498,7 +531,7 @@ public class PositionListFragment
     @SuppressLint("NewApi")
     @Override public void onDestroyView()
     {
-        disconnectPortfolioSignalR(portfolioDTO);
+        disconnectSignalR(portfolioDTO);
 
         positionRecyclerView.clearOnScrollListeners();
         positionRecyclerView.setOnTouchListener(null);
@@ -515,6 +548,7 @@ public class PositionListFragment
         this.positionItemAdapter = null;
         super.onDestroy();
     }
+
 
     protected PositionItemAdapter createPositionItemAdapter()
     {
@@ -1003,9 +1037,15 @@ public class PositionListFragment
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 
+<<<<<<< HEAD
+//            connectPortfolioSignalR(portfolioCompactDTO);
+
+
+=======
             if(portfolioCompactDTO.getPortfolioId()!=null){
                 connectPortfolioSignalR(portfolioCompactDTO);
             }
+>>>>>>> origin/Row-live-with-competition
 
 //            signalRManager.initWithEvent(LiveNetworkConstants.PORTFOLIO_HUB_NAME,
 //                    new String[]{"UpdatePositions"},
@@ -1436,16 +1476,21 @@ public class PositionListFragment
         return R.layout.tutorial_position_list;
     }
 
+
+
     private void connectPortfolioSignalR(PortfolioCompactDTO portfolioCompactDTO){
         if(signalRManager!=null){
             return;
         }
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.PORTFOLIO_HUB_NAME);
 
+        Log.d(".java", "connectPortfolioSignalR: requestHeaders " + requestHeaders + " currentUserId " + currentUserId );
+
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_PROFILE, new SubscriptionHandler1<Object>() {
             @Override
             public void run(Object updatedPortfolio) {
                 //2016-09-08T02:07:19
+                Log.d(".java", "connectPortfolioSignalR: run updatedPortfolio " + updatedPortfolio.toString());
                 Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
                 try{
                     JsonObject jsonObject = gson.toJsonTree(updatedPortfolio).getAsJsonObject();
@@ -1474,7 +1519,7 @@ public class PositionListFragment
 
             @Override
             public void run(List list) {
-
+                Log.d("PLF.java", "connectPortfolioSignalR UpdatePosition: " + list.toString());
                 for(int i=0; i<list.size(); i++){
                     try{
                         String s = list.get(i).toString();
@@ -1518,11 +1563,99 @@ public class PositionListFragment
 
     }
 
-    private void disconnectPortfolioSignalR(PortfolioCompactDTO portfolioCompactDTO){
-        if(portfolioCompactDTO!=null && signalRManager!=null){
-            signalRManager.startConnection("UnsubscribeFromPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
-
+    private void disconnectSignalR(PortfolioCompactDTO portfolioCompactDTO){
+//        if(portfolioCompactDTO!=null && signalRManager!=null){
+//            signalRManager.startConnection("UnsubscribeFromPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
+//
+//            signalRManager.getCurrentConnection().disconnect();
+//        }
+        if(portfolioCompactDTO!=null && signalRManager!=null)
             signalRManager.getCurrentConnection().disconnect();
-        }
     }
+
+    private void connectOrderManagementSignalR()
+    {
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
+        Log.d("PLF.java", "connectOrderManagementSignalR: listening on PositionsResponse...." );
+        signalRManager.getCurrentProxy().on("PositionsResponse", new SubscriptionHandler1<PositionsResponseDTO>() {
+            @Override
+            public void run(PositionsResponseDTO positionResponseDTO) {
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(positionResponseDTO!=null) {
+                            Log.d("PLF.java", "positionResponseDTO = " + positionResponseDTO.toString());
+
+                            // need to load the current adapter to this live1b version??
+                        }
+                    }
+                });
+            }
+
+        }, PositionsResponseDTO.class);
+
+        signalRManager.startConnection();
+    }
+
+//    private void GetLivePositions()
+//    {
+//        if(LiveConstants.isInLiveMode)
+//        {
+//            connectOrderManagementSignalR();
+//            live1BServiceWrapper.getPositions()
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError(new Action1<Throwable>() {
+//                        @Override
+//                        public void call(Throwable throwable) {
+//                            if (throwable != null) {
+//                                if (throwable instanceof RetrofitError) {
+//
+//                                    RetrofitError error = (RetrofitError) throwable;
+//                                    Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+//                                    if (error.getResponse() != null && error.getResponse().getStatus() == 302)
+//                                    {
+//                                        //pushLiveLogin(error);
+//                                    }
+//                                    else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+//                                        Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+//                                    else {
+//                                        Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+//                                        Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    })
+//                    //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+//                    .subscribe(new Action1<String>() {
+//                                   @Override
+//                                   public void call(String getPositions) {
+//                                       Log.d("PLF.java", "Success getPositions, result: " + getPositions);
+//                                   }
+//                               }
+//
+//                            , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+//
+//        }
+//
+//    }
+
+
+
+//
+//    @Override  public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
+//    {
+//        super.onLiveTradingChanged(event);
+//        int color =  getResources().getColor(R.color.general_brand_color);
+//        Log.d("PLF.java", "Is In Live Mode ? : " + LiveConstants.isInLiveMode);
+//        if(LiveConstants.isInLiveMode) {
+//            color = getResources().getColor(R.color.general_red_live);
+//            //    GetLivePositions();
+//        }
+//        setActionBarColor(color);
+//    }
+
+
 }

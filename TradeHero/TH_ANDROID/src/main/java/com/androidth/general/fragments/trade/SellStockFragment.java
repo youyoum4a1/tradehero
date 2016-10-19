@@ -152,10 +152,10 @@ public class SellStockFragment extends AbstractStockTransactionFragment
                             }
                         }
                     })
-                    .subscribe(new Action1<PositionTransactionDTO>() {
+                    .subscribe(new Action1<String>() {
                                    @Override
-                                   public void call(PositionTransactionDTO positionTransactionDTO) {
-                                       Toast.makeText(getContext(), positionTransactionDTO.toString(), Toast.LENGTH_LONG);
+                                   public void call(String positionTransactionResult) {
+                                       Toast.makeText(getContext(), positionTransactionResult.toString(), Toast.LENGTH_LONG);
                                    }
                                }
 
