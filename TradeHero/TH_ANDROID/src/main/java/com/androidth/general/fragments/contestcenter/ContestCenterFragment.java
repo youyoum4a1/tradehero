@@ -106,7 +106,10 @@ public class ContestCenterFragment extends DashboardFragment
             competitionList.setLayoutManager(layoutManager);
         }
 
-        progressDialog = ProgressDialog.show(getContext(), "Loading","Please wait ...",true);//for webview
+        progressDialog = new ProgressDialog(getContext());//for webview
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Please wait ...");
+
         return view;
     }
 
@@ -163,6 +166,8 @@ public class ContestCenterFragment extends DashboardFragment
     {
         ProviderDTOList providerList = providerDTOs;
         Log.v("Positions", "Fetching provider...."+providerList.size()+":has"+hasRetried);
+
+        progressDialog.dismiss();
 
         if((providerList==null || providerList.size()<1)
                 && !hasRetried){
