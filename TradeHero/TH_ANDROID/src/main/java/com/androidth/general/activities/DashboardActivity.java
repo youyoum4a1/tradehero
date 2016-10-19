@@ -558,7 +558,19 @@ public class DashboardActivity extends BaseActivity
 
         if(intent!=null && !hasLaunched){
             if(intent.getData()!=null){
-                thRouter.open(intent.getData().getHost()+intent.getData().getPath(), this);
+                if(intent.getData().toString().startsWith("tradehero://Url/")){
+                    String url = intent.getData().toString().replace("tradehero://Url/", "http://");
+                    String message = "";
+                    if(intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
+                        message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+                    }
+
+                    CustomAirshipReceiver.createDialog(this, message, url);
+                    getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+                }else{
+                    thRouter.open(intent.getData().getHost()+intent.getData().getPath(), this);
+                }
+
 //            }else if(intent.hasExtra(CustomAirshipReceiver.DEEPLINK)){
 //                Uri deepLink = intent.getParcelableExtra(CustomAirshipReceiver.DEEPLINK);
 //                try{
@@ -711,7 +723,7 @@ public class DashboardActivity extends BaseActivity
 
         Uri data = intent.getData();
         Bundle extras = intent.getExtras();
-        if (data != null)
+        if (data != null && !data.toString().startsWith("tradehero://Url/"))//otherwise, it's from airship
         {
             hasLaunched = true;
             thRouter.open(data, extras!=null? extras:null, this);
