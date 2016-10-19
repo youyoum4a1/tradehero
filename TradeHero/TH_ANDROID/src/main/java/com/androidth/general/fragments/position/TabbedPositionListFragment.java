@@ -26,6 +26,7 @@ import rx.functions.Action1;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
+import com.androidth.general.api.position.GetLivePositionsDTO;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.network.LiveNetworkConstants;
@@ -395,10 +396,6 @@ public class TabbedPositionListFragment extends DashboardFragment
         }
     }
 
-
-
-
-
     @Override  public void onLiveTradingChanged(OffOnViewSwitcherEvent event) {
         super.onLiveTradingChanged(event);
 
@@ -413,38 +410,39 @@ public class TabbedPositionListFragment extends DashboardFragment
     {
         if(LiveConstants.isInLiveMode && LiveConstants.hasLiveAccount)
         {
-            live1BServiceWrapper.getPositions()
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError(new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    if (throwable != null) {
-                        if (throwable instanceof RetrofitError) {
+            onStopSubscriptions.add(
+                    live1BServiceWrapper.getPositions()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnError(new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                    if (throwable != null) {
+                                        if (throwable instanceof RetrofitError) {
 
-                            RetrofitError error = (RetrofitError) throwable;
-                            Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
-                            if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
-                                pushLiveLogin(error);
-                            } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
-                                Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                            else {
-                                Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                                Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+                                            RetrofitError error = (RetrofitError) throwable;
+                                            Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+                                            if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
+                                                pushLiveLogin(error);
+                                            } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+                                                Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                            else {
+                                                Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                                Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
 
-                            }
-                        }
-                    }
-                }
-            })
-            //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
-            .subscribe(new Action1<String>() {
-                           @Override
-                           public void call(String getPositions) {
-                               Log.d("PLF.java", "Success getPositions, result: " + getPositions);
-                           }
-                       }
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+                            //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+                            .subscribe(new Action1<String>() {
+                                           @Override
+                                           public void call(String getPositions) {
+                                               Log.d("PLF.java", "Success getPositions, result: " + getPositions);
+                                           }
+                                       }
 
-                    , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+                                    , new TimberOnErrorAction1("Error purchasing stocks in live mode.")));
 
         }
 

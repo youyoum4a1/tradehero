@@ -39,10 +39,10 @@ import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.api.live1b.NewOrderSingleDTO;
 import com.androidth.general.api.live1b.OrderSideEnum;
-import com.androidth.general.api.live1b.PositionDto;
 import com.androidth.general.api.live1b.PositionTransactionDTO;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.api.market.Country;
+import com.androidth.general.api.position.GetLivePositionsDTO;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.api.security.SecurityId;
@@ -392,37 +392,6 @@ public class Live1BServiceWrapper {
             return Observable.just(null);
         }
     }
-
-//    public Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
-//            @Path("countrycode") String countrycode)
-//    {
-//        return liveServiceRx.documentsForCountry(countrycode);
-//    }
-//
-//    public Observable<Boolean>enrollCompetition(int providerId, int userId) {
-//        Timber.d("Enrolling competition");
-//        return liveServiceRx.enrollCompetition(providerId, userId);
-//    }
-//
-//    public Observable<Response> verifyEmail(int userId, String email, int providerId)
-//    {
-//        return liveServiceRx.verifyEmail(userId, email, providerId);
-//    }
-//
-//    public Observable<Boolean> scanJumioResult(String scanReferene)
-//    {
-//        return liveServiceRx.scanJumioResult(scanReferene);
-//    }
-//
-//    public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO, int providerId)
-//    {
-//        return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO, providerId);
-//    }
-//
-//    public Observable<ArrayList<ProviderQuestionnaireDTO>> getAdditionalQuestionnaires(int providerId)
-//    {
-//        return liveServiceRx.getAdditionalQuestionnaires(providerId);
-//    }
 
     //<editor-fold desc="Get Securities">
     @NonNull public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)

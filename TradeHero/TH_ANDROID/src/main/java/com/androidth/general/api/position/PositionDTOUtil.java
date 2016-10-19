@@ -3,6 +3,8 @@ package com.androidth.general.api.position;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.androidth.general.api.leaderboard.position.LeaderboardMarkUserId;
+import com.androidth.general.api.live1b.LivePositionDTO;
+
 import java.util.Date;
 import java.util.List;
 
@@ -54,6 +56,18 @@ public class PositionDTOUtil extends PositionDTOCompactUtil
                 ((PositionInPeriodDTO) positionDTO).setLeaderboardMarkUserId(leaderboardMarkUserId);
             }
         }
+    }
+
+    public static void setOnInPeriodLive(@NonNull List<? extends LivePositionDTO> positionDTOs,
+                                     @NonNull LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+//        for (LivePositionDTO positionDTO : positionDTOs)
+//        {
+//            if (positionDTO instanceof PositionInPeriodDTO)
+//            {
+//                ((PositionInPeriodDTO) positionDTO).setLeaderboardMarkUserId(leaderboardMarkUserId);
+//            }
+//        }
     }
 
 

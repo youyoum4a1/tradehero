@@ -1217,7 +1217,6 @@ public class PositionListFragment
                             Log.v("Positions", e.getLocalizedMessage());
                             e.printStackTrace();
                         }
-
                         Log.v("Positions", "Position2 list result: "+adapterObjects.size() +":"+adapterObjects.isEmpty());
                         if(adapterObjects.isEmpty()){
                             Log.v("Positions", "Position adding default");

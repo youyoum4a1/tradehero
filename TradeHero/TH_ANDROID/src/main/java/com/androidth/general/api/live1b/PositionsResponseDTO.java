@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PositionsResponseDTO  extends BaseMessageResponseDTO {
 
-    public List<PositionDto> Positions;
+    public List<LivePositionDTO> Positions;
     public Boolean IsFullReport;
 
 

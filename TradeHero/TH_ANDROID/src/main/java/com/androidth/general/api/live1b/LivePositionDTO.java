@@ -1,9 +1,14 @@
 package com.androidth.general.api.live1b;
 
+import com.androidth.general.api.portfolio.LiveOwnedPortfolioId;
+import com.androidth.general.api.position.LiveOwnedPositionId;
+import com.androidth.general.api.position.OwnedPositionId;
+import com.androidth.general.api.position.PositionDTOKey;
 import com.androidth.general.common.persistence.DTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PositionDto  {
+public class LivePositionDTO implements DTO {
 
     public String OrderId;
     public int Side;
@@ -37,15 +42,26 @@ public class PositionDto  {
 
     //<editor-fold desc="Constructors">
 
-    public PositionDto()
+    public LivePositionDTO()
     {
     }
     //</editor-fold>
 
+    @JsonIgnore
+    public PositionDTOKey getLiveOwnedPositionId()
+    {
+        return new LiveOwnedPositionId(0,0,0);
+    }
+
+    @JsonIgnore
+    public PositionDTOKey getLivePositionDTOKey()
+    {
+        return getLiveOwnedPositionId();
+    }
 
     @Override
     public String toString() {
-        return "PositionDto{" +
+        return "LivePositionDTO{" +
                 "OrderId='" + OrderId + '\'' +
                 ", Side=" + Side +
                 ", Qty=" + Qty +
