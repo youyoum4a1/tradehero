@@ -1,6 +1,7 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
@@ -342,5 +343,10 @@ public class LiveServiceWrapper
     @NonNull public Observable<String> redeemReferralCode(String referralCode, ProviderId providerId)
     {
         return this.liveServiceRx.redeemReferralCode(referralCode, providerId.key);
+    }
+
+    @NonNull public Observable<AyondoLeadDTO> getLeadWithProviderId(ProviderId providerId)
+    {
+        return this.liveServiceRx.getLead(providerId.key);
     }
 }

@@ -56,8 +56,11 @@ public abstract class BaseDialogFragment extends DialogFragment
 
     @Override public void onStop()
     {
-        onStopSubscriptions.unsubscribe();
-        onStopSubscriptions = new SubscriptionList();
+        if(onStopSubscriptions!=null){
+            onStopSubscriptions.unsubscribe();
+        }
+
+//        onStopSubscriptions = new SubscriptionList();
         super.onStop();
     }
 

@@ -13,7 +13,7 @@ public class TwilioSMSRequest implements SMSRequest
             @NonNull String toNumber,
             @NonNull String messageBody)
     {
-        this(TwilioConstants.TWILIO_TH_FROM_PHONE_NUMBER, toNumber, messageBody);
+        this(TwilioConstants.API_SENDER, toNumber, messageBody);
     }
 
     public TwilioSMSRequest(

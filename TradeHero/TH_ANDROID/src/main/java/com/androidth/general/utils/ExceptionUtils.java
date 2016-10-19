@@ -39,23 +39,32 @@ public class ExceptionUtils
 
     @NonNull public static String getStringElementFromThrowable(@NonNull Throwable throwable, @NonNull String identifier){
 
+        if(throwable==null){
+            return "Cannot parse the error message";
+        }
         if(throwable instanceof RetrofitError){
-            RetrofitError err = (RetrofitError) throwable;
-            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
-            JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
-            JsonElement element = obj.get(identifier);
+            try{
+                RetrofitError err = (RetrofitError) throwable;
+                String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
+                JsonElement element = obj.get(identifier);
 
-            if(element!=null){
-                String elementString = element.toString();
+                if(element!=null){
+                    String elementString = element.toString();
 
-                if(elementString!=null && elementString.contains("\"")){
-                    return elementString.replace("\"", "");//omit all double quotes
+                    if(elementString!=null && elementString.contains("\"")){
+                        return elementString.replace("\"", "");//omit all double quotes
+                    }else{
+                        return elementString;
+                    }
                 }else{
-                    return elementString;
+                    return "Error parsing message";
                 }
-            }else{
-                return "";
+            }catch (Exception e){
+                e.printStackTrace();
+                return "Error parsing throwable";
             }
+
 
         }else{
             return throwable.getLocalizedMessage();

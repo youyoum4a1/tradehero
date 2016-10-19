@@ -253,13 +253,20 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         }
 
         SecurityCompactDTO securityCompactDTO = securityCompactCacheRx.getCachedValue(securityId);
-        if(securityCompactDTO.chartDataSource.equals("R")){
-            chartDTOFactory = new ReutersChartDTOFactory();
-        }else{
-            chartDTOFactory = new YahooChartDTOFactory();
-        }
 
-        chartDTO = chartDTOFactory.createChartDTO(securityCompactDTO);
+        if (securityCompactDTO != null)
+        {
+            if (securityCompactDTO.chartDataSource.equals("R"))
+            {
+                chartDTOFactory = new ReutersChartDTOFactory();
+            }
+            else
+            {
+                chartDTOFactory = new YahooChartDTOFactory();
+            }
+
+            chartDTO = chartDTOFactory.createChartDTO(securityCompactDTO);
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

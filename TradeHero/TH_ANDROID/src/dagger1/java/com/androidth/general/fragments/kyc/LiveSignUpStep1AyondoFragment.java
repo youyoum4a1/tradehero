@@ -119,6 +119,7 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -514,7 +515,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 case VALIDATE:
                                     if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
                                         KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
-
                                         ProgressDialog progress = new ProgressDialog(getContext());
                                         progress.setMessage("Verifying NRIC...");
                                         progress.show();
@@ -548,19 +548,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                                     .subscribeOn(Schedulers.newThread())
                                                                     .observeOn(AndroidSchedulers.mainThread())
                                                                     .subscribe(aBoolean -> {
-                                                                        if(aBoolean.equals(true)) {
+                                                                        if (aBoolean.equals(true)) {
                                                                             nricVerifyButton.setState(VerifyButtonState.FINISH);
                                                                             nricNumber.setError(null);
 
-                                                                            if(verifiedPublishIdNumber!=null){
+                                                                            if (verifiedPublishIdNumber != null) {
                                                                                 //update KYC form
                                                                                 verifiedPublishIdNumber.onNext(queryParameters.get(LiveServiceWrapper.INPUT).toString());
                                                                             }
 
-                                                                            if(hasClickedJoinButton){
+                                                                            if (hasClickedJoinButton) {
                                                                                 onClickedJoinButton();
                                                                             }
-                                                                        }else{
+                                                                        } else {
                                                                             Toast.makeText(getActivity(), "NRIC verification failed", Toast.LENGTH_SHORT).show();
                                                                         }
 
@@ -569,7 +569,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                                         @Override
                                                                         public void call(Throwable throwable) {
                                                                             progress.dismiss();
-                                                                            String errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
+                                                                            String errorMessage = "!!!";
+                                                                            if(throwable!=null){
+                                                                                errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
+                                                                            }
+
                                                                             nricVerifyButton.setState(VerifyButtonState.ERROR);
                                                                             nricNumber.setError(errorMessage, noErrorIconDrawable);
                                                                             LiveSignUpStep1AyondoFragment.this.requestFocusAndShowKeyboard(nricNumber);
@@ -1620,8 +1624,32 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         progress.show();
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
+        KYCAyondoForm ayondoForm = (KYCAyondoForm)kycForm;
+        if (ayondoForm != null)
+        {
+            String email_text = email.getText().toString();
+            String phoneNumber_text = phoneNumber.getText().toString();
+            String firstName_text = firstName.getText().toString();
+            String lastName_text = lastName.getText().toString();
+            String nric_text = nricNumber.getText().toString();
+            String dob_text = dob.getText().toString();
+            Country phoneCountryCode = ((CountrySpinnerAdapter.DTO)spinnerPhoneCountryCode.getSelectedItem()).country;
+            Gender gender = Gender.values()[title.getSelectedItemPosition()];
 
-        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
+            ayondoForm.setEmail(email_text);
+            ayondoForm.setVerifiedEmailAddress(email_text);
+            ayondoForm.setFirstName(firstName_text);
+            ayondoForm.setLastName(lastName_text);
+            ayondoForm.setMobileNumber(phoneNumber_text);
+            ayondoForm.setVerifiedMobileNumber(phoneNumber_text);
+            ayondoForm.setPhonePrimaryCountryCode(phoneCountryCode);
+            ayondoForm.setGender(gender);
+            ayondoForm.setIdentificationNumber(nric_text);
+            ayondoForm.setDob(dob_text);
+        }
+
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), ayondoForm)
+                .subscribe(
                 brokerApplicationDTO -> {
                     liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
                             .subscribe(aBoolean -> {
@@ -1688,5 +1716,31 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(maxDate, selected);
         dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
         dpf.show(getChildFragmentManager(), dpf.getClass().getName());
+    }
+
+    @Override
+    protected void onNextButtonEnabled(KYCAyondoForm kycForm) {
+        if(kycForm.getFirstName() != null
+                && kycForm.getLastName() != null
+                && kycForm.getEmail() != null
+                && kycForm.getMobileNumber() != null
+                && kycForm.getIdentificationNumber() != null
+                && !kycForm.getFirstName().isEmpty()
+                && !kycForm.getLastName().isEmpty()
+                && !kycForm.getEmail().isEmpty()
+                && !kycForm.getMobileNumber().isEmpty()
+                && !kycForm.getIdentificationNumber().isEmpty()){
+
+            if (btnNext != null)
+            {
+                btnNext.setEnabled(true);
+            }
+        }else{
+            if (btnNext != null)
+            {
+                btnNext.setEnabled(false);
+            }
+        }
+
     }
 }

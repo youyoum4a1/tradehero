@@ -49,6 +49,7 @@ public class SecurityCompactCacheRx extends BaseFetchDTOCacheRx<SecurityId, Secu
         for (SecurityCompactDTO securityCompact : securityCompacts)
         {
             onNext(securityCompact.getSecurityId(), securityCompact);
+//            fetch(securityCompact.getSecurityId());
         }
     }
 
@@ -56,7 +57,7 @@ public class SecurityCompactCacheRx extends BaseFetchDTOCacheRx<SecurityId, Secu
     {
         for (SecurityCompactDTO securityCompact : securityCompositeDTO.Securities)
         {
-            onNext(securityCompact.getSecurityId(), securityCompact);
+            onNext(securityCompact.getSecurityId(), securityCompact);//must not do fetching
         }
     }
 

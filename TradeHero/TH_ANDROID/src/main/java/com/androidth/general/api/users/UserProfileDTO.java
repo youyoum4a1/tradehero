@@ -1,6 +1,7 @@
 package com.androidth.general.api.users;
 
 import android.support.annotation.Nullable;
+import com.androidth.general.api.competition.ProviderDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.androidth.general.api.alert.UserAlertPlanDTO;
 import com.androidth.general.api.leaderboard.LeaderboardDTO;
@@ -25,6 +26,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     @Nullable public List<Integer> heroIds;
     @Nullable public List<Integer> freeHeroIds;
     @Nullable public List<Integer> premiumHeroIds;
+    @Nullable public List<ProviderDTO> enrolledProviders;
+
     public Integer followerCount;
     /**newly added fields*/
     public int allHeroCount;

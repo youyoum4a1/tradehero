@@ -1,6 +1,7 @@
 package com.androidth.general.models.sms.twilio;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.androidth.general.R;
 import com.androidth.general.models.sms.SMSId;
@@ -67,5 +68,11 @@ public class TwilioSMSSentConfirmationDTO implements SMSSentConfirmationDTO
     @Override
     public boolean isSuccessful() {
         return status!=null && status.success;
+    }
+
+    @Nullable
+    @Override
+    public String getMessageId() {
+        return null;
     }
 }

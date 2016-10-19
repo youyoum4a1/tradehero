@@ -1,6 +1,7 @@
 package com.androidth.general.models.sms.twilio;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.androidth.general.models.sms.SMSId;
@@ -56,6 +57,12 @@ public class TwilioServiceWrapper implements SMSServiceWrapper
     @NonNull @Override public Observable<SMSSentConfirmationDTO> getMessageStatus(@NonNull SMSId id)
     {
         return getMessageStatus((TwilioSMSId) id).cast(SMSSentConfirmationDTO.class);
+    }
+
+    @Nullable
+    @Override
+    public Observable<SMSSentConfirmationDTO> getMessageStatus(@NonNull String id) {
+        return null;
     }
 
     @NonNull private static Func1<Throwable, Observable<? extends TwilioSMSSentConfirmationDTO>> getThrowableReprocessor()

@@ -1,9 +1,11 @@
 package com.androidth.general.fragments.contestcenter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.util.Pair;
@@ -27,12 +29,16 @@ import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.web.BaseWebViewIntentFragment;
+import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.intent.THIntent;
 import com.androidth.general.models.intent.THIntentPassedListener;
 import com.androidth.general.models.intent.competition.ProviderIntent;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.androidth.general.utils.route.THRouter;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,12 +56,19 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+//@Routable({
+//        "providers-enroll/:enrollProviderId"
+//})
 public abstract class ContestCenterBaseFragment extends DashboardFragment
 {
+//    @SuppressWarnings("UnusedDeclaration") @Inject
+//    Context doNotRemoveOrItFails;
+//    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @Inject ProviderListCacheRx providerListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
+    @Inject THRouter thRouter;
 
     @Bind(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @Bind(android.R.id.list) ListView contestListView;
@@ -70,6 +83,8 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        HierarchyInjector.inject(this);
+        thRouter.inject(this);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
     }
 
@@ -79,6 +94,11 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.contest_center_content_screen, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onStart()
@@ -137,6 +157,15 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
                                 providerDTOs = pair.second;
                                 sortProviderByVip();
                                 recreateAdapter();
+
+//                                if(enrollProviderId!=null && enrollProviderId>0){
+//                                    for(ProviderDTO providerDTO: providerDTOs){
+//                                        if(providerDTO.getProviderId().key == enrollProviderId){
+//                                            handleCompetitionItemClicked(providerDTO);
+//                                            return;
+//                                        }
+//                                    }
+//                                }
                             }
                         },
                         new Action1<Throwable>()
@@ -296,4 +325,5 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     abstract public void recreateAdapter();
 
     @NonNull public abstract ContestCenterTabType getCCTabType();
+
 }

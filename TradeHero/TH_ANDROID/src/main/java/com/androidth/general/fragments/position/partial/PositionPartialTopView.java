@@ -6,6 +6,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -160,8 +161,17 @@ public class PositionPartialTopView extends LinearLayout
 
             //<editor-fold desc="Last Price and Rise">
             final CharSequence lastPrice;
-            if (securityCompactDTO.lastPrice != null)
-            {
+            if(positionDTO!=null && positionDTO.markPrice!=null){
+                Log.v("Mark", "Mark price "+positionDTO.markPrice);
+                lastPrice = THSignedMoney.builder(positionDTO.markPrice)
+                        .relevantDigitCount(3)
+                        .currency(securityCompactDTO.currencyDisplay)
+                        .build()
+                        .createSpanned();
+
+            }else if (securityCompactDTO.lastPrice != null) {
+                Log.v("Mark", "Mark price null"+positionDTO);
+                Log.v("Mark", "Mark price null"+securityCompactDTO.lastPrice);
                 lastPrice = THSignedMoney.builder(securityCompactDTO.lastPrice)
                         .relevantDigitCount(3)
                         .currency(securityCompactDTO.currencyDisplay)

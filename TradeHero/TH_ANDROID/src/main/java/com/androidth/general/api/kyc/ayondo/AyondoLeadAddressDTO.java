@@ -24,6 +24,21 @@ public class AyondoLeadAddressDTO extends AyondoLeadUserIdentityDTO
     @JsonProperty("PreviousAddressLine2") @Nullable public final String previousAddressLine2;
     @JsonProperty("PreviousAddressZip") @Nullable public final String previousAddressZip;
 
+    public AyondoLeadAddressDTO() {
+        super();
+        this.addressCity = "";
+        this.addressCountry = CountryCode.TH;
+        this.addressLine1 = "";
+        this.addressLine2 = "";
+        this.addressZip = "";
+        this.previousAddressCity = "";
+        this.previousAddressCountry = CountryCode.TH;
+        this.previousAddressLine1 = "";
+        this.previousAddressLine2 = "";
+        this.previousAddressZip = "";
+        this.mobileNumber = "";
+    }
+
     public AyondoLeadAddressDTO(KYCAyondoForm kycAyondoForm)
     {
         super(kycAyondoForm);

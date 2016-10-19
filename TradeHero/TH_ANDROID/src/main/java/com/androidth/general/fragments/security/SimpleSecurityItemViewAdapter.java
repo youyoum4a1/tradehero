@@ -146,12 +146,12 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                     notifyDataSetChanged();
                     if(listView != null && listView.getChildAt(index)!=null){
                             View v = listView.getChildAt(index);
-                        if(oldLastPrice!=null &&
-                                newLastPrice!=null &&
-                                !oldLastPrice.equals(newLastPrice)){
-                            TextView txtView = (TextView)v.findViewById(R.id.last_price);
-                            YoYo.with(Techniques.Flash).playOn(txtView);
-                        }
+                        //if(oldLastPrice!=null &&
+                        //        newLastPrice!=null &&
+                        //        !oldLastPrice.equals(newLastPrice)){
+                            TextView lastPriceTextView = (TextView)v.findViewById(R.id.last_price);
+                            YoYo.with(Techniques.Flash).playOn(lastPriceTextView);
+                        //}
                         if(hasRisePercent){
                             Double newRisePercent = securityCompactDTO.risePercent;
                             if(newRisePercent!=null &&

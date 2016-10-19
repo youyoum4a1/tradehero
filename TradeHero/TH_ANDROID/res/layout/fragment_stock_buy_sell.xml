@@ -137,6 +137,12 @@
                 android:id="@+id/sell_price"
                 android:textAppearance="@android:style/TextAppearance.Small"
                 android:text="Sell @ --" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/last_price"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:text="Last @ --" />
         </LinearLayout>
 
         <LinearLayout

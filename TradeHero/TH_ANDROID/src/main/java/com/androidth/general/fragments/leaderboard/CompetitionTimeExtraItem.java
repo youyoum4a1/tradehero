@@ -75,7 +75,7 @@ public class CompetitionTimeExtraItem implements WrapperRecyclerAdapter.ExtraIte
             {
                 long s = duration.getQuantity();
                 updateSecondString(s);
-                Timber.d("Second %d", s);
+//                Timber.d("Second %d", s);
             }
         }
     }

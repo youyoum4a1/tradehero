@@ -111,16 +111,19 @@ public class AllRelationsRecyclerFragment extends BasePagedRecyclerRxFragment<
                                 {
                                     @Override public void call(Throwable throwable)
                                     {
-                                        if (throwable instanceof RetrofitError
-                                                && ((RetrofitError) throwable).getResponse() != null
-                                                && ((RetrofitError) throwable).getResponse().getStatus() == 404)
-                                        {
-                                            pushPrivateMessageFragment(baseKey, null);
-                                        }
-                                        else
-                                        {
-                                            Timber.e(throwable, "Failed to listen to message thread header cache in all relations");
-                                        }
+                                        try{
+                                            if (throwable instanceof RetrofitError
+                                                    && ((RetrofitError) throwable).getResponse() != null
+                                                    && ((RetrofitError) throwable).getResponse().getStatus() == 404)
+                                            {
+                                                pushPrivateMessageFragment(baseKey, null);
+                                            }
+                                            else
+                                            {
+                                                Timber.e(throwable, "Failed to listen to message thread header cache in all relations");
+                                            }
+                                        }catch (Exception e){e.printStackTrace();}
+
                                     }
                                 }));
 

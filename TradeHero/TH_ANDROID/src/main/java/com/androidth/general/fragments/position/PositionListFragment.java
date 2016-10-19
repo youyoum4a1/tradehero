@@ -413,6 +413,7 @@ public class PositionListFragment
                     {
                         //TODO Translate to 0 to restore position
                         //inflatedHeader.animate().translationY(0f).start();
+                        Log.v("Positions", "Getting positions done");
                         return profileAndHeaderPair.second;
                     }
                 })
@@ -421,6 +422,7 @@ public class PositionListFragment
                 {
                     @Override public Observable<UserProfileDTO> call(PortfolioHeaderView portfolioHeaderView)
                     {
+                        Log.v("Positions", "Getting positions done and mapped");
                         return portfolioHeaderView.getUserActionObservable()
                                 .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>()
                                 {
@@ -928,7 +930,11 @@ public class PositionListFragment
                             @NonNull UserProfileDTO shownProfile,
                             @NonNull PortfolioDTO portfolioDTO)
                     {
-                        linkPortfolioHeaderView(shownProfile, portfolioDTO);
+
+                        if(portfolioDTO!=null){
+                            linkPortfolioHeaderView(shownProfile, portfolioDTO);
+                        }
+
                         return Pair.create(shownProfile, portfolioHeaderView);
                     }
                 });
@@ -1031,9 +1037,15 @@ public class PositionListFragment
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 
+<<<<<<< HEAD
 //            connectPortfolioSignalR(portfolioCompactDTO);
 
 
+=======
+            if(portfolioCompactDTO.getPortfolioId()!=null){
+                connectPortfolioSignalR(portfolioCompactDTO);
+            }
+>>>>>>> origin/Row-live-with-competition
 
 //            signalRManager.initWithEvent(LiveNetworkConstants.PORTFOLIO_HUB_NAME,
 //                    new String[]{"UpdatePositions"},
@@ -1143,18 +1155,16 @@ public class PositionListFragment
 
     @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
     {
-        return getPositionsCache.get(getPositionsDTOKey)
-                .subscribeOn(Schedulers.computation())
-                .flatMap(new Func1<Pair<GetPositionsDTOKey, GetPositionsDTO>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
-                {
-                    @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
-                            Pair<GetPositionsDTOKey, GetPositionsDTO> getPositionsPair)
-                    {
+        return getPositionsCache.fetch(getPositionsDTOKey)
+                .flatMap(new Func1<GetPositionsDTO, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>() {
+                    @Override
+                    public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(GetPositionsDTO getPositionsDTO) {
+                        Log.v("Positions", "Got positions "+getPositionsDTO.securities.size());
                         Observable<Pair<PositionDTO, SecurityCompactDTO>> pairObservable;
-                        if (getPositionsPair.second.positions != null)
+                        if (getPositionsDTO.positions != null)
                         {
                             pairObservable = PositionDTOUtils.getSecuritiesSoft(
-                                    Observable.from(getPositionsPair.second.positions),
+                                    Observable.from(getPositionsDTO.positions),
                                     securityIdCache,
                                     securityCompactCache);
                         }
@@ -1164,12 +1174,9 @@ public class PositionListFragment
                         }
                         return pairObservable.toList();
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
+                }).doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
                         if (viewDTOs == null)
                         {
                             listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
@@ -1179,43 +1186,173 @@ public class PositionListFragment
                         }
                     }
                 })
-                .observeOn(Schedulers.computation())
+//                .observeOn(Schedulers.computation())
                 .distinctUntilChanged()
+                .doOnNext(new Action1<List<Pair<PositionDTO, SecurityCompactDTO>>>() {
+                    @Override
+                    public void call(List<Pair<PositionDTO, SecurityCompactDTO>> pairs) {
+
+                    }
+                })
                 .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
                 {
                     @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
                             final List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
                     {
                         List<Object> adapterObjects = new ArrayList<>();
-
-                        for (Pair<PositionDTO, SecurityCompactDTO> pair : pairs)
-                        {
-                            if (pair.first.isLocked())
+                        Log.v("Positions", "Position1 list result: "+pairs.size());
+                        try{
+                            for (Pair<PositionDTO, SecurityCompactDTO> pair : pairs)
                             {
-                                adapterObjects.add(new PositionLockedView.DTO(getResources(), pair.first));
+                                if (pair.first.isLocked())
+                                {
+                                    adapterObjects.add(new PositionLockedView.DTO(getResources(), pair.first));
+                                }
+                                else
+                                {
+                                    adapterObjects.add(new PositionPartialTopView.DTO(
+                                            getResources(),
+                                            currentUserId,
+                                            pair.first,
+                                            pair.second));
+                                }
                             }
-                            else
-                            {
-                                adapterObjects.add(new PositionPartialTopView.DTO(
-                                        getResources(),
-                                        currentUserId,
-                                        pair.first,
-                                        pair.second));
-                            }
+                        }catch (Exception e){
+                            Log.v("Positions", e.getLocalizedMessage());
+                            e.printStackTrace();
                         }
 
+                        Log.v("Positions", "Position2 list result: "+adapterObjects.size() +":"+adapterObjects.isEmpty());
+                        if(adapterObjects.isEmpty()){
+                            Log.v("Positions", "Position adding default");
+                            if(pairs.size()>0){
+                                adapterObjects.add(new PositionLockedView.DTO(getResources(), pairs.get(0).first));
+                                Log.v("Positions", "Position adding default done");
+                            }
+                        }
+                        Log.v("Positions", "Position adding default done returning");
                         return Observable.just(adapterObjects)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .map(new Func1<List<Object>, List<Pair<PositionDTO, SecurityCompactDTO>>>()
                                 {
                                     @Override public List<Pair<PositionDTO, SecurityCompactDTO>> call(List<Object> dtoList)
                                     {
-                                        linkWith(dtoList);
+                                        Log.v("Positions", "linking: "+dtoList.size());
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                linkWith(dtoList);
+                                            }
+                                        });
+
                                         return pairs;
+                                    }
+                                }).doOnError(new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.v("Positions", "linking map error");
                                     }
                                 });
                     }
                 });
+
+
+//        return getPositionsCache.get(getPositionsDTOKey)
+//                .subscribeOn(Schedulers.computation())
+//                .flatMap(new Func1<Pair<GetPositionsDTOKey, GetPositionsDTO>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
+//                {
+//                    @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
+//                            Pair<GetPositionsDTOKey, GetPositionsDTO> getPositionsPair)
+//                    {
+//                        Log.v("Positions", "Got positions "+getPositionsPair.second.positions.size());
+//                        Observable<Pair<PositionDTO, SecurityCompactDTO>> pairObservable;
+//                        if (getPositionsPair.second.positions != null)
+//                        {
+//                            pairObservable = PositionDTOUtils.getSecuritiesSoft(
+//                                    Observable.from(getPositionsPair.second.positions),
+//                                    securityIdCache,
+//                                    securityCompactCache);
+//                        }
+//                        else
+//                        {
+//                            pairObservable = Observable.empty();
+//                        }
+//                        return pairObservable.toList();
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnError(new Action1<Throwable>()
+//                {
+//                    @Override public void call(Throwable throwable)
+//                    {
+//                        if (viewDTOs == null)
+//                        {
+//                            listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
+//
+//                            THToast.show(getString(R.string.error_fetch_position_list_info));
+//                            Timber.d(throwable, "Error fetching the positionList info");
+//                        }
+//                    }
+//                })
+//                .observeOn(Schedulers.computation())
+//                .distinctUntilChanged()
+//                .doOnNext(new Action1<List<Pair<PositionDTO, SecurityCompactDTO>>>() {
+//                    @Override
+//                    public void call(List<Pair<PositionDTO, SecurityCompactDTO>> pairs) {
+//                        Log.v("Positions", "Position list result: "+pairs.size());
+////                        List<Object> adapterObjects = new ArrayList<>();
+////                        if(pairs!=null && pairs.size()>0){
+////                            if(pairs.get(0).second==null){
+////                                adapterObjects.add(new PositionLockedView.DTO(getResources(), pairs.get(0).first));
+////                                getActivity().runOnUiThread(new Runnable() {
+////                                    @Override
+////                                    public void run() {
+////                                        linkWith(adapterObjects);
+////                                    }
+////                                });
+////
+////                                return;
+////                            }
+////                        }
+//                    }
+//                })
+//                .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
+//                {
+//                    @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
+//                            final List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
+//                    {
+//                        List<Object> adapterObjects = new ArrayList<>();
+//                        Log.v("Positions", "Position1 list result: "+pairs.size());
+//                        for (Pair<PositionDTO, SecurityCompactDTO> pair : pairs)
+//                        {
+//                            Log.v("Positions", "Pair: "+pair.first.isLocked()+": "+pair.first.securityId + ": "+pair.second.name);
+//                            if (pair.first.isLocked())
+//                            {
+//                                adapterObjects.add(new PositionLockedView.DTO(getResources(), pair.first));
+//                            }
+//                            else
+//                            {
+//                                adapterObjects.add(new PositionPartialTopView.DTO(
+//                                        getResources(),
+//                                        currentUserId,
+//                                        pair.first,
+//                                        pair.second));
+//                            }
+//                        }
+//
+//                        return Observable.just(adapterObjects)
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .map(new Func1<List<Object>, List<Pair<PositionDTO, SecurityCompactDTO>>>()
+//                                {
+//                                    @Override public List<Pair<PositionDTO, SecurityCompactDTO>> call(List<Object> dtoList)
+//                                    {
+//                                        Log.v("Positions", "linking: "+dtoList.size());
+//                                        linkWith(dtoList);
+//                                        return pairs;
+//                                    }
+//                                });
+//                    }
+//                });
     }
 
     public void linkWith(@NonNull List<Object> dtoList)
@@ -1237,9 +1374,11 @@ public class PositionListFragment
         }catch (Exception e){
             e.printStackTrace();
         }
-
+        Log.v("Positions", "After linking: "+this.viewDTOs.size());
+        Log.v("Positions", "After linking adapter: "+positionItemAdapter.getItemCount());
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
+        positionItemAdapter.notifyDataSetChanged();
     }
 
     @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList, Object nothingDTO)

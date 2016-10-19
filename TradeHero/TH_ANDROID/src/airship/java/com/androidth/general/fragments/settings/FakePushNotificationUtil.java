@@ -86,7 +86,6 @@ public class FakePushNotificationUtil
                         {
                             @Override public void call(Throwable throwable)
                             {
-                                Timber.e(throwable, "");
                             }
                         }
                 );

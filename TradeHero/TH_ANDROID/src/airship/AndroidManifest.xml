@@ -90,19 +90,19 @@
 
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
-    <receiver android:name="com.androidth.general.models.push.urbanairship.UrbanAirshipIntentReceiver"
-        android:exported="true">
+    <!--<receiver android:name="com.androidth.general.models.push.urbanairship.UrbanAirshipIntentReceiver"-->
+        <!--android:exported="true">-->
 
-      <intent-filter>
-        <action android:name="com.urbanairship.push.CHANNEL_UPDATED" />
-        <action android:name="com.urbanairship.push.OPENED" />
-        <action android:name="com.urbanairship.push.RECEIVED" />
-        <action android:name="com.urbanairship.push.DISMISSED" />
+      <!--<intent-filter>-->
+        <!--<action android:name="com.urbanairship.push.CHANNEL_UPDATED" />-->
+        <!--<action android:name="com.urbanairship.push.OPENED" />-->
+        <!--<action android:name="com.urbanairship.push.RECEIVED" />-->
+        <!--<action android:name="com.urbanairship.push.DISMISSED" />-->
 
-        <!-- MODIFICATION REQUIRED - Use your package name as the category -->
-        <category android:name="${applicationId}" />
-      </intent-filter>
-    </receiver>
+        <!--&lt;!&ndash; MODIFICATION REQUIRED - Use your package name as the category &ndash;&gt;-->
+        <!--<category android:name="${applicationId}" />-->
+      <!--</intent-filter>-->
+    <!--</receiver>-->
 
   </application>
 
