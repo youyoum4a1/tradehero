@@ -37,6 +37,10 @@ public class PositionDTO extends PositionDTOCompact
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
     public int aggregateCount;
 
+    public Date markDateUtc;
+    public Integer latestPortfolioMarkId;
+    public Double markPrice;
+
     //<editor-fold desc="Constructors">
     public PositionDTO()
     {
@@ -123,6 +127,9 @@ public class PositionDTO extends PositionDTOCompact
                 ", sumInvestedAmountRefCcy=" + sumInvestedAmountRefCcy +
                 ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
                 ", aggregateCount=" + aggregateCount +
+                ", markDateUtc=" + markDateUtc +
+                ", latestPortfolioMarkId=" + latestPortfolioMarkId +
+                ", markPrice=" + markPrice +
                 '}';
     }
 

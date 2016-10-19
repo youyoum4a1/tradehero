@@ -178,6 +178,12 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v(getTag(), "!!!Buy error: "+throwable.getLocalizedMessage());
+                    }
+                })
                 .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
     }
 

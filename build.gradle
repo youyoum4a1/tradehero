@@ -5,7 +5,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.2.0'
+    classpath 'com.android.tools.build:gradle:2.2.1'
     classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
     classpath "io.realm:realm-gradle-plugin:1.1.0"
   }
@@ -32,7 +32,7 @@ ext {
   JUMIO_SDK_VERSION = "2.0.1"
   SIGNPOST_VERSION = "1.2.1.2"
   STICKY_LIST_HEADERS_VERSION = "2.7.0"
-  URBAN_AIRSHIP_VERSION = "7.0.+"
+  URBAN_AIRSHIP_VERSION = "8.0.+"
   PRETTY_TIME_VERSION = "4.0.0.Final"
   BUTTER_KNIFE_VERSION = "7.0.1"
   LOCALYTICS_VERSION = "3.4.0"

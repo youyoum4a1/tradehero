@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,8 @@ import com.androidth.general.persistence.leaderboard.PerPagedLeaderboardKeyPrefe
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.widget.MultiRecyclerScrollListener;
 import com.androidth.general.widget.list.SingleExpandingListViewListener;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -298,7 +301,16 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                         new Action1<Throwable>()
                         {
                             @Override public void call(Throwable throwable)
-                            {
+                            {//if illegalStateException, ignore!!!
+                                if(throwable!=null){
+                                    throwable.printStackTrace();
+                                }
+
+//                                Log.v(getTag(), "!!!1"+throwable.getLocalizedMessage());
+//                                Log.v(getTag(), "!!!3"+throwable.getMessage());
+//                                if(throwable!=null && throwable instanceof RuntimeException){
+//                                    Log.v(getTag(), "!!!4");
+//                                }
                                 updateCurrentRankView(null);
                             }
                         }));
@@ -399,12 +411,22 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
             Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> receivedPair)
     {
         int page = receivedPair.first.page == null ? FIRST_PAGE : receivedPair.first.page;
-        int rank = (page - FIRST_PAGE) * perPage;
-        for (LeaderboardItemDisplayDTO dto : receivedPair.second)
-        {
-            rank++;
-            dto.setRanking(rank);
+
+        ArrayList<LeaderboardItemDisplayDTO> dtoArrayList = receivedPair.second;
+        if(dtoArrayList!=null
+                && dtoArrayList.size()>1
+                && dtoArrayList.get(0).ranking == dtoArrayList.get(1).ranking){
+
+            int rank = (page - FIRST_PAGE) * perPage;
+            for (LeaderboardItemDisplayDTO dto : receivedPair.second)
+            {
+                rank++;
+                dto.setRanking(rank);
+            }
+        }else{
+            //disable as the rank must be from ordinalPosition
         }
+
         return super.onMap(receivedPair);
     }
 

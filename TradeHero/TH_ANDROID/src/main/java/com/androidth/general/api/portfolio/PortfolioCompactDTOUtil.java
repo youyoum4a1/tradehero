@@ -85,7 +85,52 @@ public class PortfolioCompactDTOUtil
         }
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, providerDTO);
     }
-    //</editor-fold>
+
+    @Nullable public static Integer getMaxSellableShares(
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition, @Nullable ProviderDTO providerDTO) {
+        if (portfolioCompactDTO == null || quoteDTO == null) {
+            return null;
+        }
+
+//        if (closeablePosition != null
+//                && closeablePosition.positionStatus != null
+//                && closeablePosition.positionStatus.equals(PositionStatus.LONG)) {
+//            // TODO return null if transaction cost cannot be covered
+//            return closeablePosition.shares == null ? null : Math.abs(closeablePosition.shares);
+//        }
+
+        Double quotePriceUsd = quoteDTO.getBidUSD();
+        if (quotePriceUsd == null || quotePriceUsd == 0) {
+            return null;
+        }
+
+//        if (!portfolioCompactDTO.usesMargin()) {
+//            return 0;
+//        }
+        double availableUsd = portfolioCompactDTO.getUsableForTransactionUsd();
+        double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
+
+        int currentMaxAllowable = (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
+
+        if (providerDTO != null && providerDTO.maxLimitPerTrade != null) {
+            if (portfolioCompactDTO.getUsableForTransactionRefCcy() > providerDTO.maxLimitPerTrade) {
+                availableUsd = providerDTO.maxLimitPerTrade * portfolioCompactDTO.getProperRefCcyToUsdRate();
+            }
+
+            currentMaxAllowable = (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
+            if(currentMaxAllowable>providerDTO.maxLimitPerTrade){
+                return (int)Math.floor(providerDTO.maxLimitPerTrade);
+            }else{
+                return currentMaxAllowable;
+            }
+
+        }else{
+            return currentMaxAllowable;
+        }
+
+    }
 
     @Nullable public static Integer getMaxSellableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,

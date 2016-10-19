@@ -27,13 +27,16 @@ public class SnackbarOnErrorAction1 implements Action1<Throwable> {
             String errorMessage = throwable.getLocalizedMessage();
             if(throwable instanceof RetrofitError){
                 RetrofitError retrofitError = (RetrofitError) throwable;
-                int status = retrofitError.getResponse().getStatus();
-                switch(status){
-                    case 401:
-                        errorMessage = "Invalid username/password";
-                        break;
-                    default:
-                        break;
+                if(retrofitError.getResponse()!=null){
+                    int status = retrofitError.getResponse().getStatus();
+                    switch(status){
+                        case 401:
+                            errorMessage = "Invalid username/password";
+                            break;
+                        default:
+                            errorMessage = "Pleas try again!";
+                            break;
+                    }
                 }
             }
             snackbar = Snackbar.make(view, errorMessage, duration);

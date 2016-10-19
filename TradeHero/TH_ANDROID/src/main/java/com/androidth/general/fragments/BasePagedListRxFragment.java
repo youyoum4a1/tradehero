@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -231,6 +232,7 @@ abstract public class BasePagedListRxFragment<
             final AtomicBoolean alreadyGotNext = new AtomicBoolean(false);
             Subscription subscription;
             subscription = getCache().get(pagedKey)
+                    .debounce(1000, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.computation())
                     .doOnNext(new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
                     {

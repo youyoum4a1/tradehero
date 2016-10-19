@@ -111,17 +111,14 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="5sp"
+      android:paddingTop="5sp"
       android:orientation="vertical">
 
     <ImageView
         android:id="@+id/dialog_buy_sell_security_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="5sp"
-        android:paddingLeft="5sp"
-        android:maxHeight="40sp"
-        android:scaleType="fitCenter"
+        android:maxHeight="45sp"
         android:adjustViewBounds="true"
         tools:src="@drawable/th_logo" />
 
@@ -131,7 +128,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         style="@style/TH.Subhead"
-        android:paddingTop="5sp"
+        android:layout_marginTop="3sp"
+        android:visibility="gone"
         tools:text="Padbury Mining Ltd"
         />
 
@@ -140,9 +138,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        style="@style/TH.Caption"
-        android:paddingTop="2sp"
-        tools:text="SIBE:SCYR"
+        style="@style/TH.TextSecondary"
+        android:layout_marginTop="5sp"
+        tools:text="Padbury Mining Ltd"
         />
 
   </LinearLayout>
@@ -152,7 +150,7 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="5sp"
+      android:layout_margin="5sp"
       android:orientation="vertical">
 
     <LinearLayout
@@ -174,6 +172,7 @@
           android:id="@+id/market_price"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
           tools:text="83.33"
           />
 

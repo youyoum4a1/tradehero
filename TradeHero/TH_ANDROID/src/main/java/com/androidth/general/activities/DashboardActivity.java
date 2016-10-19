@@ -13,7 +13,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -27,8 +29,13 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
+import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
+import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.notification.NotificationDTO;
 import com.androidth.general.api.notification.NotificationKey;
 import com.androidth.general.api.system.SystemStatusKey;
@@ -54,12 +61,15 @@ import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.androidth.general.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.androidth.general.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.androidth.general.models.time.AppTiming;
+import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.notification.NotificationCacheRx;
 import com.androidth.general.persistence.prefs.IsFxShown;
 import com.androidth.general.persistence.prefs.IsOnBoardShown;
+import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
@@ -73,6 +83,7 @@ import com.androidth.general.utils.metrics.ForAnalytics;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.utils.route.THRouter;
 import com.appsflyer.AppsFlyerLib;
+import com.google.android.gms.analytics.CampaignTrackingReceiver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,6 +142,9 @@ public class DashboardActivity extends BaseActivity
     @Inject LeftDrawerMenuItemClickListener leftDrawerMenuItemClickListener;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
+    @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
@@ -138,7 +152,7 @@ public class DashboardActivity extends BaseActivity
     @Bind(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
     @Bind(R.id.drawer_content_container) ViewGroup drawerContents;
     @Bind(R.id.left_drawer) ViewGroup leftDrawerContainer;
-    @Bind(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
+    @Bind(android.R.id.tabhost) public DashboardTabHost dashboardTabHost;
 
     private Subscription notificationFetchSubscription;
 
@@ -150,6 +164,9 @@ public class DashboardActivity extends BaseActivity
     private CompositeSubscription onPauseSubscriptions;
 
     private LiveActivityUtil liveActivityUtil;
+    private boolean hasLaunched;
+
+    private Intent intent;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -194,7 +211,8 @@ public class DashboardActivity extends BaseActivity
             activityModule.navigator.goToTab(RootFragmentType.getInitialTab());
         }
 
-        if (getIntent() != null)
+        intent = getIntent();
+        if (intent != null)
         {
             processNotificationDataIfPresence(getIntent().getExtras());
         }
@@ -208,6 +226,35 @@ public class DashboardActivity extends BaseActivity
 
         // TODO: For Kenanga challenge, can remove after that
         AppsFlyerLib.getInstance().setCustomerUserId(currentUserId.get().toString());
+
+        //if (liveBrokerSituationPreference.get().kycForm != null) {
+        //    Timber.d("JAMES - NOT NULL");
+        //} else {
+        //    Timber.d("JAMES - NULL");
+        //}
+
+        // TODO: remove hardcoded providerId and need to handle user go to KYC view before network return
+        UserProfileDTO profileDTO = userProfileCache.get().getCachedValue(new UserBaseKey(currentUserId.get()));
+
+        if (profileDTO != null && profileDTO.enrolledProviders != null && !profileDTO.enrolledProviders.isEmpty())
+        {
+            ProviderDTO providerDTO = profileDTO.enrolledProviders.get(0);
+
+            liveServiceWrapper.getLeadWithProviderId(new ProviderId(providerDTO.id)).subscribe(new Action1<AyondoLeadDTO>()
+            {
+                @Override public void call(AyondoLeadDTO leadDTO)
+                {
+                    LiveBrokerSituationDTO dto = liveBrokerSituationPreference.get();
+                    liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(dto.broker, leadDTO.getKYCAyondoForm()));
+                }
+            }, new Action1<Throwable>()
+            {
+                @Override public void call(Throwable throwable)
+                {
+                    Timber.e("Get Lead error: " + throwable.getMessage());
+                }
+            });
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -357,6 +404,8 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
+                Log.v("GAv4", "On received intent");
+                new CampaignTrackingReceiver().onReceive(context, intent);
                 updateNetworkStatus();
             }
         };
@@ -439,7 +488,8 @@ public class DashboardActivity extends BaseActivity
                             }
                         }));
 
-        if (!launchActions(getIntent()))
+        //handling the deep link
+        if (!launchActions(intent))
         {
             // get providers for enrollment page
             onPauseSubscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
@@ -505,6 +555,40 @@ public class DashboardActivity extends BaseActivity
                         AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getSupportFragmentManager());
                     }
                 }, new EmptyAction1<Throwable>()));
+
+        if(intent!=null && !hasLaunched){
+            if(intent.getData()!=null){
+                if(intent.getData().toString().startsWith("tradehero://Url/")){
+                    String url = intent.getData().toString().replace("tradehero://Url/", "http://");
+                    String message = "";
+                    if(intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
+                        message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+                    }
+
+                    getIntent().setData(null);
+                    getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+                    CustomAirshipReceiver.createDialogWithListener(this, message);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                }else{
+                    thRouter.open(intent.getData().getHost()+intent.getData().getPath(), this);
+                }
+
+//            }else if(intent.hasExtra(CustomAirshipReceiver.DEEPLINK)){
+//                Uri deepLink = intent.getParcelableExtra(CustomAirshipReceiver.DEEPLINK);
+//                try{
+////                    Bundle bundle = new Bundle();
+////                    bundle.putInt("enrollProviderId", 55);
+//                    thRouter.open(deepLink.getHost()+deepLink.getPath(), bundle);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+
+            }else{
+                checkIfFromPush(intent);
+            }
+        }
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -642,9 +726,11 @@ public class DashboardActivity extends BaseActivity
         }
 
         Uri data = intent.getData();
-        if (data != null)
+        Bundle extras = intent.getExtras();
+        if (data != null && !data.toString().startsWith("tradehero://Url/"))//otherwise, it's from airship
         {
-            thRouter.open(data, null, this);
+            hasLaunched = true;
+            thRouter.open(data, extras!=null? extras:null, this);
             intent.setData(null);
             drawerLayout.closeDrawers();
             return true;
@@ -705,5 +791,17 @@ public class DashboardActivity extends BaseActivity
         Fragment currentFragmentName = activityModule.navigator.getCurrentFragment();
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
         ActivityBuildTypeUtil.flagLowMemory();
+    }
+
+    private void checkIfFromPush(Intent intent){
+        if(intent!=null
+                && intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
+
+            String message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+            if(message!=null && !message.isEmpty()){
+                CustomAirshipReceiver.createDialog(this, message);
+                getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+            }
+        }
     }
 }

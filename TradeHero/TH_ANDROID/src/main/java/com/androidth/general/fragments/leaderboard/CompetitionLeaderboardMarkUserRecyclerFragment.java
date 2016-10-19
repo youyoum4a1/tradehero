@@ -3,6 +3,7 @@ package com.androidth.general.fragments.leaderboard;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.Menu;
@@ -10,6 +11,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.androidth.general.api.competition.AdDTO;
+import com.androidth.general.api.leaderboard.LeaderboardDTO;
+import com.androidth.general.api.leaderboard.key.UserOnLeaderboardKey;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTOCacheRx;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.R;
@@ -38,6 +43,7 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
@@ -196,11 +202,11 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                         providerCache.get(providerId)
                                 .map(new PairGetSecond<ProviderId, ProviderDTO>())
                                 .startWith(providerDTO != null ? Observable.just(providerDTO) : Observable.<ProviderDTO>empty()),
-                        competitionCacheRx.get(competitionId)
-                                .map(new PairGetSecond<CompetitionId, CompetitionDTO>())
+                        competitionCacheRx.fetch(competitionId)//forcefetch
+//                                .map(new PairGetSecond<CompetitionId, CompetitionDTO>())
                                 .startWith(competitionDTO != null ? Observable.just(competitionDTO) : Observable.<CompetitionDTO>empty()),
-                        competitionLeaderboardCache.get(competitionLeaderboardId)
-                                .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>())
+                        competitionLeaderboardCache.fetch(competitionLeaderboardId)
+//                                .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>())//Jeff fetch
                                 .startWith(competitionLeaderboardDTO != null ? Observable.just(competitionLeaderboardDTO)
                                         : Observable.<CompetitionLeaderboardDTO>empty()),
                         new Func3<ProviderDTO, CompetitionDTO, CompetitionLeaderboardDTO, CompetitionLeaderboardDTO>()
@@ -293,24 +299,63 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     @NonNull @Override protected Observable<LeaderboardMarkedUserItemDisplayDto.Requisite> fetchOwnRankingInfoObservables()
     {
         return Observable.zip(
-                super.fetchOwnRankingInfoObservables(),
+                fetchOwnCompetitionRanking(),
                 providerCache.getOne(providerId),
-                competitionLeaderboardCache.getOne(new CompetitionLeaderboardId(providerId.key, competitionId.key)),
-                new Func3<LeaderboardMarkedUserItemDisplayDto.Requisite,
-                        Pair<ProviderId, ProviderDTO>,
-                        Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>, LeaderboardMarkedUserItemDisplayDto.Requisite>()
-                {
-                    @Override public LeaderboardMarkedUserItemDisplayDto.Requisite call(
-                            LeaderboardMarkedUserItemDisplayDto.Requisite requisite,
-                            Pair<ProviderId, ProviderDTO> providerPair,
-                            Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
-                    {
-                        return new CompetitionLeaderboardItemDisplayDTO.Requisite(
+                competitionLeaderboardCache.fetch(new CompetitionLeaderboardId(providerId.key, competitionId.key)),
+                new Func3<LeaderboardMarkedUserItemDisplayDto.Requisite, Pair<ProviderId, ProviderDTO>, CompetitionLeaderboardDTO, LeaderboardMarkedUserItemDisplayDto.Requisite>() {
+                    @Override
+                    public LeaderboardMarkedUserItemDisplayDto.Requisite call(LeaderboardMarkedUserItemDisplayDto.Requisite requisite,
+                                                                              Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair,
+                                                                              CompetitionLeaderboardDTO competitionLeaderboardDTO) {
+
+                        LeaderboardMarkedUserItemDisplayDto.Requisite requisite1 = new CompetitionLeaderboardItemDisplayDTO.Requisite(
                                 requisite,
-                                providerPair,
-                                competitionLeaderboardPair);
+                                providerIdProviderDTOPair,
+                                competitionLeaderboardDTO);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateCurrentRankView(requisite1);
+                            }
+                        });
+                        return requisite1;
                     }
                 });
+//                new Func3<LeaderboardMarkedUserItemDisplayDto.Requisite,
+//                        Pair<ProviderId, ProviderDTO>,
+//                        Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>, LeaderboardMarkedUserItemDisplayDto.Requisite>()
+//                {
+//                    @Override public LeaderboardMarkedUserItemDisplayDto.Requisite call(
+//                            LeaderboardMarkedUserItemDisplayDto.Requisite requisite,
+//                            Pair<ProviderId, ProviderDTO> providerPair,
+//                            CompetitionLeaderboardDTO competitionLeaderboard)
+//                    {
+//                        return new CompetitionLeaderboardItemDisplayDTO.Requisite(
+//                                requisite,
+//                                providerPair,
+//                                competitionLeaderboardPair);
+//                    }
+//                });
+    }
+
+    @NonNull private Observable<LeaderboardMarkedUserItemDisplayDto.Requisite> fetchOwnCompetitionRanking()
+    {
+        UserOnLeaderboardKey userOnLeaderboardKey =
+                new UserOnLeaderboardKey(
+                        new LeaderboardKey(leaderboardDefKey.key, currentLeaderboardType != null ? currentLeaderboardType.assetClass : null),
+                        currentUserId.toUserBaseKey());
+
+        return Observable.zip(
+                competitionCacheRx.fetch(competitionId),
+                leaderboardCache.getOne(userOnLeaderboardKey),
+                userProfileCache.getOne(currentUserId.toUserBaseKey()),
+                new Func3<CompetitionDTO, Pair<LeaderboardKey, LeaderboardDTO>, Pair<UserBaseKey, UserProfileDTO>, LeaderboardMarkedUserItemDisplayDto.Requisite>() {
+                    @Override
+                    public LeaderboardMarkedUserItemDisplayDto.Requisite call(CompetitionDTO competitionDTO, Pair<LeaderboardKey, LeaderboardDTO> leaderboardKeyLeaderboardDTOPair, Pair<UserBaseKey, UserProfileDTO> userBaseKeyUserProfileDTOPair) {
+                        return new LeaderboardMarkedUserItemDisplayDto.Requisite(competitionDTO.leaderboardUser, userBaseKeyUserProfileDTOPair.second, leaderboardKeyLeaderboardDTOPair.second.capAt);
+                    }
+                }).subscribeOn(Schedulers.computation());
     }
 
     @Override protected LeaderboardMarkedUserItemDisplayDto createLoadingOwnRankingDTO()

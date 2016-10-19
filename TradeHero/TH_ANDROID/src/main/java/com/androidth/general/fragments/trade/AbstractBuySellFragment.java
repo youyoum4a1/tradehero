@@ -497,6 +497,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             copy.setBuySellTransactionListener(null);
         }
+        if(quoteSubscription!=null){
+            quoteSubscription.unsubscribe();
+        }
+
 
         super.onStop();
     }
@@ -514,6 +518,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         quoteRepeatSubject.onCompleted();
+        if(abstractBuySellPopupDialogFragment!=null){
+            try{
+                abstractBuySellPopupDialogFragment.dismiss();
+            }catch (Exception e){}
+
+        }
+
         abstractBuySellPopupDialogFragment = null;
         super.onDestroy();
     }
@@ -734,14 +745,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         if (!poppedPortfolioChanged)
         {
             poppedPortfolioChanged = true;
-            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
-                    .setTitle(R.string.buy_sell_portfolio_changed_title)
-                    .setMessage(R.string.buy_sell_portfolio_changed_message)
-                    .setPositiveButton(R.string.ok)
-                    .build()
-                    .subscribe(
-                            new EmptyAction1<OnDialogClickEvent>(),
-                            new EmptyAction1<Throwable>()));
+            //TODO Jeff
+//            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+//                    .setTitle(R.string.buy_sell_portfolio_changed_title)
+//                    .setMessage(R.string.buy_sell_portfolio_changed_message)
+//                    .setPositiveButton(R.string.ok)
+//                    .build()
+//                    .subscribe(
+//                            new EmptyAction1<OnDialogClickEvent>(),
+//                            new EmptyAction1<Throwable>()));
         }
     }
 
@@ -1159,7 +1171,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 @NonNull CurrentUserId currentUserId)
         {
             this.securityId = getSecurityId(args.getBundle(KEY_SECURITY_ID));
-            this.securityIdNumber = getSecurityIdNumber(args);
+            this.securityIdNumber = securityId!=null? securityId.getSecurityIdNumber(): 0;
             this.applicablePortfolioIdSubject = createApplicablePortfolioIdSubject(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID),
                     securityId,
                     portfolioCompactListCache,

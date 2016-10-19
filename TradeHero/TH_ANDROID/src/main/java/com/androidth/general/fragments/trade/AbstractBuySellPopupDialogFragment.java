@@ -147,7 +147,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @Bind(R.id.vtrade_value)
     protected TextView mLeftNumber;
 
-    @Bind(R.id.vquantity)
+    @Nullable @Bind(R.id.vquantity)
     protected EditText mMiddleNumber;
 
     @Bind(R.id.vcash_left)
@@ -474,10 +474,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                         double maxTradeValue = portfolioCompactDTO.cashBalance;
 
                                         if (portfolioCompactDTO.providerId != null) {
-
                                             ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
-
-                                            if (providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
+                                            if (providerDTO!=null && providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
                                                 maxTradeValue = providerDTO.maxLimitPerTrade;
                                             }
                                         }
@@ -691,7 +689,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
         if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment))
         {
-            getDialog().hide();
+            if(getDialog()!=null){
+                getDialog().hide();
+            }
         }
 
         //make the dialog smaller
@@ -776,6 +776,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     isFx = false;
                                 }
 
+                                ProviderDTO providerDTO = null;
+                                if (portfolioCompactDTO.providerId != null) {
+                                    providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+                                }
+
                                 if(closeablePosition!=null){//is selling
                                     mSymbolCashLeft.setVisibility(View.INVISIBLE);
                                     if(isFx){
@@ -783,6 +788,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     }else{
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_share_left));
                                     }
+                                    if(providerDTO!=null && mSeekBar.getMax()>providerDTO.maxLimitPerTrade){
+                                        mSeekBar.setMax(providerDTO.maxLimitPerTrade.intValue());
+                                    }
+
                                 }else{
                                     if(isFx){
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_fx_cash_left));
@@ -790,6 +799,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_cash_left));
                                     }
                                 }
+
+
 
 //
 //                                mRightNumber.setText(getCashLeftLabelResId(closeablePosition));
@@ -964,9 +975,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 .flatMap(new Func1<PositionDTO, Observable<Integer>>() {
                     @Override
                     public Observable<Integer> call(@Nullable final PositionDTO closeablePosition) {
+
+                        //if selling
                         if (closeablePosition != null && closeablePosition.shares != null) {
                             return Observable.just(Math.abs(closeablePosition.shares));
                         }
+
                         return Observable.combineLatest(
                                 getPortfolioCompactObservable(),
                                 getQuoteObservable(),
@@ -1164,6 +1178,15 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
             @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition) {
+
+        if (portfolioCompactDTO.providerId != null) {
+            ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+            return PortfolioCompactDTOUtil.getMaxSellableShares(
+                    portfolioCompactDTO,
+                    quoteDTO,
+                    closeablePosition);//TODO Jeff
+        }
+
         return PortfolioCompactDTOUtil.getMaxSellableShares(
                 portfolioCompactDTO,
                 quoteDTO,
@@ -1608,6 +1631,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 if (buySellTransactionListener != null) {
                     buySellTransactionListener.onTransactionFailed(isBuy, thException);
                 }
+                onDestroyView();
+                onStop();
             }catch (Exception exception){
                 THToast.show("Failed to buy/sell");
             }
@@ -1805,13 +1830,24 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     private void disableUI(){
-        mMiddleNumber.setEnabled(false);
-        mSeekBar.setEnabled(false);
-        mConfirm.setEnabled(false);
+        if (mMiddleNumber != null)
+        {
+            mMiddleNumber.setEnabled(false);
+        }
+        if(mSeekBar!=null){
+            mSeekBar.setEnabled(false);
+        }
+        if(mConfirm!=null){
+            mConfirm.setEnabled(false);
+        }
+
     }
 
     private void enableUI(){
-        mMiddleNumber.setEnabled(true);
+        if (mMiddleNumber != null)
+        {
+            mMiddleNumber.setEnabled(true);
+        }
         if(!mSeekBar.isEnabled()){//not yet enabled
             YoYo.with(Techniques.Pulse).playOn(mSeekBar);
         }

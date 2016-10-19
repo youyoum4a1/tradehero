@@ -173,6 +173,17 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
     </activity>
 
+    <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+        android:enabled="true">
+      <intent-filter>
+        <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+      </intent-filter>
+    </receiver>
+
+    <service android:name="com.google.android.gms.analytics.AnalyticsService"
+        android:enabled="true"
+        android:exported="false"/>
+
     <receiver android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
         android:enabled="true"
         android:exported="true">
@@ -183,6 +194,9 @@
     <service android:name="com.google.android.gms.analytics.CampaignTrackingService"
         android:enabled="true"
         android:exported="false" />
+
+    <meta-data android:name="com.google.android.gms.analytics.globalConfigResource"
+        android:resource="@xml/ga_global_tracker" />
 
     <receiver
         android:name="com.tune.TuneTracker"
@@ -242,6 +256,22 @@
         android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
         android:name="com.facebook.FacebookContentProvider"
         android:exported="true"/>
+
+    <meta-data android:name="com.urbanairship.autopilot"
+      android:value="com.urbanairship.Autopilot">
+    </meta-data>
+
+    <receiver android:name=".receivers.CustomAirshipReceiver"
+        android:exported="false">
+      <intent-filter>
+        <action android:name="com.urbanairship.push.CHANNEL_UPDATED" />
+        <action android:name="com.urbanairship.push.OPENED" />
+        <action android:name="com.urbanairship.push.RECEIVED" />
+        <action android:name="com.urbanairship.push.DISMISSED" />
+
+        <category android:name="${applicationId}" />
+      </intent-filter>
+    </receiver>
 
   </application>
 

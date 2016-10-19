@@ -5,12 +5,15 @@ import android.support.annotation.Nullable;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.Currency;
 import com.androidth.general.api.kyc.EmploymentStatus;
+import com.androidth.general.api.kyc.KYCAddress;
+import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.NetWorthRange;
 import com.androidth.general.api.kyc.PercentNetWorthForInvestmentRange;
 import com.androidth.general.api.kyc.TradingPerQuarter;
 import com.androidth.general.api.market.Country;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import java.util.LinkedList;
+import java.util.List;
 
 public class AyondoLeadDTO extends AyondoLeadAddressDTO
 {
@@ -26,7 +29,7 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
     @JsonProperty("HasAttendedTraining") @Nullable public final Boolean attendedSeminarAyondo;
     @JsonProperty("HasOtherQualification") @Nullable public final Boolean haveOtherQualification;
 
-    @JsonProperty("LeveragedProducts") @Nullable public final AyondoLeveragedProductList leveragedProducts;
+    @JsonProperty("LeveragedProducts") @Nullable public AyondoLeveragedProductList leveragedProducts;
     @JsonProperty("NumberOfMarginTrades") @Nullable public final TradingPerQuarter tradingPerQuarter;
 
     @JsonProperty("Email") @Nullable public final String email;
@@ -41,7 +44,30 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
 
     @JsonProperty("IsTestRecord") @Nullable public final Boolean isTestRecord;
     @JsonProperty("WhiteLabel") public final String whiteLabel;
-    @JsonProperty("AdditionalData") public final ProviderQuestionnaireAnswerDto[] additionalData;
+    @JsonProperty("AdditionalData") public ProviderQuestionnaireAnswerDto[] additionalData;
+
+    public AyondoLeadDTO() {
+        super();
+        this.phonePrimaryCountryCode = Country.TH;
+        this.annualIncomeRange = AnnualIncomeRange.LESS15KUSD;
+        this.netWorthRange = NetWorthRange.LESS15KUSD;
+        this.percentNetWorthForInvestmentRange = PercentNetWorthForInvestmentRange.LESSTHAN25P;
+        this.employmentStatus = EmploymentStatus.EMPLOYED;
+        this.employerRegulatedFinancial = false;
+        this.workedInFinance1Year = false;
+        this.attendedSeminarAyondo = false;
+        this.haveOtherQualification = false;
+        this.tradingPerQuarter = TradingPerQuarter.NONE;
+        this.email = "";
+        this.language = "EN";
+        this.currency = Currency.USD;
+        this.productType = AyondoProductType.CFD;
+        this.subscribeOffers = false;
+        this.subscribeTradeNotifications = false;
+        this.guid = "";
+        this.isTestRecord = true;
+        this.whiteLabel = "TradeHero";
+    }
 
     public AyondoLeadDTO(KYCAyondoForm kycAyondoForm)
     {
@@ -115,5 +141,50 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
 
         return !(whiteLabel != null ? !whiteLabel.equals(that.whiteLabel) : that.whiteLabel != null);
 
+    }
+
+    public KYCAyondoForm getKYCAyondoForm() {
+        KYCAyondoForm kycAyondoForm = new KYCAyondoForm();
+        kycAyondoForm.setPhonePrimaryCountryCode(this.phonePrimaryCountryCode);
+        kycAyondoForm.setAnnualIncomeRange(this.annualIncomeRange);
+        kycAyondoForm.setNetWorthRange(this.netWorthRange);
+        kycAyondoForm.setPercentNetWorthForInvestmentRange(this.percentNetWorthForInvestmentRange);
+        kycAyondoForm.setEmploymentStatus(this.employmentStatus);
+        kycAyondoForm.setEmployerRegulatedFinancial(this.employerRegulatedFinancial);
+        kycAyondoForm.setWorkedInFinance1Year(this.workedInFinance1Year);
+        kycAyondoForm.setAttendedSeminarAyondo(this.attendedSeminarAyondo);
+        kycAyondoForm.setHaveOtherQualification(this.haveOtherQualification);
+        //this.leveragedProducts = kycAyondoForm.getLeveragedProductList();
+        kycAyondoForm.setTradingPerQuarter(this.tradingPerQuarter);
+        kycAyondoForm.setEmail(this.email);
+        kycAyondoForm.setVerifiedEmailAddress(this.email);
+        //this.language = kycAyondoForm.getLanguage();
+        kycAyondoForm.setCurrency(this.currency);
+        //this.productType = kycAyondoForm.getProductType();
+        kycAyondoForm.setSubscribeOffers(this.subscribeOffers );
+        kycAyondoForm.setSubscribeTradeNotifications(this.subscribeTradeNotifications);
+        kycAyondoForm.setGuid(this.guid);
+        //this.isTestRecord = kycAyondoForm.isTestRecord();
+        //this.whiteLabel = kycAyondoForm.getWhiteLabel();
+        kycAyondoForm.setAdditionalData(this.additionalData);
+
+        List<KYCAddress> addresses = new LinkedList<>();
+        addresses.add(new KYCAddress(this.addressLine1, this.addressLine2, this.addressCity, this.addressCountry, this.addressZip));
+        addresses.add(new KYCAddress(this.previousAddressLine1, this.previousAddressLine2, this.previousAddressCity, this.previousAddressCountry, this.previousAddressZip));
+
+        kycAyondoForm.setAddresses(addresses);
+        kycAyondoForm.setMobileNumber(this.mobileNumber);
+        kycAyondoForm.setVerifiedMobileNumber(this.mobileNumber);
+        kycAyondoForm.setDob(this.dob);
+        kycAyondoForm.setFirstName(this.firstName);
+        kycAyondoForm.setMiddleName(this.middleName);
+        kycAyondoForm.setLastName(this.lastName);
+        kycAyondoForm.setAyondoGender(this.ayondoGender);
+        kycAyondoForm.setNationality(this.nationality);
+        kycAyondoForm.setIdentificationDocument(this.identificationDocument);
+        kycAyondoForm.setIdentificationNumber(this.identificationNumber);
+        kycAyondoForm.setVerifiedIdentificationNumber(this.identificationNumber);
+
+        return kycAyondoForm;
     }
 }

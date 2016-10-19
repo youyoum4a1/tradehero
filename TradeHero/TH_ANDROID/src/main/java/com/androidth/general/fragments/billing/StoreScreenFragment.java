@@ -118,9 +118,9 @@ public class StoreScreenFragment extends BaseFragment
                                     }))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
-                                    new Action1<PurchaseResult>()
+                                    new Action1<Object>()
                                     {
-                                        @Override public void call(PurchaseResult ignored)
+                                        @Override public void call(Object ignored)
                                         {
                                             userProfileCache.get(currentUserId.toUserBaseKey());
                                             portfolioCompactListCache.get(currentUserId.toUserBaseKey());
