@@ -1037,15 +1037,11 @@ public class PositionListFragment
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 
-<<<<<<< HEAD
 //            connectPortfolioSignalR(portfolioCompactDTO);
 
-
-=======
             if(portfolioCompactDTO.getPortfolioId()!=null){
                 connectPortfolioSignalR(portfolioCompactDTO);
             }
->>>>>>> origin/Row-live-with-competition
 
 //            signalRManager.initWithEvent(LiveNetworkConstants.PORTFOLIO_HUB_NAME,
 //                    new String[]{"UpdatePositions"},
