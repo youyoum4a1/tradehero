@@ -3,6 +3,8 @@ package com.androidth.general.api.security;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
 import com.androidth.general.common.persistence.DTO;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.api.portfolio.key.PortfolioCompactListKey;
@@ -19,19 +21,27 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
     String exchange;
     String securitySymbol;
     int securityIdNumber;
-    String ayondoId;
+
+    public void setAyondoId(int ayondoId) {
+        this.ayondoId = ayondoId;
+    }
+
+    int ayondoId;
 
     //<editor-fold desc="Constructors">
     public SecurityId() {}
 
     public SecurityId(final String exchange, final String securitySymbol, final int securityIdNumber)
     {
+        Log.d("SecurityId", "exchange: " + exchange + " symbol " + securitySymbol + " securityIdNumber " + securityIdNumber );
+
         this.exchange = exchange;
         this.securitySymbol = securitySymbol;
         this.securityIdNumber = securityIdNumber;
     }
-    public SecurityId(final String exchange, final String securitySymbol, final int securityIdNumber, final String ayondoId)
+    public SecurityId(final String exchange, final String securitySymbol, final int securityIdNumber, final int ayondoId)
     {
+        Log.d("SecurityId", "exchange: " + exchange + " symbol " + securitySymbol + " securityIdNumber " + securityIdNumber + " ayondoId " + ayondoId);
         this.exchange = exchange;
         this.securitySymbol = securitySymbol;
         this.securityIdNumber = securityIdNumber;
@@ -44,7 +54,7 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
         this.securityIdNumber = args.getInt(BUNDLE_KEY_SECURITY_ID);
-        this.ayondoId = args.getString(BUNDLE_KEY_AYONDO_ID);
+        this.ayondoId = args.getInt(BUNDLE_KEY_AYONDO_ID);
     }
     //</editor-fold>
 
@@ -60,7 +70,7 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
 
     public int getSecurityIdNumber() { return securityIdNumber; }
 
-    public String getAyondoId() { return ayondoId;}
+    public int getAyondoId() { return ayondoId;}
 
     /**
      * Parse security raw info, follow this form: id_exchangeName_securitySymbol into securityId
@@ -164,6 +174,7 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
         args.putString(BUNDLE_KEY_EXCHANGE, exchange);
         args.putString(BUNDLE_KEY_SYMBOL, securitySymbol);
         args.putInt(BUNDLE_KEY_SECURITY_ID, securityIdNumber);
+        args.putInt(BUNDLE_KEY_AYONDO_ID, ayondoId);
     }
 
     public Bundle getArgs()

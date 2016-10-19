@@ -236,8 +236,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     @NonNull public SecurityId getSecurityId()
     {
+
         if(LiveConstants.isInLiveMode)
-            return new SecurityId(exchange, symbol_ay, id_ay);
+            return new SecurityId(exchange, symbol, id, id_ay);
         return new SecurityId(exchange, symbol, id);
     }
 

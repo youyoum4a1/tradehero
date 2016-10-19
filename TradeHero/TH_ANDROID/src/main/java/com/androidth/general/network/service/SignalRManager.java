@@ -7,6 +7,7 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.LiveConstants;
 import com.google.gson.JsonElement;
 
 import javax.inject.Inject;
@@ -31,11 +32,15 @@ public class SignalRManager {
     private HubProxy hubProxy;
 
     //step 1, initialize
-    public SignalRManager(RequestHeaders requestHeaders, CurrentUserId currentUserId, String hubName){
+    public SignalRManager(RequestHeaders requestHeaders, CurrentUserId currentUserId, String hubName) {
+        this(requestHeaders, currentUserId, hubName, LiveNetworkConstants.TRADEHERO_LIVE_1B_ENDPOINT);
+    }
+
+    public SignalRManager(RequestHeaders requestHeaders, CurrentUserId currentUserId, String hubName, String hubAddress){
         Platform.loadPlatformComponent(new AndroidPlatformComponent());
 
         this.currentUserId = currentUserId;
-        this.connection = new HubConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+        this.connection = new HubConnection(hubAddress);
         this.connection.setCredentials(new Credentials() {
             @Override
             public void prepareRequest(Request request) {

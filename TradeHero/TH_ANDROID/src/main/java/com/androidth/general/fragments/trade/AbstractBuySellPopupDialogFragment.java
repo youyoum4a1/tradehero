@@ -30,6 +30,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.live1b.PositionDto;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -1430,7 +1431,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     usedDTO.quoteDTO,
                     requisite.getPortfolioIdObservable().toBlocking().first(),
                     usedDTO.clampedQuantity);
-            com.androidth.general.api.live1b.PositionDTO positionDTO = new com.androidth.general.api.live1b.PositionDTO();
+
             if (transactionFormDTO != null) {
                 unsubscribe(buySellSubscription);
                 buySellSubscription = getTransactionSubscription(transactionFormDTO);

@@ -1,14 +1,23 @@
 package com.androidth.general.api.live1b;
 
 
-import java.util.Date;
 
 public class BaseMessageResponseDTO {
 
-    public String requestID;
-    public Date requestCompletedAtUtc;
-    public long errorCode;
-    public String description;
+    public String RequestId;
+    public String RequestCompletedAtUtcTicks;
+    public long ErrorCode;
+    public String Description;
 
     public BaseMessageResponseDTO(){}
+
+    @Override
+    public String toString() {
+        return "BaseMessageResponseDTO{" +
+                "RequestID='" + RequestId + '\'' +
+                ", RequestCompletedAtUtc=" + RequestCompletedAtUtcTicks +
+                ", ErrorCode=" + ErrorCode +
+                ", Description='" + Description + '\'' +
+                '}';
+    }
 }

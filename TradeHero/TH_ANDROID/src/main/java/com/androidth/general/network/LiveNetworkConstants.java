@@ -16,9 +16,11 @@ public class LiveNetworkConstants
 
     public static final String CLIENT_NOTIFICATION_HUB_NAME = "clientnotificationhub";
     public static final String PORTFOLIO_HUB_NAME = "portfoliohub";
+    public static final String ORDER_MANAGEMENT_HUB_NAME = "OrderManagementHub";
     public static final String PROXY_METHOD_ADD_TO_GROUPS = "AddToGroups";
     public static final String PROXY_METHOD_ADD_TO_GROUP = "AddToGroup";
 
     public static final String PROXY_METHOD_UPDATE_POSITIONS = "UpdatePositions";
     public static final String PROXY_METHOD_UPDATE_PROFILE = "UpdatePortfolio";
+    public static final String PROXY_METHOD_OM_POSITION_RESPONSE = "PositionsResponse";
 }

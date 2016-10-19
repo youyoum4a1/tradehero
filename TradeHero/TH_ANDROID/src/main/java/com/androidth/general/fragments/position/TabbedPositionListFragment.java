@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.position;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,11 +13,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 import com.android.common.SlidingTabLayout;
+import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
+import com.androidth.general.fragments.live.LiveViewFragment;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.service.Live1BServiceWrapper;
+import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
@@ -32,6 +50,9 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.utils.route.THRouter;
+
+import org.json.JSONObject;
+
 import javax.inject.Inject;
 
 @Routable("user/:userId/portfolio/:portfolioId")
@@ -54,6 +75,7 @@ public class TabbedPositionListFragment extends DashboardFragment
     @InjectRoute PortfolioId injectedPortfolioId;
     @Bind(R.id.pager) ViewPager tabViewPager;
     @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Inject Live1BServiceWrapper live1BServiceWrapper;
 
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected PortfolioDTO portfolioDTO;
@@ -250,17 +272,21 @@ public class TabbedPositionListFragment extends DashboardFragment
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.general_tab_indicator_color));
         pagerSlidingTabStrip.setDistributeEvenly(true);
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-        if (isFX)
-        {
+        if (isFX) {
             tabViewPager.setCurrentItem(selectedTabIndex);
         }
 
-        if(this instanceof CompetitionLeaderboardPositionListFragment){
+        if (this instanceof CompetitionLeaderboardPositionListFragment) {
             //means it is inside the competition
             tabViewPager.addOnPageChangeListener(new CompetitionPositionTabPageListener());
             pagerSlidingTabStrip.setOnPageChangeListener(new CompetitionPositionTabPageListener());
         }
 
+    }
+
+    @Override public void onStart() {
+        super.onStart();
+        userLoginLoader();
     }
 
     private class TabbedPositionPageAdapter extends FragmentPagerAdapter
@@ -368,4 +394,97 @@ public class TabbedPositionListFragment extends DashboardFragment
             }
         }
     }
+
+
+
+
+
+    @Override  public void onLiveTradingChanged(OffOnViewSwitcherEvent event) {
+        super.onLiveTradingChanged(event);
+
+    //    Toast.makeText(getContext(), "TOGGLE PRESSED!", Toast.LENGTH_LONG).show();
+
+        LiveConstants.hasLiveAccount = true; // todo remove after debug
+
+        userLoginLoader();
+    }
+
+    private void userLoginLoader()
+    {
+        if(LiveConstants.isInLiveMode && LiveConstants.hasLiveAccount)
+        {
+            live1BServiceWrapper.getPositions()
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError(new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    if (throwable != null) {
+                        if (throwable instanceof RetrofitError) {
+
+                            RetrofitError error = (RetrofitError) throwable;
+                            Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+                            if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
+                                pushLiveLogin(error);
+                            } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+                                Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                            else {
+                                Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+
+                            }
+                        }
+                    }
+                }
+            })
+            //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+            .subscribe(new Action1<String>() {
+                           @Override
+                           public void call(String getPositions) {
+                               Log.d("PLF.java", "Success getPositions, result: " + getPositions);
+                           }
+                       }
+
+                    , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+
+        }
+
+    }
+
+    private void pushLiveLogin(RetrofitError error)
+    {
+        try {
+            if (LiveConstants.hasLiveAccount) {
+
+                JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
+
+                Log.d("PLF.java", "pushLiveLogin " + error.getResponse().getBody().toString() + " " + buySellStockError.toString());
+                // user has a live account, but not logged in, redirect to the extracted json URL
+                Bundle args = getArguments();
+                String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
+                args.putString(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
+                LiveViewFragment liveViewFragment = new LiveViewFragment();
+                liveViewFragment.setArguments(args);
+                liveViewFragment.putUrl(args, redirectURL);
+                Log.d("PLF.java", "REDIRECT URL->> " + redirectURL );
+                try {
+                    /////   unsubscribe(buySellSubscription);
+                }
+                catch(Exception ex)
+                {
+                    Log.d("printStackTrace", ex.toString());
+                }
+
+                navigator.get().pushFragment(LiveViewFragment.class, args);
+
+            } else {
+                Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
+                startActivity(kycIntent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error in redirection: " + e.getStackTrace().toString() , Toast.LENGTH_LONG).show();
+            Log.d("pushLiveLoginCatchError", e.toString());
+        }
+
+    }
+
 }

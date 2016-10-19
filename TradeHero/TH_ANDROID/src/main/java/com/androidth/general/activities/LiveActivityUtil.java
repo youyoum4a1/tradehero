@@ -11,6 +11,8 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.fragments.position.PositionListFragment;
+import com.androidth.general.fragments.position.TabbedPositionListFragment;
 import com.androidth.general.fragments.timeline.MeTimelineFragment;
 import com.androidth.general.fragments.trade.BuySellStockFragment;
 import com.androidth.general.fragments.trending.TileType;
@@ -223,6 +225,9 @@ public class LiveActivityUtil
     }
 
     public boolean canShowLiveTradingToggle(Fragment f){
-        return f instanceof TrendingMainFragment || f instanceof MeTimelineFragment || f instanceof BuySellStockFragment;
+        return f instanceof TrendingMainFragment
+                || f instanceof MeTimelineFragment
+                || f instanceof BuySellStockFragment
+                || f instanceof TabbedPositionListFragment;
     }
 }
