@@ -6,6 +6,7 @@ import com.androidth.general.api.leaderboard.def.LeaderboardDefDTOList;
 import com.androidth.general.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.androidth.general.api.position.GetPositionsDTO;
 import retrofit.http.GET;
+import retrofit.http.Headers;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -64,6 +65,8 @@ interface LeaderboardServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
+    //set cache to 1 second coz it's not refreshing after following a user
+    @Headers({"Cache-Control: max-age=1"})
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
     Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
