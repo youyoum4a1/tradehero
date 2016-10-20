@@ -177,7 +177,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                     {
                         @Override public void call(Boolean inLiveMode)
                         {
-                            Log.d("TSF.java", "doOnNext call: isInLiveMode "  + inLiveMode);
+
                             scheduleRequestData();
                         }
                     })
@@ -186,7 +186,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                             {
                                 @Override public void call(Boolean inLiveMode)
                                 {
-                                    Log.d("TSF.java", "subscribe call: isInLiveMode "  + inLiveMode);
+
                                 }
                             },
                             new TimberOnErrorAction1("Failed to listen to Virtual/Live toggle"));
