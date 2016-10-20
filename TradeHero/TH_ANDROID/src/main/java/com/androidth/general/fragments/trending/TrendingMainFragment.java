@@ -134,6 +134,7 @@ public class TrendingMainFragment extends DashboardFragment
     private DTOAdapterNew<DTO> exchangeAdapter;
     private DTOAdapterNew<DTO> securitTypeAdapter;
     private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
+    private BehaviorSubject<Boolean> virtualLiveModeSubject;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
 
     //Live-related
@@ -235,6 +236,7 @@ public class TrendingMainFragment extends DashboardFragment
         }
 
         exchangeSpinnerDTOSubject = BehaviorSubject.create();
+        virtualLiveModeSubject = BehaviorSubject.create();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -318,13 +320,15 @@ public class TrendingMainFragment extends DashboardFragment
         trendingLiveFragmentUtil.onResume();
 
         GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_TRENDING_SCREEN);
+
+        Log.d("TMF.java", "onResume: i am resuming....");
     }
 
     @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
         super.onLiveTradingChanged(event);
         // TODO force reload cache whenever user toggles
-
+        Log.d("TMF.java", "onLiveTradingChanged: securitTypeAdapter = " + securitTypeAdapter);
         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser) {
 
             userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
@@ -378,7 +382,7 @@ public class TrendingMainFragment extends DashboardFragment
         //    trendingLiveFragmentUtil.setCallToActionFragmentGone(tabViewPager);
 
         }
-
+        virtualLiveModeSubject.onNext(event.isOn);
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
     }
 
@@ -405,6 +409,7 @@ public class TrendingMainFragment extends DashboardFragment
         this.tradingFXPagerAdapter = null;
         this.exchangeAdapter = null;
         this.exchangeSpinnerDTOSubject = null;
+        this.virtualLiveModeSubject = null;
         this.stockFxSwitcher = null;
         this.exchangeSpinner = null;
         super.onDestroy();
@@ -431,6 +436,7 @@ public class TrendingMainFragment extends DashboardFragment
             try{
                 isInLiveMode = trendingLiveFragmentUtil.getLiveActivityUtil().getLiveSwitcher().getIsOn();
                 colorId = isInLiveMode? getActivity().getResources().getColor(R.color.general_red_live) : getActivity().getResources().getColor(R.color.general_brand_color);
+
                 setActionBarColor(colorId);
             }catch (Exception e){
                 //not yet set up
@@ -439,7 +445,7 @@ public class TrendingMainFragment extends DashboardFragment
         }else{
             setActionBarColor(colorId);
         }
-
+        virtualLiveModeSubject.onNext(isInLiveMode);
         super.onPrepareOptionsMenu(menu);
 
     }
@@ -773,6 +779,11 @@ public class TrendingMainFragment extends DashboardFragment
         return exchangeSpinnerDTOSubject.asObservable();
     }
 
+    public Observable<Boolean> getVirtualLiveModeSelectionObservable()
+    {
+        return virtualLiveModeSubject.asObservable();
+    }
+
     public static void setLastType(@NonNull AssetClass assetClass)
     {
         if (assetClass.equals(AssetClass.STOCKS))
@@ -927,7 +938,7 @@ public class TrendingMainFragment extends DashboardFragment
             compositeExchangeSecurityCacheRx.fetch(currentUserId.toUserBaseKey()).subscribe(new Action1<CompositeExchangeSecurityDTO>() {
                 @Override
                 public void call(CompositeExchangeSecurityDTO compositeExchangeSecurityDTO) {
-                    Log.v(getTag(), "!!!"+compositeExchangeSecurityDTO);
+                    Log.v("!!!.java" ,  compositeExchangeSecurityDTO.getSecurityTypes() + "");
                     securitTypeAdapter.addAll(compositeExchangeSecurityDTO.getSecurityTypes());
                     securitTypeAdapter.notifyDataSetChanged();
                 }
@@ -935,7 +946,7 @@ public class TrendingMainFragment extends DashboardFragment
 
         }else{
 
-            Log.v(getTag(), "!!!22"+compositeExchangeSecurityDTO);
+            Log.v("!!!222.java" ,  compositeExchangeSecurityDTO.getSecurityTypes() + "");
             securitTypeAdapter.addAll(compositeExchangeSecurityDTO.getSecurityTypes());
             securitTypeAdapter.notifyDataSetChanged();
         }

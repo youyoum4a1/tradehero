@@ -163,8 +163,8 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                         .subscribe(new Action1<String>() {
                                        @Override
                                        public void call(String positionTransactionResult) {
+                                           Toast.makeText(getContext(), "Stock Purchase Successful! " + positionTransactionResult.toString(), Toast.LENGTH_LONG).show();
                                            Log.d("BuyStockFragment.java", "Success stock purchase, result: " + positionTransactionResult);
-                                           Toast.makeText(getContext(), positionTransactionResult.toString(), Toast.LENGTH_LONG);
                                        }
                                    }
 

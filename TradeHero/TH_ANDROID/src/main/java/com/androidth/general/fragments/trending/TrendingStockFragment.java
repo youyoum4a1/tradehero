@@ -3,6 +3,7 @@ package com.androidth.general.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.api.watchlist.WatchlistPositionDTOList;
 import com.androidth.general.billing.ProductIdentifierDomain;
 import com.androidth.general.billing.THBillingInteractorRx;
+import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.CollectionUtils;
 import com.androidth.general.common.utils.THToast;
@@ -54,6 +56,7 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
 import java.util.HashMap;
@@ -91,6 +94,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
     @Inject protected THBillingInteractorRx userInteractorRx;
     private Subscription exchangeSubscription;
+    private Subscription virtualLiveModeSubscription;
 
     public static void putTabType(@NonNull Bundle args, @NonNull TrendingStockTabType tabType)
     {
@@ -167,6 +171,25 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                         }
                                     },
                                     new TimberOnErrorAction1("Failed to listen to exchange in trendingStock"));
+
+            virtualLiveModeSubscription = ((TrendingMainFragment) getParentFragment()).getVirtualLiveModeSelectionObservable()
+                    .doOnNext(new Action1<Boolean>()
+                    {
+                        @Override public void call(Boolean inLiveMode)
+                        {
+                            Log.d("TSF.java", "doOnNext call: isInLiveMode "  + inLiveMode);
+                            scheduleRequestData();
+                        }
+                    })
+                    .subscribe(
+                            new Action1<Boolean>()
+                            {
+                                @Override public void call(Boolean inLiveMode)
+                                {
+                                    Log.d("TSF.java", "subscribe call: isInLiveMode "  + inLiveMode);
+                                }
+                            },
+                            new TimberOnErrorAction1("Failed to listen to Virtual/Live toggle"));
         }
 
         fetchProviderList();
@@ -176,6 +199,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         exchangeSubscription.unsubscribe();
         exchangeSubscription = null;
+        virtualLiveModeSubscription.unsubscribe();
+        virtualLiveModeSubscription = null;
         super.onPause();
     }
 
@@ -214,6 +239,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     protected void fetchListByFilter(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
+
         boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
         this.trendingFilterTypeDTO = trendingFilterTypeDTO;
         if (hasChanged)
