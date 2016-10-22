@@ -91,7 +91,7 @@ public abstract class BaseDialogSupportFragment extends DialogFragment
         }
     }
 
-    public static interface OnDismissedListener
+    public interface OnDismissedListener
     {
         void onDismissed(DialogInterface dialog);
     }

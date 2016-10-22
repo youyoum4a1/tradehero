@@ -6,7 +6,6 @@ import android.support.annotation.StringRes;
 
 import com.androidth.general.R;
 import com.androidth.general.api.market.Country;
-import com.androidth.general.models.fastfill.ScanReference;
 import com.androidth.general.models.fastfill.ScannedDocument;
 
 import java.util.ArrayList;

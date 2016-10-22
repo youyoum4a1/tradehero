@@ -1,7 +1,5 @@
 package com.androidth.general.network.service;
 
-import android.support.annotation.NonNull;
-
 import com.androidth.general.api.market.ExchangeCompactDTOList;
 import com.androidth.general.api.market.SectorCompactDTOList;
 import com.androidth.general.api.market.SectorDTOList;

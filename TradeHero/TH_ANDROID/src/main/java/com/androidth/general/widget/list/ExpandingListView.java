@@ -190,12 +190,12 @@ public class ExpandingListView extends ListView
         }
     }
 
-    public static interface ExpandingListItemListener extends OnItemClickListener
+    public interface ExpandingListItemListener extends OnItemClickListener
     {
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id);
+        void onItemClick(AdapterView<?> parent, View view, int position, long id);
 
-        public void onItemExpanded(AdapterView<?> parent, View view, int position, long id);
+        void onItemExpanded(AdapterView<?> parent, View view, int position, long id);
 
-        public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id);
+        void onItemCollapsed(AdapterView<?> parent, View view, int position, long id);
     }
 }

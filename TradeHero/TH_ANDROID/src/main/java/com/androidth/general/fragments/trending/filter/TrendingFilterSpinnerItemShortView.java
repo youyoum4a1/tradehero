@@ -64,7 +64,7 @@ public class TrendingFilterSpinnerItemShortView extends LinearLayout
             if (compactSpinnerDTO != null)
             {
                 if(compactSpinnerDTO instanceof ExchangeCompactSpinnerDTO){
-                    if ((ExchangeCompactSpinnerDTO) compactSpinnerDTO != null) {
+                    if (compactSpinnerDTO != null) {
                         label.setText(((ExchangeCompactSpinnerDTO)compactSpinnerDTO).name);
                     }
                 }else if(compactSpinnerDTO instanceof SecurityTypeDTO){

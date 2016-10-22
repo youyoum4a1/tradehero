@@ -132,7 +132,6 @@
             android:layout_marginTop="@dimen/margin_small">
 
             <ProgressBar
-                android:id="@+id/authentication_sign_up_username_validator"
                 android:layout_width="32dip"
                 android:layout_height="32dip"
                 android:layout_gravity="center"

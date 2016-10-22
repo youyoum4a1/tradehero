@@ -285,7 +285,7 @@ public class OnBoardFragment extends BaseFragment
                         selectedRegion = marketRegion;
                         hadAutoSelectedExchange = marketRegion != null;
                         return marketRegion == null
-                                ? Observable.<ExchangeCompactDTOList>empty()
+                                ? Observable.empty()
                                 : fragment.getSelectedExchangesObservable()
                                         .subscribeOn(Schedulers.computation())
                                         .startWith(selectedExchanges == null ? new ExchangeCompactDTOList() : selectedExchanges);

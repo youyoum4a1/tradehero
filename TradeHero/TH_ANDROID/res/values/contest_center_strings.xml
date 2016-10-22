@@ -7,7 +7,5 @@
 
   <string name="competition_security_v2_by_exchange">By Exchange</string>
   <string name="competition_security_v2_by_type">By Type</string>
-  <string name="competition_security_v2_by_most_active">Most Active</string>
-  <string name="competition_security_v2_by_top_gainer">Top Gainer</string>
 
 </resources>

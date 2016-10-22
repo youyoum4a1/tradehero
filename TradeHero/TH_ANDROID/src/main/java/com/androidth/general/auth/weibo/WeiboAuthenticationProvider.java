@@ -2,9 +2,7 @@ package com.androidth.general.auth.weibo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.androidth.general.network.share.SocialConstants;
 //import com.sina.weibo.sdk.auth.Oauth2AccessToken;
@@ -18,8 +16,6 @@ import com.androidth.general.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
-import rx.functions.Func1;
-import timber.log.Timber;
 
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider

@@ -3,65 +3,39 @@
   <string name="error_unknown">A surprising error has occurred. Try again.</string>
   <string name="error_canceled">Action has been canceled</string>
   <string name="error_network_connection">Please check the network connection</string>
-  <string name="error_cache_flush">There was an error flushing the disk cache.</string>
 
-  <string name="error_incomplete_info_title">Not enough info</string>
   <string name="error_incomplete_info_message">Try again in a moment</string>
-  <string name="error_incomplete_info_cancel">OK</string>
 
   <string name="error_fetch_achievements">There was an error when fetching the list of achievements</string>
   <string name="error_empty_achievement_list">Sorry, there are no achievements for now.</string>
 
-  <string name="error_fetch_alert">There was an error when fetching alert information</string>
   <string name="error_alert_insufficient_info">There is insufficient information to submit the alert</string>
-  <string name="error_alert_save_inactive">We cannot save an inactive alert</string>
   <string name="error_alert_target_price_invalid">Target price cannot be zero.</string>
 
   <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
 
   <string name="error_fetch_help_video_list_info">There was an error when fetching the list of help videos</string>
-  <string name="error_fetch_help_video_info">There was an error when fetching the info of a help video</string>
-  <string name="error_help_video_no_package_available_to_play">You do not have a player for this video</string>
 
   <string name="error_fetch_hero">There was an error when fetching the hero information</string>
 
-  <string name="error_fetch_friends">Failed to retrieve your friends list</string>
-  <string name="error_fetch_local_contacts">Failed to retrieve the contacts from your phone</string>
-  <string name="error_fetch_server_friends">Failed to retrieve your friends list from the server</string>
-
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
-  <string name="error_fetch_leaderboard_def">There was an error when fetching the leaderboard definition</string>
   <string name="error_fetch_leaderboard_info">There was an error when fetching the current leaderboard information</string>
-  <string name="error_fetch_user_on_leaderboard">There was an error when fetching your current position in this leaderboard</string>
 
   <string name="error_fetch_message_thread_header">Failed to fetch the message thread info</string>
 
   <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
   <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>
 
-  <string name="error_fetch_private_message_initiating_discussion">Failed to fetch the initiating discussion</string>
-
   <string name="error_fetch_provider_info_list">There was an error when fetching the list of competition providers.</string>
   <string name="error_fetch_provider_info">There was an error when fetching the competition provider info.</string>
-  <string name="error_fetch_provider_competition">There was an error when fetching the competition info</string>
   <string name="error_fetch_provider_competition_list">There was an error when fetching the list of competitions</string>
-  <string name="error_fetch_provider_competition_leaderboard_list">There was an error when fetching the list of competition leaderboards</string>
   <string name="error_fetch_provider_competition_display_cell_list">There was an error when fetching the list of competition\'s items</string>
 
-  <string name="error_find_security_id_to_int">Could not find this security</string>
   <string name="error_fetch_security_list_info">There was an error when fetching the list of securities</string>
   <string name="error_fetch_security_info">There was an error when fetching the security information</string>
-  <string name="error_fetch_detailed_security_info">There was an error when fetching the detailed security information</string>
-  <string name="error_fetch_quote">There was an error fetching quote information</string>
-
-  <string name="error_share_referral_code_on_network">Sharing on social network(s) failed</string>
-
-  <string name="error_fetch_trade_list_info">There was an error when fetching the list of trades</string>
 
   <string name="error_decode_image_memory">Not enough memory to decode the image</string>
   <string name="error_launch_photo_library">There was an error launching the photo library</string>
-  <string name="error_fetch_image_library">Failed to extract image from library</string>
-  <string name="error_launch_camera">There was an error launching the camera</string>
   <string name="error_fetch_user_profile">There was an error when fetching the user profile information</string>
   <string name="error_fetch_your_user_profile">There was an error when fetching your profile information</string>
   <string name="error_update_your_user_profile">There was an error when updating your profile information</string>

@@ -1,26 +1,16 @@
 package com.androidth.general.fragments.base;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import com.androidth.general.BuildConfig;
-import com.androidth.general.R;
-import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 abstract public class DashboardFragment extends BaseFragment
 {

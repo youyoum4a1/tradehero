@@ -3,9 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/TH.GuideContainer"
-    tools:background="@drawable/login_bg_2"
-    tools:context=".AuthenticationActivity"
-    >
+    tools:background="@drawable/login_bg_2">
 
   <View
       android:layout_width="match_parent"

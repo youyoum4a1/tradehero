@@ -16,7 +16,7 @@ public enum TimeLineItemType
 
     public final int value;
 
-    private TimeLineItemType(int value)
+    TimeLineItemType(int value)
     {
         this.value = value;
     }

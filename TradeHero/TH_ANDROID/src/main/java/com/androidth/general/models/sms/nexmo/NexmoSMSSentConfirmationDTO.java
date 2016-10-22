@@ -2,17 +2,11 @@ package com.androidth.general.models.sms.nexmo;
 
 import android.support.annotation.NonNull;
 
-import com.androidth.general.R;
 import com.androidth.general.models.sms.SMSId;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
-import com.androidth.general.models.sms.twilio.TwilioAccountSid;
-import com.androidth.general.models.sms.twilio.TwilioErrorCode;
-import com.androidth.general.models.sms.twilio.TwilioSMSId;
-import com.androidth.general.models.sms.twilio.TwilioSMSStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 public class NexmoSMSSentConfirmationDTO implements SMSSentConfirmationDTO

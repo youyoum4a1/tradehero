@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="relation_following">Following</string>
-
-  <string name="onboard_invitation_follow_hero_header">Follow Some Heroes!</string>
-  <string name="onboard_invitation_follow_hero_come_on">Here are some successful Trade Heroes that you can follow and learn from.</string>
-  
 </resources>

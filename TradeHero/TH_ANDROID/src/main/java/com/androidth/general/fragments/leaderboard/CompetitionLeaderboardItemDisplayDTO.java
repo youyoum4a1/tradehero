@@ -10,7 +10,6 @@ import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.leaderboard.LeaderboardUserDTO;
 import com.androidth.general.api.leaderboard.competition.CompetitionLeaderboardDTO;
-import com.androidth.general.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserProfileDTO;
 

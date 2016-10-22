@@ -14,7 +14,7 @@ public enum YahooChartSize
     public final int yahooPixelHeight;
 
     //<editor-fold desc="Constructors">
-    private YahooChartSize(@NonNull String c, int yahooPixelWidth, int yahooPixelHeight)
+    YahooChartSize(@NonNull String c, int yahooPixelWidth, int yahooPixelHeight)
     {
         code = c;
         this.yahooPixelWidth = yahooPixelWidth;

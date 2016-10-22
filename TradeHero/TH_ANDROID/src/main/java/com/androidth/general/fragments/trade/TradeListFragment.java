@@ -305,7 +305,7 @@ public class TradeListFragment extends DashboardFragment
                                         return positionDTOKeyPositionDTOPair.second;
                                     }
                                 })
-                                .startWith(positionDTO != null ? Observable.just(positionDTO) : Observable.<PositionDTO>empty())
+                                .startWith(positionDTO != null ? Observable.just(positionDTO) : Observable.empty())
                                 .observeOn(AndroidSchedulers.mainThread()),
                         new Func3<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>, PositionDTO, PositionDTO>()
                         {
@@ -337,7 +337,7 @@ public class TradeListFragment extends DashboardFragment
                                                                 .map(new PairGetSecond<SecurityIntegerId, SecurityId>());
                                                     }
                                                 })
-                                                .startWith(securityId != null ? Observable.just(securityId) : Observable.<SecurityId>empty())
+                                                .startWith(securityId != null ? Observable.just(securityId) : Observable.empty())
                                                 .distinctUntilChanged()
                                                 .flatMap(new Func1<SecurityId, Observable<SecurityCompactDTO>>()
                                                 {
@@ -349,7 +349,7 @@ public class TradeListFragment extends DashboardFragment
                                                                 .subscribeOn(Schedulers.computation())
                                                                 .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                                                                 .startWith(securityCompactDTO != null ? Observable.just(securityCompactDTO)
-                                                                        : Observable.<SecurityCompactDTO>empty());
+                                                                        : Observable.empty());
                                                     }
                                                 }),
                                         Observable.just(pDTO.getOwnedPositionId())

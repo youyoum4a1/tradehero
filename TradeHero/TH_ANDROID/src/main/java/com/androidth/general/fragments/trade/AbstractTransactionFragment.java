@@ -1,6 +1,5 @@
 package com.androidth.general.fragments.trade;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,13 +35,9 @@ import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
-import com.androidth.general.api.security.SecurityCompactDTOUtil;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TransactionFormDTO;
-import com.androidth.general.api.share.wechat.WeChatDTO;
-import com.androidth.general.api.share.wechat.WeChatMessageType;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
@@ -77,7 +72,6 @@ import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
-import com.androidth.general.wxapi.WXEntryActivity;
 
 import java.util.ArrayList;
 import java.util.List;

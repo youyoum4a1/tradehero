@@ -2,9 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <item
-      android:id="@+id/timeline_action_translate"
-      android:title="@string/translate"
+  <item android:title="@string/translate"
       />
 
 </menu>

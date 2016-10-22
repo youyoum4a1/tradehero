@@ -1,7 +1,5 @@
 package com.androidth.general.models.chart;
 
-import com.androidth.general.models.chart.reuters.ReutersChartDTOFactory;
-import com.androidth.general.models.chart.yahoo.YahooChartDTOFactory;
 import dagger.Module;
 import dagger.Provides;
 

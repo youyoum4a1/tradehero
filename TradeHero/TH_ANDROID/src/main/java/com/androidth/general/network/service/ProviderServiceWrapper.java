@@ -1,7 +1,6 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.androidth.general.api.BaseResponseDTO;
 import com.androidth.general.api.competition.CompetitionPreSeasonDTO;
@@ -29,8 +28,7 @@ import com.androidth.general.models.BaseDTOListProcessor;
 import com.androidth.general.models.portfolio.DTOProcessorPortfolioReceived;
 import com.androidth.general.models.provider.DTOProcessorProviderReceived;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
-import com.tencent.mm.sdk.platformtools.Log;
+import android.util.Log;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

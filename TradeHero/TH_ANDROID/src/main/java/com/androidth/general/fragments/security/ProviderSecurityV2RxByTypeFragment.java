@@ -22,10 +22,9 @@ import com.androidth.general.api.security.SecurityTypeDTO;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.squareup.picasso.Picasso;
-import com.tencent.mm.sdk.platformtools.Log;
+import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

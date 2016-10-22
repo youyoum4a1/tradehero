@@ -17,11 +17,7 @@ import com.androidth.general.R;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.network.service.ProviderServiceRx;
 import com.androidth.general.utils.ExceptionUtils;
-import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.route.THRouter;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
@@ -29,8 +25,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RetrofitError;
-import retrofit.mime.TypedByteArray;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 

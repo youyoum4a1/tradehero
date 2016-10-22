@@ -162,7 +162,7 @@ abstract public class TimelineFragment extends DashboardFragment {
                 R.layout.timeline_list_item_spacing);
         portfolioListAdapter.setCurrentTabType(currentTab);
         //noinspection ArraysAsListWithZeroOrOneArgument
-        portfolioListAdapter.setItems(Arrays.<Object>asList(SimpleOwnPortfolioListItemAdapter.DTO_LOADING));
+        portfolioListAdapter.setItems(Arrays.asList(SimpleOwnPortfolioListItemAdapter.DTO_LOADING));
         subTimelineAdapter = new SubTimelineAdapterNew(
                 getActivity(),
                 R.layout.timeline_item_view,
@@ -327,7 +327,7 @@ abstract public class TimelineFragment extends DashboardFragment {
                         if (enhancedItems != null) {
                             return viewDTOFactory.createTimelineItemViewLinearDTOs(enhancedItems);
                         }
-                        return Observable.<List<AbstractDiscussionCompactItemViewLinear.DTO>>just(
+                        return Observable.just(
                                 new ArrayList<AbstractDiscussionCompactItemViewLinear.DTO>());
                     }
                 });

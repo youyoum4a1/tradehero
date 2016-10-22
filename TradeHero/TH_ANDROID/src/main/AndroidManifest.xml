@@ -152,27 +152,7 @@
     <!--android:name="com.androidth.general.activities.FacebookShareActivity"-->
     <!--android:label="@string/app_name"-->
     <!--android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>-->
-
-    <!-- QQ login -->
-    <activity
-        android:name="com.tencent.tauth.AuthActivity"
-        android:launchMode="singleTask"
-        android:noHistory="true">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
-
-        <data android:scheme="tencent1101331512"/>
-      </intent-filter>
-    </activity>
-    <activity
-        android:name="com.tencent.connect.common.AssistActivity"
-        android:screenOrientation="portrait"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar">
-    </activity>
-
+    
     <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
         android:enabled="true">
       <intent-filter>

@@ -72,8 +72,8 @@ public class TwilioServiceWrapper implements SMSServiceWrapper
             @Override public Observable<? extends TwilioSMSSentConfirmationDTO> call(Throwable throwable)
             {
                 return throwable instanceof RetrofitError
-                        ? Observable.<TwilioSMSSentConfirmationDTO>error(new TwilioRetrofitException((RetrofitError) throwable))
-                        : Observable.<TwilioSMSSentConfirmationDTO>error(throwable);
+                        ? Observable.error(new TwilioRetrofitException((RetrofitError) throwable))
+                        : Observable.error(throwable);
             }
         };
     }

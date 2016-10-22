@@ -55,13 +55,9 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
 
     @Override public void onFocusChange(View v, boolean hasFocus)
     {
-        if (!hasFocus)
-        {
-            // This means the player has moved away
-            // It assumes that this method is not called as part of the constructor.
-            hasHadInteraction = true;
-        }
-        else hasHadInteraction = false;
+        // This means the player has moved away
+// It assumes that this method is not called as part of the constructor.
+        hasHadInteraction = !hasFocus;
         //validate();
         performValidation();
     }

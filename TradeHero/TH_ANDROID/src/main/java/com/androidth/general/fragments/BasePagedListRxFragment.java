@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -21,10 +22,8 @@ import com.androidth.general.R;
 import com.androidth.general.adapters.PagedDTOAdapter;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.widget.MultiScrollListener;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
@@ -57,8 +56,10 @@ abstract public class BasePagedListRxFragment<
     protected FlagNearEdgeScrollListener nearEndScrollListener;
 
     protected PagedDTOAdapter<DTOType> itemViewAdapter;
-    @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
-    @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
+//    @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
+//    @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
+    @NonNull protected final SparseArray<Subscription> pagedSubscriptions;
+    @NonNull protected final SparseArray<Subscription> pagedPastSubscriptions;
     protected DTOType selectedItem;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
@@ -77,8 +78,8 @@ abstract public class BasePagedListRxFragment<
 
     public BasePagedListRxFragment()
     {
-        pagedSubscriptions = new HashMap<>();
-        pagedPastSubscriptions = new HashMap<>();
+        pagedSubscriptions = new SparseArray<>();
+        pagedPastSubscriptions = new SparseArray<>();
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -185,23 +186,37 @@ abstract public class BasePagedListRxFragment<
 
     protected boolean isRequesting(int page)
     {
-        return pagedSubscriptions.containsKey(page) || pagedPastSubscriptions.containsKey(page);
+        return pagedSubscriptions.get(page)!=null || pagedPastSubscriptions.get(page)!=null;
     }
 
     @NonNull abstract protected DTOCacheRx<PagedDTOKeyType, ContainerDTOType> getCache();
 
     protected void unsubscribeListCache()
     {
-        for (Integer page : new ArrayList<>(pagedSubscriptions.keySet()))
-        {
-            unsubscribe(pagedSubscriptions.get(page));
-            pagedSubscriptions.remove(page);
+        Subscription page;
+        int key;
+        for(int i=0; i<pagedSubscriptions.size(); i++){
+            key = pagedSubscriptions.keyAt(i);
+            page = pagedSubscriptions.get(key);
+            unsubscribe(page);
+            pagedSubscriptions.remove(key);
         }
-        for (Integer page : new ArrayList<>(pagedPastSubscriptions.keySet()))
-        {
-            unsubscribe(pagedPastSubscriptions.get(page));
-            pagedPastSubscriptions.remove(page);
+        for(int i=0; i<pagedPastSubscriptions.size(); i++){
+            key = pagedPastSubscriptions.keyAt(i);
+            page = pagedPastSubscriptions.get(key);
+            unsubscribe(page);
+            pagedPastSubscriptions.remove(key);
         }
+//        for (Integer page : new ArrayList<>(pagedSubscriptions.keySet()))
+//        {
+//            unsubscribe(pagedSubscriptions.get(page));
+//            pagedSubscriptions.remove(page);
+//        }
+//        for (Integer page : new ArrayList<>(pagedPastSubscriptions.keySet()))
+//        {
+//            unsubscribe(pagedPastSubscriptions.get(page));
+//            pagedPastSubscriptions.remove(page);
+//        }
     }
 
     protected void scheduleRequestData()
@@ -239,13 +254,20 @@ abstract public class BasePagedListRxFragment<
                         @Override public void call(Pair<PagedDTOKeyType, ContainerDTOType> pair)
                         {
                             alreadyGotNext.set(true);
-                            Subscription removed = pagedSubscriptions.remove(pageToLoad);
-                            if (removed != null)
-                            {
+                            Subscription removed = pagedSubscriptions.get(pageToLoad, null);
+                            if(removed!=null){
+                                pagedSubscriptions.remove(pageToLoad);
                                 pagedPastSubscriptions.put(
                                         pageToLoad,
                                         removed);
                             }
+//                            Subscription removed = pagedSubscriptions.remove(pageToLoad);
+//                            if (removed != null)
+//                            {
+//                                pagedPastSubscriptions.put(
+//                                        pageToLoad,
+//                                        removed);
+//                            }
                         }
                     })
                     .finallyDo(new Action0()

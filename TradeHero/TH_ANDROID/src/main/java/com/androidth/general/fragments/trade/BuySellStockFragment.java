@@ -21,14 +21,12 @@ import android.widget.TextView;
 
 import com.android.common.SlidingTabLayout;
 import com.android.internal.util.Predicate;
-import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.alert.AlertCompactDTO;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOList;
 import com.androidth.general.api.position.PositionDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
@@ -474,7 +472,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                 });
     }
 
-    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double ask, @Nullable Double bid)
     {
         if (buyPrice != null && sellPrice != null && lastPrice != null)
         {

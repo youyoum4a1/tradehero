@@ -99,13 +99,13 @@ public class OAuthDialog extends Dialog
         content.addView(webViewContainer);
     }
 
-    public static abstract interface FlowResultHandler
+    public interface FlowResultHandler
     {
-        public abstract void onCancel();
+        void onCancel();
 
-        public abstract void onError(int paramInt, String paramString1, String paramString2);
+        void onError(int paramInt, String paramString1, String paramString2);
 
-        public abstract void onComplete(String paramString);
+        void onComplete(String paramString);
     }
 
     private class OAuth1WebViewClient extends WebViewClient

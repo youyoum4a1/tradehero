@@ -1,12 +1,10 @@
 package com.androidth.general.fragments.kyc;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -134,7 +132,7 @@ public class LiveFormConfirmationFragment extends BaseDialogFragment {
 
             Observable<Bitmap> bannerObservable = Observable.defer(() -> {
                 try {
-                    return Observable.just(picasso.with(getContext()).load(notificationLogoUrl).get());
+                    return Observable.just(Picasso.with(getContext()).load(notificationLogoUrl).get());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return Observable.error(e);
@@ -143,7 +141,7 @@ public class LiveFormConfirmationFragment extends BaseDialogFragment {
 
             Observable<Bitmap> logoObservable = Observable.defer(() -> {
                 try {
-                    return Observable.just(picasso.with(getContext()).load(logoUrl).get());
+                    return Observable.just(Picasso.with(getContext()).load(logoUrl).get());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return Observable.error(e);

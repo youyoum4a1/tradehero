@@ -24,9 +24,6 @@
     <item name="android:textColor">@color/general_brand_color</item>
   </style>
 
-  <color name="user_profile_blue">@color/general_brand_color</color>
-  <dimen name="user_profile_button_margin">6dp</dimen>
-
   <integer name="user_profile_photo_max_edge_pixel">480</integer>
   <integer name="user_profile_photo_compress_quality">75</integer>
 

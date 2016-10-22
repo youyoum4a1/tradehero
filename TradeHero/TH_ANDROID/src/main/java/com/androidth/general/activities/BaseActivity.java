@@ -89,7 +89,7 @@ public class BaseActivity extends AppCompatActivity
 
     @NonNull protected List<Object> getModules()
     {
-        return Arrays.<Object>asList(new BaseActivityModule(this));
+        return Arrays.asList(new BaseActivityModule(this));
     }
 
     @Override protected void onResume()
@@ -98,7 +98,12 @@ public class BaseActivity extends AppCompatActivity
 
         if (requireLogin())
         {
-            accountManager.addOnAccountsUpdatedListener(this, null, true);
+            try{
+                accountManager.addOnAccountsUpdatedListener(this, null, true);
+            }catch (SecurityException e){
+                //TODO handle permission
+                e.printStackTrace();
+            }
         }
         localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, ActivityUtil.getIntentFilterUpgrade());
         localBroadcastManager.registerReceiver(socialTokenBroadcastListener, ActivityUtil.getIntentFilterSocialToken());

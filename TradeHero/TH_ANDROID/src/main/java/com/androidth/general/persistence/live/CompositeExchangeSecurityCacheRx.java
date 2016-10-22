@@ -2,20 +2,13 @@ package com.androidth.general.persistence.live;
 
 import android.support.annotation.NonNull;
 
-import com.androidth.general.api.competition.ProviderDTO;
-import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.security.CompositeExchangeSecurityDTO;
-import com.androidth.general.api.security.SecurityTypeDTO;
-import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;
 import com.androidth.general.network.service.MarketServiceWrapper;
-import com.androidth.general.network.service.ProviderServiceWrapper;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -153,9 +153,9 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
         }
 
         @SuppressWarnings({"unused"}) @OnClick({
-                R.id.btn_linkedin_signin,
+//                R.id.btn_linkedin_signin,
                 R.id.btn_facebook_signin,
-                R.id.btn_twitter_signin,
+//                R.id.btn_twitter_signin,
                 R.id.btn_qq_signin,
                 R.id.btn_weibo_signin,
         }) @Nullable

@@ -14,7 +14,6 @@ import com.androidth.general.models.fastfill.ScannedDocument;
 import com.jumio.core.enums.JumioDataCenter;
 import com.jumio.core.exceptions.MissingPermissionException;
 import com.jumio.core.exceptions.PlatformNotSupportedException;
-import com.jumio.nv.NetverifyDocumentData;
 import com.jumio.nv.NetverifySDK;
 import com.jumio.nv.data.document.NVDocumentType;
 import com.neovisionaries.i18n.CountryCode;
@@ -159,14 +158,14 @@ public class NetverifyFastFillUtil implements FastFillUtil
     {
         if (requestCode == NET_VERIFY_REQUEST_CODE)
         {
-            if (resultCode == activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK)
             {
                 NetverifyScanReference scanReference = new NetverifyScanReference(data.getStringExtra(NetverifySDK.EXTRA_SCAN_REFERENCE));
                 scannedDocumentSubject.onNext(new NetverifyScannedDocument(
                         scanReference,
-                        data.<NetverifyDocumentData>getParcelableExtra(NetverifySDK.EXTRA_SCAN_DATA)));
+                        data.getParcelableExtra(NetverifySDK.EXTRA_SCAN_DATA)));
             }
-            else if (resultCode == activity.RESULT_CANCELED)
+            else if (resultCode == Activity.RESULT_CANCELED)
             {
                 //Consecutive scan will fail if we have onError
             }

@@ -13,7 +13,7 @@ public enum ContestCenterTabType
     @StringRes public final int titleRes;
     @NonNull public final Class<? extends Fragment> tabClass;
 
-    private ContestCenterTabType(@StringRes int titleRes, @NonNull Class<? extends Fragment> tabClass)
+    ContestCenterTabType(@StringRes int titleRes, @NonNull Class<? extends Fragment> tabClass)
     {
         this.titleRes = titleRes;
         this.tabClass = tabClass;

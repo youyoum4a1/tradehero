@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioId;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 
 import java.util.List;

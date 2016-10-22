@@ -3,8 +3,6 @@ package com.androidth.general.network.service;
 
 import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.api.live1b.*;
-import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
-import com.androidth.general.api.position.GetLivePositionsDTO;
 import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
@@ -15,9 +13,7 @@ import java.util.Map;
 
 import retrofit.http.Body;
 import retrofit.http.GET;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
-import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;

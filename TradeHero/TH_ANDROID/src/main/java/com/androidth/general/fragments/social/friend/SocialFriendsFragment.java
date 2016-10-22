@@ -18,7 +18,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.facebook.FacebookOperationCanceledException;
-import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.common.widget.BetterViewAnimator;
 import com.androidth.general.R;

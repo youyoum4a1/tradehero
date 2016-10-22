@@ -1,7 +1,6 @@
 package com.androidth.general.utils;
 
 import java.security.KeyStore;
-import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.X509Certificate;

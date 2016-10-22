@@ -16,7 +16,7 @@ enum TrendingFXTabType
     @NonNull public final Class<? extends BasePurchaseManagerFragment> fragmentClass;
 
     //<editor-fold desc="Constructors">
-    private TrendingFXTabType(
+    TrendingFXTabType(
             @StringRes int titleStringResId,
             @NonNull Class<? extends BasePurchaseManagerFragment> fragmentClass)
     {

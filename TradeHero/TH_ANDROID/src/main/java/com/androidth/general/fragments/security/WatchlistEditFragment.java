@@ -118,7 +118,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 Observable.combineLatest(
                         watchlistPositionCache.get(securityKeyId)
                                 .map(new PairGetSecond<SecurityId, WatchlistPositionDTO>())
-                                .startWith(Observable.<WatchlistPositionDTO>just(null))
+                                .startWith(Observable.just(null))
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(
                                         new Action1<WatchlistPositionDTO>()

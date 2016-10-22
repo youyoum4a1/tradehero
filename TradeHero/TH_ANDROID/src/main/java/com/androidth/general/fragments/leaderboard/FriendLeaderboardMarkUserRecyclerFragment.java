@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.FacebookOperationCanceledException;
 import com.androidth.general.common.persistence.DTOCacheRx;
-import com.androidth.general.common.rx.PairGetFirst;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.adapters.PagedRecyclerAdapter;
@@ -19,7 +17,6 @@ import com.androidth.general.api.leaderboard.position.LeaderboardFriendsKey;
 import com.androidth.general.api.social.InviteFormUserDTO;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.social.UserFriendsDTO;
-import com.androidth.general.api.social.UserFriendsFacebookDTO;
 import com.androidth.general.api.social.UserFriendsLinkedinDTO;
 import com.androidth.general.api.social.UserFriendsTwitterDTO;
 import com.androidth.general.api.users.UserProfileDTO;
@@ -34,8 +31,6 @@ import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.widget.list.SingleExpandingListViewListener;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -43,7 +38,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRecyclerRxFragment<
         LeaderboardFriendsKey,

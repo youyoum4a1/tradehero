@@ -1,6 +1,5 @@
 package com.androidth.general.auth;
 
-import android.content.Context;
 //import com.facebook.SharedPreferencesTokenCachingStrategy;
 //import com.facebook.TokenCachingStrategy;
 import com.androidth.general.api.social.SocialNetworkEnum;

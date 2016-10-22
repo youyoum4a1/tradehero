@@ -30,9 +30,6 @@
   </style>
 
   <dimen name="leaderboard_user_item_action_button_horizontal_padding">5dp</dimen>
-  <dimen name="leaderboard_user_item_action_follow_button_horizontal_padding">20dp</dimen>
-  <dimen name="leaderboard_user_item_action_button_corner_radius">1dp</dimen>
-  <dimen name="leaderboard_user_item_action_button_border_width">1dp</dimen>
   <dimen name="leaderboard_user_item_action_button_min_height">36dp</dimen>
 
 </resources>

@@ -3,9 +3,7 @@ package com.androidth.general.persistence.security;
 import android.support.annotation.NonNull;
 
 import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
-import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.api.security.SecurityCompositeDTO;
-import com.androidth.general.api.security.key.SecurityListType;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;

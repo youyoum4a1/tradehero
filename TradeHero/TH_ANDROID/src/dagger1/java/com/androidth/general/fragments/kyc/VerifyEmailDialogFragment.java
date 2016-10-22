@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.androidth.general.R;
 import com.androidth.general.fragments.base.BaseDialogFragment;
 import com.androidth.general.network.service.LiveServiceWrapper;
-import com.androidth.general.rx.TimberOnErrorAction1;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -39,7 +38,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 
@@ -155,7 +153,7 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
             Observable<Bitmap> observable = Observable.defer(()->{
                 try {
-                    return Observable.just(picasso.with(getContext()).load(notificationLogoUrl).get());
+                    return Observable.just(Picasso.with(getContext()).load(notificationLogoUrl).get());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return Observable.error(e);

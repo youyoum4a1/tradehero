@@ -115,8 +115,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
                 if (oldNews.heroImage != null && newNews.heroImage == null) return false;
                 if (oldNews.heroImage == null && newNews.heroImage != null) return false;
                 if (oldNews.heroImage != null && !oldNews.heroImage.equals(newNews.heroImage)) return false;
-                if (!oldNews.title.equals(newNews.title)) return false;
-                return true;
+                return oldNews.title.equals(newNews.title);
             }
             else if (oldItem instanceof NewsfeedStockTwitDisplayDTO && newItem instanceof NewsfeedStockTwitDisplayDTO)
             {
@@ -125,8 +124,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
                 if (oldTwit.heroImage != null && newTwit.heroImage == null) return false;
                 if (oldTwit.heroImage == null && newTwit.heroImage != null) return false;
-                if (oldTwit.heroImage != null && !oldTwit.heroImage.equals(newTwit.heroImage)) return false;
-                return true;
+                return !(oldTwit.heroImage != null && !oldTwit.heroImage.equals(newTwit.heroImage));
             }
             else if (oldItem instanceof NewsfeedDiscussionDisplayDTO && newItem instanceof NewsfeedDiscussionDisplayDTO)
             {
@@ -136,8 +134,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
                 if (oldDiscussion.logo != null && newDiscussion.logo == null) return false;
                 if (oldDiscussion.logo == null && newDiscussion.logo != null) return false;
                 if (oldDiscussion.logo != null && !oldDiscussion.logo.equals(newDiscussion.logo)) return false;
-                if (!oldDiscussion.content.equals(newDiscussion.content)) return false;
-                return true;
+                return oldDiscussion.content.equals(newDiscussion.content);
             }
             return super.areContentsTheSame(oldItem, newItem);
         }

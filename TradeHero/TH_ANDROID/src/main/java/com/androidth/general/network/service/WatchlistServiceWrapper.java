@@ -19,7 +19,6 @@ import com.androidth.general.models.watchlist.DTOProcessorWatchlistUpdate;
 import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.androidth.general.persistence.watchlist.WatchlistPositionCacheRx;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import dagger.Lazy;
 import javax.inject.Inject;

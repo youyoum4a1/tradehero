@@ -36,6 +36,6 @@ public class CrashReportingTree extends Timber.Tree
                 priorityString = "" + priority;
             }
             Crashlytics.logException(new com.androidth.general.common.log.CrashlyticsReportException(priorityString, tag, message, cause));
-        };
+        }
     }
 }

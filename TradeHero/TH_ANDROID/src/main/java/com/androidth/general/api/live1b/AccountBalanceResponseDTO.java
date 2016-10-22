@@ -1,6 +1,5 @@
 package com.androidth.general.api.live1b;
 import com.androidth.general.common.persistence.DTO;
-import com.androidth.general.api.BaseResponseDTO;
 
 import android.os.Bundle;
 public class AccountBalanceResponseDTO extends BaseMessageResponseDTO implements DTO

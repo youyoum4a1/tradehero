@@ -1,34 +1,9 @@
 package com.androidth.general.api.security;
 
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.androidth.general.R;
-import com.androidth.general.api.market.Exchange;
-import com.androidth.general.api.security.compact.BondCompactDTO;
-import com.androidth.general.api.security.compact.CoveredWarrantDTO;
-import com.androidth.general.api.security.compact.DepositoryReceiptDTO;
-import com.androidth.general.api.security.compact.EquityCompactDTO;
-import com.androidth.general.api.security.compact.FundCompactDTO;
-import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
-import com.androidth.general.api.security.compact.IndexSecurityCompactDTO;
-import com.androidth.general.api.security.compact.LockedSecurityCompactDTO;
-import com.androidth.general.api.security.compact.PreferenceShareDTO;
-import com.androidth.general.api.security.compact.PreferredSecurityDTO;
-import com.androidth.general.api.security.compact.StapledSecurityDTO;
-import com.androidth.general.api.security.compact.TradableRightsIssueDTO;
-import com.androidth.general.api.security.compact.UnitCompactDTO;
-import com.androidth.general.api.security.compact.UnitTrustSecurityCompactDTO;
-import com.androidth.general.api.security.compact.WarrantDTO;
 import com.androidth.general.common.persistence.DTO;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import java.util.Date;
-
-import timber.log.Timber;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

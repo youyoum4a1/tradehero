@@ -4,9 +4,7 @@
   <!-- Portfolio detail / Positions -->
   <string name="position_nothing_description">No open positions. Tap to Trade!</string>
   <string name="position_nothing_description_other_user">No open positions.</string>
-  <string name="position_list_action_bar_header">%d Positions</string>
   <string name="position_list_action_bar_header_unknown">Positions</string>
-  <string name="position_list_header_open">Open Positions (%d)</string>
   <string name="position_list_header_open_unsure">Open Positions</string>
   <string name="position_list_header_open_long">Long Positions</string>
   <string name="position_list_header_open_long_unsure">Long Positions</string>
@@ -17,47 +15,24 @@
   <string name="position_list_header_time_base" translatable="false">%1$s - %2$s</string>
   <string name="position_unrealised_loss_header">Will Lose</string>
   <string name="position_unrealised_profit_header">Will Profit</string>
-  <string name="position_unrealised_pl_header" deprecated="true">Unrealized P&amp;L</string>
-  <string name="position_realised_pl_header" deprecated="true">Realized P&amp;L</string>
   <string name="position_realised_loss_header">Loss</string>
   <string name="position_realised_profit_header">Gain</string>
   <string name="position_total_invested_header">Total Invested</string>
   <string name="position_invested_header">Invested:</string>
-  <string name="position_market_value_header">Market Value</string>
-  <string name="position_quantity_header">Quantity</string>
   <string name="position_average_price_header">Avg. Price</string>
-  <plurals name="position_unit_count">
-    <item quantity="one">%1$s unit</item>
-    <item quantity="other">%1$s units</item>
-  </plurals>
-  <plurals name="position_share_count">
-    <item quantity="one">%1$s share</item>
-    <item quantity="other">%1$s shares</item>
-  </plurals>
   <string name="position_share_count_header">Shares:</string>
   <string name="position_share_count_header_fx">Units:</string>
   <string name="position_share_count_qty_prefix">Qty: %s</string>
-  <string name="position_force_closed">Force Closed</string>
   <string name="position_last_amount_header">Val: %s</string>
 
   <string name="error_fetch_position_list_info">There was an error when fetching the list of positions</string>
-  <string name="error_lost_position_in_cache">We have lost track of this trading position</string>
 
-  <string name="position_expanded_close_pl_header">P&amp;L</string>
-  <string name="position_expanded_close_opened_date_header">Bought on</string>
-  <string name="position_expanded_close_closed_date_header">Sold on</string>
-  <string name="position_expanded_close_period_header">Period</string>
-  <plurals name="position_period_held_day">
-    <item quantity="one">%1$d day</item>
-    <item quantity="other">%1$d days</item>
-  </plurals>
   <string name="position_locked_follow_to_unlock">Follow user to unlock!</string>
   <string name="position_locked_title">Open Positions</string>
 
   <string name="positions_in_period">In Period</string>
   <string name="positions_overall">Overall</string>
 
-  <string name="position_in_period_pl" deprecated="true">Period P&amp;L</string>
   <string name="position_in_period_loss">Loss In Period</string>
   <string name="position_in_period_profit">Profit In Period</string>
   <string name="position_in_period_additional_invested">Addl. Invested</string>

@@ -6,12 +6,8 @@ import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.utils.Constants;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.Date;
-
-import io.fabric.sdk.android.Fabric;
 
 public class ActivityBuildTypeUtil {
 

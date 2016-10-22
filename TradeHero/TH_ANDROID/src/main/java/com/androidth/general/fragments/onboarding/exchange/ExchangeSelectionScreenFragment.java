@@ -226,7 +226,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                             mapHeaderSwitcherView.showClicked(initialRegion);
                         }
                         return mapHeaderSwitcherView.getMarketRegionClickedObservable()
-                                .startWith(initialRegion == null ? Observable.<MarketRegion>empty() : Observable.just(initialRegion));
+                                .startWith(initialRegion == null ? Observable.empty() : Observable.just(initialRegion));
                     }
                 })
                 .observeOn(Schedulers.computation())

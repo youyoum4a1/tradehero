@@ -17,8 +17,7 @@
       android:padding="10dp"
       android:textSize="20sp"
       android:gravity="center_horizontal"
-      android:text="@string/sina_weibo"
-      android:id="@+id/tvInviteMessage"/>
+      android:text="@string/sina_weibo" />
 
   <View android:layout_width="fill_parent"
       android:layout_height="1px"

@@ -90,7 +90,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popVerificationFailed(activityContext)
-                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
+                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popVerificationFailed(
@@ -110,7 +110,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popBadResponse(activityContext)
-                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
+                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popBadResponse(
@@ -130,7 +130,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popResultError(activityContext)
-                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
+                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popResultError(
@@ -150,7 +150,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popRemoteError(activityContext)
-                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
+                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popRemoteError(
@@ -170,7 +170,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popSendIntent(activityContext)
-                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
+                .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popSendIntent(

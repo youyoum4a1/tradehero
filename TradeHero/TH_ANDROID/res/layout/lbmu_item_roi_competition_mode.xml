@@ -8,9 +8,7 @@
     >
 
   <include
-      layout="@layout/lbmu_item_roi_mode_inner"
-      android:id="@+id/lbmu_inner_view_container"
-      />
+      layout="@layout/lbmu_item_roi_mode_inner" />
 
   <ImageView
       android:id="@+id/lbmu_item_prize"

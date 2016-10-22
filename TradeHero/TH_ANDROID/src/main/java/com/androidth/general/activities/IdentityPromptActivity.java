@@ -1,52 +1,32 @@
 package com.androidth.general.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.CountryDocumentTypes;
-import com.androidth.general.api.kyc.IdentityPromptInfoDTO;
 import com.androidth.general.api.kyc.KYCFormUtil;
-import com.androidth.general.api.kyc.LiveAvailabilityDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.api.users.UserBaseKey;
-import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.models.fastfill.FastFillExceptionUtil;
 import com.androidth.general.models.fastfill.FastFillUtil;
-import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
-import com.androidth.general.models.fastfill.ScannedDocument;
 import com.androidth.general.network.service.LiveServiceWrapper;
-import com.androidth.general.network.service.ProviderServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
-import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
-import com.androidth.general.rx.ReplaceWithFunc1;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.rx.ToastOnErrorAction1;
-import com.androidth.general.utils.route.THRouter;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
-import com.neovisionaries.i18n.CountryCode;
 import com.squareup.picasso.Picasso;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -55,13 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import timber.log.Timber;
 
 //@Routable(IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId")
 //@Routable({
@@ -125,7 +99,7 @@ public class IdentityPromptActivity extends BaseActivity
             }
 
             String color = providerDTO.hexColor.startsWith("#") ? providerDTO.hexColor : "#".concat(providerDTO.hexColor);
-            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(color));
+            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(""+color));
             imgActionBar.setBackground(colorDrawable);
         }
 

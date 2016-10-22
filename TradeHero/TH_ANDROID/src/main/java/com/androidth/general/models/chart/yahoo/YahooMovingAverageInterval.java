@@ -20,7 +20,7 @@ public enum YahooMovingAverageInterval
     public final int days;
 
     //<editor-fold desc="Constructors">
-    private YahooMovingAverageInterval(@NonNull String code, int days)
+    YahooMovingAverageInterval(@NonNull String code, int days)
     {
         this.code = code;
         this.days = days;

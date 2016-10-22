@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.BuildConfig;
@@ -56,7 +55,6 @@ import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;

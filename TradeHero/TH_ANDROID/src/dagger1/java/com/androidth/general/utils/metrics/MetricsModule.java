@@ -6,7 +6,6 @@ import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
 import com.androidth.general.base.THApp;
 import com.androidth.general.utils.Constants;
-import com.tune.Tune;
 
 import java.util.HashSet;
 import java.util.Set;

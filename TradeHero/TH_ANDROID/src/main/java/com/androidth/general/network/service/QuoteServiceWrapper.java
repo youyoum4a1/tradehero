@@ -2,7 +2,7 @@ package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.androidth.general.api.quote.QuoteDTO;
+
 import com.androidth.general.api.quote.RawQuoteParser;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
@@ -10,10 +10,7 @@ import com.androidth.general.fragments.security.LiveQuoteDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit.client.Response;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @Singleton public class QuoteServiceWrapper
 {

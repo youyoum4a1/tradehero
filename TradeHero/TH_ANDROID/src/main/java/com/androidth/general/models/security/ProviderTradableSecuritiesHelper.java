@@ -1,14 +1,11 @@
 package com.androidth.general.models.security;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
-import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;

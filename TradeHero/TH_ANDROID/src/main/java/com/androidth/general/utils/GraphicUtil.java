@@ -219,11 +219,7 @@ public class GraphicUtil
     {
         // Counting the perceptive luminance - human eye favors green color...
         double a = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
-        if (a < 0.5)
-        {
-            return true;
-        }
-        return false;
+        return a < 0.5;
     }
 
     public static int getLighterColor(int color)

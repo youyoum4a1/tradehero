@@ -1,12 +1,6 @@
 package com.androidth.general.api.position;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.androidth.general.api.leaderboard.position.LeaderboardMarkUserId;
-import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.common.persistence.DTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class GetLivePositionsDTO implements DTO
 {

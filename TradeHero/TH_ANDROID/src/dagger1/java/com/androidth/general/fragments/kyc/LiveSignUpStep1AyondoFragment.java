@@ -119,7 +119,6 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -700,7 +699,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             latestDTO = new LiveBrokerSituationDTO(situation.broker, defaultForm);
                         }
 
-                        if ((KYCAyondoForm) latestDTO.kycForm != null)
+                        if (latestDTO.kycForm != null)
                         {
                             ProviderDTO providerDTO = providerCache.getCachedValue(new ProviderId(getProviderId(getArguments())));
 

@@ -16,11 +16,6 @@
   <application>
 
     <activity
-        android:theme="@style/Theme.Netverify"
-        android:name="com.jumio.netverify.sdk.activity.NetverifyActivity"
-        android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
-
-    <activity
         android:name="com.androidth.general.activities.IdentityPromptActivity"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"

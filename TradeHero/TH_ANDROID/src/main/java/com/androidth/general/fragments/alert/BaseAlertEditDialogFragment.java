@@ -1,7 +1,6 @@
 package com.androidth.general.fragments.alert;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -30,7 +29,7 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
     @NonNull @Override public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_StockAlert_Dialog);
+        setStyle(STYLE_NO_TITLE, R.style.TH_StockAlert_Dialog);
         d.setCanceledOnTouchOutside(true);
         return d;
     }

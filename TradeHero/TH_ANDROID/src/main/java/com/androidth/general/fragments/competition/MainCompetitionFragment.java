@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.DashboardActivity;
-import com.androidth.general.fragments.DashboardTabHost;
 import com.androidth.general.api.competition.AdDTO;
 import com.androidth.general.api.competition.CompetitionDTOList;
 import com.androidth.general.api.competition.CompetitionPreSeasonDTO;

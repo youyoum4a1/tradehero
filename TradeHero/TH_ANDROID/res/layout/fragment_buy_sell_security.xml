@@ -9,7 +9,6 @@
     >
 
   <ScrollView
-      android:id="@+id/buy_sell_scrollview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_above="@+id/bottom_wrapper"
@@ -41,7 +40,6 @@
             />
 
         <TextView
-            android:id="@+id/portfolio_label_title"
             style="@style/TH.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -284,7 +282,6 @@
       >
 
     <LinearLayout
-        android:id="@+id/share_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/clickable_element_min_dimen"

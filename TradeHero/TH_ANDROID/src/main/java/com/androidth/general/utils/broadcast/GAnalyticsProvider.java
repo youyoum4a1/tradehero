@@ -113,8 +113,8 @@ public class GAnalyticsProvider {
 //TODO change this, remove activity
         try{
             THApp application = (THApp) activity.getApplication();
-            application.getTracker(THApp.TrackerName.APP_TRACKER).setScreenName(activityName);
-            application.getTracker(THApp.TrackerName.APP_TRACKER).send(new HitBuilders.ScreenViewBuilder().build());//for screen info
+            THApp.getTracker(THApp.TrackerName.APP_TRACKER).setScreenName(activityName);
+            THApp.getTracker(THApp.TrackerName.APP_TRACKER).send(new HitBuilders.ScreenViewBuilder().build());//for screen info
         }catch (Exception e){
             //activity might be null
             new TimberOnErrorAction1(e.getMessage());

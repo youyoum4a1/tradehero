@@ -3,7 +3,6 @@ package com.androidth.general.common.facebook;
 import android.support.annotation.NonNull;
 
 import com.facebook.FacebookException;
-import com.facebook.FacebookRequestError;
 
 public class FacebookRequestException extends RuntimeException
 {

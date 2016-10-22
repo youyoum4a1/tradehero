@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -36,9 +35,7 @@ import com.androidth.general.api.market.ExchangeListType;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.CompositeExchangeSecurityDTO;
-import com.androidth.general.api.security.SecurityTypeDTO;
 import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.api.users.DisplayNameDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTO;
@@ -54,7 +51,6 @@ import com.androidth.general.fragments.position.FXMainPositionListFragment;
 import com.androidth.general.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTOList;
-import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.live.CompositeExchangeSecurityCacheRx;
 import com.androidth.general.persistence.market.ExchangeCompactListCacheRx;
 import com.androidth.general.persistence.market.ExchangeMarketPreference;
@@ -348,7 +344,7 @@ public class TrendingMainFragment extends DashboardFragment
             ///// registration page and tab view pages
             if(event.isClickedFromTrending || userProfileDTO.getUserLiveAccounts()==null) {
 
-                LiveConstants.hasLiveAccount = userProfileDTO.getUserLiveAccounts()==null ? false : true;
+                LiveConstants.hasLiveAccount = userProfileDTO.getUserLiveAccounts() != null;
                 /*
                 if clicked from trending or doesnt have a live account yet,
                 show or unshow registration page
@@ -620,7 +616,7 @@ public class TrendingMainFragment extends DashboardFragment
                                 })
                                 .startWith(exchangeCompactSpinnerDTOList != null
                                         ? Observable.just(exchangeCompactSpinnerDTOList)
-                                        : Observable.<ExchangeCompactSpinnerDTOList>empty())
+                                        : Observable.empty())
                                 .distinctUntilChanged(),
                         userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
                         new Func2<ExchangeCompactSpinnerDTOList, UserProfileDTO, Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO>>()

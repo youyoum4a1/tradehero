@@ -10,7 +10,6 @@
     >
 
   <TableLayout
-      android:id="@+id/position_partial_bottom_closed_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:stretchColumns="1"

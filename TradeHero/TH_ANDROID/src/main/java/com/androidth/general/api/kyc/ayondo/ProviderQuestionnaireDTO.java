@@ -2,8 +2,6 @@ package com.androidth.general.api.kyc.ayondo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 /**
  * Created by jeffgan on 13/7/16.
  */

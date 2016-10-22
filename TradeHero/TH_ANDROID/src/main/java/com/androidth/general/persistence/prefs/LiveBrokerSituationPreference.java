@@ -7,14 +7,12 @@ import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.persistence.prefs.AbstractPreference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.io.IOException;
 
 import javax.inject.Singleton;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;

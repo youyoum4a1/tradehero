@@ -1,7 +1,5 @@
 package com.androidth.general.api.users;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 public class UserLiveAccount

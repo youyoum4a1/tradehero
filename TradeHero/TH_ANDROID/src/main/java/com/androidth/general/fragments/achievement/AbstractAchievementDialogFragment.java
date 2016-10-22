@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -142,8 +141,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Achievement_Dialog);
-        d.getWindow().setWindowAnimations(R.style.TH_Achievement_Dialog_Animation);
+        setStyle(STYLE_NO_TITLE, R.style.TH_Achievement_Dialog);
+        try{
+            d.getWindow().setWindowAnimations(R.style.TH_Achievement_Dialog_Animation);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         d.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         d.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -153,12 +157,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     protected void init()
     {
-        userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
-        userAchievementDTO = userAchievementCache.pop(userAchievementId);
-        // TODO destroy if null?
-        if (userAchievementDTO == null)
-        {
-            Timber.e(new Exception(), "Popped UserAchievementDTO is null for %s", userAchievementId);
+        if(getArguments()!=null){
+            userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
+            userAchievementDTO = userAchievementCache.pop(userAchievementId);
+            // TODO destroy if null?
+            if (userAchievementDTO == null)
+            {
+                Timber.e(new Exception(), "Popped UserAchievementDTO is null for %s", userAchievementId);
+            }
         }
     }
 
@@ -539,7 +545,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void removeDialogAnimation()
     {
-        getDialog().getWindow().setWindowAnimations(R.style.TH_Achievement_Dialog_NoAnimation);
+        try{
+            getDialog().getWindow().setWindowAnimations(R.style.TH_Achievement_Dialog_NoAnimation);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @SuppressWarnings("UnusedDeclaration")

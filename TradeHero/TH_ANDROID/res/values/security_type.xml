@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="security_type_label_short">Type</string>
 
   <string name="security_type_equity">Equity</string>
   <string name="security_type_fund">Fund</string>
@@ -14,6 +13,5 @@
   <string name="security_type_preferred_sec">Preferred Sec</string>
   <string name="security_type_stapled_sec">Stapled Sec</string>
   <string name="security_type_index">Index</string>
-  <string name="security_type_unit_trust">Unit Trust</string>
   <string name="security_type_fx">FX</string>
 </resources>

@@ -11,7 +11,6 @@ import butterknife.Bind;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.alert.AlertDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.fragments.security.SecurityCircleProgressBar;

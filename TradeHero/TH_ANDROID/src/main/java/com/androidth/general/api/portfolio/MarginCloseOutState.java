@@ -33,7 +33,7 @@ public enum MarginCloseOutState
     @ColorRes public final int colorResIdPulseEnd;
     @StringRes public final int labelResId;
 
-    private MarginCloseOutState(
+    MarginCloseOutState(
             @DimenRes int lowerBoundResId,
             @DimenRes int upperBoundResId,
             @ColorRes int colorResIdPulseStart,

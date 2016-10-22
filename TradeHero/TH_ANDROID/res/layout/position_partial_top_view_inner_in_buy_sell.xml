@@ -20,7 +20,6 @@
       layout="@layout/fx_flags"/>
 
   <TableLayout
-      android:id="@+id/first_part"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"

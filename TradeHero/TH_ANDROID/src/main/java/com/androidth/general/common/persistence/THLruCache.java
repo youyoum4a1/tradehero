@@ -1,7 +1,6 @@
 package com.androidth.general.common.persistence;
 
 import android.util.LruCache;
-import timber.log.Timber;
 
 public class THLruCache<U, V> extends LruCache<U, V>
 {

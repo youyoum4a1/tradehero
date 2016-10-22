@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    android:id="@+id/extra_tile_background"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/tile_live_trading_bg"
     style="@style/TH.TrendingTileContainer"
     >
 
   <ImageView
-      android:id="@+id/extra_tile_image"
       android:src="@drawable/icon_trending_live"
       style="@style/TH.TrendingTileImage"
       />

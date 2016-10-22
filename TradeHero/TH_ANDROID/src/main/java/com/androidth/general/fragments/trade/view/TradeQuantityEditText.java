@@ -3,7 +3,6 @@ package com.androidth.general.fragments.trade.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -44,7 +43,7 @@ public class TradeQuantityEditText extends EditText
          *         text, it takes less space than {@code availableSpace}, > 0
          *         otherwise
          */
-        public int onTestSize(int suggestedSize, RectF availableSpace);
+        int onTestSize(int suggestedSize, RectF availableSpace);
     }
 
     //<editor-fold desc="Constructors">

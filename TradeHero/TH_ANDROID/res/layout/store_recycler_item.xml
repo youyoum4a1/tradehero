@@ -18,7 +18,6 @@
       android:layout_marginRight="16dp"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
-      tools:src="@drawable/icn_follow_credits"
       />
 
   <LinearLayout

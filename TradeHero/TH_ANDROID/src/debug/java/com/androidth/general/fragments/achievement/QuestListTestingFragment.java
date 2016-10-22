@@ -39,7 +39,6 @@ import butterknife.ButterKnife;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 public class QuestListTestingFragment extends BaseFragment
 {

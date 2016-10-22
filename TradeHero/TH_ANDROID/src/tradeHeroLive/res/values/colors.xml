@@ -15,13 +15,11 @@
   <color name="tradehero_blue_status_bar">@color/general_brand_color</color>
   <color name="tradehero_dark_blue">#03237D</color>
 
-  <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
   <color name="general_tab_indicator_color">@color/general_brand_color</color>
   <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
   <color name="tradehero_divider_grey">@color/grey</color>
   <color name="tradehero_dashboard_bg_color">#E2E8EE</color>
   <color name="tradehero_grid_border_color">@color/darker_grey</color>
-  <color name="tradehero_reside_menu_bg">#ff00a2e0</color>
 
   <color name="number_green">#ff20ae1e</color>
   <color name="number_red">#E51A33</color>
@@ -39,7 +37,6 @@
   <color name="grey_transparent">#90000000</color>
   <color name="lighter_grey">#F2F2F2</color>
   <color name="pale_yellow">#f0e68c</color>
-  <color name="light_yellow">#FFD000</color>
 
   <color name="orange">@android:color/holo_orange_light</color>
 
@@ -55,8 +52,6 @@
   <color name="facebook_blue_normal">#385185</color>
   <color name="facebook_blue_pressed">#ff1d1d41</color>
   <color name="facebook_blue_focused">#ff508dd8</color>
-
-  <color name="grey_black">#1f1f1f</color>
 
   <color name="linked_in_blue_normal">#007BB6</color>
   <color name="linked_in_blue_pressed">#ff005583</color>
@@ -101,14 +96,6 @@
   <color name="lb_header_bg">#C9F1FF</color>
   <color name="lb_header_bg_focused">#b9deeb</color>
   <color name="lb_header_bg_pressed">#7f98a1</color>
-
-  <color name="lb_item_even">@android:color/white</color>
-  <color name="lb_item_even_focused">@color/grey</color>
-  <color name="lb_item_even_pressed">@color/darker_grey</color>
-
-  <color name="lb_item_odd">#EFEFEF</color>
-  <color name="lb_item_odd_focused">@color/grey</color>
-  <color name="lb_item_odd_pressed">@color/darker_grey</color>
 
   <color name="news_seeking_alpha">#4E0A00</color>
   <color name="news_seeking_alpha_focused">#8e1200</color>

@@ -292,7 +292,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new ToastOnErrorAction1())
-                .onErrorResumeNext(Observable.<List<TimelineItemDTO>>empty())
+                .onErrorResumeNext(Observable.empty())
                 .doOnUnsubscribe(new Action0()
                 {
                     @Override public void call()

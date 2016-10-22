@@ -7,6 +7,4 @@
   <dimen name="video_thumbnail_spacing">10dp</dimen>
   <dimen name="video_thumbnail_container_height">@dimen/size_11</dimen>
 
-  <color name="video_thumbnail_strip_background">#ff0a0a0a</color>
-  <color name="video_title_background">#aaffffff</color>
 </resources>

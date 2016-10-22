@@ -49,7 +49,6 @@
       />
 
   <TableLayout
-      android:id="@+id/position_partial_bottom_open_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/image_separator"

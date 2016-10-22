@@ -18,7 +18,7 @@ public enum ReutersTimeSpan
     public final long chartTimeSpanDuration;
 
     //<editor-fold desc="Constructors">
-    private ReutersTimeSpan(@NonNull String c, long chartTimeSpanDuration)
+    ReutersTimeSpan(@NonNull String c, long chartTimeSpanDuration)
     {
         code = c;
         this.chartTimeSpanDuration = chartTimeSpanDuration;

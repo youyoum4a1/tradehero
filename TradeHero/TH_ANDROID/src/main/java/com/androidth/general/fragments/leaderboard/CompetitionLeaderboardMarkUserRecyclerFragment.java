@@ -3,7 +3,6 @@ package com.androidth.general.fragments.leaderboard;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.Menu;
@@ -43,7 +42,6 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
@@ -201,14 +199,14 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                 Observable.combineLatest(
                         providerCache.get(providerId)
                                 .map(new PairGetSecond<ProviderId, ProviderDTO>())
-                                .startWith(providerDTO != null ? Observable.just(providerDTO) : Observable.<ProviderDTO>empty()),
+                                .startWith(providerDTO != null ? Observable.just(providerDTO) : Observable.empty()),
                         competitionCacheRx.fetch(competitionId)//forcefetch
 //                                .map(new PairGetSecond<CompetitionId, CompetitionDTO>())
-                                .startWith(competitionDTO != null ? Observable.just(competitionDTO) : Observable.<CompetitionDTO>empty()),
+                                .startWith(competitionDTO != null ? Observable.just(competitionDTO) : Observable.empty()),
                         competitionLeaderboardCache.fetch(competitionLeaderboardId)
 //                                .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>())//Jeff fetch
                                 .startWith(competitionLeaderboardDTO != null ? Observable.just(competitionLeaderboardDTO)
-                                        : Observable.<CompetitionLeaderboardDTO>empty()),
+                                        : Observable.empty()),
                         new Func3<ProviderDTO, CompetitionDTO, CompetitionLeaderboardDTO, CompetitionLeaderboardDTO>()
                         {
                             @Override public CompetitionLeaderboardDTO call(ProviderDTO providerDTO,

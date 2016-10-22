@@ -2,27 +2,8 @@
 package com.androidth.general.activities;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.hardware.camera2.params.Face;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.share.internal.ShareFeedContent;
-import com.facebook.share.widget.ShareDialog;
-import com.androidth.general.common.facebook.FacebookObservable;
-import com.androidth.general.common.facebook.WebDialogConstants;
-import com.androidth.general.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.androidth.general.R;
-import com.androidth.general.exception.THException;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @Routable("facebookshare/")
 public class FacebookShareActivity extends Activity

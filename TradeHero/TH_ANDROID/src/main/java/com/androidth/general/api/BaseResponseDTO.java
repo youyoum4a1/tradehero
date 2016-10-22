@@ -6,7 +6,6 @@ import android.util.Log;
 import com.androidth.general.api.achievement.UserAchievementDTO;
 import com.androidth.general.api.level.UserXPAchievementDTO;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -58,7 +57,7 @@ public class BaseResponseDTO
 
         @Override
         public Date deserialize(JsonParser jsonparser,
-                                DeserializationContext deserializationcontext) throws IOException, JsonProcessingException {
+                                DeserializationContext deserializationcontext) throws IOException {
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             Log.v("SignalR", "Deserialize "+jsonparser.getText());

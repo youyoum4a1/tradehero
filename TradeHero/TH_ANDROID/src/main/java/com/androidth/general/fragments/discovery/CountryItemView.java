@@ -14,7 +14,7 @@ public class CountryItemView extends LinearLayout
         implements DTOView<CountryLanguagePairDTO>
 {
     @Bind(R.id.country_name) TextView countryName;
-    @Bind(R.id.language_code) TextView languageCode;
+    @Bind(R.id.country_code) TextView languageCode;
 
     public CountryItemView(Context context, AttributeSet attrs)
     {

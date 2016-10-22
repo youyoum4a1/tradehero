@@ -37,8 +37,14 @@ public class AuthDataUtil
 
     private static Account getOrAddAccount(@NonNull AccountManager accountManager, @NonNull AuthData authData, String email)
     {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
-        Account account = accounts.length != 0 ? accounts[0] :
+        Account[] accounts;
+        try{
+            accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        }catch (SecurityException e){
+            accounts = null;
+            //TODO handle permission
+        }
+        Account account = accounts!=null && accounts.length > 0? accounts[0] :
                 new Account(email, PARAM_ACCOUNT_TYPE);
 
         String password = authData.password;

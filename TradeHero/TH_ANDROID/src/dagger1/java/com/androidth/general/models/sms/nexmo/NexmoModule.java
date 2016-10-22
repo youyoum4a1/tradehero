@@ -24,8 +24,8 @@ public class NexmoModule
                 {
                     @Override public void intercept(RequestFacade request)
                     {
-                        try
-                        {
+//                        try
+//                        {
 //                            request.addHeader("Authorization", "Basic " + Base64.encodeToString(
 //                                    (TwilioConstants.API_KEY + ":" + TwilioConstants.API_SECRET).getBytes("UTF-8"), Base64.NO_WRAP));
 //                            request.addQueryParam("api_key", TwilioConstants.API_KEY);
@@ -33,10 +33,10 @@ public class NexmoModule
 //                            request.addQueryParam("api_key", TwilioConstants.API_KEY);
 //                            request.addQueryParam("api_key", TwilioConstants.API_KEY);
 //                            request.addQueryParam("api_key", TwilioConstants.API_KEY);
-                        } catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+//                        } catch (Exception e)
+//                        {
+//                            e.printStackTrace();
+//                        }
                     }
                 })
                 .setErrorHandler(errorHandlerLogger)

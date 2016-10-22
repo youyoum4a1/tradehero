@@ -13,7 +13,7 @@ public enum HeroType
     public final int typeId;
     @NonNull public final String description;
 
-    private HeroType(int id, @NonNull String description)
+    HeroType(int id, @NonNull String description)
     {
         this.typeId = id;
         this.description = description;

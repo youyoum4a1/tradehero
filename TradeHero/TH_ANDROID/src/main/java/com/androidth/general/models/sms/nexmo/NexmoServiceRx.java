@@ -1,12 +1,8 @@
 package com.androidth.general.models.sms.nexmo;
 
-import com.androidth.general.models.sms.twilio.TwilioSMSSentConfirmationDTO;
-
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
 import retrofit.http.POST;
-import retrofit.http.Path;
 import rx.Observable;
 
 public interface NexmoServiceRx

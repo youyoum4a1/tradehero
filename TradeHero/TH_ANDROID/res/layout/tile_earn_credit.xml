@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    android:id="@+id/extra_tile_background"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/TH.TrendingTileContainer"
     android:background="@drawable/tile_earn_credit_bg"
     >
 
   <ImageView
-      android:id="@+id/extra_tile_image"
       style="@style/TH.TrendingTileImage"
       android:src="@drawable/icon_earn_credit"
       />
@@ -22,7 +19,6 @@
       />
 
     <TextView
-        android:id="@+id/extra_tile_text_top"
         style="@style/Th.TrendingTileTopText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

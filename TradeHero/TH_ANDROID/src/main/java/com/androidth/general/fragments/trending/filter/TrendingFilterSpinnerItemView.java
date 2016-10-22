@@ -16,8 +16,6 @@ import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 import com.squareup.picasso.Picasso;
 
-import javax.inject.Inject;
-
 public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<DTO>
 {

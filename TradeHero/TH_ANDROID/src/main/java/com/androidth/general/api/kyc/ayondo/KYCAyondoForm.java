@@ -19,7 +19,6 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
-import com.androidth.general.models.fastfill.ScanReference;
 import com.androidth.general.models.fastfill.ScannedDocument;
 import com.androidth.general.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -282,21 +281,13 @@ public class  KYCAyondoForm implements KYCForm
             if (ayondoForm.getProofOfAddressImageUrl()!=null){
                 this.hasSubmittedProofOfAddress = true;
             }else{
-                if(this.getProofOfAddressImageUrl()!=null){
-                    this.hasSubmittedProofOfAddress = true;
-                }else{
-                    this.hasSubmittedProofOfAddress = false;
-                }
+                this.hasSubmittedProofOfAddress = this.getProofOfAddressImageUrl() != null;
             }
 
             if (ayondoForm.getScanReference()!=null){
                 this.hasSubmittedScanReference = true;
             }else{
-                if(this.getScanReference()!=null){
-                    this.hasSubmittedScanReference = true;
-                }else{
-                    this.hasSubmittedScanReference = false;
-                }
+                this.hasSubmittedScanReference = this.getScanReference() != null;
             }
 
             this.isPartiallySubmitted = ayondoForm.isPartiallySubmitted? ayondoForm.isPartiallySubmitted:this.isPartiallySubmitted;

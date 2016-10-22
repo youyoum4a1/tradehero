@@ -11,8 +11,6 @@ import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
-import com.androidth.general.api.quote.QuoteDTO;
-import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedNumber;

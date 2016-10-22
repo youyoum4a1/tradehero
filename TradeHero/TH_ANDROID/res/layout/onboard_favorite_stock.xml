@@ -3,7 +3,6 @@
 <com.androidth.general.fragments.security.SecurityItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/stock_3"
     android:layout_width="@dimen/size_18"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/size_18"

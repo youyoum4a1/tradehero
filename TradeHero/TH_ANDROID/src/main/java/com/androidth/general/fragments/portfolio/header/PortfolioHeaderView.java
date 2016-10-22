@@ -2,7 +2,6 @@ package com.androidth.general.fragments.portfolio.header;
 
 import android.support.annotation.NonNull;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
-import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import rx.Observable;
 

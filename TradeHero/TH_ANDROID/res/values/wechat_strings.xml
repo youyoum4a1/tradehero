@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="share_success">Your share is successful</string>
-  <string name="share_cancel">Your share is cancelled</string>
   <string name="need_install_wechat">Please install weChat</string>
   <string name="need_update_wechat">Please update weChat to 4.2 or later</string>
   <string name="share_to_wechat_timeline_news">I\'ve shared a news on tradehero, come and join us.</string>

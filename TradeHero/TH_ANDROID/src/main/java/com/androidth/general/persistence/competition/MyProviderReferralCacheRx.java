@@ -6,7 +6,6 @@ import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;
-import com.androidth.general.network.service.CompetitionServiceWrapper;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;

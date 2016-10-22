@@ -39,9 +39,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         >
-      <include
-          android:id="@+id/achievement_dialog_fragment_inner_top"
-          layout="@layout/achievement_dialog_fragment_inner_top"/>
+      <include layout="@layout/achievement_dialog_fragment_inner_top"/>
 
       <com.androidth.general.widget.QuestIndicatorGroupView
           android:id="@+id/quest_indicator_group"

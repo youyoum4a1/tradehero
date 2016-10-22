@@ -43,7 +43,11 @@ public class ValidationDTO
         message = a.getString(R.styleable.ValidatedText_invalidPatternMessage);
         invalidPatternMessage = message != null ? message : context.getString(R.string.validation_incorrect_pattern);
         int resourceId = a.getResourceId(R.styleable.ValidatedText_progressIndicator, 0);
-        progressIndicatorId = resourceId > 0 ? resourceId : null;
+        if(resourceId>0){
+            progressIndicatorId = resourceId;
+        }else{
+            progressIndicatorId = null;
+        }
         validateOnlyIfHadInteraction = a.getBoolean(R.styleable.ValidatedText_validateOnlyIfHadInteraction, DEFAULT_VALIDATE_ONLY_IF_HAD_INTERACTION);
         validateOnlyIfNotEmpty = a.getBoolean(R.styleable.ValidatedText_validateOnlyIfNotEmpty, DEFAULT_VALIDATE_ONLY_IF_NOT_EMPTY);
         a.recycle();

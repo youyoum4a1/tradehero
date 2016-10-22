@@ -1,9 +1,7 @@
 package com.androidth.general.activities;
 
-import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,7 +9,6 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.DashboardFragment;
-import com.androidth.general.fragments.position.PositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
 import com.androidth.general.fragments.timeline.MeTimelineFragment;
 import com.androidth.general.fragments.trade.BuySellStockFragment;

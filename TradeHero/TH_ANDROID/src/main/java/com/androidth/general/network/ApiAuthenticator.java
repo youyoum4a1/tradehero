@@ -32,9 +32,15 @@ public class ApiAuthenticator implements Authenticator
     {
         Timber.d("Not authenticated, need re-authentication");
 
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
-        if (accounts != null && accounts.length != 0)
-        {
+        Account[] accounts;
+        try{
+            accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        }catch (SecurityException e){
+            e.printStackTrace();
+            accounts = null;
+        }
+
+        if (accounts != null && accounts.length != 0) {
             Account account = accounts[0];
             String oldToken = accountManager.peekAuthToken(account, PARAM_AUTHTOKEN_TYPE);
 

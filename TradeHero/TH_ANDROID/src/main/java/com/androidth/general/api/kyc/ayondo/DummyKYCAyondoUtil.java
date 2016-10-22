@@ -3,11 +3,7 @@ package com.androidth.general.api.kyc.ayondo;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.androidth.general.api.kyc.AnnualIncomeRange;
-import com.androidth.general.api.kyc.EmploymentStatus;
 import com.androidth.general.api.kyc.KYCAddress;
-import com.androidth.general.api.kyc.NetWorthRange;
-import com.androidth.general.api.kyc.PercentNetWorthForInvestmentRange;
 import com.androidth.general.api.kyc.StepStatus;
 import com.androidth.general.api.kyc.StepStatusesDTO;
 import com.androidth.general.api.live.CountryUtil;

@@ -347,7 +347,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
      */
     private SecurityCompactDTO(Parcel other){
         this.marker = other.readString();
-        this.isCFD = other.readByte()==1? true: false;
+        this.isCFD = other.readByte() == 1;
         this.minShort = other.readDouble();
         this.maxShort = other.readDouble();
         this.minShort = other.readDouble();
@@ -373,7 +373,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.lastPriceDateAndTimeUtc = new Date(other.readLong());
         this.toUSDRate = other.readDouble();
         this.toUSDRateDate = new Date(other.readLong());
-        this.active = other.readByte()==1? true: false;
+        this.active = other.readByte() == 1;
         this.askPrice = other.readDouble();
         this.bidPrice = other.readDouble();
         this.volume = other.readDouble();
@@ -384,7 +384,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.low = other.readDouble();
         this.pe = other.readDouble();
         this.eps = other.readDouble();
-        this.marketOpen = other.readByte()==1? true: false;
+        this.marketOpen = other.readByte() == 1;
         this.pc50DMA = other.readInt();
         this.pc200DMA = other.readInt();
         this.exchangeTimezoneMsftName = other.readString();

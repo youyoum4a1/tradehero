@@ -2,11 +2,9 @@ package com.androidth.general.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,42 +20,27 @@ import android.widget.SearchView;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.DashboardActivity;
-import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTOUtil;
-import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.trade.AbstractBuySellFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
-import com.androidth.general.network.service.SignalRInterface;
 import com.androidth.general.network.service.SignalRManager;
-import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
-import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DeviceUtil;
-import com.tencent.mm.sdk.platformtools.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
-import microsoft.aspnet.signalr.client.Credentials;
-import microsoft.aspnet.signalr.client.Platform;
-import microsoft.aspnet.signalr.client.SignalRFuture;
-import microsoft.aspnet.signalr.client.http.Request;
-import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
-import microsoft.aspnet.signalr.client.hubs.HubConnection;
-import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 
 public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment

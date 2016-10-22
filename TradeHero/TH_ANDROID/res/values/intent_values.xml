@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="push_notification_deep_link_url" translatable="false">dlu</string>
   <string name="intent_scheme" translatable="false">tradehero</string>
 
   <string name="intent_uri_base" translatable="false">%1$s://</string>
@@ -9,13 +8,6 @@
   <string name="intent_uri_action" translatable="false">%1$s://%2$s/%3$s</string>
 
   <integer name="intent_uri_path_index_action" translatable="false">0</integer>
-  <string name="intent_host_trending" translatable="false">trending</string>
-  <string name="intent_host_community" translatable="false">community</string>
-  <string name="intent_host_profile" translatable="false">profile</string>
-  <string name="intent_host_portfolio" translatable="false">portfolio</string>
-  <string name="intent_host_store" translatable="false">store</string>
-  <string name="intent_host_reset_portfolio" translatable="false">reset-portfolio</string>
-  <string name="intent_host_user" translatable="false">user</string>
 
   <string name="intent_host_providers" translatable="false">providers</string>
   <string name="intent_host_security" translatable="false">security</string>
@@ -23,23 +15,10 @@
   <string name="intent_host_web" translatable="false">web</string>
 
   <!-- Building tradehero://trending/buy/OTCBB/MJNA -->
-  <string name="intent_uri_action_trade_security" translatable="false">%1$s://%2$s/%3$s/%4$s/%5$s</string>
-  <integer name="intent_uri_action_trade_security_path_index_exchange" translatable="false">1</integer>
-  <integer name="intent_uri_action_trade_security_path_index_security" translatable="false">2</integer>
-  <string name="intent_action_security_buy" translatable="false">buy</string>
-  <string name="intent_action_security_sell" translatable="false">sell</string>
 
   <!-- Building tradehero://portfolio/open/1232 -->
-  <string name="intent_uri_action_one_portfolio" translatable="false">%1$s://%2$s/%3$s/%4$s</string>
-  <integer name="intent_uri_action_portfolio_path_index_id" translatable="false">1</integer>
-  <string name="intent_action_portfolio_open" translatable="false">open</string>
 
   <!-- Building tradehero://portfolio/watchlist/open/1232 -->
-  <string name="intent_action_watchlist" translatable="false">watchlist</string>
-  <string name="intent_uri_action_one_watchlist" translatable="false">%1$s://%2$s/%3$s/%4$s/%5$s</string>
-  <integer name="intent_uri_action_watchlist_path_index_action" translatable="false">1</integer>
-  <integer name="intent_uri_action_watchlist_path_index_id" translatable="false">2</integer>
-  <string name="intent_action_watchlist_open" translatable="false">open</string>
 
   <!-- Building tradehero://providers/123/action -->
   <string name="intent_uri_action_one_provider" translatable="false">%1$s://%2$s/%3$s/%4$s</string>

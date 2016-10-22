@@ -2,14 +2,11 @@ package com.androidth.general.api.kyc;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.SparseArray;
 
 import com.androidth.general.R;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public enum AnnualIncomeRange
 {
@@ -20,7 +17,7 @@ public enum AnnualIncomeRange
     FROM70KUSDTO100KUSD(R.string.annual_income_from_70_k_to_100_k_usd, 70),
     MORETHAN100KUSD(R.string.annual_income_more_than_100_k_usd, 100),;
 
-    private static final Map<Integer, AnnualIncomeRange> filedAnnualIncomeRanges;
+    private static final SparseArray<AnnualIncomeRange> filedAnnualIncomeRanges;
 
     @StringRes public final int dropDownText;
     private final int fromServer;
@@ -44,7 +41,7 @@ public enum AnnualIncomeRange
 
     static
     {
-        Map<Integer, AnnualIncomeRange> map = new HashMap<>();
+        SparseArray<AnnualIncomeRange> map = new SparseArray<>();
         for (AnnualIncomeRange candidate : values())
         {
             if (map.get(candidate.fromServer) != null)
@@ -53,7 +50,8 @@ public enum AnnualIncomeRange
             }
             map.put(candidate.fromServer, candidate);
         }
-        filedAnnualIncomeRanges = Collections.unmodifiableMap(map);
+//        filedAnnualIncomeRanges = Collections.unmodifiableMap(map);
+        filedAnnualIncomeRanges = map;
     }
 
     @SuppressWarnings("unused")

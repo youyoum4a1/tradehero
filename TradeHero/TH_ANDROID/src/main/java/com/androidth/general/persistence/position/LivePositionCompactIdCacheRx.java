@@ -3,7 +3,6 @@ package com.androidth.general.persistence.position;
 import android.support.annotation.NonNull;
 
 import com.androidth.general.api.position.LiveOwnedPositionId;
-import com.androidth.general.api.position.OwnedPositionId;
 import com.androidth.general.api.position.PositionCompactId;
 import com.androidth.general.common.persistence.BaseDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;

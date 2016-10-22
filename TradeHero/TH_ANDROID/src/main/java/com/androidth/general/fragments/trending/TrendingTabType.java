@@ -16,7 +16,7 @@ enum TrendingTabType
     @NonNull public final AssetClass assetClass;
 
     //<editor-fold desc="Constructors">
-    private TrendingTabType(
+    TrendingTabType(
             @StringRes int titleStringResId,
             @NonNull Class<? extends TrendingBaseFragment> fragmentClass,
             @NonNull AssetClass assetClass)

@@ -71,6 +71,10 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             return VIEW_TYPE_HEADER;
         }
+        else if (item instanceof PositionPartialTopView.LiveDTO)
+        {
+            return VIEW_TYPE_POSITION;
+        }
         throw new IllegalArgumentException("Unhandled item " + item);
     }
 

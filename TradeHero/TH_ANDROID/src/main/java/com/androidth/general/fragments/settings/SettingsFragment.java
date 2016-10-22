@@ -19,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.OnBoardActivity;
@@ -68,7 +67,6 @@ import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.dagger.ForPicasso;
 import com.androidth.general.utils.metrics.MarketSegment;
-import com.facebook.AccessToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.route.Routable;
@@ -85,7 +83,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -811,7 +808,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                     return Observable.just(0)
                             .delay(3000, TimeUnit.MILLISECONDS)
                             .flatMap(new ReplaceWithFunc1<>(
-                                    Observable.<UserProfileDTO>error(throwable)));
+                                    Observable.error(throwable)));
                 })
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
@@ -835,7 +832,13 @@ public final class SettingsFragment extends BasePreferenceFragment
             }
         }
 
-        Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+        Account[] accounts;
+        try{
+            accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+        }catch (SecurityException e){
+            accounts = null;
+            //TODO handle permission
+        }
         if (accounts != null)
         {
             for (Account account : accounts)

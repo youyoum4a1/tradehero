@@ -211,7 +211,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
-    public static interface OnElementClickListener
+    public interface OnElementClickListener
     {
         void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO);
         void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO);

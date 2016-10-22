@@ -62,7 +62,6 @@
           />
 
       <ImageView
-          android:id="@+id/newsfeed_item_via"
           android:layout_width="@dimen/size_8"
           android:layout_height="@dimen/size_3"
           android:layout_alignRight="@id/newsfeed_item_time"

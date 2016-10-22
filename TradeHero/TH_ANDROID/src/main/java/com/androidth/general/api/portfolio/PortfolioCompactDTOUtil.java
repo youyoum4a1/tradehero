@@ -11,7 +11,6 @@ import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionStatus;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.resource.ResourceUtil;

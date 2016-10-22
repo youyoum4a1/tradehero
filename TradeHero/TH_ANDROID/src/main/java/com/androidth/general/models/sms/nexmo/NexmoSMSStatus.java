@@ -1,8 +1,5 @@
 package com.androidth.general.models.sms.nexmo;
 
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-
 import com.androidth.general.R;
 
 import java.util.ArrayList;

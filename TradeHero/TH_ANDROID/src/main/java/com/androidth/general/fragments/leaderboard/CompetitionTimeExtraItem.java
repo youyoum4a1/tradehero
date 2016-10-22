@@ -12,7 +12,6 @@ import org.ocpsoft.prettytime.units.Day;
 import org.ocpsoft.prettytime.units.Hour;
 import org.ocpsoft.prettytime.units.Minute;
 import org.ocpsoft.prettytime.units.Second;
-import timber.log.Timber;
 
 public class CompetitionTimeExtraItem implements WrapperRecyclerAdapter.ExtraItem
 {

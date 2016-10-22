@@ -72,7 +72,7 @@ public class NexmoServiceWrapper implements SMSServiceWrapper
 
     @Nullable @Override public Observable<SMSSentConfirmationDTO> getMessageStatus(@NonNull String id)
     {
-        return getMessageStatus((String) id).cast(SMSSentConfirmationDTO.class);
+        return getMessageStatus(id).cast(SMSSentConfirmationDTO.class);
     }
 
     @NonNull private static Func1<Throwable, Observable<? extends NexmoSMSSentConfirmationDTO>> getThrowableReprocessor()
@@ -82,8 +82,8 @@ public class NexmoServiceWrapper implements SMSServiceWrapper
             @Override public Observable<? extends NexmoSMSSentConfirmationDTO> call(Throwable throwable)
             {
                 return throwable instanceof RetrofitError
-                        ? Observable.<NexmoSMSSentConfirmationDTO>error(new TwilioRetrofitException((RetrofitError) throwable))
-                        : Observable.<NexmoSMSSentConfirmationDTO>error(throwable);
+                        ? Observable.error(new TwilioRetrofitException((RetrofitError) throwable))
+                        : Observable.error(throwable);
             }
         };
     }

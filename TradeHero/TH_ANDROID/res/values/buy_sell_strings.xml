@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="buy_sell_price_as_of">As of</string>
-  <string name="buy_sell_cash_available">Cash Available</string>
   <string name="buy_sell_cash_left">Cash Left</string>
   <string name="buy_sell_fx_cash_left">Margin Available</string>
-  <string name="buy_sell_share_available">Shares Avail.</string>
   <string name="buy_sell_share_left">Shares Left</string>
   <string name="buy_sell_quantity">Quantity</string>
-  <string name="buy_sell_fx_quantity">Units</string>
   <string name="buy_sell_fx_quantity_left">Units left</string>
   <string name="buy_sell_trade_value">Trade Value</string>
-  <string name="buy_sell_projected_p_and_l_value">Projected P&amp;L</string>
-  <string name="buy_sell_bid_with_bracket">(bid)</string>
-  <string name="buy_sell_ask_with_bracket">(ask)</string>
   <string name="buy_sell_bid_price_not_available">No Bid</string>
   <string name="buy_sell_ask_price_not_available">No Ask</string>
   <string name="buy_sell_p5k" translatable="false">5K</string>
@@ -25,21 +18,12 @@
   <string name="buy_sell_fx_075" translatable="false">75%</string>
   <string name="buy_sell_fx_100" translatable="false">ALL</string>
   <string name="buy_sell_button_buy">Buy @ %1$s %2$s</string>
-  <string name="buy_sell_dialog_buy">Buy @ %1$s</string>
   <string name="buy_sell_button_sell">Sell @ %1$s %2$s</string>
-  <string name="buy_sell_dialog_sell">Sell @ %1$s</string>
   <string name="buy_sell_button_last_price">Last @ %1$s %2$s</string>
-  <string name="buy_sell_sell_profit">Profit: %s</string>
-  <string name="buy_sell_sell_loss">Loss: %s</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
   <string name="buy_sell_confirm_buy_comment">Your thoughts on this trade</string>
   <string name="buy_sell_confirm_share_on">Share:</string>
-  <string name="buy_sell_switch_buy">Buy</string>
-  <string name="buy_sell_switch_sell">Sell</string>
-  <string name="buy_sell_usd_price_unit_left" translatable="false">= US$</string>
-  <string name="buy_sell_market_status">Market status</string>
-  <string name="buy_sell_toggle">Toggle Buy/Sell mode</string>
 
   <string name="buy_sell_no_quote_title">Unable to Transact</string>
   <string name="buy_sell_no_quote_message">No stock quote available.</string>
@@ -50,10 +34,6 @@
   <string name="buy_sell_no_portfolio_cancel">Okay</string>
 
   <string name="buy_sell_portfolio_selected_title">Portfolio:</string>
-  <string name="buy_sell_portfolio_changed_title">Check the portfolio</string>
-  <string name="buy_sell_portfolio_changed_message">This stock may have been removed from a competition.\nMake sure that your correct portfolio is
-    selected, at the top, before any transaction
-  </string>
 
   <string name="alert_dialog_buy_sell_order_null_title">This is embarrassing</string>
   <string name="alert_dialog_buy_sell_order_null_message">We failed to prepare the buy or sell order.</string>
@@ -70,7 +50,6 @@
     and try again.
   </string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
-  <string name="buy_sell_share_count"/>
   <string name="date">Date : %1$s</string>
   <string name="open">Open :</string>
   <string name="high">High :</string>
@@ -84,6 +63,5 @@
   <string name="buy_sell_shares_title">Shares:</string>
   <string name="buy_sell_confirm_buy_now">Buy</string>
   <string name="buy_sell_confirm_sell_now">Sell</string>
-  <string name="stock">Stock</string>
 
 </resources>

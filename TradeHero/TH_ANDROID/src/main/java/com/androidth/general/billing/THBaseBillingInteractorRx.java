@@ -98,7 +98,7 @@ abstract public class THBaseBillingInteractorRx<
                 return billingAlertDialogUtil.popErrorAndHandle(
                         activityProvider.get(),
                         error)
-                        .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<? extends T>>(Observable.<T>empty()));
+                        .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<? extends T>>(Observable.empty()));
             }
         });
     }

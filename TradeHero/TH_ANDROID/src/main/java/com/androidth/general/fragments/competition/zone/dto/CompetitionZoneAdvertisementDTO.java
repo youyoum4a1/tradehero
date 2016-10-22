@@ -47,7 +47,12 @@ public class CompetitionZoneAdvertisementDTO extends CompetitionZoneDTO
                         "drawable",
                         context.getPackageName());
             }
-            bannerResourceId = tempBannerResId > 0 ? tempBannerResId : null;
+
+            if(tempBannerResId > 0){
+                bannerResourceId = tempBannerResId;
+            }else{
+                bannerResourceId = null;
+            }
         }
         else
         {

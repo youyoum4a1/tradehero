@@ -14,7 +14,7 @@ public enum ReutersChartSize
     public final int reutersPixelHeight;
 
     //<editor-fold desc="Constructors">
-    private ReutersChartSize(@NonNull String c, int reutersPixelWidth, int reutersPixelHeight)
+    ReutersChartSize(@NonNull String c, int reutersPixelWidth, int reutersPixelHeight)
     {
         code = c;
         this.reutersPixelWidth = reutersPixelWidth;

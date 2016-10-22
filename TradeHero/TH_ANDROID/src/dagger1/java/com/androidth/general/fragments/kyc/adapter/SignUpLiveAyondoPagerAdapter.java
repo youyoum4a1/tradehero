@@ -16,7 +16,6 @@ import com.androidth.general.fragments.kyc.LiveSignUpStepBaseFragment;
 import com.androidth.general.fragments.kyc.PrevNextObservable;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
     implements PrevNextObservable

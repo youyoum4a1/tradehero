@@ -22,7 +22,6 @@ import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOList;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTOUtil;
 import com.androidth.general.api.security.SecurityId;
@@ -182,7 +181,7 @@ public class FXMainFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
+    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double ask, @Nullable Double bid)
     {
         if (buyBtn != null && sellBtn != null)
         {

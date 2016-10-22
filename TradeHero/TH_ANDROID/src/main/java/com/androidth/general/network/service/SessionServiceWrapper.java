@@ -3,7 +3,6 @@ package com.androidth.general.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
@@ -22,7 +21,6 @@ import com.androidth.general.persistence.prefs.IsOnBoardShown;
 import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.utils.ExceptionUtils;
 import com.facebook.AccessToken;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 

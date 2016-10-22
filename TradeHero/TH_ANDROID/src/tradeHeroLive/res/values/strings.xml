@@ -8,9 +8,7 @@
   <string name="broker_name_none">No Broker</string>
   <string name="switch_to_live">Switch to Live</string>
   <string name="virtual">Virtual</string>
-  <string name="live">Live</string>
   <string name="go_live_span">Go %1$s !</string>
-  <string name="tradehero_live">TradeHero LIVE</string>
   <string name="live_5_steps_away">5 steps away to open an account!</string>
 
   <string name="tile_live_trading_top">Open a LIVE account</string>
@@ -19,50 +17,34 @@
   <string name="nav_bar_color_default">#1376FB</string>
 
   <string name="live_identity_prompt">Do you have your Proof of identity with you?</string>
-  <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
-  <string name="live_identity_prompt_sg">Do you have your NRIC/Passport with you?</string>
 
-  <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
-  <string name="yes">Yes</string>
-  <string name="no">No</string>
-  <string name="basic_information">Basic Info</string>
-  <string name="nationality">Nationality</string>
-  <string name="residency">Country of Residence</string>
   <string name="residence_state">Residence State</string>
   <string name="annual_income">Annual Income</string>
   <string name="net_worth">Net Worth</string>
   <string name="percent_for_investment">% of Net Worth for Investment</string>
   <string name="employment_status">Employment Status</string>
   <string name="previous">Previous</string>
-  <string name="create">Create</string>
   <string name="submit_form">Create account now</string>
   <string name="submit_form_top">All done!</string>
-  <string name="submit_form_bottom">Claim your US$ 100.00!</string>
   <string name="clear_all">Clear All</string>
-  <string name="hint_full_name">Full Name</string>
   <string name="previous_address">Previous Address</string>
   <string name="country">Country</string>
-  <string name="title">Title</string>
   <string name="gender">Gender</string>
   <string name="hint_first_name">First Name</string>
   <string name="hint_last_name">Last Name</string>
-  <string name="enter_code">Enter Code</string>
   <string name="sms_verification_button_empty_checking">Checking</string>
-  <string name="unable_to_capture_value_from_image">Unable to capture value from image</string>
   <string name="pick_location_within_country">Please pick nearby location within your country.</string>
 
   <string name="how_you_know_th">How do you know about TradeHero?</string>
 
   <string name="verify">Verify</string>
   <string name="terms_conditions"><a href="http://www.google.com">Terms and conditions</a></string>
-  <string name="verified">Verified</string>
   <string name="mobile_number">Mobile Number</string>
   <string name="date_of_birth">Date of Birth</string>
   <string name="income_and_employment">Income &amp; Employment</string>
   <string name="trading_experience">Trading Experience</string>
   <string name="postal_address">Postal Address</string>
   <string name="required_document">Additional Requirements</string>
-  <string name="account_currency">Account Currency</string>
   <string name="experience_bonds">Shares and Bonds</string>
   <string name="experience_otc_derivatives">OTC Derivatives</string>
   <string name="experience_exchange_traded_derivatives">Exchange Traded Derivatives</string>
@@ -74,22 +56,18 @@
   <string name="postal_code">Postal Code</string>
   <string name="address_less_than_1_year">Less than 1 year at this address?</string>
   <string name="tap_to_upload">Tap to upload</string>
-  <string name="tap_to_sign">Tap to sign</string>
   <string name="enter_manually">Don\'t have there with you?\nComplete manually.</string>
-  <string name="scan_it">Let\'s scan it!</string>
   <string name="any_passport">Passport\n(Any Country)</string>
 
   <string name="live_title_mr">Mr.</string>
   <string name="live_title_ms">Ms.</string>
 
-  <string name="annual_income_empty">Please select…</string>
   <string name="annual_income_less_than_15_k_usd">Less than US$ 15,000</string>
   <string name="annual_income_from_15_k_to_40_k_usd">US$ 15,000 - US$ 40,000</string>
   <string name="annual_income_from_40_k_to_70_k_usd">US$ 40,001 - US$ 70,000</string>
   <string name="annual_income_from_70_k_to_100_k_usd">US$ 70,001 - US$ 100,000</string>
   <string name="annual_income_more_than_100_k_usd">More than US$ 100,000</string>
 
-  <string name="net_worth_empty">Please select…</string>
   <string name="net_worth_less_than_15_k_usd">Less than US$ 15,000</string>
   <string name="net_worth_from_15_k_to_40_k_usd">US$ 15,000 - US$ 40,000</string>
   <string name="net_worth_from_40_k_to_70_k_usd">US$ 40,001 - US$ 70,000</string>
@@ -97,13 +75,11 @@
   <string name="net_worth_from_100_k_to_500_k_usd">US$ 100,001 - US$ 500,000</string>
   <string name="net_worth_more_than_500_k_usd">More than US$ 500,000</string>
 
-  <string name="percent_net_worth_invest_empty">Please select…</string>
   <string name="percent_net_worth_invest_less_than_25_p">Less than 25%</string>
   <string name="percent_net_worth_invest_from_25_p_to_50_p">25 – 50%</string>
   <string name="percent_net_worth_invest_from_51_p_to_75_p">51 – 75%</string>
   <string name="percent_net_worth_invest_from_more_than_75p">More than 75%</string>
 
-  <string name="employment_status_empty">Please select…</string>
   <string name="employment_status_employed">Employed</string>
   <string name="employment_status_self_employed">Self-Employed</string>
   <string name="employment_status_unemployed">Unemployed</string>
@@ -117,13 +93,10 @@
   <string name="currency_sek">SEK</string>
   <string name="currency_chf">CHF</string>
 
-  <string name="trading_per_quarter_empty">Please select…</string>
   <string name="trading_per_quarter_none">None at all</string>
   <string name="trading_per_quarter_1_to_5">1 – 5 times</string>
   <string name="trading_per_quarter_6_to_10">6 – 10 times</string>
   <string name="trading_per_quarter_over_10">More than 10</string>
-
-  <string name="error_date_earlier">You have to be at least %1$d years old.</string>
 
   <string name="live_trades_per_quarter">Live Trades per Quarter (Past Year)</string>
 
@@ -133,31 +106,22 @@
   <string name="identity_document_type_driver_license">Driver\'s License</string>
   <string name="identity_document_type_id_card">Identity Card</string>
 
-  <string name="identity_document_pick_title">For your Proof of Identity Document, Pick:</string>
   <string name="proof_residence_caption">Proof of Residence</string>
   <string name="residence_document_type_utility_bill">A bill: water, electricity, phone or gas</string>
   <string name="residence_document_type_bank_statement">A bank or credit card statement</string>
   <string name="residence_document_pick_title">For your Proof of Residence Document, Pick:</string>
 
-  <string name="live_signature_caption">Signature</string>
-
   <string name="live_agree_to_title">I agree to:</string>
   <string name="live_agree_to_terms_and_conditions">Terms and Conditions</string>
   <string name="live_agree_to_risks_and_warnings_disclaimer">Risks and Warnings Disclosure</string>
   <string name="live_agree_to_data_sharing_agreement">Data Sharing Agreement</string>
-  <string name="live_agree_read_it">Read</string>
   <string name="live_subscribe_offers">Subscribe me to marketing offers</string>
   <string name="live_subscribe_trade_notifications">Subscribe me to trade notifications</string>
 
-  <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
-  <string name="live_username_not_available">\'%1$s\' is not available</string>
-
   <string name="achievement_xp_earned_format" translatable="false">+%s XP!</string>
-  <string name="achievement_level_up">LEVEL UP!</string>
   <string name="achievements">Achievements</string>
   <string name="achievement_share">Share!</string>
   <string name="achievement_shared">@string/content_shared</string>
   <string name="achievement_share_failed">Failed, try again?</string>
-  <string name="achievement_sharing">Sharing…</string>
 
 </resources>

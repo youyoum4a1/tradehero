@@ -12,8 +12,6 @@
   <string name="stock_alert_current_price">Current Price</string>
   <string name="stock_alert_price_info_as_of_date">as of %s</string>
   <string name="stock_alert_price_info_as_of_date_format">@string/data_format_d_mmm_yyyy_hh_mm</string>
-  <string name="stock_alert_notification_received">Notifications Received</string>
-  <string name="stock_alert_edit">Edit</string>
   <string name="stock_alert_edit_menu_save">Save</string>
   <string name="stock_alert_trigger_conditions">Alert Conditions</string>
   <string name="stock_alert_target_price_help_text">Alert me when the price rises/falls to the set price.</string>
@@ -22,13 +20,7 @@
   <string name="stock_alert_target_price_change_format">Target Price %1$s</string>
   <string name="stock_alert_percentage_change_format">Price Change %1$s</string>
   <string name="stock_alert_percentage_change">Price Change</string>
-  <string name="stock_alert_percentage_change_target_value_format">(Alert Price %1$s)</string>
-  <string name="stock_alert_edit_alert">Edit Alert</string>
-  <string name="stock_alert_add_alert">Add Alert</string>
   <string name="stock_alert_percentage_movement">% Movement</string>
-  <string name="stock_alert_when_price_move">Alerts when price moves by %1$s</string>
-  <string name="stock_alert_when_price_raises">Alerts when price raises to %1$s</string>
-  <string name="stock_alert_when_price_falls">Alerts when price falls to %1$s</string>
   <string name="stock_alerts_no_alerts">No Alerts</string>
   <string name="stock_alert_count_alert_format">%d alerts</string>
   <string name="stock_alert_plan_unlimited">Unlimited</string>

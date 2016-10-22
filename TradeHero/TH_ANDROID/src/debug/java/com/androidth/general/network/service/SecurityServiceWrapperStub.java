@@ -2,9 +2,7 @@ package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
 
-import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.security.SecurityCompactDTOList;
-import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.key.ExchangeSectorSecurityListType;
 import com.androidth.general.api.security.key.ExchangeSectorSecurityListTypeNew;
 import com.androidth.general.api.security.key.SecurityListType;

@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
 import rx.android.schedulers.AndroidSchedulers;
@@ -25,13 +24,10 @@ import rx.functions.Action1;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.activities.SignUpLiveActivity;
-import com.androidth.general.api.live1b.PositionsResponseDTO;
-import com.androidth.general.api.position.GetLivePositionsDTO;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.live.LiveViewFragment;
-import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.network.service.Live1BServiceWrapper;
-import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
@@ -462,15 +458,15 @@ public class TabbedPositionListFragment extends DashboardFragment
                 args.putString(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
                 LiveViewFragment liveViewFragment = new LiveViewFragment();
                 liveViewFragment.setArguments(args);
-                liveViewFragment.putUrl(args, redirectURL);
+                BaseWebViewFragment.putUrl(args, redirectURL);
                 Log.d("PLF.java", "REDIRECT URL->> " + redirectURL );
-                try {
-                    /////   unsubscribe(buySellSubscription);
-                }
-                catch(Exception ex)
-                {
-                    Log.d("printStackTrace", ex.toString());
-                }
+//                try {
+//                    /////   unsubscribe(buySellSubscription);
+//                }
+//                catch(Exception ex)
+//                {
+//                    Log.d("printStackTrace", ex.toString());
+//                }
 
                 navigator.get().pushFragment(LiveViewFragment.class, args);
 
@@ -479,7 +475,7 @@ public class TabbedPositionListFragment extends DashboardFragment
                 startActivity(kycIntent);
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Error in redirection: " + e.getStackTrace().toString() , Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Error in redirection: " + e.getLocalizedMessage() , Toast.LENGTH_LONG).show();
             Log.d("pushLiveLoginCatchError", e.toString());
         }
 

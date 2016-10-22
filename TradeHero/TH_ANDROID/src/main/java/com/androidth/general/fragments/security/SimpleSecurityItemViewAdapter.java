@@ -2,18 +2,14 @@ package com.androidth.general.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Filter;
 import android.widget.TextView;
 
 import com.androidth.general.R;
-import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
-import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.common.widget.filter.ListCharSequencePredicateFilter;
@@ -26,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
 {

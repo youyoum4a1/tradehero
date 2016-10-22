@@ -12,7 +12,6 @@ import com.androidth.general.R;
 import com.androidth.general.api.alert.AlertCompactDTO;
 import com.androidth.general.api.alert.AlertDTO;
 import com.androidth.general.api.alert.AlertFormDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.alert.AlertSlotDTO;

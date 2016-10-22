@@ -260,7 +260,6 @@
 
 
         <com.androidth.general.fragments.trade.view.QuickPriceButtonSet
-            android:id="@+id/quick_price_button_set"
             android:layout_width="match_parent"
             android:layout_height="@dimen/timespan_button_min_height"
             android:layout_marginTop="@dimen/margin_small"
@@ -273,7 +272,6 @@
             >
 
             <com.androidth.general.fragments.trade.view.QuickPriceButton
-                android:id="@+id/toggle5k"
                 style="@style/TH.BtnQuickPriceSet"
                 app:priceText="@string/buy_sell_p5k"
                 app:price="5000"
@@ -284,7 +282,6 @@
             <View style="@style/TH.Btn_Price_Bar_Separator"/>
 
             <com.androidth.general.fragments.trade.view.QuickPriceButton
-                android:id="@+id/toggle10k"
                 style="@style/TH.BtnQuickPriceSet"
                 app:priceText="@string/buy_sell_p10k"
                 app:price="10000"
@@ -295,7 +292,6 @@
             <View style="@style/TH.Btn_Price_Bar_Separator"/>
 
             <com.androidth.general.fragments.trade.view.QuickPriceButton
-                android:id="@+id/toggle25k"
                 style="@style/TH.BtnQuickPriceSet"
                 app:priceText="@string/buy_sell_p25k"
                 app:price="25000"
@@ -306,7 +302,6 @@
             <View style="@style/TH.Btn_Price_Bar_Separator"/>
 
             <com.androidth.general.fragments.trade.view.QuickPriceButton
-                android:id="@+id/toggle50k"
                 style="@style/TH.BtnQuickPriceSet"
                 app:priceText="@string/buy_sell_p50k"
                 app:price="50000"
@@ -335,7 +330,6 @@
             android:textColor="@color/black"/>
 
         <TextView
-            android:id="@+id/dialog_trade_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -352,7 +346,6 @@
         android:orientation="horizontal"
       >
         <ImageView
-            android:id="@+id/dialog_bullish"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
@@ -361,7 +354,6 @@
            />
 
         <ImageView
-            android:id="@+id/dialog_confident"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
@@ -369,7 +361,6 @@
             android:layout_weight="1"
             />
         <ImageView
-            android:id="@+id/dialog_certain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
@@ -512,7 +503,6 @@
                 />
 
             <TextView
-                android:id="@+id/dialog_margin_rate"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -539,7 +529,6 @@
                 />
 
             <TextView
-                android:id="@+id/dialog_stop_loss"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -566,7 +555,6 @@
                 />
 
             <TextView
-                android:id="@+id/dialog_transaction_cost"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -580,7 +568,6 @@
 
 
     <LinearLayout
-        android:id="@+id/share_panel"
         android:layout_width="match_parent"
         android:layout_height="31dp"
         android:minHeight="@dimen/clickable_element_min_dimen"

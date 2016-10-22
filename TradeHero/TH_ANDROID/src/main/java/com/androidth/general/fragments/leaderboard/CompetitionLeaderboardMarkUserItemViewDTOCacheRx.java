@@ -78,7 +78,7 @@ class CompetitionLeaderboardMarkUserItemViewDTOCacheRx
                                         {
                                             list.add(factory.create(leaderboardItem, requisite.provider, pair.second));
                                         }
-                                        return Pair.create(((PagedLeaderboardKey) pair.first), list);
+                                        return Pair.create(pair.first, list);
                                     }
                                 });
                     }

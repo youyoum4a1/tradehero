@@ -68,7 +68,7 @@ public class SocialSharerImpl implements SocialSharer
                                                     activity.startActivity(
                                                             SocialSharerImpl.this.createWeChatIntent(activity, (WeChatDTO) shareFormDTO));
                                                     return Observable.just(
-                                                            (SocialShareResult) new SharedSuccessful(shareFormDTO, new SocialShareResultDTO()
+                                                            new SharedSuccessful(shareFormDTO, new SocialShareResultDTO()
                                                             {
                                                             })); // TODO perhaps wait for a return
                                                 }

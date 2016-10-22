@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
@@ -32,9 +31,7 @@ import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
-import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
-import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.notification.NotificationDTO;
 import com.androidth.general.api.notification.NotificationKey;
@@ -97,7 +94,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import dagger.Lazy;
-import retrofit.http.HEAD;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -309,16 +305,16 @@ public class DashboardActivity extends BaseActivity
 
     private void setupDrawerLayout()
     {
-        try
-        {
-            //getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.menu_bg));
-            //getWindow().getDecorView().findViewById(R.id.drawer_bg_image).setBackgroundResource(R.drawable.sidemenubg3);
-        } catch (Throwable e)
-        {
-            Timber.e(e, "Failed to set drawer background");
-            getWindow().getDecorView().findViewById(R.id.left_drawer).setBackgroundColor(
-                    getResources().getColor(R.color.authentication_guide_bg_color));
-        }
+//        try
+//        {
+//            //getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.menu_bg));
+//            //getWindow().getDecorView().findViewById(R.id.drawer_bg_image).setBackgroundResource(R.drawable.sidemenubg3);
+//        } catch (Throwable e)
+//        {
+//            Timber.e(e, "Failed to set drawer background");
+//            getWindow().getDecorView().findViewById(R.id.left_drawer).setBackgroundColor(
+//                    getResources().getColor(R.color.authentication_guide_bg_color));
+//        }
 
         //Setup Drawer Layout.
         activityModule.drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);

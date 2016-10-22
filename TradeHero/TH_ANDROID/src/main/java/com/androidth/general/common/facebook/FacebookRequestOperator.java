@@ -1,34 +1,18 @@
 package com.androidth.general.common.facebook;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookPermissionsConstants;
 import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.fernandocejas.frodo.annotation.RxLogSubscriber;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.internal.Assertions;
-import timber.log.Timber;
 
 /**
  * It should be noted that only one Facebook Request can run at a time

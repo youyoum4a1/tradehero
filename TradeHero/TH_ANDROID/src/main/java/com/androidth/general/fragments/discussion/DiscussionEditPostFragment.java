@@ -354,7 +354,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    public static interface DiscussionPostedListener
+    public interface DiscussionPostedListener
     {
         void onDiscussionPosted();
     }

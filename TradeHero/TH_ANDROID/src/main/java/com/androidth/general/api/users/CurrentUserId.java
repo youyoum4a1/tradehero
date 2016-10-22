@@ -43,7 +43,13 @@ import rx.subjects.BehaviorSubject;
         Integer id = super.get();
         if (id == 0)
         {
-            Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+            Account[] accounts;
+            try{
+                accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+            }catch (SecurityException e){
+                accounts = null;
+                // TODO handle permission
+            }
             if (accounts != null)
             {
                 for (Account account : accounts)

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="social_search_people_hint">Enter a name</string>
   <string name="account_already_linked_title">Already linked</string>
   <string name="account_already_linked">Linked</string>
   <string name="account_already_linked_message">This account is already linked with another TradeHero account.\nTry using another one</string>
@@ -13,13 +12,10 @@
   <string name="settings_referral_code_message_2">Get &lt;b>FREE TradeHero Dollars&lt;/b> when they sign up.</string>
   <string name="settings_referral_code_message_3">Earn &lt;b>%1$s&lt;/b> when they connect their social network and make one trade.</string>
   <string name="settings_referral_code_message_4">(You have earned: &lt;b>%1$s&lt;/b>)</string>
-  <string name="settings_referral_code_message">This is your own referral code. Share it with your friends and get FREE Tradehero Dollars when they sign up !
-  </string>
   <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
 
   <string name="referral_code_copy_clipboard">Copy</string>
   <string name="referral_code_share_network">Share</string>
   <string name="referral_code_copied_clipboard">%1$s copied to clipboard</string>
-  <string name="referral_code_sharing_to_networks">Sharing your referral code to social network(s)</string>
 
 </resources>

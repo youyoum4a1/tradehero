@@ -91,8 +91,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroDisplayDTO
             if (oldItem.heroDTO.picture != null && newItem.heroDTO.picture == null) return false;
             if (oldItem.heroDTO.picture != null && !oldItem.heroDTO.picture.equals(newItem.heroDTO.picture)) return false;
             if (!oldItem.roiInfo.equals(newItem.roiInfo)) return false;
-            if (oldItem.isCurrentUserFollowing != newItem.isCurrentUserFollowing) return false;
-            return true;
+            return oldItem.isCurrentUserFollowing == newItem.isCurrentUserFollowing;
         }
     }
 

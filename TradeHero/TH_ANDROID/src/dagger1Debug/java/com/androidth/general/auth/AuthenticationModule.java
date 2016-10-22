@@ -1,6 +1,5 @@
 package com.androidth.general.auth;
 
-import android.content.Context;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.linkedin.LinkedInAuthenticationProvider;
 import com.androidth.general.auth.weibo.WeiboAuthenticationProvider;

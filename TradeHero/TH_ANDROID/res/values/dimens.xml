@@ -6,23 +6,16 @@
   <!-- Not advised to use this size. It's very small! -->
   <dimen name="text_caption">@dimen/abc_text_size_caption_material</dimen>
   <dimen name="text_body">@dimen/abc_text_size_body_1_material</dimen>
-  <dimen name="text_body2">@dimen/abc_text_size_body_2_material</dimen>
   <dimen name="text_subhead">@dimen/abc_text_size_subhead_material</dimen>
   <dimen name="text_title">@dimen/abc_text_size_title_material</dimen>
   <dimen name="text_headline">@dimen/abc_text_size_headline_material</dimen>
-  <dimen name="text_display1">@dimen/abc_text_size_display_1_material</dimen>
-  <dimen name="text_display2">@dimen/abc_text_size_display_2_material</dimen>
-  <dimen name="text_display3">@dimen/abc_text_size_display_2_material</dimen>
-  <dimen name="text_display4">@dimen/abc_text_size_display_4_material</dimen>
 
   <!--Margin sizes will instead of common margin-->
   <dimen name="margin_xsmall">@dimen/size_1</dimen>
   <dimen name="margin_small">@dimen/size_2</dimen>
   <dimen name="margin_medium">@dimen/size_3</dimen>
   <dimen name="margin_large">@dimen/size_4</dimen>
-  <dimen name="margin_xlarge">@dimen/size_5</dimen>
   <dimen name="margin_xxlarge">@dimen/size_6</dimen>
-  <dimen name="margin_xxxlarge">@dimen/size_7</dimen>
 
   <!-- Size is a multiple of 8dp as suggested by Google Design Spec -->
   <!-- http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
@@ -38,100 +31,59 @@
   <dimen name="size_10">80dp</dimen>
   <dimen name="size_11">88dp</dimen>
   <dimen name="size_12">96dp</dimen>
-  <dimen name="size_13">104dp</dimen>
   <dimen name="size_14">112dp</dimen>
   <dimen name="size_15">120dp</dimen>
   <dimen name="size_16">128dp</dimen>
-  <dimen name="size_17">136dp</dimen>
   <dimen name="size_18">144dp</dimen>
-  <dimen name="size_19">152dp</dimen>
-  <dimen name="size_20">160dp</dimen>
   <dimen name="size_21">168dp</dimen>
-  <dimen name="size_22">176dp</dimen>
-  <dimen name="size_23">184dp</dimen>
   <dimen name="size_24">192dp</dimen>
   <dimen name="size_25">200dp</dimen>
 
   <dimen name="max_drawer_size">296dp</dimen>
 
+  <dimen name="authentication_button_radius">1dp</dimen>
+  <dimen name="authentication_head_text_size">@dimen/text_title</dimen>
+  <dimen name="authentication_text_size">@dimen/text_body</dimen>
 
   <dimen name="activity_horizontal_margin">@dimen/size_2</dimen>
   <dimen name="activity_vertical_margin">@dimen/size_2</dimen>
 
-  <dimen name="authentication_button_radius">1dp</dimen>
-  <dimen name="authentication_head_text_size">@dimen/text_title</dimen>
-  <dimen name="authentication_text_size">@dimen/text_body</dimen>
   <dimen name="copyright_text_size">@dimen/text_caption</dimen>
-  <dimen name="textbox_light_background_radius">1dp</dimen>
-  <dimen name="user_profile_corner_radius">1dp</dimen>
   <dimen name="dashboard_padding">0dp</dimen>
 
   <!-- Trending screen -->
-  <dimen name="trending_filter_view_pager_height">@dimen/trending_padding_top</dimen>
 
   <!-- Trade screen -->
-  <dimen name="trade_screen_info_title_padding_right">5dp</dimen>
-  <dimen name="leaderboard_border_width">0dp</dimen>
-  <dimen name="timeline_share_button_padding">5dp</dimen>
-  <dimen name="timeline_action_button">30dp</dimen>
 
   <dimen name="leaderboard_user_item_action_button_vertical_padding">@dimen/size_1</dimen>
   <dimen name="leaderboard_user_item_action_button_margin">@dimen/size_1</dimen>
-  <dimen name="leaderboard_def_item_icon_container">54dp</dimen>
-  <dimen name="leaderboard_def_item_icon">@dimen/medium_image_w_h</dimen>
-  <dimen name="lbmu_roi_mode_vertical_padding">@dimen/size_1</dimen>
-  <dimen name="leaderboard_current_user_rank_vertical_margin">@dimen/size_2</dimen>
   <dimen name="leaderboard_timed_header_vertical_padding">@dimen/size_1</dimen>
   <dimen name="leaderboard_timed_header_horizontal_padding">@dimen/size_2</dimen>
   <dimen name="timeline_side_spacing">@dimen/size_2</dimen>
   <dimen name="timeline_item_padding">@dimen/size_2</dimen>
-  <dimen name="timeline_item_corner_radius">2dp</dimen>
-  <dimen name="timeline_action_buttons_drawable_padding">@dimen/size_1</dimen>
-  <dimen name="user_profile_compact_avatar_margin">@dimen/size_2</dimen>
   <dimen name="timeline_vendor_logo_max_height">40dp</dimen>
   <dimen name="timeline_vendor_logo_max_width">100dp</dimen>
   <dimen name="timeline_vendor_logo_height">40dp</dimen>
   <dimen name="discussion_action_buttons_horizontal_padding">@dimen/size_2</dimen>
-  <dimen name="timeline_action_buttons_horizontal_padding_big">@dimen/size_3</dimen>
   <dimen name="comment_action_buttons_horizontal_padding">3dp</dimen>
-  <dimen name="timeline_action_buttons_padding">3dp</dimen>
   <dimen name="discussion_action_buttons_vertical_padding">3dp</dimen>
   <dimen name="discussion_action_buttons_drawable_padding">@dimen/size_1</dimen>
-  <dimen name="timeline_action_buttons_vertical_padding_big">@dimen/size_2</dimen>
-  <dimen name="leaderboard_fof_text_size">@dimen/text_caption</dimen>
-  <dimen name="notification_margin">@dimen/size_2</dimen>
-  <dimen name="notification_logo_width">@dimen/medium_image_w_h</dimen>
-  <dimen name="notification_padding_top">@dimen/size_2</dimen>
   <dimen name="add_to_watch_list_padding">@dimen/size_2</dimen>
   <dimen name="watchlist_item_button_width">80dp</dimen>
 
   <dimen name="watch_list_header_height">80dp</dimen>
-  <dimen name="watch_list_header_height_value">50dp</dimen>
-  <dimen name="watch_list_header_height_marking">30dp</dimen>
 
-  <dimen name="position_list_header_height">50dp</dimen>
   <dimen name="stock_alert_header_padding">@dimen/size_1</dimen>
   <dimen name="trending_grid_spacing">8dp</dimen>
   <dimen name="trending_horizontal_spacing">@dimen/trending_grid_spacing</dimen>
   <dimen name="trending_vertical_spacing">@dimen/trending_grid_spacing</dimen>
-  <dimen name="trending_padding_top">104dp</dimen>
   <dimen name="trending_grid_padding_bottom">96dp</dimen>
   <dimen name="setting_padding_left">0dp</dimen>
   <dimen name="setting_padding_right">0dp</dimen>
   <dimen name="setting_padding_top">0dp</dimen>
   <dimen name="setting_padding_bottom">0dp</dimen>
-  <dimen name="invite_friend_horizontal_padding">@dimen/size_2</dimen>
-  <dimen name="invite_friend_padding_left">@dimen/invite_friend_horizontal_padding</dimen>
-  <dimen name="invite_friend_header_padding_left">@dimen/invite_friend_padding_left</dimen>
-  <dimen name="invite_friend_padding_right">@dimen/invite_friend_horizontal_padding</dimen>
-  <dimen name="invite_friend_padding_top">@dimen/invite_friend_vertical_padding</dimen>
-  <dimen name="invite_friend_vertical_padding">@dimen/size_1</dimen>
-  <dimen name="invite_friend_padding_bottom">@dimen/invite_friend_vertical_padding</dimen>
-  <dimen name="refer_friend_source_drawable_padding">3dp</dimen>
   <dimen name="alert_item_view_logo_width">@dimen/big_image_w_h</dimen>
-  <dimen name="alert_item_label_min_width">120dp</dimen>
   <dimen name="search_stock_people_list_padding">@dimen/size_1</dimen>
-  <dimen name="leaderboard_separator_height">@dimen/size_2</dimen>
   <dimen name="discussion_comment_box_height">@dimen/clickable_element_min_dimen</dimen>
 
   <dimen name="grid_item_bg_border_width">0.5dp</dimen>
@@ -140,10 +92,6 @@
 
   <dimen name="security_logo_width">@dimen/size_15</dimen>
   <dimen name="security_logo_height">@dimen/size_5</dimen>
-
-  <dimen name="news_detail_date_size">@dimen/text_caption</dimen>
-
-  <dimen name="notification_logo_padding">@dimen/size_1</dimen>
 
   <dimen name="clickable_element_min_dimen">@dimen/size_6</dimen>
   <dimen name="button_min_width">@dimen/size_15</dimen>
@@ -157,19 +105,13 @@
   <dimen name="xxtra_big_image_w_h">@dimen/size_16</dimen>
 
   <dimen name="stock_item_width">200dp</dimen>
-  <dimen name="guide_close_margin">@dimen/size_2</dimen>
   <dimen name="button_height_small">@dimen/size_4</dimen>
 
-  <dimen name="discussion_separator_thickness">0.5dp</dimen>
   <dimen name="discussion_list_padding_top">@dimen/size_7</dimen>
   <dimen name="discussion_list_padding_bottom">@dimen/size_12</dimen>
   <dimen name="leaderboard_position_width">@dimen/size_5</dimen>
 
-  <dimen name="message_read_all_button_radius">@dimen/global_corner_radius</dimen>
-  <dimen name="message_read_all_margin_bottom">@dimen/size_1</dimen>
   <dimen name="discovery_news_carousel_height">@dimen/size_10</dimen>
-  <dimen name="discovery_news_carousel_motleyfool_logo_height">@dimen/size_7</dimen>
-  <dimen name="discovery_news_carousel_spinner_width">250dp</dimen>
   <dimen name="dashboard_tabhost_height">@dimen/size_6</dimen>
   <dimen name="dashboard_red_dot_dimen">5dp</dimen>
   <dimen name="discovery_news_swipe_indicator_height">24dp</dimen>

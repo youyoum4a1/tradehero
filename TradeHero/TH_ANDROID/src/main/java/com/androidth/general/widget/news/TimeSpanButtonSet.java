@@ -161,6 +161,6 @@ public class TimeSpanButtonSet extends LinearLayout
 
     public interface OnTimeSpanButtonSelectedListener
     {
-        public void onTimeSpanButtonSelected(ChartTimeSpan selected);
+        void onTimeSpanButtonSelected(ChartTimeSpan selected);
     }
 }

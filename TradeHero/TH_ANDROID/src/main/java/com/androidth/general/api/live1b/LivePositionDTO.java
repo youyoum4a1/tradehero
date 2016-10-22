@@ -1,25 +1,17 @@
 package com.androidth.general.api.live1b;
 
-import com.androidth.general.api.portfolio.LiveOwnedPortfolioId;
-import com.androidth.general.api.position.LiveOwnedPositionId;
-import com.androidth.general.api.position.OwnedPositionId;
-import com.androidth.general.api.position.PositionDTOKey;
-import com.androidth.general.common.persistence.DTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class LivePositionDTO implements DTO {
+public class LivePositionDTO{
 
     public String OrderId;
-    public int Side;
-    public double Qty;
+    public Integer Side;
+    public Double Qty;
     public String Product;
     public String SecurityId;
-    public double EntryPrice;
-    public double UPL;
-    public double StopLoss;
-    public double TakeProfit;
-    public int PositionResponseType;
+    public Double EntryPrice;
+    public Double UPL;
+    public Double StopLoss;
+    public Double TakeProfit;
+    public Integer PositionResponseType;
 //    public PositionResponseTypeEnum PositionResponseType;
 //    @JsonProperty("Side")
 //    public OrderSideEnum side;
@@ -47,17 +39,17 @@ public class LivePositionDTO implements DTO {
     }
     //</editor-fold>
 
-    @JsonIgnore
-    public PositionDTOKey getLiveOwnedPositionId()
-    {
-        return new LiveOwnedPositionId(0,0,0);
-    }
-
-    @JsonIgnore
-    public PositionDTOKey getLivePositionDTOKey()
-    {
-        return getLiveOwnedPositionId();
-    }
+//    @JsonIgnore
+//    public PositionDTOKey getLiveOwnedPositionId()
+//    {
+//        return new LiveOwnedPositionId(0,0,0);
+//    }
+//
+//    @JsonIgnore
+//    public PositionDTOKey getLivePositionDTOKey()
+//    {
+//        return getLiveOwnedPositionId();
+//    }
 
     @Override
     public String toString() {

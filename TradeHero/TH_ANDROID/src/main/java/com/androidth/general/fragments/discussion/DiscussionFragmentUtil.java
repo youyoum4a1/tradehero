@@ -33,7 +33,6 @@ import com.androidth.general.models.discussion.UpdateStockAlertUserAction;
 import com.androidth.general.models.discussion.UserDiscussionAction;
 import com.androidth.general.network.service.DiscussionServiceWrapper;
 import com.androidth.general.persistence.watchlist.WatchlistPositionCacheRx;
-import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.VotePair;
 

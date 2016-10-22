@@ -20,7 +20,7 @@ public enum ReutersMovingAverageInterval
     public final int days;
 
     //<editor-fold desc="Constructors">
-    private ReutersMovingAverageInterval(@NonNull String code, int days)
+    ReutersMovingAverageInterval(@NonNull String code, int days)
     {
         this.code = code;
         this.days = days;

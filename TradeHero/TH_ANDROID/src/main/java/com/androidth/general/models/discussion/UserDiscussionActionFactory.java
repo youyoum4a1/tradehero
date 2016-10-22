@@ -16,13 +16,13 @@ public class UserDiscussionActionFactory
     {
         if (userAction instanceof UserTagProcessor.ProfileUserAction)
         {
-            return Observable.just((UserDiscussionAction) new PlayerUserAction(
+            return Observable.just(new PlayerUserAction(
                     discussionCompactDTO,
                     ((UserTagProcessor.ProfileUserAction) userAction).userBaseKey));
         }
         else if (userAction instanceof SecurityTagProcessor.SecurityUserAction)
         {
-            return Observable.just((UserDiscussionAction) new SecurityUserAction(
+            return Observable.just(new SecurityUserAction(
                     discussionCompactDTO,
                     ((SecurityTagProcessor.SecurityUserAction) userAction).securityId));
         }

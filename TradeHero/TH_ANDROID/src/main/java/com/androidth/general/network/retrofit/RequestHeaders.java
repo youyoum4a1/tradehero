@@ -44,7 +44,13 @@ public class RequestHeaders implements RequestInterceptor
 
     private void buildAuthorizationHeader(RequestFacade request)
     {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        Account[] accounts;
+        try{
+            accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        }catch (SecurityException e){
+            accounts = null;
+            //TODO handle permission
+        }
         if (accounts.length != 0)
         {
             String token = accountManager.peekAuthToken(accounts[0], PARAM_AUTHTOKEN_TYPE);
@@ -57,7 +63,14 @@ public class RequestHeaders implements RequestInterceptor
 
     public String  headerTokenLive()
     {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        Account[] accounts;
+        try{
+            accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        }catch (SecurityException e){
+            accounts = null;
+            //TODO handle permission
+        }
+
         if (accounts.length != 0)
         {
             String token = accountManager.peekAuthToken(accounts[0], PARAM_AUTHTOKEN_TYPE);

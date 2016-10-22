@@ -11,7 +11,7 @@ public enum MediaType
     public final int value;
 
     //<editor-fold desc="Constructors">
-    private MediaType(int value)
+    MediaType(int value)
     {
         this.value = value;
     }

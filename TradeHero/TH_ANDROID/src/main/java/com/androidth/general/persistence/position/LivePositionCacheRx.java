@@ -3,19 +3,14 @@ package com.androidth.general.persistence.position;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.android.internal.util.Predicate;
-import com.androidth.general.api.leaderboard.position.LeaderboardMarkUserId;
 import com.androidth.general.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.portfolio.LiveOwnedPortfolioId;
-import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.position.GetLivePositionsDTO;
 import com.androidth.general.api.position.GetPositionsDTOKey;
-import com.androidth.general.api.position.LiveOwnedPositionId;
 import com.androidth.general.api.position.OwnedPositionId;
 import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTOKey;
-import com.androidth.general.api.position.PositionInPeriodDTO;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;
@@ -32,7 +27,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 @Singleton @UserCache
-public class LivePositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, LivePositionDTO>
+public class LivePositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, PositionDTO>
 {
     private static final int DEFAULT_MAX_VALUE_SIZE = 5000;
 
@@ -57,7 +52,7 @@ public class LivePositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Liv
     }
     //</editor-fold>
 
-    @Override @NonNull protected Observable<LivePositionDTO> fetch(@NonNull final PositionDTOKey key)
+    @Override @NonNull protected Observable<PositionDTO> fetch(@NonNull final PositionDTOKey key)
     {
         GetPositionsDTOKey getPositionsDTOKey;
         if (key instanceof OwnedPositionId)
@@ -73,36 +68,36 @@ public class LivePositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Liv
             throw new IllegalArgumentException("Unhandled PositionDTOKey " + key);
         }
         return getPositionsLiveCache.get().getOne(getPositionsDTOKey)
-                .flatMap(new Func1<Pair<GetPositionsDTOKey, GetLivePositionsDTO>, Observable<LivePositionDTO>>()
+                .flatMap(new Func1<Pair<GetPositionsDTOKey, GetLivePositionsDTO>, Observable<PositionDTO>>()
                 {
-                    @Override public Observable<LivePositionDTO> call(Pair<GetPositionsDTOKey, GetLivePositionsDTO> pair)
+                    @Override public Observable<PositionDTO> call(Pair<GetPositionsDTOKey, GetLivePositionsDTO> pair)
                     {
-                        if (pair.second.positions != null)
-                        {
-//                            LivePositionDTO position = pair.second.response.findFirstWhere(new Predicate<LivePositionDTO>()
-//                            {
-//                                @Override public boolean apply(LivePositionDTO position)
-//                                {
-//                                    return position.getLivePositionDTOKey().equals(key);
-//                                }
-//                            });
+//                        if (pair.second.positions != null)
+//                        {
+////                            LivePositionDTO position = pair.second.response.findFirstWhere(new Predicate<LivePositionDTO>()
+////                            {
+////                                @Override public boolean apply(LivePositionDTO position)
+////                                {
+////                                    return position.getLivePositionDTOKey().equals(key);
+////                                }
+////                            });
+////                            if (position != null)
+////                            {
+////                                return Observable.just(position);
+////                            }
+//                            LivePositionDTO position = pair.second.positions.get(0);
 //                            if (position != null)
 //                            {
 //                                return Observable.just(position);
 //                            }
-                            LivePositionDTO position = pair.second.positions.get(0);
-                            if (position != null)
-                            {
-                                return Observable.just(position);
-                            }
-                        }
+//                        }
                         return Observable.error(new IllegalArgumentException("Not found"));
 
                     }
                 });
     }
 
-    @Override public void onNext(@NonNull PositionDTOKey key, @NonNull LivePositionDTO value)
+    @Override public void onNext(@NonNull PositionDTOKey key, @NonNull PositionDTO value)
     {
 //        // Save the correspondence between integer id and compound key.
 //        if (key instanceof LiveOwnedPositionId)

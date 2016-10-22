@@ -119,8 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="45sp"
-        android:adjustViewBounds="true"
-        tools:src="@drawable/th_logo" />
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:id="@+id/dialog_buy_sell_security_name"
@@ -334,7 +333,6 @@
         android:indeterminate="false" />
 
     <com.androidth.general.fragments.trade.view.QuickPriceButtonSet
-        android:id="@+id/quick_price_button_set"
         android:layout_width="match_parent"
         android:layout_height="@dimen/timespan_button_min_height"
         android:layout_marginTop="@dimen/margin_small"
@@ -347,7 +345,6 @@
         >
 
       <com.androidth.general.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle5k"
           style="@style/TH.BtnQuickPriceSet"
           app:priceText="@string/buy_sell_p5k"
           app:price="5000"
@@ -358,7 +355,6 @@
       <View style="@style/TH.Btn_Price_Bar_Separator"/>
 
       <com.androidth.general.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle10k"
           style="@style/TH.BtnQuickPriceSet"
           app:priceText="@string/buy_sell_p10k"
           app:price="10000"
@@ -369,7 +365,6 @@
       <View style="@style/TH.Btn_Price_Bar_Separator"/>
 
       <com.androidth.general.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle25k"
           style="@style/TH.BtnQuickPriceSet"
           app:priceText="@string/buy_sell_p25k"
           app:price="25000"
@@ -380,7 +375,6 @@
       <View style="@style/TH.Btn_Price_Bar_Separator"/>
 
       <com.androidth.general.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle50k"
           style="@style/TH.BtnQuickPriceSet"
           app:priceText="@string/buy_sell_p50k"
           app:price="50000"
@@ -409,7 +403,6 @@
       />
 
   <LinearLayout
-      android:id="@+id/share_panel"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/clickable_element_min_dimen"

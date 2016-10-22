@@ -42,14 +42,10 @@
         android:clipToPadding="false"
         >
 
-      <include
-          android:id="@+id/achievement_dialog_fragment_inner_top"
-          layout="@layout/achievement_dialog_fragment_inner_top"
+      <include layout="@layout/achievement_dialog_fragment_inner_top"
           />
 
-      <include
-          android:id="@+id/achievement_dialog_fragment_inner_bottom"
-          layout="@layout/achievement_dialog_fragment_inner_bottom"
+      <include layout="@layout/achievement_dialog_fragment_inner_bottom"
           />
 
     </RelativeLayout>

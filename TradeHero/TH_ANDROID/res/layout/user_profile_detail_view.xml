@@ -3,14 +3,12 @@
 <com.androidth.general.fragments.timeline.UserProfileDetailView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/user_profile_detail_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
   <LinearLayout
-      android:id="@+id/profile_screen_user_detail_top"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
@@ -37,7 +35,6 @@
           android:contentDescription="@null"/>
 
       <ImageView
-          android:id="@+id/user_profile_edit"
           android:layout_width="@dimen/medium_image_w_h"
           android:layout_height="@dimen/medium_image_w_h"
           android:scaleType="fitCenter"

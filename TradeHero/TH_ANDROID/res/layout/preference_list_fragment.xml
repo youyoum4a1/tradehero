@@ -45,13 +45,13 @@
       style="@style/TH.Loading_Empty_Text"
       android:visibility="gone" />
 
-  <RelativeLayout android:id="@+id/button_bar"
+  <RelativeLayout
       android:layout_height="wrap_content"
       android:layout_width="fill_parent"
       android:layout_weight="0"
       android:visibility="gone">
 
-    <Button android:id="@+id/back_button"
+    <Button
         android:layout_width="150dip"
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true">
 
-      <Button android:id="@+id/skip_button"
+      <Button
           android:layout_width="150dip"
           android:layout_height="wrap_content"
           android:layout_margin="5dip"

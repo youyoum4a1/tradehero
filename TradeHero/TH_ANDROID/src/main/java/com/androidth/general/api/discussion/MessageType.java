@@ -19,7 +19,7 @@ public enum MessageType
     public final String localyticsResource;
 
     //<editor-fold desc="Constructors">
-    private MessageType(int typeId, @StringRes int titleResource, String localyticsResource)
+    MessageType(int typeId, @StringRes int titleResource, String localyticsResource)
     {
         this.typeId = typeId;
         this.titleResource = titleResource;

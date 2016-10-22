@@ -23,7 +23,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;

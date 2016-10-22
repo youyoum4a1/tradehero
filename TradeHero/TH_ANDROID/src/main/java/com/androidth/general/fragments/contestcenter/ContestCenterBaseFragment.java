@@ -1,20 +1,14 @@
 package com.androidth.general.fragments.contestcenter;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.androidth.general.R;
@@ -37,8 +31,6 @@ import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.androidth.general.utils.route.THRouter;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,11 +41,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 //@Routable({

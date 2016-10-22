@@ -7,16 +7,12 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.Constants;
-import com.androidth.general.utils.LiveConstants;
 import com.google.gson.JsonElement;
-
-import javax.inject.Inject;
 
 import microsoft.aspnet.signalr.client.Action;
 import microsoft.aspnet.signalr.client.ConnectionState;
 import microsoft.aspnet.signalr.client.Credentials;
 import microsoft.aspnet.signalr.client.ErrorCallback;
-import microsoft.aspnet.signalr.client.InvalidStateException;
 import microsoft.aspnet.signalr.client.MessageReceivedHandler;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.StateChangedCallback;

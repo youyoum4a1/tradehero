@@ -25,7 +25,6 @@ import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.position.PositionDTOUtil;
 import com.androidth.general.api.position.PositionStatus;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.androidth.general.fragments.security.AbstractSecurityInfoFragment;

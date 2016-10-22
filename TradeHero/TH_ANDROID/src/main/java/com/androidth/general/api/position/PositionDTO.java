@@ -3,16 +3,11 @@ package com.androidth.general.api.position;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.androidth.general.api.portfolio.PortfolioDTO;
-import com.androidth.general.utils.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.users.UserBaseKey;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PositionDTO extends PositionDTOCompact

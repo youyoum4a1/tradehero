@@ -72,7 +72,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
     public enum Type
     {
-        LONG, SHORT, CLOSED;
+        LONG, SHORT, CLOSED
     }
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>

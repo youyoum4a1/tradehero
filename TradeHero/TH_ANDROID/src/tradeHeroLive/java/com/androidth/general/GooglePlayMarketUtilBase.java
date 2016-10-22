@@ -9,7 +9,7 @@ import com.androidth.general.R;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
-import java.util.Dictionary;
+
 import java.util.Map;
 import timber.log.Timber;
 

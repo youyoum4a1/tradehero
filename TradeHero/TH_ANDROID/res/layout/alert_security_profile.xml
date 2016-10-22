@@ -80,7 +80,6 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:id="@+id/dummy_current_price"
           android:text="@string/stock_alert_current_price"
           android:gravity="start"
           style="@style/TH.Caption"
@@ -147,7 +146,6 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:id="@+id/dummy_active_until"
           android:text="@string/stock_alert_active_until"
           android:gravity="start"
           style="@style/TH.Caption"

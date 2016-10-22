@@ -6,12 +6,11 @@ import android.support.annotation.Nullable;
 import com.androidth.general.common.facebook.FacebookConstants;
 import com.androidth.general.R;
 import com.androidth.general.api.social.SocialNetworkEnum;
-import com.androidth.general.api.social.UserFriendsDTOList;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import rx.Observable;
+
 import rx.Subscription;
-import rx.functions.Func1;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {

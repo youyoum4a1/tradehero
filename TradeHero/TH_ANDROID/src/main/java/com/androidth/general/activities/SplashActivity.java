@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
 
@@ -25,13 +24,9 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.metrics.MetricsModule;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
-import com.androidth.general.utils.route.THRouter;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tune.Tune;
-import com.urbanairship.AirshipReceiver;
 import com.urbanairship.util.UriUtils;
 
 import java.util.List;
@@ -40,8 +35,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;

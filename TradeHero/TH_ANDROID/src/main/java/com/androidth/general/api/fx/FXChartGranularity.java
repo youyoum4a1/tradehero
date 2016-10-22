@@ -18,7 +18,7 @@ public enum FXChartGranularity
     public final long chartTimeSpanDuration;
 
     //<editor-fold desc="Constructors">
-    private FXChartGranularity(@NonNull String code, long chartTimeSpanDuration)
+    FXChartGranularity(@NonNull String code, long chartTimeSpanDuration)
     {
         this.code = code;
         this.chartTimeSpanDuration = chartTimeSpanDuration;

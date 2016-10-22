@@ -1,18 +1,13 @@
 package com.androidth.general.fragments.security;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.R;
@@ -39,11 +34,9 @@ import com.androidth.general.utils.DeviceUtil;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class ProviderSecurityListRxFragment
         extends SecurityListRxFragment

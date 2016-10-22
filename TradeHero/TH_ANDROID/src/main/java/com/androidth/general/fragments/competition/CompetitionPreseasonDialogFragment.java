@@ -1,6 +1,5 @@
 package com.androidth.general.fragments.competition;
 
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -85,7 +84,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.TH_Dialog);
+        setStyle(STYLE_NO_FRAME, R.style.TH_Dialog);
         return inflater.inflate(R.layout.competition_preseason_dialog, container, false);
     }
 

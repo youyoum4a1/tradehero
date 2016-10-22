@@ -63,7 +63,6 @@
       >
 
     <ImageView
-        android:id="@+id/market_closed_icon"
         android:layout_width="@dimen/medium_image_w_h"
         android:layout_height="@dimen/medium_image_w_h"
         android:layout_marginTop="@dimen/margin_small"

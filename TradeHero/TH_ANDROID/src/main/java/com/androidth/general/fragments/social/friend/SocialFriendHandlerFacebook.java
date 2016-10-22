@@ -1,47 +1,20 @@
 package com.androidth.general.fragments.social.friend;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Pair;
-import com.facebook.HttpMethod;
 //import com.facebook.Response;
 //import com.facebook.Session;
 //import com.facebook.widget.WebDialog;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.facebook.FacebookConstants;
-import com.androidth.general.common.facebook.FacebookRequestOperator;
-import com.androidth.general.common.utils.CollectionUtils;
-import com.androidth.general.R;
-import com.androidth.general.api.BaseResponseDTO;
-import com.androidth.general.api.auth.AccessTokenForm;
-import com.androidth.general.api.social.InviteDTO;
-import com.androidth.general.api.social.InviteFacebookDTO;
-import com.androidth.general.api.social.InviteFormDTO;
-import com.androidth.general.api.social.InviteFormUserDTO;
-import com.androidth.general.api.social.SocialNetworkEnum;
-import com.androidth.general.api.social.UserFriendsDTOList;
-import com.androidth.general.api.social.UserFriendsFacebookDTO;
 import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.api.users.UserBaseKey;
-import com.androidth.general.api.users.UserProfileDTO;
-import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.FacebookAuthenticationProvider;
 import com.androidth.general.auth.operator.FacebookPermissions;
 import com.androidth.general.network.service.SocialServiceWrapper;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
-import com.androidth.general.rx.ReplaceWithFunc1;
-import java.util.ArrayList;
+
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 public class SocialFriendHandlerFacebook extends SocialFriendHandler
 {

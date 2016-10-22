@@ -27,7 +27,6 @@
       />
 
     <include
-        android:id="@+id/authentication_agreement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/authentication_agreement_vertical_padding"

@@ -1,6 +1,5 @@
 package com.androidth.general.fragments.authentication;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -211,9 +210,9 @@ public class GuideAuthenticationFragment extends Fragment
     @SuppressWarnings({"unused", "UnusedParameters"})
     @OnClick({
             R.id.btn_facebook_signin,
-            R.id.btn_linkedin_signin,
+//            R.id.btn_linkedin_signin,
             R.id.btn_qq_signin,
-            R.id.btn_twitter_signin,
+//            R.id.btn_twitter_signin,
             R.id.btn_weibo_signin,
     }) @Nullable
     protected void mainSocialNetworkClicked(View view)

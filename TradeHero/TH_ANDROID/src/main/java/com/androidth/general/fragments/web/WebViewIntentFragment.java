@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.rx.EmptyAction1;

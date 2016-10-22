@@ -31,7 +31,6 @@
       >
 
     <TextView
-        android:id="@+id/prize_pool_current"
         style="@style/TH.Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -1,18 +1,12 @@
 package com.androidth.general.api.security;
 
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 
 import com.androidth.general.common.persistence.DTO;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.ArrayList;
-import java.util.Date;
-
-import timber.log.Timber;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

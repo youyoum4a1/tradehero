@@ -63,7 +63,7 @@ public class CompetitionZoneDTOUtil
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_ADS,
-                        (CompetitionZoneDTO) new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
+                        new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
             }
 
             list.add(Pair.create(
@@ -83,7 +83,7 @@ public class CompetitionZoneDTOUtil
                 {
                     list.add(Pair.create(
                             CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL,
-                            (CompetitionZoneDTO) new CompetitionZonePrizePoolDTO(context.getResources(), poolDTO)));
+                            new CompetitionZonePrizePoolDTO(context.getResources(), poolDTO)));
                 }
 
                 list.add(Pair.create(
@@ -96,7 +96,7 @@ public class CompetitionZoneDTOUtil
                 String subtitle = PortfolioCompactDTOUtil.getPortfolioSubtitle(context.getResources(), providerDTO.associatedPortfolio, null);
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO,
-                        (CompetitionZoneDTO) new CompetitionZonePortfolioDTO(
+                        new CompetitionZonePortfolioDTO(
                                 context.getString(R.string.provider_competition_portfolio_title),
                                 subtitle,
                                 portfolioUserProfileCompact)));
@@ -114,7 +114,7 @@ public class CompetitionZoneDTOUtil
                 {
                     list.add(Pair.create(
                             CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM,
-                            (CompetitionZoneDTO) new CompetitionZonePreSeasonDTO(preSeasonDTO)));
+                            new CompetitionZonePreSeasonDTO(preSeasonDTO)));
                 }
             }
 
@@ -131,7 +131,7 @@ public class CompetitionZoneDTOUtil
                             CompetitionZoneWizardDTO wizardDTO = new CompetitionZoneWizardDTO(providerDisplayCellDTO, context.getResources());
                             list.add(Pair.create(
                                     CompetitionZoneListItemAdapter.ITEM_TYPE_WIZARD,
-                                    (CompetitionZoneDTO) wizardDTO));
+                                    wizardDTO));
                             String webUrl = wizardDTO.getWebUrl();
                             if (webUrl != null)
                             {
@@ -142,7 +142,7 @@ public class CompetitionZoneDTOUtil
                         {
                             list.add(Pair.create(
                                     CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM,
-                                    (CompetitionZoneDTO) new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO)));
+                                    new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO)));
                         }
                     }
                 }
@@ -153,7 +153,7 @@ public class CompetitionZoneDTOUtil
                 {
                     list.add(Pair.create(
                             CompetitionZoneListItemAdapter.ITEM_TYPE_WIZARD,
-                            (CompetitionZoneDTO) new CompetitionZoneWizardDTO(
+                            new CompetitionZoneWizardDTO(
                                     providerDTO.wizardTitle,
                                     null,
                                     providerDTO.wizardImageUrl,
@@ -164,7 +164,7 @@ public class CompetitionZoneDTOUtil
             {
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
-                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
+                        new DummyLoadingCompetitionDTO()));
             }
 
             list.add(Pair.create(
@@ -184,7 +184,7 @@ public class CompetitionZoneDTOUtil
                     {
                         list.add(Pair.create(
                                 CompetitionZoneListItemAdapter.ITEM_TYPE_LEADERBOARD,
-                                (CompetitionZoneDTO) new CompetitionZoneLeaderboardDTO(
+                                new CompetitionZoneLeaderboardDTO(
                                         context.getResources(),
                                         competitionDTO.name,
                                         competitionDTO.leaderboard != null ? competitionDTO.leaderboard.desc : "",
@@ -197,7 +197,7 @@ public class CompetitionZoneDTOUtil
             {
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
-                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
+                        new DummyLoadingCompetitionDTO()));
             }
 
             list.add(Pair.create(
@@ -207,7 +207,7 @@ public class CompetitionZoneDTOUtil
             Timber.d("rules title " + context.getString(R.string.provider_competition_rules_title));
             list.add(Pair.create(
                     CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS,
-                    (CompetitionZoneDTO) new CompetitionZoneLegalDTO(
+                    new CompetitionZoneLegalDTO(
                             context.getString(R.string.provider_competition_rules_title),
                             context.getString(R.string.provider_competition_terms_title))));
 
@@ -234,7 +234,7 @@ public class CompetitionZoneDTOUtil
                 pickedAdDTO.providerId = providerDTO.id;
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_ADS,
-                        (CompetitionZoneDTO) new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
+                        new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
             }
 
             //2016-08-01T00:00:00 show only 10 characters
@@ -244,7 +244,7 @@ public class CompetitionZoneDTOUtil
 
             list.add(Pair.create(
                     CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS,
-                    (CompetitionZoneDTO) new CompetitionZoneLegalDTO(
+                    new CompetitionZoneLegalDTO(
                             context.getString(R.string.provider_competition_rules_title),
                             context.getString(R.string.provider_competition_terms_title))));
 

@@ -26,7 +26,6 @@
         />
 
     <TextView
-        android:id="@+id/leaderboard_filter_comparator_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/leaderboard_filter_comparator_sign_bigger_than"
@@ -41,7 +40,6 @@
         />
 
     <TextView
-        android:id="@+id/leaderboard_filter_value_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/leaderboard_filter_holding_period_value_unit"
@@ -65,7 +63,6 @@
       android:layout_below="@id/leaderboard_filter_header_description">
 
     <TextView
-        android:id="@+id/leaderboard_filter_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -90,14 +87,12 @@
       />
 
   <RelativeLayout
-      android:id="@+id/leaderboard_filter_min_max_description_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_filter_value_slider"
       >
 
     <TextView
-        android:id="@+id/leaderboard_filter_min_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -105,7 +100,6 @@
         />
 
     <TextView
-        android:id="@+id/leaderboard_filter_max_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

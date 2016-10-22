@@ -8,7 +8,6 @@
     android:descendantFocusability="blocksDescendants"
     >
 
-  <include layout="@layout/lbmu_item_roi_mode_inner"
-      android:id="@+id/lbmu_inner_view_container"/>
+  <include layout="@layout/lbmu_item_roi_mode_inner" />
 
 </com.androidth.general.fragments.leaderboard.LeaderboardMarkUserItemView>

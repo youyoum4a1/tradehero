@@ -345,7 +345,7 @@ public class NewsHeadlineFragment extends Fragment
         newsSubscription = rxLoaderManager.create(newsItemListKey, createNewsListKeyPaginationObservable())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.<List<NewsItemCompactDTO>>empty())
+                .onErrorResumeNext(Observable.empty())
                 .subscribe(newsSubject);
     }
 

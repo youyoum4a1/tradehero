@@ -19,7 +19,6 @@ import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.SecurityMediaDTO;
 import com.androidth.general.api.timeline.TimelineItemDTO;
 import com.androidth.general.api.users.UserProfileCompactDTO;
-import com.androidth.general.models.discussion.SecurityUserAction;
 import com.androidth.general.models.discussion.UserDiscussionAction;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;

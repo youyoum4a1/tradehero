@@ -52,7 +52,6 @@
     </android.support.design.widget.TextInputLayout>
 
     <com.androidth.general.widget.validation.MatchingPasswordText
-        android:id="@+id/authentication_sign_up_confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
@@ -95,7 +94,6 @@
       </android.support.design.widget.TextInputLayout>
 
       <ProgressBar
-          android:id="@+id/authentication_sign_up_username_validator"
           android:layout_width="32dip"
           android:layout_height="32dip"
           android:layout_gravity="end|center"
@@ -116,7 +114,6 @@
         style="@style/TH.Authentication.EditText"/>
 
     <RelativeLayout
-        android:id="@+id/layout_optional"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small">

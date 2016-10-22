@@ -29,8 +29,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-;
-
 @Routable(DiscoveryMainFragment.ROUTER_DISCOVERY_TAB_INDEX + ":tabIndex")
 public class DiscoveryMainFragment extends DashboardFragment
 {

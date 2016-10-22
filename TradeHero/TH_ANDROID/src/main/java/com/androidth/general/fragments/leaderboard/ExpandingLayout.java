@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 
@@ -130,9 +129,9 @@ public class ExpandingLayout extends LinearLayout
 
     private int getManualMeasuredHeight()
     {
-        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, MeasureSpec.UNSPECIFIED);
-        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, MeasureSpec.AT_MOST);
-        measure(widthMeasureSpec, heightMeasureSpec);
+//        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, MeasureSpec.UNSPECIFIED);
+//        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, MeasureSpec.AT_MOST);
+//        measure(widthMeasureSpec, heightMeasureSpec);
         return getMeasuredHeight() + getPaddingBottom() + getPaddingTop();
     }
 
@@ -158,7 +157,7 @@ public class ExpandingLayout extends LinearLayout
         this.expandListener = expandListener;
     }
 
-    public static interface OnExpandListener
+    public interface OnExpandListener
     {
         void onExpand(boolean expand);
     }

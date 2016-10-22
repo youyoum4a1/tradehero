@@ -3,17 +3,13 @@ package com.androidth.general.persistence.position;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.androidth.general.api.leaderboard.position.LeaderboardMarkUserId;
-import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.position.GetLivePositionsDTO;
-import com.androidth.general.api.position.GetPositionsDTO;
 import com.androidth.general.api.position.GetPositionsDTOKey;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;
 import com.androidth.general.network.service.LeaderboardServiceWrapper;
 import com.androidth.general.network.service.Live1BServiceWrapper;
-import com.androidth.general.network.service.PositionServiceWrapper;
 import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 
 import javax.inject.Inject;

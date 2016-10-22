@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
 import com.androidth.general.api.RawResponseKeeper;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
-import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
 /**
  * Created by ayushnvijay on 6/24/16.

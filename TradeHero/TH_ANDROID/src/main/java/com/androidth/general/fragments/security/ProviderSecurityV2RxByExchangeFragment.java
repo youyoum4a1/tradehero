@@ -3,6 +3,7 @@ package com.androidth.general.fragments.security;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,8 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.utils.StringUtils;
 import com.squareup.picasso.Picasso;
-import com.tencent.mm.sdk.platformtools.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

@@ -49,7 +49,7 @@ public abstract class PreferenceFragment extends Fragment implements
     private static final int FIRST_REQUEST_CODE = 100;
 
     private static final int MSG_BIND_PREFERENCES = 1;
-    private Handler mHandler;
+    private static Handler mHandler;
     private OnKeyListener mListOnKeyListener;
 
     final private Runnable mRequestFocus = new Runnable()
@@ -79,7 +79,8 @@ public abstract class PreferenceFragment extends Fragment implements
         super.onCreate(paramBundle);
         mPreferenceManager = PreferenceManagerCompat.newInstance(getActivity(), FIRST_REQUEST_CODE);
         PreferenceManagerCompat.setFragment(mPreferenceManager, this);
-        mHandler = createNewHandler();
+//        createNewHandler();
+        mHandler = new PreferenceHandler(this);
         mListOnKeyListener = createOnKeyListener();    }
 
     @Override
@@ -167,23 +168,6 @@ public abstract class PreferenceFragment extends Fragment implements
         super.onActivityResult(requestCode, resultCode, data);
 
         PreferenceManagerCompat.dispatchActivityResult(mPreferenceManager, requestCode, resultCode, data);
-    }
-
-    private Handler createNewHandler()
-    {
-        return new Handler()
-        {
-            @Override
-            public void handleMessage(Message msg)
-            {
-                switch (msg.what)
-                {
-                    case MSG_BIND_PREFERENCES:
-                        bindPreferences();
-                        break;
-                }
-            }
-        };
     }
 
     /**
@@ -355,5 +339,38 @@ public abstract class PreferenceFragment extends Fragment implements
                 return false;
             }
         };
+    }
+
+    private static class PreferenceHandler extends Handler
+    {
+        private final PreferenceFragment preferenceFragmentWeakReference;
+        public PreferenceHandler(PreferenceFragment preferenceFragment) {
+            this.preferenceFragmentWeakReference = preferenceFragment;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+                case MSG_BIND_PREFERENCES:
+                    preferenceFragmentWeakReference.bindPreferences();
+                    break;
+            }
+        }
+        //            mHandler = new Handler()
+//        {
+//            @Override
+//            public void handleMessage(Message msg)
+//            {
+//                switch (msg.what)
+//                {
+//                    case MSG_BIND_PREFERENCES:
+//                        bindPreferences();
+//                        break;
+//                }
+//            }
+//        };
+//            return mHandler;
     }
 }

@@ -27,7 +27,7 @@ import rx.Observable;
 
     @NonNull public Observable<UserProfileDTO> followFriends(@NonNull List<UserFriendsDTO> users)
     {
-        return userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(users, (UserFriendsDTO) null));
+        return userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(users, null));
     }
 
     @NonNull public Observable<BaseResponseDTO> inviteFriends(

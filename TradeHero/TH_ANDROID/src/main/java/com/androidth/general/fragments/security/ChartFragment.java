@@ -16,16 +16,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
 import com.androidth.general.activities.StockChartActivity;
 import com.androidth.general.api.alert.AlertCompactDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
-import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TillExchangeOpenDuration;
 import com.androidth.general.api.security.compact.WarrantDTO;
@@ -63,7 +60,6 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.DateUtils;
-import com.androidth.general.utils.ExceptionUtils;
 import com.androidth.general.widget.news.TimeSpanButtonSet;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
@@ -71,7 +67,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -533,7 +528,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             }
         }
 
-    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double ask, @Nullable Double bid)
     {
         if (buyPrice != null && sellPrice != null)
         {

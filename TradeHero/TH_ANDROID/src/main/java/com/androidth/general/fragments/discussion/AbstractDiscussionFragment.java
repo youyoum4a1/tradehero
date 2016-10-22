@@ -3,7 +3,6 @@ package com.androidth.general.fragments.discussion;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import com.androidth.general.api.pagination.PaginatedDTO;
 import com.androidth.general.fragments.OnMovableBottomTranslateListener;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.base.FragmentOuterElements;
-import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.discussion.UserDiscussionAction;
 import com.androidth.general.persistence.discussion.DiscussionCacheRx;
 import com.androidth.general.persistence.discussion.DiscussionListCacheRx;
@@ -43,10 +41,8 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 abstract public class AbstractDiscussionFragment extends BaseFragment
 {
@@ -296,7 +292,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     {
         if (discussionKey != null)
         {
-            return Observable.just((DiscussionListKey) new PaginatedDiscussionListKey(DiscussionListKeyFactory.create(discussionKey), 1));
+            return Observable.just(new PaginatedDiscussionListKey(DiscussionListKeyFactory.create(discussionKey), 1));
         }
         return Observable.empty();
     }
