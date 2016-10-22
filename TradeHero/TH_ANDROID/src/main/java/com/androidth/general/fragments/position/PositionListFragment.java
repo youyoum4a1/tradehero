@@ -18,19 +18,17 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ViewAnimator;
 
+import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
+import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.Live1BServiceWrapper;
 import com.androidth.general.network.service.SignalRManager;
-import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.Constants;
-import com.androidth.general.utils.LiveConstants;
-import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -112,8 +110,6 @@ import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.MultiRecyclerScrollListener;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,8 +122,6 @@ import butterknife.ButterKnife;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
-import retrofit.RetrofitError;
-import retrofit.mime.TypedByteArray;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -169,7 +163,7 @@ public class PositionListFragment
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
-
+  
     @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
     SwipeRefreshLayout swipeToRefreshLayout;
     RecyclerView positionRecyclerView;
@@ -1414,6 +1408,9 @@ public class PositionListFragment
                 {
                     filtered.add(dto);
                 }
+
+            }else if(dto instanceof PositionPartialTopView.LiveDTO){
+                filtered.add(dto);//!!!!
             }
         }
 
@@ -1576,13 +1573,85 @@ public class PositionListFragment
             @Override
             public void run(PositionsResponseDTO positionResponseDTO) {
 
+                ArrayList<Pair<LivePositionDTO, SecurityCompactDTO>> updatedList = new ArrayList<Pair<LivePositionDTO, SecurityCompactDTO>>();
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if(positionResponseDTO!=null) {
                             Log.d("PLF.java", "positionResponseDTO = " + positionResponseDTO.toString());
+                            List<LivePositionDTO> adapterObjects = new ArrayList<>();
+                            for(LivePositionDTO dto: positionResponseDTO.Positions){
+                                adapterObjects.add(dto);
+                            }
 
-                            // need to load the current adapter to this live1b version??
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    linkWith(adapterObjects);
+//                                }
+//                            });
+
+                            Observable.just(adapterObjects)
+                                    .flatMapIterable(new Func1<List<LivePositionDTO>, Iterable<? extends LivePositionDTO>>() {
+                                        @Override
+                                        public Iterable<? extends LivePositionDTO> call(List<LivePositionDTO> objects) {
+                                            Log.v("Positions", "Pairing objects");
+                                            return objects;
+                                        }
+                                    })
+                                    .flatMap(new Func1<LivePositionDTO, Observable<Pair<LivePositionDTO, SecurityId>>>() {
+                                        @Override
+                                        public Observable<Pair<LivePositionDTO, SecurityId>> call(LivePositionDTO livePositionDTO) {
+
+                                            Log.v("Positions", "Pairing livepositiondto "+livePositionDTO.EntryPrice);
+                                            if(livePositionDTO!=null && livePositionDTO.SecurityId!=null){
+                                                SecurityIntegerId sid = new SecurityIntegerId(Integer.parseInt(livePositionDTO.SecurityId));
+                                                return securityIdCache.get(sid)
+                                                        .map(new PairGetSecond<SecurityIntegerId, SecurityId>())
+                                                        .flatMap(new Func1<SecurityId, Observable<Pair<LivePositionDTO, SecurityId>>>() {
+                                                            @Override
+                                                            public Observable<Pair<LivePositionDTO, SecurityId>> call(SecurityId securityId) {
+                                                                Log.v("Positions", "Pairing ");
+                                                                return Observable.just(new Pair(livePositionDTO, securityId));
+                                                            }
+                                                        });
+                                            }else{
+                                                return Observable.empty();
+                                            }
+                                        }
+                                    })
+                                    .flatMap(new Func1<Pair<LivePositionDTO, SecurityId>, Observable<Pair<LivePositionDTO, SecurityCompactDTO>>>() {
+                                        @Override
+                                        public Observable<Pair<LivePositionDTO, SecurityCompactDTO>> call(Pair<LivePositionDTO, SecurityId> livePositionDTOSecurityIdPair) {
+                                            Log.v("Positions", "Pairing final "+livePositionDTOSecurityIdPair.second.getExchange());
+                                            return securityCompactCache.getOne(livePositionDTOSecurityIdPair.second)
+                                                    .subscribeOn(Schedulers.computation())
+                                                    .map(new Func1<Pair<SecurityId, SecurityCompactDTO>, Pair<LivePositionDTO, SecurityCompactDTO>>() {
+                                                        @Override
+                                                        public Pair<LivePositionDTO, SecurityCompactDTO> call(Pair<SecurityId, SecurityCompactDTO> securityIdSecurityCompactDTOPair) {
+                                                            Log.v("Positions", "Pairing final!");
+                                                            return new Pair(livePositionDTOSecurityIdPair.first, securityIdSecurityCompactDTOPair.second);
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .toList()
+                                    .doOnNext(new Action1<List<Pair<LivePositionDTO, SecurityCompactDTO>>>() {
+                                        @Override
+                                        public void call(List<Pair<LivePositionDTO, SecurityCompactDTO>> pairs) {
+                                            ArrayList<Object> list = new ArrayList<>();
+                                            for(Pair<LivePositionDTO, SecurityCompactDTO> pair: pairs){
+                                                list.add(pair);
+                                            }
+                                            Log.v("Positions", "Linking! "+ list.size());
+                                            linkWith(list);
+                                        }
+                                    }).subscribe();
+
+
+
+
                         }
                     }
                 });
