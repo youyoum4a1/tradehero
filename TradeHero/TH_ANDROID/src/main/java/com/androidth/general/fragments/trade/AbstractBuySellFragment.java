@@ -146,6 +146,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     Subscription quoteSubscription;
     String topBarColor;
     private boolean isInCompetition;
+    private static Subscription portfolioSubscription;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
@@ -482,6 +483,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.clearAnimation();
         progressAnimation = null;
         quoteObservable = null;
+        if(portfolioSubscription!=null){
+            portfolioSubscription.unsubscribe();
+        }
+        portfolioSubscription = null;
 
         ButterKnife.unbind(this);
         super.onDestroyView();
@@ -1169,7 +1174,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             return 0;
         }
 
-        @NonNull private static BehaviorSubject<OwnedPortfolioId> createApplicablePortfolioIdSubject(
+        @NonNull private BehaviorSubject<OwnedPortfolioId> createApplicablePortfolioIdSubject(
                 @Nullable Bundle portfolioArgs,
                 @NonNull final SecurityId securityId,
                 @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
@@ -1180,7 +1185,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 return BehaviorSubject.create(new OwnedPortfolioId(portfolioArgs));
             }
             final BehaviorSubject<OwnedPortfolioId> subject = BehaviorSubject.create();
-            portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+
+            portfolioSubscription = portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
                     .map(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, OwnedPortfolioId>()
                     {
                         @Override public OwnedPortfolioId call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
@@ -1208,6 +1214,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     // Intercepting it so that the BehaviorSubject does not end there.
                                 }
                             });
+
             return subject;
         }
 

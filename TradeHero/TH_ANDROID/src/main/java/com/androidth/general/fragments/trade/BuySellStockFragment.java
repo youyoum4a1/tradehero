@@ -443,6 +443,8 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
         }
     }
 
+//    read http://stackoverflow.com/questions/21342700/proguard-causing-runtimeexception-unmarshalling-unknown-type-code-in-parcelabl
+
     @NonNull @Override protected Observable<Boolean> getSupportSell()
     {
         return getPortfolioCompactObservable()
