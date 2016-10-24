@@ -834,13 +834,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @NonNull
     protected Observable<LiveQuoteDTO> getQuoteObservable() {
         return quoteServiceWrapper.getQuoteRx(requisite.securityId.getSecurityIdNumber())
-                //stop repeating calls
-//                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
-//                    @Override
-//                    public Observable<?> call(Observable<? extends Void> observable) {
-//                        return observable.delay(5000, TimeUnit.MILLISECONDS);
-//                    }
-//                })
+                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return observable.delay(60, TimeUnit.SECONDS);//every minute
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<LiveQuoteDTO>() {
                     @Override
