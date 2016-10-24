@@ -336,7 +336,7 @@ public class SecurityPositionListFragment
                             PositionStatus.LONG,
                             getString(securityCompactDTO instanceof FxSecurityCompactDTO
                                     ? R.string.position_list_header_open_long_unsure
-                                    : R.string.position_list_header_open_unsure),
+                                    : R.string.position_list_header_open_positions),
                             null,
                             null,
                             PositionSectionHeaderItemView.Type.LONG));

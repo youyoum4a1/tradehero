@@ -341,9 +341,9 @@
   <string name="position_in_period_profit">กำไรในระยะเวลา</string>
   <string name="position_in_period_start_value">มูลค่าตอนเริ่มต้น</string>
   <string name="position_list_action_bar_header_unknown">สถานะ</string>
-  <string name="position_list_header_closed">ปิด (%d)</string>
+  <string name="position_list_header_closed_positions">ปิด (%d)</string>
   <string name="position_list_header_closed_unsure">ปิด</string>
-  <string name="position_list_header_open_unsure">สถานะเปิด</string>
+  <string name="position_list_header_open_positions">สถานะเปิด</string>
   <string name="position_locked_follow_to_unlock">ติดตามผู้ใช้เพื่อปลดล็อค!</string>
   <string name="position_locked_title">สถานะเปิด</string>
   <string name="position_margin_close_out_danger">หลักประกันกำลังจะหมดอย่างอันตราย (%s)</string>

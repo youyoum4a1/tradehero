@@ -242,10 +242,10 @@
   <string name="position_in_period_as_of">%1$s기준</string>
   <string name="position_in_period_start_value">시작자산</string>
   <string name="position_list_action_bar_header_unknown">Positions</string>
-  <string name="position_list_header_closed">마감 (%d)</string>
+  <string name="position_list_header_closed_positions">마감 (%d)</string>
   <string name="position_list_header_closed_unsure">마감</string>
   <string name="position_list_header_open_long">오픈 (%d)</string>
-  <string name="position_list_header_open_unsure">오픈</string>
+  <string name="position_list_header_open_positions">오픈</string>
   <string name="position_locked_follow_to_unlock">다음단계로 넘어가려면 팔로우하세요!</string>
   <string name="position_locked_title">보유종목</string>
   <string name="position_nothing_description">보유한 주식이 없습니다. 지금 트레이드를 시작하세요!</string>

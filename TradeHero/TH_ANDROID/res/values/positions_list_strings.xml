@@ -5,13 +5,16 @@
   <string name="position_nothing_description">No open positions. Tap to Trade!</string>
   <string name="position_nothing_description_other_user">No open positions.</string>
   <string name="position_list_action_bar_header_unknown">Positions</string>
-  <string name="position_list_header_open_unsure">Open Positions</string>
+  <string name="position_list_header_open_positions">Open Positions</string>
   <string name="position_list_header_open_long">Long Positions</string>
   <string name="position_list_header_open_long_unsure">Long Positions</string>
   <string name="position_list_header_open_short">Short Positions</string>
-  <string name="position_list_header_open_short_unsure">Short Positions</string>
-  <string name="position_list_header_closed">Closed Positions</string>
-  <string name="position_list_header_closed_unsure">Closed Positions</string>
+  <!--<string name="position_list_header_open_short_unsure">Short Positions</string>-->
+  <string name="position_list_header_closed_positions">Closed Positions</string>
+  <!--<string name="position_list_header_closed_unsure">Closed Positions</string>-->
+  <string name="position_list_header_open">Open</string>
+  <string name="position_list_header_closed">Closed</string>
+  <string name="position_list_header_pending">Pending</string>
   <string name="position_list_header_time_base" translatable="false">%1$s - %2$s</string>
   <string name="position_unrealised_loss_header">Will Lose</string>
   <string name="position_unrealised_profit_header">Will Profit</string>

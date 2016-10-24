@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_2"
-        android:text="@string/position_list_header_closed"
+        android:text="@string/position_list_header_closed_positions"
         android:layout_marginBottom="@dimen/size_1"
         style="@style/TH.Title.Inverse"
         />

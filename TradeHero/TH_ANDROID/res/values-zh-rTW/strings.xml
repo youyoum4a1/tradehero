@@ -581,13 +581,13 @@
   <string name="position_in_period_start_value">起始值</string>
   <string name="position_last_amount_header">價值：%s</string>
   <string name="position_list_action_bar_header_unknown">倉位</string>
-  <string name="position_list_header_closed">平倉 (%d)</string>
+  <string name="position_list_header_closed_positions">平倉 (%d)</string>
   <string name="position_list_header_closed_unsure">平倉</string>
   <string name="position_list_header_open_long">持倉 (%d)</string>
   <string name="position_list_header_open_long_unsure">多頭</string>
   <string name="position_list_header_open_short">空頭倉位</string>
   <string name="position_list_header_open_short_unsure">空頭倉位</string>
-  <string name="position_list_header_open_unsure">持倉</string>
+  <string name="position_list_header_open_positions">持倉</string>
   <string name="position_list_header_time_base">%1$s-%2$s</string>
   <string name="position_locked_follow_to_unlock">關注用戶解鎖!</string>
   <string name="position_locked_title">持倉</string>

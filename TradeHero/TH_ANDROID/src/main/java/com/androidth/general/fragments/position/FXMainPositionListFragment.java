@@ -37,7 +37,7 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
 
     public enum TabType
     {
-        LONG(R.string.position_list_header_open_unsure, R.string.position_list_header_open_long_unsure),
+        LONG(R.string.position_list_header_open_positions, R.string.position_list_header_open_long_unsure),
         SHORT(R.string.position_list_header_open_short_unsure, R.string.position_list_header_open_short_unsure),
         CLOSED(R.string.position_list_header_closed_unsure, R.string.position_list_header_closed_unsure),;
 
