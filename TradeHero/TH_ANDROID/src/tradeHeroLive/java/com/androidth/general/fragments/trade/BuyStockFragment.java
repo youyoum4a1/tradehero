@@ -11,7 +11,9 @@ import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
+import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTOCompact;
@@ -143,16 +145,19 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                 }
                             }
                         })
-                        //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
                         .subscribe(new Action1<String>() {
                                        @Override
                                        public void call(String positionTransactionResult) {
                                            Toast.makeText(getContext(), "Stock Purchase Successful! " + positionTransactionResult.toString(), Toast.LENGTH_LONG).show();
                                            Log.d("BuyStockFragment.java", "Success stock purchase, result: " + positionTransactionResult);
+
+                                           pushLivePortfolioFragment(currentUserId.get(), requisite.securityId.getAyondoId());
+
                                        }
                                    }
 
-                        , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+                                , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+
             }
             catch (IllegalStateException ex) {
                 Toast.makeText(getContext(), "Error connecting to service: " + ex.toString(), Toast.LENGTH_LONG).show();
