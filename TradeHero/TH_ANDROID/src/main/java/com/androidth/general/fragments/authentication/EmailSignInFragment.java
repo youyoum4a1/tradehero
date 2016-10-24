@@ -225,7 +225,7 @@ public class EmailSignInFragment extends Fragment
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.v(getTag(), "Login failed: "+throwable.getMessage());
+//                        Log.v(getTag(), "Login failed: "+throwable.getMessage());
                         new SnackbarOnErrorAction1(coordinatorLayout,
                                 "Unable to login with provided credentials.",
                                 Snackbar.LENGTH_LONG).call(throwable);

@@ -43,9 +43,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         if (args != null)
         {
-            if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
-            {
-                return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+            try{
+                if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
+                {
+                    return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
             }
         }
         return null;

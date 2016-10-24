@@ -429,9 +429,14 @@ public class PositionListFragment
                                 {
                                     @Override public void call(Throwable e)
                                     {
-                                        AlertDialogRxUtil.popErrorMessage(
-                                                PositionListFragment.this.getActivity(),
-                                                e);
+                                        try{
+                                            AlertDialogRxUtil.popErrorMessage(
+                                                    PositionListFragment.this.getActivity(),
+                                                    e);
+                                        }catch (Exception e1){
+                                            e1.printStackTrace();
+                                        }
+
                                         // TODO
                                     }
                                 });
@@ -1167,13 +1172,18 @@ public class PositionListFragment
                 }).doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        if (viewDTOs == null)
-                        {
-                            listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
+                        try{
+                            if (viewDTOs == null)
+                            {
+                                listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
 
-                            THToast.show(getString(R.string.error_fetch_position_list_info));
-                            Timber.d(throwable, "Error fetching the positionList info");
+                                THToast.show(getString(R.string.error_fetch_position_list_info));
+                                Timber.d(throwable, "Error fetching the positionList info");
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
+
                     }
                 })
 //                .observeOn(Schedulers.computation())
