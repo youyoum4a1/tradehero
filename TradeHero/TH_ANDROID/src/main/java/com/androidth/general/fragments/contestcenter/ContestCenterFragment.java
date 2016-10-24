@@ -165,8 +165,6 @@ public class ContestCenterFragment extends DashboardFragment
     private void fetchProviderIdList(ProviderDTOList providerDTOs)
     {
         ProviderDTOList providerList = providerDTOs;
-        Log.v("Positions", "Fetching provider...."+providerList.size()+":has"+hasRetried);
-
         progressDialog.dismiss();
 
         if((providerList==null || providerList.size()<1)
