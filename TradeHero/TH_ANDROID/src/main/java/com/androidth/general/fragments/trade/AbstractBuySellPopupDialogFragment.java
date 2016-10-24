@@ -834,12 +834,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @NonNull
     protected Observable<LiveQuoteDTO> getQuoteObservable() {
         return quoteServiceWrapper.getQuoteRx(requisite.securityId.getSecurityIdNumber())
-                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Observable<? extends Void> observable) {
-                        return observable.delay(5000, TimeUnit.MILLISECONDS);
-                    }
-                })
+                //stop repeating calls
+//                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+//                    @Override
+//                    public Observable<?> call(Observable<? extends Void> observable) {
+//                        return observable.delay(5000, TimeUnit.MILLISECONDS);
+//                    }
+//                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<LiveQuoteDTO>() {
                     @Override
@@ -856,7 +857,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected Observable<PositionDTO> getCloseablePositionObservable() // It can pass null values
     {
         return Observable.combineLatest(
-                positionCompactListCache.get(requisite.securityId),
+                positionCompactListCache.getOne(requisite.securityId),
                 requisite.getPortfolioIdObservable(),
                 new Func2<Pair<SecurityId, PositionDTOList>, PortfolioId, PositionDTO>() {
                     @Override

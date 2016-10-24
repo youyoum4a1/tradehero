@@ -575,20 +575,21 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @NonNull protected Observable<LiveQuoteDTO> createQuoteObservable()
     {
         return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)
-                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
-                {
-                    @Override public Observable<?> call(Observable<? extends Void> observable)
-                    {
-                        return observable.flatMap(new Func1<Void, Observable<?>>()
-                        {
-                            @Override public Observable<?> call(Void aVoid)
-                            {
-                                quoteRepeatSubject.onNext(aVoid);
-                                return quoteRepeatDelayedObservable;
-                            }
-                        });
-                    }
-                })
+                //stop repeating calls
+//                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+//                {
+//                    @Override public Observable<?> call(Observable<? extends Void> observable)
+//                    {
+//                        return observable.flatMap(new Func1<Void, Observable<?>>()
+//                        {
+//                            @Override public Observable<?> call(Void aVoid)
+//                            {
+//                                quoteRepeatSubject.onNext(aVoid);
+//                                return quoteRepeatDelayedObservable;
+//                            }
+//                        });
+//                    }
+//                })
                 .share()
                 .cache(1);
     }
