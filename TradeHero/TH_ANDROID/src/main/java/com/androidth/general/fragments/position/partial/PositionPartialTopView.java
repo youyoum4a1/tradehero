@@ -673,19 +673,19 @@ public class PositionPartialTopView extends LinearLayout
     public static class LiveDTO extends com.androidth.general.api.live1b.LivePositionDTO
     {
 
-//        public String OrderId;
-//        public Integer Side;
-//        public Double Qty;
-//        public String Product;
-//        public String SecurityId;
-//        public Double EntryPrice;
-//        public Double UPL;
-//        public Double StopLoss;
-//        public Double TakeProfit;
-//        public Integer PositionResponseType;
+        public String OrderId;
+        public Integer Side;
+        public Double Qty;
+        public String Product;
+        public String SecurityId;
+        public Double EntryPrice;
+        public Double UPL;
+        public Double StopLoss;
+        public Double TakeProfit;
+        public Integer PositionResponseType;
 
         public LivePositionDTO positionDTO;
-        public SecurityCompactDTO securityCompactDTO;
+//        public SecurityCompactDTO securityCompactDTO;
 //        @NonNull public final SecurityCompactDTO securityCompactDTO;
 //
 //        @ViewVisibilityValue public final int stockLogoVisibility;
@@ -720,10 +720,10 @@ public class PositionPartialTopView extends LinearLayout
         public LiveDTO(@NonNull LivePositionDTO positionDTO, SecurityCompactDTO securityCompactDTO)
         {
 //            this.positionDTO = positionDTO;
-            this.securityCompactDTO = securityCompactDTO;
+//            this.securityCompactDTO = securityCompactDTO;
 
 //            String na = resources.getString(R.string.na);
-this.positionDTO = positionDTO;
+            this.positionDTO = positionDTO;
             this.companyName = positionDTO.Product;
             lastPriceAndRise = Double.toString(positionDTO.EntryPrice);
             this.shareCountText = Double.toString(positionDTO.Qty);
