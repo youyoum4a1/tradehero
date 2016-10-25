@@ -1,6 +1,11 @@
 package com.androidth.general.api.live1b;
 
-public class LivePositionDTO{
+import android.support.annotation.Nullable;
+
+import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.common.persistence.DTO;
+
+public class LivePositionDTO implements DTO {
 
     public String OrderId;
     public Integer Side;
@@ -12,6 +17,7 @@ public class LivePositionDTO{
     public Double StopLoss;
     public Double TakeProfit;
     public Integer PositionResponseType;
+    @Nullable public SecurityCompactDTO SecurityCompactDto;
 //    public PositionResponseTypeEnum PositionResponseType;
 //    @JsonProperty("Side")
 //    public OrderSideEnum side;
