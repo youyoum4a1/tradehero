@@ -17,7 +17,7 @@ public class LivePositionDTO implements DTO {
     public Double StopLoss;
     public Double TakeProfit;
     public Integer PositionResponseType;
-    @Nullable public SecurityCompactDTO SecurityCompactDto;
+    @Nullable public LiveSecurityCompactDTO SecurityCompactDto;
 //    public PositionResponseTypeEnum PositionResponseType;
 //    @JsonProperty("Side")
 //    public OrderSideEnum side;
@@ -71,5 +71,27 @@ public class LivePositionDTO implements DTO {
                 ", TakeProfit=" + TakeProfit +
                 ", PositionResponseType=" + PositionResponseType +
                 '}';
+    }
+
+    public class LiveSecurityCompactDTO {
+        public Integer id;
+        public String symbol;
+        public Integer securityType;
+        public String name;
+        public String country;
+        public Integer exchangeId;
+        public String exchange;
+        public String yahooSymbol;
+        public String reutersSymbol;
+        public String chartDataSource;
+        public String currencyDisplay;
+        public String currencyISO;
+        public String parentCurrencyISO;
+        public String symbol_ay;
+        public String id_ay;
+        @Nullable public Double marketCap;
+        @Nullable public Double lastPrice;
+        public Double risePercent;
+        public String imageBlobUrl;
     }
 }

@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.androidth.general.api.live1b.LivePositionDTO;
+import com.androidth.general.fragments.position.live1b.LivePositionListRowView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
 import com.androidth.general.api.position.PositionStatus;
@@ -29,6 +32,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     public static final int VIEW_TYPE_PLACEHOLDER = 1;
     public static final int VIEW_TYPE_LOCKED = 2;
     public static final int VIEW_TYPE_POSITION = 3;
+    public static final int VIEW_TYPE_LIVE_POSITION = 4;
 
     protected Map<Integer, Integer> itemTypeToLayoutId;
     private UserProfileDTO userProfileDTO;
@@ -71,9 +75,9 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             return VIEW_TYPE_HEADER;
         }
-        else if (item instanceof PositionPartialTopView.LiveDTO)
+        else if (item instanceof LivePositionListRowView.LiveDTO)
         {
-            return VIEW_TYPE_POSITION;
+            return VIEW_TYPE_LIVE_POSITION;
         }
         throw new IllegalArgumentException("Unhandled item " + item);
     }
@@ -168,6 +172,11 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             return new PositionPartialTopView.ViewHolder((PositionPartialTopView) v, picasso);
         }
+        else if (viewType == VIEW_TYPE_LIVE_POSITION)
+        {
+            return new LivePositionListRowView.ViewHolder((LivePositionListRowView) v, picasso);
+        }
+
         return null;
     }
 
@@ -179,6 +188,9 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             ((PositionPartialTopView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
         }
+//        else if (holder instanceof LivePositionListRowView.ViewHolder){
+//            ((LivePositionListRowView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
+//        }
     }
 
     private static class PositionItemComparator extends TypedRecyclerComparator<Object>
@@ -249,6 +261,19 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
                 return positionStatusComparator.compare(
                         ((PositionSectionHeaderItemView.DTO) o1).status,
                         ((PositionPartialTopView.DTO) o2).positionDTO.positionStatus);
+            }
+            else if (o1 instanceof LivePositionListRowView.LiveDTO && o2 instanceof LivePositionListRowView.LiveDTO)
+            {
+                return 1;
+//                PositionStatus s1 = ((LivePositionListRowView.LiveDTO) o1).positionDTO.EntryPrice;
+//                PositionStatus s2 = ((LivePositionListRowView.LiveDTO) o2).status;
+//                if (s1 == null || s1.equals(s2))
+//                {
+//                    return 1;
+//                }
+//                return positionStatusComparator.compare(
+//                        ((PositionPartialTopView.DTO) o1).positionDTO.positionStatus,
+//                        ((PositionSectionHeaderItemView.DTO) o2).status);
             }
             else
             {
@@ -342,6 +367,10 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
                 else if (item1 instanceof PositionPartialTopView.DTO)
                 {
                     return ((PositionPartialTopView.DTO) item1).positionDTO.id == ((PositionPartialTopView.DTO) item2).positionDTO.id;
+                }
+                else if (item1 instanceof LivePositionListRowView.LiveDTO)
+                {
+                    return ((LivePositionListRowView.LiveDTO) item1).positionDTO.OrderId == ((LivePositionListRowView.LiveDTO) item2).positionDTO.OrderId;
                 }
             }
             return false;

@@ -826,6 +826,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 return true;
                             }
                         })
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                Log.v("", "Buysell "+throwable.getLocalizedMessage());
+                            }
+                        })
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<Boolean>() {
@@ -985,6 +992,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 });
                     }
                 })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v("", "Buysell error"+throwable.getLocalizedMessage());
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
                 .doOnNext(new Action1<Integer>()
@@ -1079,6 +1092,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             Double priceCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
                             return (priceCcy == null || priceCcy == 0) ? null : (int) Math.floor(INITIAL_VALUE / priceCcy);
                         }
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v("", "Buysell error"+throwable.getLocalizedMessage());
                     }
                 })
                 .share();

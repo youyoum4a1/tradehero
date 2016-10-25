@@ -3,6 +3,7 @@ package com.androidth.general.fragments.trade;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -613,6 +614,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 return quoteRepeatDelayedObservable;
                             }
                         });
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v("", "Buysell 1"+throwable.getLocalizedMessage());
                     }
                 })
                 .share()

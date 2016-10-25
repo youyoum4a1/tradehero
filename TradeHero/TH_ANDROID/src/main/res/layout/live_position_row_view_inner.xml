@@ -2,7 +2,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/position_top_view_in_my"
+    tools:showIn="@layout/live_position_row_view"
     >
 
   <ImageView
@@ -15,9 +15,6 @@
       tools:src="@drawable/superman_facebook"
       android:layout_weight="0"
       />
-
-  <include
-      layout="@layout/fx_flags"/>
 
   <RelativeLayout
       android:layout_width="0dp"

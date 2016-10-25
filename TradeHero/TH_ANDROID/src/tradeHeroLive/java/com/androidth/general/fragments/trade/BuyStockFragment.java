@@ -151,7 +151,7 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                            Toast.makeText(getContext(), "Stock Purchase Successful! " + positionTransactionResult.toString(), Toast.LENGTH_LONG).show();
                                            Log.d("BuyStockFragment.java", "Success stock purchase, result: " + positionTransactionResult);
 
-                                           pushLivePortfolioFragment(currentUserId.get(), requisite.securityId.getAyondoId());
+//                                           pushLivePortfolioFragment(currentUserId.get(), requisite.securityId.getAyondoId());
 
                                        }
                                    }

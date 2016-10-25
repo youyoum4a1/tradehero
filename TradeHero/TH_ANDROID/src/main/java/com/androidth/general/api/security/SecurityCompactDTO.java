@@ -72,7 +72,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public String currencyISO;
     public String parentCurrencyISO;
     public String symbol_ay;
-    public Integer id_ay;
+    public String id_ay;
     @Nullable public Double marketCap;
     @Nullable public Double lastPrice;
     public Double risePercent;
@@ -125,6 +125,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
     @Nullable public Integer lotSize;
     public Integer max_lot;
     public Integer min_lot;
+
+    public String sector;//added
 
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
@@ -238,7 +240,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
     {
 
         if(LiveConstants.isInLiveMode)
-            return new SecurityId(exchange, symbol, id, id_ay);
+            return new SecurityId(exchange, symbol, id, Integer.parseInt(id_ay));
         return new SecurityId(exchange, symbol, id);
     }
 
