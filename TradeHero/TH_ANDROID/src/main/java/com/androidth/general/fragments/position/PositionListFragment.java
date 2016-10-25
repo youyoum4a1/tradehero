@@ -930,9 +930,9 @@ public class PositionListFragment
                             @NonNull PortfolioDTO portfolioDTO)
                     {
 
-                        if(portfolioDTO!=null){
-                            linkPortfolioHeaderView(shownProfile, portfolioDTO);
-                        }
+//                        if(portfolioDTO!=null){
+//                            linkPortfolioHeaderView(shownProfile, portfolioDTO);
+//                        }
 
                         return Pair.create(shownProfile, portfolioHeaderView);
                     }
@@ -1026,110 +1026,103 @@ public class PositionListFragment
         }
     }
 
-    private void linkPortfolioHeaderView(UserProfileDTO userProfileDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
-    {
-        if (portfolioHeaderView == null || inflatedView == null)
-        {
-            // portfolio header
-            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
-            headerStub.setLayoutResource(headerLayoutId);
-            inflatedView = headerStub.inflate();
-            portfolioHeaderView = (PortfolioHeaderView) inflatedView;
-
-//            connectPortfolioSignalR(portfolioCompactDTO);
-
-            if(portfolioCompactDTO.getPortfolioId()!=null){
-                connectPortfolioSignalR(portfolioCompactDTO);
-            }
-
-//            signalRManager.initWithEvent(LiveNetworkConstants.PORTFOLIO_HUB_NAME,
-//                    new String[]{"UpdatePositions"},
-//                    new String[]{Integer.toString(portfolioCompactDTO.getPortfolioId().key)},
-//                            positionList->{
+//    private void linkPortfolioHeaderView(UserProfileDTO userProfileDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
+//    {
+//        if (portfolioHeaderView == null || inflatedView == null)
+//        {
+//            // portfolio header
+//            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
+//            headerStub.setLayoutResource(headerLayoutId);
+//            inflatedView = headerStub.inflate();
+//            portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 //
-//                            }, ArrayList.class);
-        }
-
-        portfolioHeaderView.linkWith(userProfileDTO);
-        portfolioHeaderView.linkWith(portfolioCompactDTO);
-
-        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener()
-        {
-            @SuppressLint("NewApi") @Override public void onGlobalLayout()
-            {
-                if(inflatedView!=null){
-                    ViewTreeObserver observer = inflatedView.getViewTreeObserver();
-                    if (observer != null)
-                    {
-                        if (SDKUtils.isJellyBeanOrHigher())
-                        {
-                            observer.removeOnGlobalLayoutListener(this);
-                        }
-                        else
-                        {
-                            observer.removeGlobalOnLayoutListener(this);
-                        }
-                    }
-                }else{
-                    Log.d(getTag(), "Inflated view is null");
-                    return;
-                }
-
-                int headerHeight = inflatedView.getMeasuredHeight();
-                Timber.d("Header Height %d", headerHeight);
-                positionRecyclerView.setPadding(
-                        positionRecyclerView.getPaddingLeft(),
-                        headerHeight,
-                        positionRecyclerView.getPaddingRight(),
-                        positionRecyclerView.getPaddingBottom());
-
-                positionRecyclerView.addOnScrollListener(new MultiRecyclerScrollListener(
-                        fragmentElements.get().getRecyclerViewScrollListener(),
-                        new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
-                                .header(inflatedView)
-                                .minHeaderTranslation(-inflatedView.getHeight())
-                                .build()
-                ));
-
-                // hack to temporary fix flicker on PositionListFragment
-                positionRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-                {
-                    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-                    {
-                        super.onScrollStateChanged(recyclerView, newState);
-
-                        if (newState == 0)
-                        {
-                            fragmentElements.get().getMovableBottom().animateShow();
-                            fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.VISIBLE);
-                        }
-                        else
-                        {
-                            fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.GONE);
-                        }
-                    }
-                });
-
-                // hack to temporary fix flicker on PositionListFragment
-                positionRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-                {
-                    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-                    {
-                        super.onScrolled(recyclerView, dx, dy);
-
-                        if (recyclerView.getChildAt(0).getTop() >= inflatedView.getHeight() / 2)
-                        {
-                            headerStub.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            headerStub.setVisibility(View.GONE);
-                        }
-                    }
-                });
-            }
-        };
-        inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
-    }
+////            connectPortfolioSignalR(portfolioCompactDTO);
+//
+//            if(portfolioCompactDTO.getPortfolioId()!=null){
+//                connectPortfolioSignalR(portfolioCompactDTO);
+//            }
+//        }
+//
+//        portfolioHeaderView.linkWith(userProfileDTO);
+//        portfolioHeaderView.linkWith(portfolioCompactDTO);
+//
+//        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener()
+//        {
+//            @SuppressLint("NewApi") @Override public void onGlobalLayout()
+//            {
+//                if(inflatedView!=null){
+//                    ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+//                    if (observer != null)
+//                    {
+//                        if (SDKUtils.isJellyBeanOrHigher())
+//                        {
+//                            observer.removeOnGlobalLayoutListener(this);
+//                        }
+//                        else
+//                        {
+//                            observer.removeGlobalOnLayoutListener(this);
+//                        }
+//                    }
+//                }else{
+//                    Log.d(getTag(), "Inflated view is null");
+//                    return;
+//                }
+//
+//                int headerHeight = inflatedView.getMeasuredHeight();
+//                Timber.d("Header Height %d", headerHeight);
+//                positionRecyclerView.setPadding(
+//                        positionRecyclerView.getPaddingLeft(),
+//                        headerHeight,
+//                        positionRecyclerView.getPaddingRight(),
+//                        positionRecyclerView.getPaddingBottom());
+//
+//                positionRecyclerView.addOnScrollListener(new MultiRecyclerScrollListener(
+//                        fragmentElements.get().getRecyclerViewScrollListener(),
+//                        new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+//                                .header(inflatedView)
+//                                .minHeaderTranslation(-inflatedView.getHeight())
+//                                .build()
+//                ));
+//
+//                // hack to temporary fix flicker on PositionListFragment
+//                positionRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+//                {
+//                    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+//                    {
+//                        super.onScrollStateChanged(recyclerView, newState);
+//
+//                        if (newState == 0)
+//                        {
+//                            fragmentElements.get().getMovableBottom().animateShow();
+//                            fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.VISIBLE);
+//                        }
+//                        else
+//                        {
+//                            fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.GONE);
+//                        }
+//                    }
+//                });
+//
+//                // hack to temporary fix flicker on PositionListFragment
+//                positionRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+//                {
+//                    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+//                    {
+//                        super.onScrolled(recyclerView, dx, dy);
+//
+//                        if (recyclerView.getChildAt(0).getTop() >= inflatedView.getHeight() / 2)
+//                        {
+//                            headerStub.setVisibility(View.VISIBLE);
+//                        }
+//                        else {
+//                            headerStub.setVisibility(View.GONE);
+//                        }
+//                    }
+//                });
+//            }
+//        };
+//        inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+//    }
 
     @SuppressLint("NewApi")
     private void removeGlobalLayoutListener()
@@ -1480,90 +1473,88 @@ public class PositionListFragment
 
 
 
-    private void connectPortfolioSignalR(PortfolioCompactDTO portfolioCompactDTO){
-        if(signalRManager!=null){
-            return;
-        }
-        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.PORTFOLIO_HUB_NAME);
-
-        Log.d(".java", "connectPortfolioSignalR: requestHeaders " + requestHeaders + " currentUserId " + currentUserId );
-
-        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_PROFILE, new SubscriptionHandler1<Object>() {
-            @Override
-            public void run(Object updatedPortfolio) {
-                //2016-09-08T02:07:19
-                Log.d(".java", "connectPortfolioSignalR: run updatedPortfolio " + updatedPortfolio.toString());
-                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
-                try{
-                    JsonObject jsonObject = gson.toJsonTree(updatedPortfolio).getAsJsonObject();
-                    PortfolioDTO portfolioDTO = gson.fromJson(jsonObject, PortfolioDTO.class);
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                portfolioHeaderView.linkWith(portfolioDTO);
-                            }catch (Exception e){
-                                //might not be in the view already
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-                }catch (Exception e){
-                    //parsing might be wrong, esp the date
-                    e.printStackTrace();
-                }
-            }
-        }, Object.class);
-
-        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_POSITIONS, new SubscriptionHandler1<List>() {
-
-            @Override
-            public void run(List list) {
-                Log.d("PLF.java", "connectPortfolioSignalR UpdatePosition: " + list.toString());
-                for(int i=0; i<list.size(); i++){
-                    try{
-                        String s = list.get(i).toString();
-
-                        Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
-
-                        JsonObject jsonObject = gson.toJsonTree(list.get(i)).getAsJsonObject();
-                        PositionDTO positionDTOFromJSON = gson.fromJson(jsonObject, PositionDTO.class);
-
-                        for(int j=0; j< viewDTOs.size(); j++) {
-                            PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO)viewDTOs.get(j));
-
-                            final int index = j;
-
-                            if (positionDTOFromJSON.id == dto.positionDTO.id){
-                                ((PositionPartialTopView.DTO)viewDTOs.get(i)).setPositionDTO(positionDTOFromJSON);
-
-                                try{
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            positionItemAdapter.notifyItemChanged(index);
-                                        }
-                                    });
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-
-                    }catch (Exception e){
-                        Log.v("SignalR", "ERROR --"+i);
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, List.class);
-
-        signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
-
-
-    }
+//    private void connectPortfolioSignalR(PortfolioCompactDTO portfolioCompactDTO){
+//        if(signalRManager!=null){
+//            return;
+//        }
+//        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.PORTFOLIO_HUB_NAME);
+//
+//        Log.d(".java", "connectPortfolioSignalR: requestHeaders " + requestHeaders + " currentUserId " + currentUserId );
+//
+//        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_PROFILE, new SubscriptionHandler1<Object>() {
+//            @Override
+//            public void run(Object updatedPortfolio) {
+//                //2016-09-08T02:07:19
+//                Log.d(".java", "connectPortfolioSignalR: run updatedPortfolio " + updatedPortfolio.toString());
+//                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+//                try{
+//                    JsonObject jsonObject = gson.toJsonTree(updatedPortfolio).getAsJsonObject();
+//                    PortfolioDTO portfolioDTO = gson.fromJson(jsonObject, PortfolioDTO.class);
+//
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try{
+//                                portfolioHeaderView.linkWith(portfolioDTO);
+//                            }catch (Exception e){
+//                                //might not be in the view already
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//
+//                }catch (Exception e){
+//                    //parsing might be wrong, esp the date
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, Object.class);
+//
+//        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_POSITIONS, new SubscriptionHandler1<List>() {
+//
+//            @Override
+//            public void run(List list) {
+//                Log.d("PLF.java", "connectPortfolioSignalR UpdatePosition: " + list.toString());
+//                for(int i=0; i<list.size(); i++){
+//                    try{
+//                        String s = list.get(i).toString();
+//
+//                        Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+//
+//                        JsonObject jsonObject = gson.toJsonTree(list.get(i)).getAsJsonObject();
+//                        PositionDTO positionDTOFromJSON = gson.fromJson(jsonObject, PositionDTO.class);
+//
+//                        for(int j=0; j< viewDTOs.size(); j++) {
+//                            PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO)viewDTOs.get(j));
+//
+//                            final int index = j;
+//
+//                            if (positionDTOFromJSON.id == dto.positionDTO.id){
+//                                ((PositionPartialTopView.DTO)viewDTOs.get(i)).setPositionDTO(positionDTOFromJSON);
+//
+//                                try{
+//                                    getActivity().runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            positionItemAdapter.notifyItemChanged(index);
+//                                        }
+//                                    });
+//                                }catch (Exception e){
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//
+//                    }catch (Exception e){
+//                        Log.v("SignalR", "ERROR --"+i);
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }, List.class);
+//
+//        signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
+//    }
 
     private void disconnectSignalR(PortfolioCompactDTO portfolioCompactDTO){
 //        if(portfolioCompactDTO!=null && signalRManager!=null){
@@ -1577,21 +1568,24 @@ public class PositionListFragment
 
     private void connectOrderManagementSignalR()
     {
+        if(signalRManager!=null){
+            return;
+        }
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
-        Log.d("PLF.java", "connectOrderManagementSignalR: listening on PositionsResponse...." );
+        Log.d("Positions", "connectOrderManagementSignalR: listening on PositionsResponse...." );
         signalRManager.getCurrentProxy().on("PositionsResponse", new SubscriptionHandler1<PositionsResponseDTO>() {
             @Override
-            public void run(PositionsResponseDTO positionResponseDTO) {
+            public void run(PositionsResponseDTO positionsResponseDTO) {
 
-                ArrayList<Pair<LivePositionDTO, SecurityCompactDTO>> updatedList = new ArrayList<Pair<LivePositionDTO, SecurityCompactDTO>>();
+//                ArrayList<Pair<LivePositionDTO, SecurityCompactDTO>> updatedList = new ArrayList<Pair<LivePositionDTO, SecurityCompactDTO>>();
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(positionResponseDTO!=null) {
-                            Log.d("PLF.java", "positionResponseDTO = " + positionResponseDTO.toString());
+                        if(positionsResponseDTO!=null) {
+                            Log.d("Positions", "positionsResponseDTO = " + positionsResponseDTO.toString());
                             List<Object> adapterObjects = new ArrayList<>();
-                            for(LivePositionDTO dto: positionResponseDTO.Positions){
+                            for(LivePositionDTO dto: positionsResponseDTO.Positions){
                                 adapterObjects.add(dto);
                             }
 

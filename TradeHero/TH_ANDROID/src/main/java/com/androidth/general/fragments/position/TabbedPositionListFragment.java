@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.position;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,28 +11,51 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import timber.log.Timber;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.api.portfolio.PortfolioCompactDTO;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.common.utils.SDKUtils;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.live.LiveViewFragment;
+import com.androidth.general.fragments.portfolio.header.PortfolioHeaderFactory;
+import com.androidth.general.fragments.portfolio.header.PortfolioHeaderView;
 import com.androidth.general.fragments.web.BaseWebViewFragment;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.Live1BServiceWrapper;
+import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
+import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.rx.ToastOnErrorAction1;
+import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
@@ -88,11 +112,35 @@ public class TabbedPositionListFragment extends DashboardFragment
 
     protected String actionBarNavUrl, actionBarColor;
 
+    @Inject
+    PortfolioCacheRx portfolioCache;
+    @Inject
+    UserProfileCacheRx userProfileCache;
+    @Bind(R.id.position_list_header_stub)
+    ViewStub headerStub;
+
+    @Nullable protected UserProfileDTO shownUserProfileDTO;
+    private View inflatedView;
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+    private PortfolioHeaderView portfolioHeaderView;
+    SignalRManager signalRManager;
+    @Inject
+    CurrentUserId currentUserId;
+
+    @Inject
+    RequestHeaders requestHeaders;
+
     public enum TabType
     {
-        LONG(R.string.position_list_header_open_unsure, R.string.position_list_header_open_long_unsure),
+//        LONG(R.string.position_list_header_open_positions, R.string.position_list_header_open_long_unsure),
+//        SHORT(R.string.position_list_header_open_short_unsure, R.string.position_list_header_open_short_unsure),
+//        CLOSED(R.string.position_list_header_closed_unsure, R.string.position_list_header_closed_unsure),
+        LONG(R.string.position_list_header_open_positions, R.string.position_list_header_open_long_unsure),
         SHORT(R.string.position_list_header_open_short_unsure, R.string.position_list_header_open_short_unsure),
-        CLOSED(R.string.position_list_header_closed_unsure, R.string.position_list_header_closed_unsure),;
+        CLOSED(R.string.position_list_header_closed_positions, R.string.position_list_header_closed_positions),
+        OPEN_LIVE(R.string.position_list_header_open, R.string.position_list_header_open),
+        CLOSED_LIVE(R.string.position_list_header_closed, R.string.position_list_header_closed),
+        PENDING_LIVE(R.string.position_list_header_pending, R.string.position_list_header_pending);
 
         @StringRes private final int stockTitle;
         @StringRes private final int fxTitle;
@@ -113,6 +161,12 @@ public class TabbedPositionListFragment extends DashboardFragment
             TabType.LONG,
             TabType.SHORT,
             TabType.CLOSED,
+    };
+
+    private static TabType[] LIVE_TYPES = new TabType[] {
+            TabType.OPEN_LIVE,
+            TabType.PENDING_LIVE,
+            TabType.CLOSED_LIVE,
     };
 
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -286,6 +340,12 @@ public class TabbedPositionListFragment extends DashboardFragment
         userLoginLoader();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        onStopSubscriptions.add(getProfileAndHeaderObservable().subscribe());
+    }
+
     private class TabbedPositionPageAdapter extends FragmentPagerAdapter
     {
         public TabbedPositionPageAdapter(FragmentManager fm)
@@ -311,6 +371,11 @@ public class TabbedPositionListFragment extends DashboardFragment
             else
             {
                 positionType = STOCK_TYPES[position];
+//                if(LiveConstants.isInLiveMode){
+//                    positionType = LIVE_TYPES[position];
+//                }else{
+//                    positionType = STOCK_TYPES[position];
+//                }
             }
             PositionListFragment.putPositionType(args, positionType);
 
@@ -479,6 +544,212 @@ public class TabbedPositionListFragment extends DashboardFragment
             Log.d("pushLiveLoginCatchError", e.toString());
         }
 
+    }
+
+    @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
+    {
+        return Observable.combineLatest(
+                getShownUserProfileObservable(),
+                getPortfolioObservable(),
+                new Func2<UserProfileDTO, PortfolioDTO, Pair<UserProfileDTO, PortfolioHeaderView>>()
+                {
+                    @Override public Pair<UserProfileDTO, PortfolioHeaderView> call(
+                            @NonNull UserProfileDTO shownProfile,
+                            @NonNull PortfolioDTO portfolioDTO)
+                    {
+
+                        if(portfolioDTO!=null){
+                            linkPortfolioHeaderView(shownProfile, portfolioDTO);
+                        }
+
+                        return Pair.create(shownProfile, portfolioHeaderView);
+                    }
+                });
+    }
+
+    @NonNull protected Observable<UserProfileDTO> getShownUserProfileObservable()
+    {
+        return userProfileCache.get(shownUser)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Pair<UserBaseKey, UserProfileDTO>, UserProfileDTO>()
+                {
+                    @Override public UserProfileDTO call(Pair<UserBaseKey, UserProfileDTO> pair)
+                    {
+                        UserProfileDTO shownProfile = pair.second;
+                        shownUserProfileDTO = shownProfile;
+//                        positionItemAdapter.linkWith(shownProfile);
+                        return shownProfile;
+                    }
+                })
+                .doOnError(new ToastOnErrorAction1(getString(R.string.error_fetch_user_profile)));
+    }
+
+    @NonNull protected Observable<PortfolioDTO> getPortfolioObservable()
+    {
+        if (getPositionsDTOKey instanceof OwnedPortfolioId)
+        {
+            return portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(new Func1<Pair<OwnedPortfolioId, PortfolioDTO>, PortfolioDTO>()
+                    {
+                        @Override public PortfolioDTO call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                        {
+                            linkWith(pair.second);
+                            return pair.second;
+                        }
+                    })
+                    .doOnError(new Action1<Throwable>()
+                    {
+                        @Override public void call(Throwable error)
+                        {
+                            Timber.e("" + getString(R.string.error_fetch_portfolio_info) + " " + error.toString());
+                        }
+                    });
+        }
+
+        return Observable.just(null);
+        // We do not care for now about those that are loaded with LeaderboardMarkUserId
+    }
+
+    private void linkPortfolioHeaderView(UserProfileDTO userProfileDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
+    {
+        if (portfolioHeaderView == null || inflatedView == null)
+        {
+            // portfolio header
+            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
+            headerStub.setLayoutResource(headerLayoutId);
+            inflatedView = headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) inflatedView;
+
+//            connectPortfolioSignalR(portfolioCompactDTO);
+
+            if(portfolioCompactDTO.getPortfolioId()!=null){
+                connectPortfolioSignalR(portfolioCompactDTO);
+            }
+
+//            signalRManager.initWithEvent(LiveNetworkConstants.PORTFOLIO_HUB_NAME,
+//                    new String[]{"UpdatePositions"},
+//                    new String[]{Integer.toString(portfolioCompactDTO.getPortfolioId().key)},
+//                            positionList->{
+//
+//                            }, ArrayList.class);
+        }
+
+        portfolioHeaderView.linkWith(userProfileDTO);
+        portfolioHeaderView.linkWith(portfolioCompactDTO);
+
+        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener()
+        {
+            @SuppressLint("NewApi") @Override public void onGlobalLayout()
+            {
+                if(inflatedView!=null){
+                    ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+                    if (observer != null)
+                    {
+                        if (SDKUtils.isJellyBeanOrHigher())
+                        {
+                            observer.removeOnGlobalLayoutListener(this);
+                        }
+                        else
+                        {
+                            observer.removeGlobalOnLayoutListener(this);
+                        }
+                    }
+                }else{
+                    Log.d(getTag(), "Inflated view is null");
+                    return;
+                }
+
+                int headerHeight = inflatedView.getMeasuredHeight();
+                Timber.d("Header Height %d", headerHeight);
+            }
+        };
+        inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+    }
+
+    private void connectPortfolioSignalR(PortfolioCompactDTO portfolioCompactDTO){
+        if(signalRManager!=null){
+            return;
+        }
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.PORTFOLIO_HUB_NAME);
+
+        Log.d(".java", "connectPortfolioSignalR: requestHeaders " + requestHeaders + " currentUserId " + currentUserId );
+
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_PROFILE, new SubscriptionHandler1<Object>() {
+            @Override
+            public void run(Object updatedPortfolio) {
+                //2016-09-08T02:07:19
+                Log.d(".java", "connectPortfolioSignalR: run updatedPortfolio " + updatedPortfolio.toString());
+                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+                try{
+                    JsonObject jsonObject = gson.toJsonTree(updatedPortfolio).getAsJsonObject();
+                    PortfolioDTO portfolioDTO = gson.fromJson(jsonObject, PortfolioDTO.class);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                portfolioHeaderView.linkWith(portfolioDTO);
+                            }catch (Exception e){
+                                //might not be in the view already
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                }catch (Exception e){
+                    //parsing might be wrong, esp the date
+                    e.printStackTrace();
+                }
+            }
+        }, Object.class);
+
+        signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
+
+
+    }
+
+    protected void linkWith(@NonNull PortfolioDTO portfolioDTO)
+    {
+        this.portfolioDTO = portfolioDTO;
+//        if(portfolioDTO.providerId!=null && portfolioDTO.providerId>0){
+//            setActionBarColorSelf(actionBarNavUrl, actionBarColor);
+//        }else{
+//            displayActionBarTitle(portfolioDTO);
+//        }
+
+//        showPrettyReviewAndInvite(portfolioDTO);
+//        if (portfolioDTO.assetClass == AssetClass.FX)
+//        {
+//            btnHelp.setVisibility(View.VISIBLE);
+//        }
+//        else
+//        {
+//            btnHelp.setVisibility(View.INVISIBLE);
+//        }
+    }
+
+    private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
+    {
+//        if (shownUser != null)
+//        {
+//            if (shownUser.getUserId().intValue() != currentUserId.get().intValue())
+//            {
+//                return;
+//            }
+//        }
+//        Double profit = compactDTO.roiSinceInception;
+//        if (profit != null && profit > 0)
+//        {
+////            if (mShowAskForReviewDialogPreference.isItTime())
+////            {
+////                broadcastUtils.enqueue(new SendLoveBroadcastSignal());
+////            }
+////            else if (mShowAskForInviteDialogPreference.isItTime())
+////            {
+////                AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+////            }
+//        }
     }
 
 }
