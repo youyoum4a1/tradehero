@@ -79,6 +79,60 @@
         android:orientation="vertical">
 
       <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:text="Avg. Price:"
+          style="@style/TH.Caption"
+          tools:visibility="visible"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          style="@style/TH.Caption"
+          android:text="Market Price:"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          style="@style/TH.Caption"
+          android:text="Quantity:"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          style="@style/TH.Caption"
+          android:text="Market Value:"
+          />
+
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+
+  <RelativeLayout
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_weight="0"
+      android:layout_marginRight="4dp"
+      android:layout_marginEnd="4dp"
+      android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right|end"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+      <TextView
           android:id="@+id/position_percentage"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -152,6 +206,9 @@
     </LinearLayout>
 
   </RelativeLayout>
+
+
+
 
   <ImageView
       android:id="@+id/hint_forward"
