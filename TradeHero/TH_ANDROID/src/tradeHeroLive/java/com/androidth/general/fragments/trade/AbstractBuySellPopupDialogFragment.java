@@ -28,6 +28,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -1896,5 +1897,38 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             Toast.makeText(getContext(), "Error in redirection" , Toast.LENGTH_LONG).show();
             Log.d("pushLiveLoginCatchError", e.toString());
         }
+    }
+
+    protected void pushLivePortfolioFragment(int userId, int portfolioId)
+    {
+        try {
+            DeviceUtil.dismissKeyboard(getActivity());
+
+            if (navigator.get().hasBackStackName(TabbedPositionListFragment.class.getName())) {
+                navigator.get().popFragment(TabbedPositionListFragment.class.getName());
+            } else if (navigator.get().hasBackStackName(CompetitionLeaderboardPositionListFragment.class.getName())) {
+                navigator.get().popFragment(CompetitionLeaderboardPositionListFragment.class.getName());
+                // Test for other classes in the future
+            } else {
+                navigator.get().popFragment();
+                Bundle args = new Bundle();
+                OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
+                TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+                String positionType = "LONG";
+                TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+                TabbedPositionListFragment.putPositionType(args, positionType);
+                TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                TabbedPositionListFragment.putIsFX(args, AssetClass.STOCKS);
+
+                LiveConstants.isInLiveMode = true;
+                navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+            }
+        }
+        catch(Exception e)
+        {
+            Log.d(getTag(), "Exception pushLivePortfolioFragment: " + e);
+        }
+
     }
 }
