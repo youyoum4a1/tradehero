@@ -901,7 +901,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
                     @Override
                     public Observable<?> call(Observable<? extends Void> observable) {
-                        return observable.delay(5000, TimeUnit.MILLISECONDS);
+                        return observable.delay(60, TimeUnit.SECONDS);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -925,7 +925,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected Observable<PositionDTO> getCloseablePositionObservable() // It can pass null values
     {
         return Observable.combineLatest(
-                positionCompactListCache.get(requisite.securityId),
+                positionCompactListCache.getOne(requisite.securityId),
                 requisite.getPortfolioIdObservable(),
                 new Func2<Pair<SecurityId, PositionDTOList>, PortfolioId, PositionDTO>() {
                     @Override

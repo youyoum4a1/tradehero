@@ -856,7 +856,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected Observable<PositionDTO> getCloseablePositionObservable() // It can pass null values
     {
         return Observable.combineLatest(
-                positionCompactListCache.get(requisite.securityId),
+                positionCompactListCache.getOne(requisite.securityId),
                 requisite.getPortfolioIdObservable(),
                 new Func2<Pair<SecurityId, PositionDTOList>, PortfolioId, PositionDTO>() {
                     @Override

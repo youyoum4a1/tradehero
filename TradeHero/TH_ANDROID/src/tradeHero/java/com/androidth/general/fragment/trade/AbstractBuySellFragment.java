@@ -659,7 +659,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @NonNull protected Observable<PositionDTO> getCloseablePositionObservable() // It can pass null values
     {
         return Observable.combineLatest(
-                positionCompactListCache.get(requisite.securityId),
+                positionCompactListCache.getOne(requisite.securityId),
                 requisite.getApplicablePortfolioIdObservable(),
                 new Func2<Pair<SecurityId, PositionDTOList>, OwnedPortfolioId, PositionDTO>()
                 {
