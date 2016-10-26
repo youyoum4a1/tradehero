@@ -130,7 +130,7 @@ public class Live1BServiceWrapper {
 //        return sellRx(securityId, transactionFormDTO);
         OrderSideEnum orderSide = isBuy ? OrderSideEnum.getOrderSideEnumFromId('1') : OrderSideEnum.getOrderSideEnumFromId('2');
 
-        return buyNewOrder(String.valueOf(securityId.getAyondoId()), orderSide, transactionFormDTO.quantity);
+        return buySellNewOrder(String.valueOf(securityId.getAyondoId()), orderSide, transactionFormDTO.quantity);
     }
     //</editor-fold>
 
@@ -160,19 +160,19 @@ public class Live1BServiceWrapper {
 
 
     //<editor-fold desc="New Order Single Security">
-    @NonNull public Observable<String> buyNewOrder(
+    @NonNull public Observable<String> buySellNewOrder(
             @NonNull String securityId,
             @NonNull OrderSideEnum orderSideEnum,
             @NonNull float quantity)
     {
-        Observable<String> buyResult;
+        Observable<String> buySellResult;
 
         NewOrderSingleDTO newOrderSingleDTO = new NewOrderSingleDTO(securityId,orderSideEnum, quantity);
 
-        buyResult = this.live1BServiceRx.newOrder(newOrderSingleDTO);
+        buySellResult = this.live1BServiceRx.newOrder(newOrderSingleDTO);
 
         Log.d(".java", "buyNewOrder: securityId used for order: " + securityId + " islive? : " + LiveConstants.isInLiveMode);
-        return buyResult;
+        return buySellResult;
     }
     //</editor-fold>
 

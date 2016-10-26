@@ -129,17 +129,21 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                             public void call(Throwable throwable) {
                                 if (throwable != null) {
                                     if (throwable instanceof RetrofitError) {
-
-                                        RetrofitError error = (RetrofitError) throwable;
-                                        Log.d("BuyStockFragment.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
-                                        if (error.getResponse() != null && error.getResponse().getStatus() == 302)
-                                            pushLiveLogin(error);
-                                        else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
-                                            Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                                        else {
-                                            Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                                            Log.d("BuyStockFragment.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
-
+                                        try {
+                                            RetrofitError error = (RetrofitError) throwable;
+                                            Log.d("BuyStockFragment.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+                                            if (error.getResponse() != null && error.getResponse().getStatus() == 302)
+                                                flipLiveLogin(error);
+                                            else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+                                                Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                            else {
+                                                Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                                Log.d("BuyStockFragment.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Toast.makeText(getContext(),"Unknown error when calling server: " + ex.toString(), Toast.LENGTH_LONG);
                                         }
                                     }
                                 }

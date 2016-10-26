@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.position;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.Pair;
@@ -43,6 +45,7 @@ import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.androidth.general.fragments.portfolio.header.PortfolioHeaderView;
 import com.androidth.general.fragments.trade.AbstractBuySellPopupDialogFragment;
+import com.androidth.general.fragments.trade.Live1BWebLoginDialogFragment;
 import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -134,6 +137,7 @@ public class TabbedPositionListFragment extends DashboardFragment
     RequestHeaders requestHeaders;
 
     private Subscription portfolioSubscription;
+    private Subscription getPositionsSubscription;
 
     private LivePositionDTO livePositionDTOFromBuySell;
     private String requestIdFromBuySell;
@@ -365,6 +369,9 @@ public class TabbedPositionListFragment extends DashboardFragment
             portfolioSubscription.unsubscribe();
         }
 
+        if(getPositionsSubscription!=null)
+            getPositionsSubscription.unsubscribe();
+
         portfolioSubscription = getProfileAndHeaderObservable().subscribe();
     }
 
@@ -374,6 +381,8 @@ public class TabbedPositionListFragment extends DashboardFragment
         if(portfolioSubscription!=null){
             portfolioSubscription.unsubscribe();
         }
+        if(getPositionsSubscription!=null)
+            getPositionsSubscription.unsubscribe();
         inflatedView = null;
     }
 
@@ -499,7 +508,7 @@ public class TabbedPositionListFragment extends DashboardFragment
     @Override  public void onLiveTradingChanged(OffOnViewSwitcherEvent event) {
         super.onLiveTradingChanged(event);
 
-    //    Toast.makeText(getContext(), "TOGGLE PRESSED!", Toast.LENGTH_LONG).show();
+        Log.d("TabbedPos.java", "onLiveTradingChanged called!!! ");
 
         LiveConstants.hasLiveAccount = true; // todo remove after debug
 
@@ -510,79 +519,77 @@ public class TabbedPositionListFragment extends DashboardFragment
     {
         if(LiveConstants.isInLiveMode && LiveConstants.hasLiveAccount)
         {
-            onStopSubscriptions.add(
-                    live1BServiceWrapper.getPositions()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError(new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    if (throwable != null) {
-                                        if (throwable instanceof RetrofitError) {
+            if(getPositionsSubscription==null||getPositionsSubscription.isUnsubscribed()) {
+                getPositionsSubscription = live1BServiceWrapper.getPositions()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                if (throwable != null) {
+                                    if (throwable instanceof RetrofitError) {
 
-                                            RetrofitError error = (RetrofitError) throwable;
-                                            Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
-                                            if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
-                                                pushLiveLogin(error);
-                                            } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
-                                                Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                                            else {
-                                                Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
-                                                Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+                                        RetrofitError error = (RetrofitError) throwable;
+                                        Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+                                        if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
+                                            flipLiveLogin(error);
+                                        } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+                                            Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                        else {
+                                            Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                            Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
 
-                                            }
                                         }
                                     }
                                 }
-                            })
-                            //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
-                            .subscribe(new Action1<String>() {
-                                           @Override
-                                           public void call(String getPositions) {
-                                               Log.d("PLF.java", "Success getPositions, result: " + getPositions);
-                                           }
+                            }
+                        })
+                        //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+                        .subscribe(new Action1<String>() {
+                                       @Override
+                                       public void call(String getPositions) {
+                                           Log.d("PLF.java", "Success getPositions, result: " + getPositions);
                                        }
+                                   }
 
-                                    , new TimberOnErrorAction1("Error purchasing stocks in live mode.")));
-
+                                , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+            }
         }
 
     }
 
-    private void pushLiveLogin(RetrofitError error)
+    private void flipLiveLogin(RetrofitError error)
     {
+        LiveConstants.hasLiveAccount = true; // debugging
         try {
             if (LiveConstants.hasLiveAccount) {
 
                 JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
 
-                Log.d("PLF.java", "pushLiveLogin " + error.getResponse().getBody().toString() + " " + buySellStockError.toString());
-                // user has a live account, but not logged in, redirect to the extracted json URL
+                 // user has a live account, but not logged in, redirect to the extracted json URL
                 Bundle args = getArguments();
                 String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
-                args.putString(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
-                LiveViewFragment liveViewFragment = new LiveViewFragment();
-                liveViewFragment.setArguments(args);
-                BaseWebViewFragment.putUrl(args, redirectURL);
-                Log.d("PLF.java", "REDIRECT URL->> " + redirectURL );
-//                try {
-//                    /////   unsubscribe(buySellSubscription);
-//                }
-//                catch(Exception ex)
-//                {
-//                    Log.d("printStackTrace", ex.toString());
-//                }
+                args.putString(Live1BWebLoginDialogFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
+                Live1BWebLoginDialogFragment liveLoginFragment = new Live1BWebLoginDialogFragment();
+                liveLoginFragment.setArguments(args);
 
-                navigator.get().pushFragment(LiveViewFragment.class, args);
+                liveLoginFragment.setOnDismissListener(new DialogInterface.OnDismissListener(){
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                    //    Toast.makeText(getContext(),"Now you can start trading Live!", Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+                liveLoginFragment.show(getActivity().getFragmentManager(),Live1BWebLoginDialogFragment.class.getName());
 
             } else {
                 Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
                 startActivity(kycIntent);
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Error in redirection: " + e.getLocalizedMessage() , Toast.LENGTH_LONG).show();
-            Log.d("pushLiveLoginCatchError", e.toString());
+            Toast.makeText(getContext(), "Error in redirection" , Toast.LENGTH_LONG).show();
+            Log.d("flipLiveLogin Error ", e.toString());
         }
-
     }
 
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()

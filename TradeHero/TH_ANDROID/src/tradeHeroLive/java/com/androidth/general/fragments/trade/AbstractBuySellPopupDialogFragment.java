@@ -1,10 +1,14 @@
 package com.androidth.general.fragments.trade;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.util.Log;
@@ -1914,7 +1918,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         public Integer clampedQuantity;
     }
 
-    protected void pushLiveLogin(RetrofitError error)
+
+
+    protected void flipLiveLogin(RetrofitError error)
     {
         LiveConstants.hasLiveAccount = true; // debugging
         try {
@@ -1926,11 +1932,22 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 // user has a live account, but not logged in, redirect to the extracted json URL
                 Bundle args = getArguments();
                 String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
-                args.putString(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
-                LiveViewFragment liveViewFragment = new LiveViewFragment();
-                liveViewFragment.setArguments(args);
-                BaseWebViewFragment.putUrl(args, redirectURL);
-                Log.d("pushLiveLogin2", "REDIRECT URL->> " + redirectURL );
+                args.putString(Live1BWebLoginDialogFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
+                Live1BWebLoginDialogFragment liveLoginFragment = new Live1BWebLoginDialogFragment();
+                liveLoginFragment.setArguments(args);
+
+                liveLoginFragment.setOnDismissListener(new DialogInterface.OnDismissListener(){
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if(isBuy) {
+                         //   if(this!=null) // getting 'Fragment is already added error'
+                            //    show(getActivity().getSupportFragmentManager(), AbstractBuySellPopupDialogFragment.class.getName());
+                        }
+                    //    Toast.makeText(getContext(),"Now you can start trading Live!", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                liveLoginFragment.show(getActivity().getFragmentManager(),Live1BWebLoginDialogFragment.class.getName());
                 try {
                     unsubscribe(buySellSubscription);
                 }
@@ -1939,8 +1956,6 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     Log.d("printStackTrace", ex.toString());
                 }
 
-                navigator.get().pushFragment(LiveViewFragment.class, args);
-                dismiss();
 
             } else {
                 Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
