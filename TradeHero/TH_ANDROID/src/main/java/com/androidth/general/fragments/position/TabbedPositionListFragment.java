@@ -25,6 +25,7 @@ import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -33,6 +34,7 @@ import timber.log.Timber;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.common.utils.SDKUtils;
@@ -40,6 +42,7 @@ import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.androidth.general.fragments.portfolio.header.PortfolioHeaderView;
+import com.androidth.general.fragments.trade.AbstractBuySellPopupDialogFragment;
 import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -129,6 +132,11 @@ public class TabbedPositionListFragment extends DashboardFragment
 
     @Inject
     RequestHeaders requestHeaders;
+
+    private Subscription portfolioSubscription;
+
+    private LivePositionDTO livePositionDTOFromBuySell;
+    private String requestIdFromBuySell;
 
     public enum TabType
     {
@@ -306,6 +314,15 @@ public class TabbedPositionListFragment extends DashboardFragment
         if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)!=null){
             actionBarNavUrl = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
         }
+
+        if(getArguments().containsKey(AbstractBuySellPopupDialogFragment.KEY_LIVE_DTO)){
+            livePositionDTOFromBuySell = getArguments().getParcelable(AbstractBuySellPopupDialogFragment.KEY_LIVE_DTO);
+        }
+
+        if(getArguments().containsKey(AbstractBuySellPopupDialogFragment.KEY_LIVE_REQUEST_ID)){
+            requestIdFromBuySell = getArguments().getString(AbstractBuySellPopupDialogFragment.KEY_LIVE_REQUEST_ID);
+        }
+
     }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -343,7 +360,21 @@ public class TabbedPositionListFragment extends DashboardFragment
     @Override
     public void onResume() {
         super.onResume();
-        onStopSubscriptions.add(getProfileAndHeaderObservable().subscribe());
+
+        if(portfolioSubscription!=null){
+            portfolioSubscription.unsubscribe();
+        }
+
+        portfolioSubscription = getProfileAndHeaderObservable().subscribe();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(portfolioSubscription!=null){
+            portfolioSubscription.unsubscribe();
+        }
+        inflatedView = null;
     }
 
     private class TabbedPositionPageAdapter extends FragmentPagerAdapter
@@ -400,6 +431,14 @@ public class TabbedPositionListFragment extends DashboardFragment
             if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
             {
                 return Fragment.instantiate(getActivity(), LeaderboardPositionListFragment.class.getName(), args);
+            }
+
+            if(livePositionDTOFromBuySell!=null){
+                args.putParcelable(AbstractBuySellPopupDialogFragment.KEY_LIVE_DTO, livePositionDTOFromBuySell);
+            }
+
+            if(requestIdFromBuySell!=null){
+                args.putString(AbstractBuySellPopupDialogFragment.KEY_LIVE_REQUEST_ID, requestIdFromBuySell);
             }
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
         }
@@ -590,12 +629,22 @@ public class TabbedPositionListFragment extends DashboardFragment
         {
             return portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey))
                     .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn(new Func1<Throwable, Pair<OwnedPortfolioId, PortfolioDTO>>() {
+                        @Override
+                        public Pair<OwnedPortfolioId, PortfolioDTO> call(Throwable throwable) {
+                            return null;
+                        }
+                    })
                     .map(new Func1<Pair<OwnedPortfolioId, PortfolioDTO>, PortfolioDTO>()
                     {
                         @Override public PortfolioDTO call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
                         {
-                            linkWith(pair.second);
-                            return pair.second;
+                            if(pair!=null){
+                                linkWith(pair.second);
+                                return pair.second;
+                            }else{
+                                return null;
+                            }
                         }
                     })
                     .doOnError(new Action1<Throwable>()
@@ -607,8 +656,7 @@ public class TabbedPositionListFragment extends DashboardFragment
                     });
         }
 
-        return Observable.just(null);
-        // We do not care for now about those that are loaded with LeaderboardMarkUserId
+        return Observable.empty();
     }
 
     private void linkPortfolioHeaderView(UserProfileDTO userProfileDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
@@ -621,18 +669,11 @@ public class TabbedPositionListFragment extends DashboardFragment
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 
-//            connectPortfolioSignalR(portfolioCompactDTO);
 
-            if(portfolioCompactDTO.getPortfolioId()!=null){
-                connectPortfolioSignalR(portfolioCompactDTO);
-            }
+//            if(portfolioCompactDTO.getPortfolioId()!=null){
+//                connectPortfolioSignalR(portfolioCompactDTO);
+//            }
 
-//            signalRManager.initWithEvent(LiveNetworkConstants.PORTFOLIO_HUB_NAME,
-//                    new String[]{"UpdatePositions"},
-//                    new String[]{Integer.toString(portfolioCompactDTO.getPortfolioId().key)},
-//                            positionList->{
-//
-//                            }, ArrayList.class);
         }
 
         portfolioHeaderView.linkWith(userProfileDTO);

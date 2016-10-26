@@ -261,24 +261,34 @@ public class LivePositionListRowView extends LinearLayout
 
         public LiveDTO(@NonNull LivePositionDTO positionDTO)
         {
-//            this.positionDTO = positionDTO;
 //            this.securityCompactDTO = securityCompactDTO;
 
 //            String na = resources.getString(R.string.na);
             this.positionDTO = positionDTO;
             this.companyName = positionDTO.Product;
-            this.stockSymbol = positionDTO.SecurityCompactDto.symbol_ay;
-            lastPriceAndRise = Double.toString(positionDTO.EntryPrice);
-            this.shareCountText = Double.toString(positionDTO.Qty);
-//            //<editor-fold desc="Stock Logo">
-            if (positionDTO.SecurityCompactDto.imageBlobUrl != null)
-            {
-                this.stockLogoVisibility = VISIBLE;
-                this.stockLogoUrl = positionDTO.SecurityCompactDto.imageBlobUrl;
+            lastPriceAndRise = positionDTO.EntryPrice!=null? Double.toString(positionDTO.EntryPrice):null;
+            this.shareCountText = positionDTO.Qty!=null? Double.toString(positionDTO.Qty):null;
+
+
+
+            if(positionDTO.SecurityCompactDto!=null){
+                if (positionDTO.SecurityCompactDto.imageBlobUrl != null)
+                {
+                    this.stockLogoVisibility = VISIBLE;
+                    this.stockLogoUrl = positionDTO.SecurityCompactDto.imageBlobUrl;
+                }else{
+                    this.stockLogoVisibility = INVISIBLE;
+                    this.stockLogoUrl = positionDTO.SecurityCompactDto.imageBlobUrl;
+                }
+                this.stockSymbol = positionDTO.SecurityCompactDto.symbol_ay;
+
             }else{
                 this.stockLogoVisibility = INVISIBLE;
-                this.stockLogoUrl = positionDTO.SecurityCompactDto.imageBlobUrl;
+                this.stockLogoUrl = null;
+                this.stockSymbol = null;
             }
+
+
             stockLogoRes = R.drawable.default_image;
 //            else if (securityCompactDTO instanceof FxSecurityCompactDTO) // TODO Improve and show flags?
 //            {

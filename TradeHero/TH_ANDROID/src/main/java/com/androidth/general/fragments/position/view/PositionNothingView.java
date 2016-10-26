@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import com.androidth.general.R;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
+import com.androidth.general.base.THApp;
 
 public class PositionNothingView extends RelativeLayout
 {
@@ -38,7 +39,7 @@ public class PositionNothingView extends RelativeLayout
         public DTO(@NonNull Resources resources, boolean isCurrentUser)
         {
             this.isCurrentUser = isCurrentUser;
-            description = resources.getString(isCurrentUser
+            description = THApp.context().getString(isCurrentUser
                     ? R.string.position_nothing_description
                     : R.string.position_nothing_description_other_user);
         }

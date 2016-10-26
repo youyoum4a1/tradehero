@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.position;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,11 +21,14 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
 
+import com.androidth.general.api.live1b.ErrorResponseDTO;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.api.security.SecurityIntegerId;
+import com.androidth.general.base.THApp;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.position.live1b.LivePositionListRowView;
+import com.androidth.general.fragments.trade.AbstractBuySellPopupDialogFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.Live1BServiceWrapper;
@@ -116,6 +120,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -133,9 +138,7 @@ import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class PositionListFragment
-        extends DashboardFragment
-        implements WithTutorial
+public class PositionListFragment extends DashboardFragment implements WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
@@ -189,7 +192,7 @@ public class PositionListFragment
     @Nullable protected PortfolioDTO portfolioDTO;
     protected List<Object> viewDTOs;
 
-    protected PositionItemAdapter positionItemAdapter;
+    private PositionItemAdapter positionItemAdapter;
     private int firstPositionVisible = 0;
     private View inflatedView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -197,11 +200,13 @@ public class PositionListFragment
     private String actionBarColor, actionBarNavUrl;
 
     SignalRManager signalRManager;
-    HubProxy hubProxy;
-    HubConnection hubConnection;
+    private Object nothingDTO;
 
     @Inject
     RequestHeaders requestHeaders;
+
+    private LivePositionDTO livePositionDTOFromBuySell;
+    private String requestIdFromBuySell;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -294,9 +299,9 @@ public class PositionListFragment
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
 
+        this.positionItemAdapter = createPositionItemAdapter();
         positionType = getPositionType(args);
         this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
-        this.positionItemAdapter = createPositionItemAdapter();
 
         if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)!=null){
             actionBarColor = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
@@ -304,6 +309,16 @@ public class PositionListFragment
 
         if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)!=null){
             actionBarNavUrl = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+        }
+
+        if(getArguments().containsKey(AbstractBuySellPopupDialogFragment.KEY_LIVE_DTO)){
+            livePositionDTOFromBuySell = getArguments().getParcelable(AbstractBuySellPopupDialogFragment.KEY_LIVE_DTO);
+            Log.v("Positions", "Has live dto "+livePositionDTOFromBuySell);
+        }
+
+        if(getArguments().containsKey(AbstractBuySellPopupDialogFragment.KEY_LIVE_REQUEST_ID)){
+            requestIdFromBuySell = getArguments().getString(AbstractBuySellPopupDialogFragment.KEY_LIVE_REQUEST_ID);
+            Log.v("Positions", "Has live request id "+requestIdFromBuySell);
         }
     }
 
@@ -398,117 +413,125 @@ public class PositionListFragment
     @Override public void onStart()
     {
         super.onStart();
-        onStopSubscriptions.add(Observable.combineLatest(
-                getProfileAndHeaderObservable(),
-                getPositionsObservable(),
-                new Func2<Pair<UserProfileDTO, PortfolioHeaderView>, List<Pair<PositionDTO, SecurityCompactDTO>>, PortfolioHeaderView>()
-                {
-                    @Override public PortfolioHeaderView call(
-                            @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
-                            @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
-                    {
-                        //TODO Translate to 0 to restore position
-                        //inflatedHeader.animate().translationY(0f).start();
-                        Log.v("Positions", "Getting positions done");
-                        return profileAndHeaderPair.second;
-                    }
-                })
-                .distinctUntilChanged()
-                .flatMap(new Func1<PortfolioHeaderView, Observable<UserProfileDTO>>()
-                {
-                    @Override public Observable<UserProfileDTO> call(PortfolioHeaderView portfolioHeaderView)
-                    {
-                        Log.v("Positions", "Getting positions done and mapped");
-                        return portfolioHeaderView.getUserActionObservable()
-                                .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>()
-                                {
-                                    @Override public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction)
-                                    {
-                                        return handleHeaderUserAction(userAction);
-                                    }
-                                })
-                                .doOnError(new Action1<Throwable>()
-                                {
-                                    @Override public void call(Throwable e)
-                                    {
-                                        try{
-                                            AlertDialogRxUtil.popErrorMessage(
-                                                    PositionListFragment.this.getActivity(),
-                                                    e);
-                                        }catch (Exception e1){
-                                            e1.printStackTrace();
-                                        }
 
-                                        // TODO
-                                    }
-                                });
-                    }
-                })
-                .subscribe(
-                        new Action1<UserProfileDTO>()
-                        {
-                            @Override public void call(UserProfileDTO newProfile)
-                            {
-                                // Nothing to do
-                            }
-                        },
-                        new TimberOnErrorAction1("Failed to collect all")));
+        nothingDTO = new PositionNothingView.DTO(null, shownUser.equals(currentUserId.toUserBaseKey()));
 
-        onStopSubscriptions.add(
-                Observable.combineLatest(
-                        positionItemAdapter.getUserActionObservable()
-                                .observeOn(AndroidSchedulers.mainThread()),
-                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
-                                .observeOn(AndroidSchedulers.mainThread()),
-                        new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>()
-                        {
-                            @Override public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
-                                    Pair<UserBaseKey, PortfolioCompactDTOList> pair)
-                            {
-                                handleDialogGoToTrade(true,
-                                        userAction.securityCompactDTO,
-                                        userAction.positionDTO,
-                                        PortfolioCompactDTOUtil.getPurchaseApplicablePortfolio(
-                                                pair.second,
-                                                purchaseApplicableOwnedPortfolioId,
-                                                null,
-                                                userAction.securityCompactDTO.getSecurityId())
-                                                .getOwnedPortfolioId());
-
-                                return userAction;
-                            }
-                        })
-                        .subscribe(
-                                new Action1<PositionPartialTopView.CloseUserAction>()
-                                {
-                                    @Override public void call(PositionPartialTopView.CloseUserAction userAction)
-                                    {
-                                        // Nothing to do
-                                    }
-                                },
-                                new TimberAndToastOnErrorAction1("Failed to listen to user action")));
-
-//        if(LiveConstants.isInLiveMode) {
-            connectOrderManagementSignalR();
-
-//            live1BServiceWrapper.getPositions()
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError(new Action1<Throwable>() {
-//                        @Override
-//                        public void call(Throwable throwable) {
-//                            Log.d(".java", "getPositions Error " + throwable.toString());
-//                        }
-//                    })
-//                    .subscribe(new Action1<String>() {
-//                                   @Override
-//                                   public void call(String responseString) {
-//                                       Log.d(".java", "getPositions success " + responseString);
-//                                   }
-//                               }
+//        onStopSubscriptions.add(Observable.combineLatest(
+//                getProfileAndHeaderObservable(),
+//                getPositionsObservable(),
+//                new Func2<Pair<UserProfileDTO, PortfolioHeaderView>, List<Pair<PositionDTO, SecurityCompactDTO>>, PortfolioHeaderView>()
+//                {
+//                    @Override public PortfolioHeaderView call(
+//                            @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
+//                            @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
+//                    {
+//                        //TODO Translate to 0 to restore position
+//                        //inflatedHeader.animate().translationY(0f).start();
+//                        Log.v("Positions", "Getting positions done");
+//                        return profileAndHeaderPair.second;
+//                    }
+//                })
+//                .distinctUntilChanged()
+//                .flatMap(new Func1<PortfolioHeaderView, Observable<UserProfileDTO>>()
+//                {
+//                    @Override public Observable<UserProfileDTO> call(PortfolioHeaderView portfolioHeaderView)
+//                    {
+//                        Log.v("Positions", "Getting positions done and mapped");
+//                        return portfolioHeaderView.getUserActionObservable()
+//                                .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>()
+//                                {
+//                                    @Override public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction)
+//                                    {
+//                                        return handleHeaderUserAction(userAction);
+//                                    }
+//                                })
+//                                .doOnError(new Action1<Throwable>()
+//                                {
+//                                    @Override public void call(Throwable e)
+//                                    {
+//                                        try{
+//                                            AlertDialogRxUtil.popErrorMessage(
+//                                                    PositionListFragment.this.getActivity(),
+//                                                    e);
+//                                        }catch (Exception e1){
+//                                            e1.printStackTrace();
+//                                        }
 //
-//                    );
-   //     }
+//                                        // TODO
+//                                    }
+//                                });
+//                    }
+//                })
+//                .doOnError(new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        Log.v("Positions", "Error"+throwable.getLocalizedMessage());
+//                    }
+//                })
+//                .subscribe(
+//                        new Action1<UserProfileDTO>()
+//                        {
+//                            @Override public void call(UserProfileDTO newProfile)
+//                            {
+//                                // Nothing to do
+//                            }
+//                        },
+//                        new TimberOnErrorAction1("Failed to collect all")));
+//
+//        onStopSubscriptions.add(
+//                Observable.combineLatest(
+//                        positionItemAdapter.getUserActionObservable()
+//                                .observeOn(AndroidSchedulers.mainThread()),
+//                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+//                                .observeOn(AndroidSchedulers.mainThread()),
+//                        new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>()
+//                        {
+//                            @Override public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
+//                                    Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+//                            {
+//                                handleDialogGoToTrade(true,
+//                                        userAction.securityCompactDTO,
+//                                        userAction.positionDTO,
+//                                        PortfolioCompactDTOUtil.getPurchaseApplicablePortfolio(
+//                                                pair.second,
+//                                                purchaseApplicableOwnedPortfolioId,
+//                                                null,
+//                                                userAction.securityCompactDTO.getSecurityId())
+//                                                .getOwnedPortfolioId());
+//
+//                                return userAction;
+//                            }
+//                        })
+//                        .doOnError(new Action1<Throwable>() {
+//                            @Override
+//                            public void call(Throwable throwable) {
+//                                Log.v("Positions", "Error 1"+throwable.getLocalizedMessage());
+//                            }
+//                        })
+//                        .subscribe(
+//                                new Action1<PositionPartialTopView.CloseUserAction>()
+//                                {
+//                                    @Override public void call(PositionPartialTopView.CloseUserAction userAction)
+//                                    {
+//                                        // Nothing to do
+//                                    }
+//                                },
+//                                new TimberAndToastOnErrorAction1("Failed to listen to user action")));
+
+
+
+
+
+
+        if(LiveConstants.isInLiveMode) {
+            connectOrderManagementSignalR(getActivity());
+            if(livePositionDTOFromBuySell!=null){
+                List<Object> liveDto = new ArrayList<>();
+                liveDto.add(new LivePositionListRowView.LiveDTO(livePositionDTOFromBuySell));
+                Log.v("Positions", "Adding "+livePositionDTOFromBuySell);
+                linkWith(liveDto);
+            }
+        }
     }
 
     @Override public void onPause()
@@ -575,6 +598,7 @@ public class PositionListFragment
                     }
                 }
         );
+        Log.v("Positions", "Creating position item adapter "+adapter);
         return adapter;
     }
 
@@ -961,7 +985,8 @@ public class PositionListFragment
 
     @NonNull protected Observable<PortfolioDTO> getPortfolioObservable()
     {
-        if (getPositionsDTOKey instanceof OwnedPortfolioId)
+        Log.v("Positions", "getting portfolio: "+getPositionsDTOKey);
+        if (getPositionsDTOKey != null && getPositionsDTOKey instanceof OwnedPortfolioId)
         {
             return portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey))
                     .observeOn(AndroidSchedulers.mainThread())
@@ -981,8 +1006,7 @@ public class PositionListFragment
                         }
                     });
         }
-
-        return Observable.just(null);
+        return Observable.empty();
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
     }
 
@@ -1144,7 +1168,7 @@ public class PositionListFragment
         globalLayoutListener = null;
     }
 
-    @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
+    @NonNull private Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
     {
         if(LiveConstants.isInLiveMode){
             return Observable.empty();
@@ -1239,7 +1263,12 @@ public class PositionListFragment
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                linkWith(dtoList);
+                                                try{
+                                                    linkWith(dtoList);
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+
                                             }
                                         });
 
@@ -1356,9 +1385,11 @@ public class PositionListFragment
     public void linkWith(@NonNull List<Object> dtoList)
     {
         this.viewDTOs = dtoList;
-        Object nothingDTO = new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey()));
-        List<Object> filterViewDTOs = filterViewDTOs(dtoList, nothingDTO);
-        if (!filterViewDTOs.contains(nothingDTO) && positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
+
+//        Object nothingDTO = new PositionNothingView.DTO(null, shownUser.equals(currentUserId.toUserBaseKey()));
+        List<Object> filterViewDTOs = filterViewDTOs(viewDTOs, nothingDTO);
+
+        if (!filterViewDTOs.contains(nothingDTO) && this.positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
         {
             positionItemAdapter.remove(nothingDTO);
         }
@@ -1369,14 +1400,17 @@ public class PositionListFragment
 
         try{
             positionItemAdapter.addAll(filterViewDTOs);
+
+            Log.v("Positions", "After linking: "+this.viewDTOs.size());
+            Log.v("Positions", "After linking adapter: "+positionItemAdapter.getItemCount());
+            swipeToRefreshLayout.setRefreshing(false);
+            positionItemAdapter.notifyDataSetChanged();
+            listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
+
         }catch (Exception e){
             e.printStackTrace();
         }
-        Log.v("Positions", "After linking: "+this.viewDTOs.size());
-        Log.v("Positions", "After linking adapter: "+positionItemAdapter.getItemCount());
-        swipeToRefreshLayout.setRefreshing(false);
-        listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
-        positionItemAdapter.notifyDataSetChanged();
+
     }
 
     @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList, Object nothingDTO)
@@ -1572,14 +1606,14 @@ public class PositionListFragment
             signalRManager.getCurrentConnection().disconnect();
     }
 
-    private void connectOrderManagementSignalR()
+    private void connectOrderManagementSignalR(Activity activity)
     {
         if(signalRManager!=null){
             return;
         }
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
         Log.d("Positions", "connectOrderManagementSignalR: listening on PositionsResponse...." );
-        signalRManager.getCurrentProxy().on("PositionsResponse", new SubscriptionHandler1<Object>() {
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
             @Override
             public void run(Object positionsResponseDTO) {
 
@@ -1596,10 +1630,16 @@ public class PositionListFragment
                             adapterObjects.add(new LivePositionListRowView.LiveDTO(dto));
                         }
 
-                        getActivity().runOnUiThread(new Runnable() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                linkWith(adapterObjects);
+                                try{
+                                    linkWith(adapterObjects);
+                                }catch (Exception e){
+                                    //might not be in the view
+                                    e.printStackTrace();
+                                }
+
                             }
                         });
 
@@ -1611,6 +1651,25 @@ public class PositionListFragment
             }
 
         }, Object.class);
+
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ERROR_RESPONSE, new SubscriptionHandler1<ErrorResponseDTO>() {
+            @Override
+            public void run(ErrorResponseDTO errorResponseDTO) {
+                if(errorResponseDTO!=null){
+                    int errorCode = (int)errorResponseDTO.ErrorCode;
+                    switch (errorCode){
+                        case 1:
+                        case 3:
+                            break;
+                    }
+
+                }
+            }
+
+        }, ErrorResponseDTO.class);
+
+
+
 
         signalRManager.startConnection();
     }
