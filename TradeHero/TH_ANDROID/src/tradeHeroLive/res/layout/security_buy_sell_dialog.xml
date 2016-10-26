@@ -27,29 +27,12 @@
             android:layout_marginLeft="5sp"
             >
 
-            <TextView
-                android:id="@+id/dialog_buy_sell_security_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                style="@style/header"
-                android:textColor="@color/white"
-                android:paddingTop="5sp"
-                android:paddingLeft="@dimen/size_1"
-                android:paddingBottom="5sp"
-                android:text="Company"
-                />
-
-
-
             <ImageView
                 android:id="@android:id/closeButton"
                 android:layout_alignParentRight="true"
                 style="@style/TH.Btn_Popup_Close.Inverse"/>
 
             <com.androidth.general.widget.OffOnViewSwitcher
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/switch_live_virtual"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -60,6 +43,23 @@
                 app:onLayout="@layout/live_switch_live_imageview"
                 android:layout_toLeftOf="@android:id/closeButton"
                 />
+
+            <TextView
+                android:id="@+id/dialog_buy_sell_security_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                style="@style/header"
+                android:textColor="@color/white"
+                android:paddingTop="5sp"
+                android:paddingLeft="5sp"
+                android:paddingBottom="5sp"
+                android:paddingRight="5sp"
+                android:text="Company"
+                android:maxLines="1"
+                android:layout_toLeftOf="@id/switch_live_virtual"
+                />
+
         </RelativeLayout>
 
         <LinearLayout
