@@ -5,12 +5,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
@@ -18,6 +21,7 @@ import com.androidth.general.models.time.AppTiming;
 import com.androidth.general.persistence.prefs.AuthHeader;
 import com.androidth.general.persistence.prefs.FirstLaunch;
 import com.androidth.general.persistence.prefs.ResetHelpScreens;
+import com.androidth.general.persistence.user.LiveUserAccountCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.utils.Constants;
@@ -35,9 +39,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity
@@ -52,6 +58,8 @@ public class SplashActivity extends BaseActivity
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
+    @Inject
+    LiveUserAccountCacheRx liveUserAccountCacheRx;
     @Inject DTOCacheUtilRx dtoCacheUtil;
 
     @Nullable Subscription userProfileSubscription;
@@ -138,30 +146,86 @@ public class SplashActivity extends BaseActivity
         }
         else
         {
-            userProfileSubscription = AppObservable.bindActivity(
-                    this,
-                    userProfileCache.get(currentUserId.toUserBaseKey()))
-                    .subscribe(
-                            new Action1<Pair<UserBaseKey, UserProfileDTO>>()
-                            {
-                                @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
-                                {
-                                    dtoCacheUtil.prefetchesUponLogin(pair.second);
-                                    if(isFromPush && uaMessage!=null){
-                                        ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink, uaMessage);
-                                    }else{
-                                        ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
+            if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+                //get virtual and live account
+                Log.v("Live1b", "getting live account");
+                userProfileSubscription = AppObservable.bindActivity(
+                        this,
+                        userProfileCache.get(currentUserId.toUserBaseKey())
+                                .flatMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<Pair<UserProfileDTO, UserLiveAccount>>>() {
+                                    @Override
+                                    public Observable<Pair<UserProfileDTO, UserLiveAccount>> call(Pair<UserBaseKey, UserProfileDTO> userBaseKeyUserProfileDTOPair) {
+                                        Log.v("Live1b", "getting live account"+userBaseKeyUserProfileDTOPair.first);
+
+                                        return liveUserAccountCacheRx.get(userBaseKeyUserProfileDTOPair.first)
+                                                .flatMap(new Func1<Pair<UserBaseKey, UserLiveAccount>, Observable<Pair<UserProfileDTO, UserLiveAccount>>>() {
+                                                    @Override
+                                                    public Observable<Pair<UserProfileDTO, UserLiveAccount>> call(Pair<UserBaseKey, UserLiveAccount> userBaseKeyUserLiveAccountPair) {
+                                                        Log.v("Live1b", "flatting");
+                                                        return Observable.just(new Pair<>(userBaseKeyUserProfileDTOPair.second, userBaseKeyUserLiveAccountPair.second));
+                                                    }
+                                                })
+                                                .onErrorReturn(new Func1<Throwable, Pair<UserProfileDTO, UserLiveAccount>>() {
+                                                    @Override
+                                                    public Pair<UserProfileDTO, UserLiveAccount> call(Throwable throwable) {
+                                                        Log.v("Live1b", "Error return "+throwable.getLocalizedMessage());
+                                                        return new Pair<>(userBaseKeyUserProfileDTOPair.second, null);
+                                                    }
+                                                });
+
                                     }
-                                }
-                            },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable throwable)
+                                }))
+                        .subscribe(new Action1<Pair<UserProfileDTO, UserLiveAccount>>() {
+                            @Override
+                            public void call(Pair<UserProfileDTO, UserLiveAccount> userProfileDTOUserLiveAccountPair) {
+                                dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.first);
+                                Log.v("Live1b", "Logging live account: "+userProfileDTOUserLiveAccountPair.second);
+//                                if(userProfileDTOUserLiveAccountPair.second!=null){
+//                                    dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.second);
+//                                }
+
+                                ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
+                                finish();
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Log.v("Live1b", "Error login "+throwable.getLocalizedMessage());
+                                ActivityHelper.launchAuthentication(SplashActivity.this, deepLink);
+                                finish();
+                            }
+                        });
+
+
+            }else{
+                Log.v("Live1b", "getting virtual");
+                //virtual
+                userProfileSubscription = AppObservable.bindActivity(
+                        this,
+                        userProfileCache.get(currentUserId.toUserBaseKey()))
+                        .subscribe(
+                                new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                                 {
-                                    ActivityHelper.launchAuthentication(SplashActivity.this, deepLink);
-                                    finish();
-                                }
-                            });
+                                    @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                                    {
+                                        dtoCacheUtil.prefetchesUponLogin(pair.second);
+                                        if(isFromPush && uaMessage!=null){
+                                            ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink, uaMessage);
+                                        }else{
+                                            ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
+                                        }
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable throwable)
+                                    {
+                                        ActivityHelper.launchAuthentication(SplashActivity.this, deepLink);
+                                        finish();
+                                    }
+                                });
+            }
+
         }
     }
 

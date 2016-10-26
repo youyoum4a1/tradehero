@@ -8,6 +8,7 @@ import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.api.security.TransactionFormDTO;
+import com.androidth.general.api.users.UserLiveAccount;
 
 import java.util.Map;
 
@@ -20,13 +21,30 @@ import rx.Observable;
 
 public interface Live1BServiceRx {
 
-    //<editor-fold desc="Get Multiple Securities">
+    /**
+     * Get user live account
+     * @return
+     */
+    @GET("/liveuser")
+    Observable<UserLiveAccount> getUserLiveAccount();
+
+    /**
+     * Get multiple securities
+     * @param commaSeparatedIntegerIds
+     * @return
+     */
     @GET("/securities/multi/")
     Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
             @Query("securityIds") String commaSeparatedIntegerIds);
     //</editor-fold>
 
-    //<editor-fold desc="Get Basic Trending">
+    /**
+     * Get trending securities
+     * @param exchange
+     * @param page
+     * @param perPage
+     * @return
+     */
     @GET("/securities/trending/")
     Observable<SecurityCompactDTOList> getTrendingSecurities(
             @Query("exchange") String exchange,

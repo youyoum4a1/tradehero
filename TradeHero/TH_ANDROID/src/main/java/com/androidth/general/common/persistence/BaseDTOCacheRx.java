@@ -3,6 +3,9 @@ package com.androidth.general.common.persistence;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,7 +136,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedValue;
     }
 
-    @NonNull public Observable<Pair<DTOKeyType, DTOType>> getOne(@NonNull DTOKeyType key)
+    @NonNull public @RxLogObservable Observable<Pair<DTOKeyType, DTOType>> getOne(@NonNull DTOKeyType key)
     {
         DTOType cached = getCachedValue(key);
         if (cached != null)

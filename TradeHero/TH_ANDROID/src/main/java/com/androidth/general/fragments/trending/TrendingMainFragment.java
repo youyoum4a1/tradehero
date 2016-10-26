@@ -37,6 +37,7 @@ import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.CompositeExchangeSecurityDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -55,6 +56,7 @@ import com.androidth.general.persistence.live.CompositeExchangeSecurityCacheRx;
 import com.androidth.general.persistence.market.ExchangeCompactListCacheRx;
 import com.androidth.general.persistence.market.ExchangeMarketPreference;
 import com.androidth.general.persistence.prefs.PreferredExchangeMarket;
+import com.androidth.general.persistence.user.LiveUserAccountCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -138,6 +140,7 @@ public class TrendingMainFragment extends DashboardFragment
     private boolean isInLiveMode;
     private SecurityTypeSpinner securityTypeSpinner;
     @Inject CompositeExchangeSecurityCacheRx compositeExchangeSecurityCacheRx;
+    @Inject LiveUserAccountCacheRx liveUserAccountCacheRx;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -188,6 +191,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onAttach(context);
         initUserProfileObservable();
+        initLiveUserAccount();
     }
 
     private void initUserProfileObservable()
@@ -211,6 +215,16 @@ public class TrendingMainFragment extends DashboardFragment
                     }
                 })
                 .cache(1);
+    }
+
+    private void initLiveUserAccount(){
+        liveUserAccountCacheRx.getOne(currentUserId.toUserBaseKey()).subscribe(new Action1<Pair<UserBaseKey, UserLiveAccount>>() {
+            @Override
+            public void call(Pair<UserBaseKey, UserLiveAccount> userBaseKeyUserLiveAccountPair) {
+                UserLiveAccount userLiveAccount = userBaseKeyUserLiveAccountPair.second;
+                Log.v("Live1b", "Trending main user live acct "+userLiveAccount);
+            }
+        });
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

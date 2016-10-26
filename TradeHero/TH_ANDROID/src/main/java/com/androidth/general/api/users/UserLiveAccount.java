@@ -1,8 +1,10 @@
 package com.androidth.general.api.users;
 
+import com.androidth.general.common.persistence.DTO;
+
 import java.util.Date;
 
-public class UserLiveAccount
+public class UserLiveAccount implements DTO
 {
     public int id;
     public int userId;
