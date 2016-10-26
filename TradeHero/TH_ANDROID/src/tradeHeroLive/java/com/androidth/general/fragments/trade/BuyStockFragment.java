@@ -145,18 +145,7 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                 }
                             }
                         })
-                        .subscribe(new Action1<String>() {
-                                       @Override
-                                       public void call(String positionTransactionResult) {
-                                           Toast.makeText(getContext(), "Stock Purchase Successful! " + positionTransactionResult.toString(), Toast.LENGTH_LONG).show();
-                                           Log.d("BuyStockFragment.java", "Success stock purchase, result: " + positionTransactionResult);
-
-//                                           pushLivePortfolioFragment(currentUserId.get(), requisite.securityId.getAyondoId());
-
-                                       }
-                                   }
-
-                                , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+                        .subscribe(new LiveBuySellObserver(currentUserId.get(), requisite.securityId.getAyondoId()));
 
             }
             catch (IllegalStateException ex) {
