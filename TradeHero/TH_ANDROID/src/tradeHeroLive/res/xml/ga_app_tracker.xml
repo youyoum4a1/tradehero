@@ -16,7 +16,6 @@
     <!-- how often the dispatcher should fire -->
     <integer name="ga_dispatchPeriod">30</integer>
 
-    <!--<screenName name="com.tradehero.th.activities.SplashActivity">Home Screen</screenName>-->
     <!--<screenName name="com.androidth.general.fragments.competition.MainCompetitionFragment">Competition Main Page</screenName>-->
     <!--<screenName name="com.androidth.general.fragments.competition.CompetitionWebViewFragment">Join Competition Page</screenName>-->
     <!--<screenName name="com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment">KYC 1</screenName>-->
