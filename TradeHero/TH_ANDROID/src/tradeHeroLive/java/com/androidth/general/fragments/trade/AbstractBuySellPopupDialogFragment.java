@@ -28,6 +28,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
@@ -121,6 +122,9 @@ import timber.log.Timber;
 
 abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDialogFragment {
     private static final String KEY_REQUISITE = AbstractBuySellPopupDialogFragment.class.getName() + ".requisite";
+    public static final String KEY_LIVE_DTO = AbstractBuySellPopupDialogFragment.class.getName() + ".livePositionDto";
+    public static final String KEY_LIVE_REQUEST_ID = AbstractBuySellPopupDialogFragment.class.getName() + ".requestId";
+
     private static final double INITIAL_VALUE = 5000;
 
     @Bind(R.id.dialog_buy_sell_top_bar)
@@ -1571,6 +1575,36 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
     }
 
+    protected class LiveBuySellObserver implements Observer<String> {
+
+        private int userId;
+        private int ayondoId;
+
+        public LiveBuySellObserver(int userId, int ayondoId) {
+            this.userId = userId;
+            this.ayondoId = ayondoId;
+        }
+
+        @Override
+        public void onNext(String requestId) {
+            Log.v("Buysell", "Onnext live buysell "+requestId);
+            try{
+                pushLivePortfolioFragment(userId, ayondoId, requestId);
+            }catch (Exception e){e.printStackTrace();}
+
+        }
+
+        @Override
+        public void onCompleted() {
+            Log.v("Buysell", "Completed live buysell");
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.v("Buysell", "Error: "+e.getLocalizedMessage());
+        }
+    }
+
     protected class BuySellObserver implements Observer<SecurityPositionTransactionDTO> {
         @NonNull
         private final SecurityId securityId;
@@ -1918,7 +1952,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
     }
 
-    protected void pushLivePortfolioFragment(int userId, int portfolioId)
+    protected void pushLivePortfolioFragment(int userId, int portfolioId, String requestId)
     {
         try {
             DeviceUtil.dismissKeyboard(getActivity());
@@ -1935,10 +1969,19 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
                 TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
                 String positionType = "LONG";
-                TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-                TabbedPositionListFragment.putPositionType(args, positionType);
-                TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+//                TabbedPositionListFragment.putPositionType(args, positionType);
                 TabbedPositionListFragment.putIsFX(args, AssetClass.STOCKS);
+
+                if (ownedPortfolioId.userId.equals(currentUserId.get())) {
+                    TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
+                TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+
+
+                LivePositionDTO livePositionDTO = new LivePositionDTO(usedDTO.securityCompactDTO);
+                args.putParcelable(KEY_LIVE_DTO, livePositionDTO);
+                args.putString(KEY_LIVE_REQUEST_ID, requestId);
 
                 LiveConstants.isInLiveMode = true;
                 navigator.get().pushFragment(TabbedPositionListFragment.class, args);
