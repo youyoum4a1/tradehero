@@ -23,4 +23,6 @@ public class LiveNetworkConstants
     public static final String PROXY_METHOD_UPDATE_POSITIONS = "UpdatePositions";
     public static final String PROXY_METHOD_UPDATE_PROFILE = "UpdatePortfolio";
     public static final String PROXY_METHOD_OM_POSITION_RESPONSE = "PositionsResponse";
+    public static final String PROXY_METHOD_OM_ERROR_RESPONSE = "ErrorResponse";
+    public static final String PROXY_METHOD_OM_ACCOUNTS_RESPONSE = "AccountBalanceResponse";
 }
