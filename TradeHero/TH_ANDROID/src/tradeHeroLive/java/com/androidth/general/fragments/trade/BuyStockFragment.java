@@ -137,6 +137,7 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                             if (error.getResponse() != null && error.getResponse().getStatus() == 302)
                                             {
                                                 LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+                                                dismiss();
                                             }
                                             else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
                                                 Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
