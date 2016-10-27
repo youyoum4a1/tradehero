@@ -2,6 +2,7 @@ package com.androidth.general.fragments.trade;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -74,6 +75,8 @@ public class Live1BWebLoginDialogFragment extends DialogFragment
         btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                  // show back the buy sell page?
+
                     dismiss();
                 }
             }
@@ -109,7 +112,7 @@ public class Live1BWebLoginDialogFragment extends DialogFragment
                         getDialog().getWindow().setLayout(1000, 1200);
                         final View decorView = getDialog().getWindow().getDecorView();
                         urlHasLoaded = true;
-                        YoYo.with(Techniques.BounceInDown).playOn(decorView);
+                        YoYo.with(Techniques.FlipInX).playOn(decorView);
                     }
                 }
             }

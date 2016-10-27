@@ -1921,33 +1921,6 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
 
-
-    protected void flipLiveLogin(Throwable error)
-    {
-        try {
-            if (LiveConstants.hasLiveAccount) {
-
-                LiveViewProvider.showTradeHubLogin(getActivity(), error);
-
-                try {
-                    unsubscribe(buySellSubscription);
-                }
-                catch(Exception ex)
-                {
-                    Log.d("printStackTrace", ex.toString());
-                }
-
-
-            } else {
-                Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
-                startActivity(kycIntent);
-            }
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Error in redirection" , Toast.LENGTH_LONG).show();
-            Log.d("pushLiveLoginCatchError", e.toString());
-        }
-    }
-
     protected void pushLivePortfolioFragment(int userId, int portfolioId, String requestId)
     {
         try {

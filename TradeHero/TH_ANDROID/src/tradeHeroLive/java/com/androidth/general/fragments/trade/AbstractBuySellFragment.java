@@ -936,11 +936,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     public void pushBuySellScreen(@Nullable Integer closeUnits, boolean isTransactionTypeBuy)
     {
-        if (abstractBuySellPopupDialogFragment != null
-                && abstractBuySellPopupDialogFragment.isVisible())
-        {
-            return;//buy/sell dialog already shows
-        }
+//        if (abstractBuySellPopupDialogFragment != null
+//                && abstractBuySellPopupDialogFragment.isVisible()
+//                && abstractBuySellPopupDialogFragment.getDialog()!=null
+//                && abstractBuySellPopupDialogFragment.getDialog().isShowing()
+//                )
+//        {
+//            return;//comment out for now because when returning from tradehub login,
+//                  // this is hit even when the popup isn't shown
+//        }
         if (quoteDTO != null
                 && BuyStockFragment.canShowTransactionScreen(quoteDTO, isTransactionTypeBuy))
         {

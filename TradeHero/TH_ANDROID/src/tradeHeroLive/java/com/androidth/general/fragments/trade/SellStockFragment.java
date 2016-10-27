@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.position.PositionDTO;
@@ -141,8 +142,9 @@ public class SellStockFragment extends AbstractStockTransactionFragment
                                 if(throwable instanceof RetrofitError) {
                                     RetrofitError error = (RetrofitError) throwable;
                                     Log.d("SellStockFragmentError", error.getResponse() + " " + error.toString());
-                                    if(error.getResponse()!=null && error.getResponse().getStatus()==302)
-                                        flipLiveLogin(throwable);
+                                    if(error.getResponse()!=null && error.getResponse().getStatus()==302)  {
+                                        LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+                                    }
                                     else
                                         Toast.makeText(getContext(),"Error in stock sale: " + error.getBody().toString(),Toast.LENGTH_LONG).show();
                                 }
