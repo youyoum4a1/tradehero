@@ -542,8 +542,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                     if(signalRManager==null){
                         if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null){
                             signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
-                            signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.getResourceId()));
 
+                            Log.v("SignalR", "Invoking updatequote");
                             signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
                                 @Override
@@ -566,6 +566,19 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     }
                                 }
                             }, SignatureContainer2.class);
+
+                            Log.v("SignalR", "Invoking fx");
+                            signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_FX_RATE, new String[]{"SGD", "EUR"});
+                            Log.v("SignalR", "Invoked fx");
+                            signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_FX_RATE, new SubscriptionHandler1<String>() {
+                                @Override
+                                public void run(String s) {
+                                    Log.v("Buysell", "FX = "+s);
+                                }
+                            }, String.class);
+
+                            signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.getResourceId()));
+
                         }
 
                     }

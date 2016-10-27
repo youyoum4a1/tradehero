@@ -25,4 +25,6 @@ public class LiveNetworkConstants
     public static final String PROXY_METHOD_OM_POSITION_RESPONSE = "PositionsResponse";
     public static final String PROXY_METHOD_OM_ERROR_RESPONSE = "ErrorResponse";
     public static final String PROXY_METHOD_OM_ACCOUNTS_RESPONSE = "AccountBalanceResponse";
+
+    public static final String PROXY_METHOD_FX_RATE = "SubscribeForFXRate";
 }

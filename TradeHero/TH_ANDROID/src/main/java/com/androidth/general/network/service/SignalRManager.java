@@ -120,6 +120,7 @@ public class SignalRManager {
             this.connection.error(new ErrorCallback() {
                 @Override
                 public void onError(Throwable throwable) {
+                    throwable.printStackTrace();
                     if(throwable!=null){
                         Log.v("SignalR", "ERROR! "+throwable.getMessage());
                     }else{
@@ -203,6 +204,7 @@ public class SignalRManager {
             this.connection.error(new ErrorCallback() {
                 @Override
                 public void onError(Throwable throwable) {
+                    throwable.printStackTrace();
                     if(throwable!=null){
                         Log.v("SignalR", "ERROR! "+throwable.getMessage());
                     }else{
@@ -259,6 +261,7 @@ public class SignalRManager {
         this.connection.error(new ErrorCallback() {
             @Override
             public void onError(Throwable throwable) {
+                throwable.printStackTrace();
                 if(throwable!=null){
                     Log.v("SignalR", "ERROR! "+throwable.getMessage());
                 }else{

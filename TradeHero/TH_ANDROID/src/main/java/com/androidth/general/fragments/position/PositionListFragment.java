@@ -557,6 +557,7 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
     @Override public void onDestroyView()
     {
         disconnectSignalR(portfolioDTO);
+        disconnectSignalR();
 
         positionRecyclerView.clearOnScrollListeners();
         positionRecyclerView.setOnTouchListener(null);
