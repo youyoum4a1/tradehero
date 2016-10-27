@@ -113,7 +113,8 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                 getActivity().getString(R.string.processing),
                 getActivity().getString(R.string.alert_dialog_please_wait),
                 true);
-
+        LiveConstants.isInLiveMode = true; // TODO pls remove, only use for testing
+        LiveConstants.hasLiveAccount = true; // TODO pls remove, only using for dev
         if(LiveConstants.isInLiveMode)
         {
             SecurityId sid = requisite.securityId;
@@ -134,7 +135,9 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                             RetrofitError error = (RetrofitError) throwable;
                                             Log.d("BuyStockFragment.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
                                             if (error.getResponse() != null && error.getResponse().getStatus() == 302)
+                                            {
                                                 LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+                                            }
                                             else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
                                                 Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
                                             else {

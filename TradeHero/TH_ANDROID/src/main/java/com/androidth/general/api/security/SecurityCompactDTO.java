@@ -128,6 +128,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     public String sector;//added
 
+    public Double minLeverage;
+    public Double midLeverage;
+
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
     {
@@ -193,6 +196,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.id_ay = other.id_ay;
         this.symbol_ay = other.symbol_ay;
         this.parentCurrencyISO = other.parentCurrencyISO;
+        this.minLeverage = other.minLeverage;
+        this.midLeverage = other.midLeverage;
     }
     //</editor-fold>
 
@@ -288,7 +293,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
                 ", chartDataSource='" + chartDataSource + '\'' +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", currencyISO='" + currencyISO + '\'' +
-                ", parentCurrencyISO='" + parentCurrencyISO  + '\'' +
+                ", parentCurrencyISO='" + parentCurrencyISO + '\'' +
                 ", symbol_ay='" + symbol_ay + '\'' +
                 ", id_ay='" + id_ay + '\'' +
                 ", marketCap=" + marketCap +
@@ -331,6 +336,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
                 ", lotSize=" + lotSize +
                 ", max_lot=" + max_lot +
                 ", min_lot=" + min_lot +
+                ", sector='" + sector + '\'' +
+                ", minLeverage=" + minLeverage +
+                ", midLeverage=" + midLeverage +
                 '}';
     }
 
