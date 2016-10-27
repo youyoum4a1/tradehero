@@ -21,6 +21,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
 
+import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.live1b.ErrorResponseDTO;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
@@ -1606,6 +1607,12 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
             signalRManager.getCurrentConnection().disconnect();
     }
 
+    private void disconnectSignalR(){
+        if(signalRManager!=null){
+            signalRManager.getCurrentConnection().disconnect();
+        }
+    }
+
     private void connectOrderManagementSignalR(Activity activity)
     {
         if(signalRManager!=null){
@@ -1660,6 +1667,7 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
                     switch (errorCode){
                         case 1:
                         case 3:
+                            LiveViewProvider.showTradeHubLogin(getActivity());
                             break;
                     }
 

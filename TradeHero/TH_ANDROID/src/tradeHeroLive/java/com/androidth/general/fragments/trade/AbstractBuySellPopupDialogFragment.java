@@ -32,6 +32,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -1920,34 +1921,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
 
 
-    protected void flipLiveLogin(RetrofitError error)
+    protected void flipLiveLogin(Throwable error)
     {
-        LiveConstants.hasLiveAccount = true; // debugging
         try {
             if (LiveConstants.hasLiveAccount) {
 
-                JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
+                LiveViewProvider.showTradeHubLogin(getActivity(), error);
 
-                Log.d("pushLiveLogin", error.getResponse().getBody().toString() + " " + buySellStockError.toString());
-                // user has a live account, but not logged in, redirect to the extracted json URL
-                Bundle args = getArguments();
-                String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
-                args.putString(Live1BWebLoginDialogFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
-                Live1BWebLoginDialogFragment liveLoginFragment = new Live1BWebLoginDialogFragment();
-                liveLoginFragment.setArguments(args);
-
-                liveLoginFragment.setOnDismissListener(new DialogInterface.OnDismissListener(){
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if(isBuy) {
-                         //   if(this!=null) // getting 'Fragment is already added error'
-                            //    show(getActivity().getSupportFragmentManager(), AbstractBuySellPopupDialogFragment.class.getName());
-                        }
-                    //    Toast.makeText(getContext(),"Now you can start trading Live!", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                liveLoginFragment.show(getActivity().getFragmentManager(),Live1BWebLoginDialogFragment.class.getName());
                 try {
                     unsubscribe(buySellSubscription);
                 }

@@ -16,13 +16,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.androidth.general.R;
+import com.androidth.general.api.live.LiveViewProvider;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 public class Live1BWebLoginDialogFragment extends DialogFragment
 {
     private ProgressDialog progressDialog;
-    public static final String BUNDLE_KEY_REDIRECT_URL_ID = "ssoUrl";
     private Boolean urlHasLoaded;
     private Boolean userHasLogin;
 
@@ -88,8 +88,15 @@ public class Live1BWebLoginDialogFragment extends DialogFragment
 
         Bundle bundle = getArguments();
         String url = "";
-        if(bundle!=null)
-            url = bundle.getString(BUNDLE_KEY_REDIRECT_URL_ID);
+        if(bundle!=null){
+            if(bundle.containsKey(LiveViewProvider.BUNDLE_KEY_REDIRECT_URL_ID)){
+                url = bundle.getString(LiveViewProvider.BUNDLE_KEY_REDIRECT_URL_ID);
+            }else{
+                Toast.makeText(getActivity(),"No redirect url", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+
         webView.loadUrl(url);
         webView.setWebViewClient(new WebViewClient() {
 

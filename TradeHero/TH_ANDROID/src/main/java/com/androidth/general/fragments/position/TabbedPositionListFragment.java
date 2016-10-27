@@ -36,6 +36,7 @@ import timber.log.Timber;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
@@ -531,7 +532,9 @@ public class TabbedPositionListFragment extends DashboardFragment
                                         RetrofitError error = (RetrofitError) throwable;
                                         Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
                                         if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
-                                            flipLiveLogin(error);
+
+                                            LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+
                                         } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
                                             Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
                                         else {
@@ -555,41 +558,6 @@ public class TabbedPositionListFragment extends DashboardFragment
             }
         }
 
-    }
-
-    private void flipLiveLogin(RetrofitError error)
-    {
-        LiveConstants.hasLiveAccount = true; // debugging
-        try {
-            if (LiveConstants.hasLiveAccount) {
-
-                JSONObject buySellStockError = new JSONObject(new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
-
-                 // user has a live account, but not logged in, redirect to the extracted json URL
-                Bundle args = getArguments();
-                String redirectURL = buySellStockError.get(LiveViewFragment.BUNDLE_KEY_REDIRECT_URL_ID).toString();
-                args.putString(Live1BWebLoginDialogFragment.BUNDLE_KEY_REDIRECT_URL_ID, redirectURL);
-                Live1BWebLoginDialogFragment liveLoginFragment = new Live1BWebLoginDialogFragment();
-                liveLoginFragment.setArguments(args);
-
-                liveLoginFragment.setOnDismissListener(new DialogInterface.OnDismissListener(){
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                    //    Toast.makeText(getContext(),"Now you can start trading Live!", Toast.LENGTH_LONG).show();
-
-                    }
-                });
-
-                liveLoginFragment.show(getActivity().getFragmentManager(),Live1BWebLoginDialogFragment.class.getName());
-
-            } else {
-                Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
-                startActivity(kycIntent);
-            }
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Error in redirection" , Toast.LENGTH_LONG).show();
-            Log.d("flipLiveLogin Error ", e.toString());
-        }
     }
 
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
