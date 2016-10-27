@@ -17,6 +17,7 @@ import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.metrics.AnalyticsDuration;
 import com.androidth.general.utils.route.THRouter;
@@ -110,6 +111,10 @@ public class DiscoveryMainFragment extends DashboardFragment
             tabIndex = null;
         }
         //liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
+
+        if(getArguments().containsKey(CustomAirshipReceiver.MESSAGE)){
+            CustomAirshipReceiver.createDialogWithListener(getActivity(), getArguments().getString(CustomAirshipReceiver.MESSAGE));
+        }
     }
 
     @Override public void onResume()
