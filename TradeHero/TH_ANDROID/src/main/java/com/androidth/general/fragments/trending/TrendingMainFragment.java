@@ -25,6 +25,11 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.BaseActivity;
 import com.androidth.general.adapters.DTOAdapterNew;
+import com.androidth.general.api.live.LiveViewProvider;
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
+import com.androidth.general.api.live1b.ErrorResponseDTO;
+import com.androidth.general.api.live1b.LivePositionDTO;
+import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.api.market.Country;
 import com.androidth.general.api.market.ExchangeCompactDTO;
 import com.androidth.general.api.market.ExchangeCompactDTODescriptionNameComparator;
@@ -49,9 +54,13 @@ import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.androidth.general.fragments.market.ExchangeSpinner;
 import com.androidth.general.fragments.market.SecurityTypeSpinner;
 import com.androidth.general.fragments.position.FXMainPositionListFragment;
+import com.androidth.general.fragments.position.live1b.LivePositionListRowView;
 import com.androidth.general.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTOList;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
+import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.live.CompositeExchangeSecurityCacheRx;
 import com.androidth.general.persistence.market.ExchangeCompactListCacheRx;
 import com.androidth.general.persistence.market.ExchangeMarketPreference;
@@ -69,15 +78,23 @@ import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
@@ -136,11 +153,13 @@ public class TrendingMainFragment extends DashboardFragment
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
 
     //Live-related
-    private UserProfileDTO userProfileDTO;
+    private UserLiveAccount userLiveAccount;
     private boolean isInLiveMode;
     private SecurityTypeSpinner securityTypeSpinner;
     @Inject CompositeExchangeSecurityCacheRx compositeExchangeSecurityCacheRx;
     @Inject LiveUserAccountCacheRx liveUserAccountCacheRx;
+    private SignalRManager signalRManager;
+    @Inject RequestHeaders requestHeaders;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -191,7 +210,6 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onAttach(context);
         initUserProfileObservable();
-        initLiveUserAccount();
     }
 
     private void initUserProfileObservable()
@@ -215,16 +233,6 @@ public class TrendingMainFragment extends DashboardFragment
                     }
                 })
                 .cache(1);
-    }
-
-    private void initLiveUserAccount(){
-        liveUserAccountCacheRx.getOne(currentUserId.toUserBaseKey()).subscribe(new Action1<Pair<UserBaseKey, UserLiveAccount>>() {
-            @Override
-            public void call(Pair<UserBaseKey, UserLiveAccount> userBaseKeyUserLiveAccountPair) {
-                UserLiveAccount userLiveAccount = userBaseKeyUserLiveAccountPair.second;
-                Log.v("Live1b", "Trending main user live acct "+userLiveAccount);
-            }
-        });
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -338,10 +346,12 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onLiveTradingChanged(event);
         // TODO force reload cache whenever user toggles
-        Log.d("TMF.java", "onLiveTradingChanged: securitTypeAdapter = " + securitTypeAdapter);
         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser) {
 
-            userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
+//            userLiveAccount = liveUserAccountCacheRx.getCachedValue(currentUserId.toUserBaseKey());
+            userLiveAccount = getUserLiveAccount();
+            Log.v("Live1b", "Has user live account? "+userLiveAccount);
+            Log.d("Live1b", "using key" + currentUserId.toUserBaseKey());
 
             ///// securityType and stock/fx spinner settings
             if(event.isOn) { // If LIVE, show securityType and hide stock/fx
@@ -349,6 +359,9 @@ public class TrendingMainFragment extends DashboardFragment
                     securityTypeSpinner.setVisibility(View.VISIBLE);
                 }
                 stockFxSwitcher.setVisibility(View.INVISIBLE);
+
+                startLiveSignalR();
+
             }
             else // If VIRTUAL, show stock/fx and hide securityType
             {
@@ -360,9 +373,9 @@ public class TrendingMainFragment extends DashboardFragment
             }
 
             ///// registration page and tab view pages
-            if(event.isClickedFromTrending || userProfileDTO.getUserLiveAccounts()==null) {
+            if(event.isClickedFromTrending || userLiveAccount==null) {
 
-                LiveConstants.hasLiveAccount = userProfileDTO.getUserLiveAccounts() != null;
+                LiveConstants.hasLiveAccount = userLiveAccount != null;
                 /*
                 if clicked from trending or doesnt have a live account yet,
                 show or unshow registration page
@@ -1023,5 +1036,90 @@ public class TrendingMainFragment extends DashboardFragment
 //        ExchangeCompactSpinnerDTO dto = (ExchangeCompactSpinnerDTO) parent.getItemAtPosition(position);
 //        preferredExchangeMarket.set(dto.getExchangeIntegerId());
 //        exchangeSpinnerDTOSubject.onNext(dto);
+    }
+
+    private void startLiveSignalR(){
+        if(signalRManager!=null){
+            return;
+        }
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
+            @Override
+            public void run(Object positionsResponseDTO) {
+
+                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+                try {
+                    JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
+                    PositionsResponseDTO responseDTO = gson.fromJson(jsonObject, PositionsResponseDTO.class);
+
+
+                    // Obtain a Realm instance
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.delete(PositionsResponseDTO.class);
+                    realm.copyToRealm(responseDTO);
+                    Log.v("Live1b", "Saving positions");
+                    realm.commitTransaction();
+
+
+//                    if(responseDTO!=null) {
+//                        Log.d("Positions", "positionsResponseDTO = " + responseDTO.toString());
+//                        List<Object> adapterObjects = new ArrayList<>();
+//                        for(LivePositionDTO dto: responseDTO.Positions){
+//
+//                            adapterObjects.add(new LivePositionListRowView.LiveDTO(dto));
+//                        }
+//
+//                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+        }, Object.class);
+
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ERROR_RESPONSE, new SubscriptionHandler1<ErrorResponseDTO>() {
+            @Override
+            public void run(ErrorResponseDTO errorResponseDTO) {
+                if(errorResponseDTO!=null){
+                    int errorCode = (int)errorResponseDTO.ErrorCode;
+                    switch (errorCode){
+                        case 1:
+                        case 3:
+                            LiveViewProvider.showTradeHubLogin(getActivity());
+                            break;
+                    }
+
+                }
+            }
+
+        }, ErrorResponseDTO.class);
+
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ACCOUNTS_RESPONSE, new SubscriptionHandler1<AccountBalanceResponseDTO>() {
+            @Override
+            public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
+                if(accountBalanceResponseDTO!=null){
+                    // Obtain a Realm instance
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.delete(AccountBalanceResponseDTO.class);
+                    realm.copyToRealm(accountBalanceResponseDTO);
+                    Log.v("Live1b", "Saving account");
+                    realm.commitTransaction();
+                }
+            }
+
+        }, AccountBalanceResponseDTO.class);
+
+        signalRManager.startConnection();
+    }
+
+    private UserLiveAccount getUserLiveAccount(){
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<UserLiveAccount> query = realm.where(UserLiveAccount.class);
+        RealmResults<UserLiveAccount> result = query.findAll();
+        Log.v("Live1b", "Query result: "+result);
+        return result.first();
     }
 }

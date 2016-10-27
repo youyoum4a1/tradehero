@@ -34,6 +34,7 @@ import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.live1b.LivePositionDTO;
+import com.androidth.general.api.live1b.LiveSecurityCompactDTO;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
@@ -1987,5 +1988,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             Log.d(getTag(), "Exception pushLivePortfolioFragment: " + e);
         }
 
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
     }
 }

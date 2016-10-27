@@ -2,7 +2,10 @@ package com.androidth.general.api.live1b;
 import com.androidth.general.common.persistence.DTO;
 
 import android.os.Bundle;
-public class AccountBalanceResponseDTO extends BaseMessageResponseDTO implements DTO
+
+import io.realm.RealmObject;
+
+public class AccountBalanceResponseDTO extends RealmObject implements DTO
 {
     private static final String BUNDLE_KEY_ACCOUNT_ID = AccountBalanceResponseDTO.class.getName()+ ".account_id";
     private static final String BUNDLE_KEY_CASH_BALANCE = AccountBalanceResponseDTO.class.getName() + ".cash_balance";
@@ -10,11 +13,16 @@ public class AccountBalanceResponseDTO extends BaseMessageResponseDTO implements
     private static final String BUNDLE_KEY_CURRENCY = AccountBalanceResponseDTO.class.getName() + ".currency";
 
 
+//    public String RequestId;
+    public String RequestCompletedAtUtcTicks;
+    public Double ErrorCode;
+//    public String Description;
 
-    public String accountId;
-    public float cashBalance;
-    public float marginAvailable;
-    public String currency;
+
+    public String AccountId;
+    public Double CashBalance;
+    public Double MarginAvailable;
+    public String Currency;
 
     public AccountBalanceResponseDTO()
     {
@@ -23,9 +31,9 @@ public class AccountBalanceResponseDTO extends BaseMessageResponseDTO implements
 
     public AccountBalanceResponseDTO(Bundle bundle)
     {
-        this.accountId = bundle.getString(BUNDLE_KEY_ACCOUNT_ID);
-        this.cashBalance = bundle.getFloat(BUNDLE_KEY_CASH_BALANCE);
-        this.marginAvailable = bundle.getFloat(BUNDLE_KEY_MARGIN_AVAILABLE);
-        this.currency = bundle.getString(BUNDLE_KEY_CURRENCY);
+        this.AccountId = bundle.getString(BUNDLE_KEY_ACCOUNT_ID);
+        this.CashBalance = bundle.getDouble(BUNDLE_KEY_CASH_BALANCE);
+        this.MarginAvailable = bundle.getDouble(BUNDLE_KEY_MARGIN_AVAILABLE);
+        this.Currency = bundle.getString(BUNDLE_KEY_CURRENCY);
     }
 }

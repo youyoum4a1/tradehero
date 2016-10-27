@@ -1,4 +1,4 @@
-package com.androidth.general.api.security;
+package com.androidth.general.api.live1b;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,59 +7,25 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.androidth.general.utils.LiveConstants;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.R;
 import com.androidth.general.api.market.Exchange;
-import com.androidth.general.api.security.compact.BondCompactDTO;
-import com.androidth.general.api.security.compact.CoveredWarrantDTO;
-import com.androidth.general.api.security.compact.DepositoryReceiptDTO;
-import com.androidth.general.api.security.compact.EquityCompactDTO;
-import com.androidth.general.api.security.compact.FundCompactDTO;
-import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
-import com.androidth.general.api.security.compact.IndexSecurityCompactDTO;
-import com.androidth.general.api.security.compact.LockedSecurityCompactDTO;
-import com.androidth.general.api.security.compact.PreferenceShareDTO;
-import com.androidth.general.api.security.compact.PreferredSecurityDTO;
-import com.androidth.general.api.security.compact.StapledSecurityDTO;
-import com.androidth.general.api.security.compact.TradableRightsIssueDTO;
-import com.androidth.general.api.security.compact.UnitCompactDTO;
-import com.androidth.general.api.security.compact.UnitTrustSecurityCompactDTO;
-import com.androidth.general.api.security.compact.WarrantDTO;
+import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.api.security.SecurityIntegerId;
+import com.androidth.general.api.security.TillExchangeOpenDuration;
+import com.androidth.general.common.persistence.DTO;
+import com.androidth.general.utils.LiveConstants;
+
 import java.util.Date;
 
 import io.realm.RealmObject;
 import timber.log.Timber;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        defaultImpl = SecurityCompactDTO.class,
-        property = "securityType")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = LockedSecurityCompactDTO.class, name = LockedSecurityCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = EquityCompactDTO.class, name = EquityCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = FundCompactDTO.class, name = FundCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = WarrantDTO.class, name = WarrantDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = BondCompactDTO.class, name = BondCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = UnitCompactDTO.class, name = UnitCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = TradableRightsIssueDTO.class, name = TradableRightsIssueDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = PreferenceShareDTO.class, name = PreferenceShareDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = DepositoryReceiptDTO.class, name = DepositoryReceiptDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = CoveredWarrantDTO.class, name = CoveredWarrantDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = PreferredSecurityDTO.class, name = PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = StapledSecurityDTO.class, name = StapledSecurityDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = IndexSecurityCompactDTO.class, name = IndexSecurityCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = UnitTrustSecurityCompactDTO.class, name = UnitTrustSecurityCompactDTO.DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = FxSecurityCompactDTO.class, name = FxSecurityCompactDTO.DTO_DESERIALISING_TYPE),
-})
-public class SecurityCompactDTO implements DTO, Parcelable
+public class LiveSecurityCompactDTO extends RealmObject implements DTO, Parcelable
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
-    private final long createdAtNanoTime = System.nanoTime();
+    private long createdAtNanoTime = System.nanoTime();
     public Integer id;
     public String symbol;
     public Integer securityType;
@@ -112,8 +78,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public String secTypeDesc;
 
 
-    public String timeTillNextExchangeOpen;
-    public String timeTillNextExchangeOpenSeconds;
+    protected String timeTillNextExchangeOpen;
+    protected String timeTillNextExchangeOpenSeconds;
 
     public String marker;
     public Boolean isCFD;
@@ -131,12 +97,12 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public String sector;//added
 
     //<editor-fold desc="Constructors">
-    public SecurityCompactDTO()
+    public LiveSecurityCompactDTO()
     {
         super();
     }
 
-    public SecurityCompactDTO(@NonNull SecurityCompactDTO other)
+    public LiveSecurityCompactDTO(@NonNull SecurityCompactDTO other)
     {
         super();
         this.marker = other.marker;
@@ -213,7 +179,8 @@ public class SecurityCompactDTO implements DTO, Parcelable
         return String.format(EXCHANGE_SYMBOL_FORMAT, exchange, symbol);
     }
 
-    @DrawableRes public int getExchangeLogoId()
+    @DrawableRes
+    public int getExchangeLogoId()
     {
         return getExchangeLogoId(R.drawable.default_image);
     }
@@ -349,7 +316,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
      * Parcelable implementations
      * @param other
      */
-    private SecurityCompactDTO(Parcel other){
+    private LiveSecurityCompactDTO(Parcel other){
         this.marker = other.readString();
         this.isCFD = other.readByte() == 1;
         this.minShort = other.readDouble();
@@ -399,15 +366,15 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.timeTillNextExchangeOpen = other.readString();
     }
 
-    public static final Parcelable.Creator<SecurityCompactDTO> CREATOR = new Parcelable.Creator<SecurityCompactDTO>(){
+    public static final Parcelable.Creator<LiveSecurityCompactDTO> CREATOR = new Parcelable.Creator<LiveSecurityCompactDTO>(){
         @Override
-        public SecurityCompactDTO createFromParcel(Parcel source) {
-            return new SecurityCompactDTO(source);
+        public LiveSecurityCompactDTO createFromParcel(Parcel source) {
+            return new LiveSecurityCompactDTO(source);
         }
 
         @Override
-        public SecurityCompactDTO[] newArray(int size) {
-            return new SecurityCompactDTO[size];
+        public LiveSecurityCompactDTO[] newArray(int size) {
+            return new LiveSecurityCompactDTO[size];
         }
     };
     @Override

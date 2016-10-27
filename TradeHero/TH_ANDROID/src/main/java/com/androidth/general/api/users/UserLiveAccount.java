@@ -4,7 +4,9 @@ import com.androidth.general.common.persistence.DTO;
 
 import java.util.Date;
 
-public class UserLiveAccount implements DTO
+import io.realm.RealmObject;
+
+public class UserLiveAccount extends RealmObject implements DTO
 {
     public int id;
     public int userId;

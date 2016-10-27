@@ -70,10 +70,9 @@ public class THApp extends BaseApplication
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);//new
 
-        setupRealm();
-
         context = getApplicationContext();
 
+        setupRealm();
         setupFabricWithTwitter();
         setupTune();
         setupGoogleAnalytics();
@@ -169,8 +168,11 @@ public class THApp extends BaseApplication
     }
 
     private void setupRealm(){
-        Realm.setDefaultConfiguration(new RealmConfiguration.Builder(this)
-                .name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build());
+//        Realm.setDefaultConfiguration(RealmConfiguration.Builder
+//                .name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build());
+        Realm.init(this);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
+        Realm.setDefaultConfiguration(realmConfig);
     }
 
     private void setupFabricWithTwitter(){

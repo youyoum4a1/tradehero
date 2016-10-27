@@ -39,6 +39,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import io.realm.Realm;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -58,8 +59,7 @@ public class SplashActivity extends BaseActivity
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject
-    LiveUserAccountCacheRx liveUserAccountCacheRx;
+    @Inject LiveUserAccountCacheRx liveUserAccountCacheRx;
     @Inject DTOCacheUtilRx dtoCacheUtil;
 
     @Nullable Subscription userProfileSubscription;
@@ -157,7 +157,7 @@ public class SplashActivity extends BaseActivity
                                     public Observable<Pair<UserProfileDTO, UserLiveAccount>> call(Pair<UserBaseKey, UserProfileDTO> userBaseKeyUserProfileDTOPair) {
                                         Log.v("Live1b", "getting live account"+userBaseKeyUserProfileDTOPair.first);
 
-                                        return liveUserAccountCacheRx.get(userBaseKeyUserProfileDTOPair.first)
+                                        return liveUserAccountCacheRx.get(currentUserId.toUserBaseKey())
                                                 .flatMap(new Func1<Pair<UserBaseKey, UserLiveAccount>, Observable<Pair<UserProfileDTO, UserLiveAccount>>>() {
                                                     @Override
                                                     public Observable<Pair<UserProfileDTO, UserLiveAccount>> call(Pair<UserBaseKey, UserLiveAccount> userBaseKeyUserLiveAccountPair) {
@@ -179,7 +179,17 @@ public class SplashActivity extends BaseActivity
                             @Override
                             public void call(Pair<UserProfileDTO, UserLiveAccount> userProfileDTOUserLiveAccountPair) {
                                 dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.first);
+//                                liveUserAccountCacheRx.onNext(currentUserId.toUserBaseKey(), userProfileDTOUserLiveAccountPair.second);
+
+                                Realm realm = Realm.getDefaultInstance();
+                                realm.beginTransaction();
+                                realm.copyToRealm(userProfileDTOUserLiveAccountPair.second);
+                                realm.commitTransaction();
+
+
+                                Log.v("Live1b", "Saving live account: "+currentUserId.toUserBaseKey());
                                 Log.v("Live1b", "Logging live account: "+userProfileDTOUserLiveAccountPair.second);
+
 //                                if(userProfileDTOUserLiveAccountPair.second!=null){
 //                                    dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.second);
 //                                }

@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.common.persistence.DTO;
 
-public class LivePositionDTO implements DTO, Parcelable{
+import io.realm.RealmObject;
+
+public class LivePositionDTO extends RealmObject implements DTO, Parcelable{
 
     public String OrderId;
     public Integer Side;
@@ -19,7 +21,7 @@ public class LivePositionDTO implements DTO, Parcelable{
     public Double StopLoss;
     public Double TakeProfit;
     public Integer PositionResponseType;
-    @Nullable public SecurityCompactDTO SecurityCompactDto;
+    @Nullable public LiveSecurityCompactDTO SecurityCompactDto;
 //    public PositionResponseTypeEnum PositionResponseType;
 //    @JsonProperty("Side")
 //    public OrderSideEnum side;
@@ -46,8 +48,67 @@ public class LivePositionDTO implements DTO, Parcelable{
     {
     }
 
-    public LivePositionDTO(SecurityCompactDTO securityCompactDto) {
-        SecurityCompactDto = securityCompactDto;
+    public LivePositionDTO(SecurityCompactDTO other) {
+//        SecurityCompactDto =  securityCompactDto;
+
+
+        this.SecurityCompactDto.marker = other.marker;
+        this.SecurityCompactDto.isCFD = other.isCFD;
+        this.SecurityCompactDto.minShort = other.minShort;
+        this.SecurityCompactDto.maxShort = other.maxShort;
+        this.SecurityCompactDto.minShort = other.minShort;
+        this.SecurityCompactDto.minLong = other.minLong;
+        this.SecurityCompactDto.maxLong = other.maxLong;
+        this.SecurityCompactDto.sortorderInExchange = other.sortorderInExchange;
+        this.SecurityCompactDto.sortorderOverall = other.sortorderOverall;
+        this.SecurityCompactDto.UnderlyingSecurityId = other.UnderlyingSecurityId;
+        this.SecurityCompactDto.lotSize = other.lotSize;
+
+        this.SecurityCompactDto.id = other.id;
+        this.SecurityCompactDto.symbol = other.symbol;
+        this.SecurityCompactDto.securityType = other.securityType;
+        this.SecurityCompactDto.name = other.name;
+        this.SecurityCompactDto.country = other.country;
+        this.SecurityCompactDto.exchangeId = other.exchangeId;
+        this.SecurityCompactDto.exchange = other.exchange;
+        this.SecurityCompactDto.yahooSymbol = other.yahooSymbol;
+        this.SecurityCompactDto.reutersSymbol = other.reutersSymbol;
+        this.SecurityCompactDto.chartDataSource = other.chartDataSource;
+        this.SecurityCompactDto.currencyDisplay = other.currencyDisplay;
+        this.SecurityCompactDto.currencyISO = other.currencyISO;
+        this.SecurityCompactDto.marketCap = other.marketCap;
+        this.SecurityCompactDto.lastPrice = other.lastPrice;
+        this.SecurityCompactDto.risePercent = other.risePercent;
+        this.SecurityCompactDto.imageBlobUrl = other.imageBlobUrl;
+        this.SecurityCompactDto.lastPriceDateEST = other.lastPriceDateEST;
+        this.SecurityCompactDto.lastPriceDateAndTimeUtc = other.lastPriceDateAndTimeUtc;
+        this.SecurityCompactDto.toUSDRate = other.toUSDRate;
+        this.SecurityCompactDto.toUSDRateDate = other.toUSDRateDate;
+        this.SecurityCompactDto.active = other.active;
+        this.SecurityCompactDto.askPrice = other.askPrice;
+        this.SecurityCompactDto.bidPrice = other.bidPrice;
+        this.SecurityCompactDto.volume = other.volume;
+        this.SecurityCompactDto.averageDailyVolume = other.averageDailyVolume;
+        this.SecurityCompactDto.previousClose = other.previousClose;
+        this.SecurityCompactDto.open = other.open;
+        this.SecurityCompactDto.high = other.high;
+        this.SecurityCompactDto.low = other.low;
+        this.SecurityCompactDto.pe = other.pe;
+        this.SecurityCompactDto.eps = other.eps;
+        this.SecurityCompactDto.marketOpen = other.marketOpen;
+        this.SecurityCompactDto.pc50DMA = other.pc50DMA;
+        this.SecurityCompactDto.pc200DMA = other.pc200DMA;
+        this.SecurityCompactDto.exchangeTimezoneMsftName = other.exchangeTimezoneMsftName;
+        this.SecurityCompactDto.exchangeOpeningTimeLocal = other.exchangeOpeningTimeLocal;
+        this.SecurityCompactDto.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
+        this.SecurityCompactDto.timeTillNextExchangeOpenSeconds = other.timeTillNextExchangeOpenSeconds;
+        this.SecurityCompactDto.timeTillNextExchangeOpen = other.timeTillNextExchangeOpen;
+        this.SecurityCompactDto.secTypeDesc = other.secTypeDesc;
+
+        this.SecurityCompactDto.id_ay = other.id_ay;
+        this.SecurityCompactDto.symbol_ay = other.symbol_ay;
+        this.SecurityCompactDto.parentCurrencyISO = other.parentCurrencyISO;
+
     }
 
     @Override
