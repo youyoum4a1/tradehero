@@ -50,7 +50,8 @@ public class LivePositionDTO extends RealmObject implements DTO, Parcelable{
 
     public LivePositionDTO(SecurityCompactDTO other) {
 //        SecurityCompactDto =  securityCompactDto;
-
+        if(this.SecurityCompactDto==null)
+            this.SecurityCompactDto = new LiveSecurityCompactDTO();
 
         this.SecurityCompactDto.marker = other.marker;
         this.SecurityCompactDto.isCFD = other.isCFD;
