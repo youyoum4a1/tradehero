@@ -167,8 +167,6 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected TextView mCommentsEditText;
     @Bind(R.id.dialog_btn_confirm)
     protected Button mConfirm;
-    @Bind(R.id.text_buy_sell_summary)
-    protected TextView mBuySellSummary;
 //    @Bind(R.id.portfolio_spinner)
 //    protected Spinner mPortfolioSpinner;
 //    @Bind(R.id.cash_or_stock_left)
@@ -347,11 +345,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
         if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
-            mBuySellSummary.setText(R.string.buy_sell_summary_buy);
             isBuy = false;
         }else if (this.getClass() == BuyStockFragment.class || this.getClass() == BuyFXFragment.class) {
             mConfirm.setText(R.string.buy_sell_confirm_buy_now);
-            mBuySellSummary.setText(R.string.buy_sell_summary_sell);
             isBuy = true;
         }//else, it's "Confirm"
 

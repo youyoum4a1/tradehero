@@ -19,8 +19,6 @@
   <string name="buy_sell_fx_100" translatable="false">ALL</string>
   <string name="buy_sell_button_buy">Buy @ %1$s %2$s</string>
   <string name="buy_sell_button_sell">Sell @ %1$s %2$s</string>
-  <string name="buy_sell_summary_buy">You are buying</string>
-  <string name="buy_sell_summary_sell">You are selling</string>
   <string name="buy_sell_button_last_price">Last @ %1$s %2$s</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
