@@ -444,6 +444,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:text="You are buying"
+                android:id="@+id/text_buy_sell_summary"
                 android:layout_column="0"
                 />
 
