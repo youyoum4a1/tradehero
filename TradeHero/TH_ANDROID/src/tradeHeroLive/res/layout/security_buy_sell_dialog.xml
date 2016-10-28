@@ -445,7 +445,7 @@
                 android:gravity="left"
                 android:text="You are buying"
                 android:layout_column="0"
-                />
+                android:id="@+id/text_buy_sell_summary" />
 
             <TextView
                 android:id="@+id/dialog_buy_sell_security_symbol"
@@ -644,17 +644,18 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     />
-                <Button
-                    android:id="@+id/dialog_btn_confirm"
-                    style="@style/TH.Button.Inverse"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:minHeight="@dimen/clickable_element_min_dimen"
-                    android:text="Buy"
-                    android:gravity="center"
-                    android:background="@drawable/security_dialog_btn_confirm"
 
-                    />
+            <Button
+                android:id="@+id/dialog_btn_confirm"
+                style="@style/TH.Button.Inverse"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="Buy"
+                android:gravity="center"
+                android:background="@drawable/security_dialog_btn_confirm"
+
+                />
 
         </RelativeLayout>
 
