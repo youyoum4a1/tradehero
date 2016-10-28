@@ -68,6 +68,7 @@ public class SplashActivity extends BaseActivity
     String uaMessage;
 
     public static final String DEEP_LINK_PROVIDERS_ENROLL = "providers-enroll";
+    public static final String DEEP_LINK_KYC = "kyc";
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -202,7 +203,9 @@ public class SplashActivity extends BaseActivity
         if (DEEP_LINK_PROVIDERS_ENROLL.equals(host) && uaMessage!=null) {
             ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
 //            thRouter.open(deepLink.getPath(), getApplicationContext());
-        }else{
+        } else if (DEEP_LINK_KYC.equals(host) && uaMessage!=null) {
+            ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
+        } else {
             if(isFromPush && uaMessage!=null){
                 ActivityHelper.launchDashboardWithFinish(this, deepLink, uaMessage);
             }

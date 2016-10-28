@@ -54,12 +54,16 @@ import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 
+//@Routable({
+//        "enrollchallenge/:providerId"
+//})
 @Routable({
-        "enrollchallenge/:providerId"
+        "kyc/:step/:providerId"
 })
 public class LiveSignUpMainFragment extends BaseFragment
 {
     @RouteProperty("providerId") protected Integer enrollProviderId;
+    @RouteProperty("step") protected Integer stepToGo;
     @Inject ProviderCacheRx providerCacheRx;
     @Inject SignUpLivePagerAdapterFactory signUpLivePagerAdapterFactory;
     @Inject Toolbar toolbar;

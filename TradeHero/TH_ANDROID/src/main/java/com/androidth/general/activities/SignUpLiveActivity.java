@@ -24,6 +24,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.tradehero.route.Routable;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,6 +60,8 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        thRouter.inject(this);
     }
 
     @NonNull @Override protected Bundle getInitialBundle() {
