@@ -34,6 +34,7 @@ import com.androidth.general.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.LiveRewardWidget;
@@ -57,13 +58,11 @@ import rx.schedulers.Schedulers;
 //@Routable({
 //        "enrollchallenge/:providerId"
 //})
-@Routable({
-        "kyc/:step/:providerId"
-})
+//@Routable({
+//        "kyc/:step/:providerId"
+//})
 public class LiveSignUpMainFragment extends BaseFragment
 {
-    @RouteProperty("providerId") protected Integer enrollProviderId;
-    @RouteProperty("step") protected Integer stepToGo;
     @Inject ProviderCacheRx providerCacheRx;
     @Inject SignUpLivePagerAdapterFactory signUpLivePagerAdapterFactory;
     @Inject Toolbar toolbar;
@@ -87,6 +86,11 @@ public class LiveSignUpMainFragment extends BaseFragment
         args.putInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerId);
     }
 
+    public static void putStepToGo(@NonNull Bundle args, int stepToGo)
+    {
+        args.putInt(SignUpLiveActivity.KYC_CORRESPONDENT_STEP_TO_GO, stepToGo);
+    }
+
     public static void isToJoinCompetition(boolean flag)
     {
         isToJoinCompetition = flag;
@@ -94,16 +98,22 @@ public class LiveSignUpMainFragment extends BaseFragment
 
     private static int getProviderId(@NonNull Bundle args)
     {
-        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 1);
     }
 
+    private static int getStepToGo(@NonNull Bundle args)
+    {
+        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_STEP_TO_GO, 0);
+    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        thRouter.inject(this);
+
         inflater.inflate(R.menu.settings_menu, menu);
-        providerCacheRx.get(new ProviderId(getProviderId(getArguments())))
+
+        Integer providerId = getProviderId(getArguments());
+        providerCacheRx.get(new ProviderId(providerId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
@@ -117,6 +127,7 @@ public class LiveSignUpMainFragment extends BaseFragment
 
                 isEnrolled = providerDTO.isUserEnrolled;
                 hexColor = providerDTO.hexColor;
+
                 setActionBarTitle("");
                 setActionBarColor(providerDTO.hexColor);
                 setActionBarImage(notificationLogoUrl);
@@ -166,10 +177,6 @@ public class LiveSignUpMainFragment extends BaseFragment
                             @Override public void call(PagerAdapter pagerAdapter)
                             {
                                 viewPager.setAdapter(pagerAdapter);
-                                if(!isToJoinCompetition){
-                                    //if already joined, show the second page
-                                    viewPager.setCurrentItem(1);
-                                }
                                 tabLayout.setDistributeEvenly(true);
                                 tabLayout.setViewPager(viewPager);
                             }
@@ -223,6 +230,11 @@ public class LiveSignUpMainFragment extends BaseFragment
                         new TimberOnErrorAction1("Failed to listen to prev / next buttons")));
 
         pagerAdapterObservable.connect();
+        thRouter.inject(this);
+
+        if(!isToJoinCompetition){
+            viewPager.setCurrentItem(getStepToGo(getArguments()));
+        }
     }
 
     @Override public void onDestroyView()

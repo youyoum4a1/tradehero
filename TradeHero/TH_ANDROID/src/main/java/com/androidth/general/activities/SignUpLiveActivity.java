@@ -3,6 +3,7 @@ package com.androidth.general.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -20,20 +21,29 @@ import android.util.Log;
 import com.androidth.general.R;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+import com.androidth.general.receivers.CustomAirshipReceiver;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.io.IOException;
 import java.util.List;
 
 import timber.log.Timber;
 
+@Routable({
+        "kyc/:step/:providerId"
+})
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
+    @RouteProperty("providerId") protected Integer deepLinkProviderId;
+    @RouteProperty("step") protected Integer stepToGo;
+
     public static final String KYC_CORRESPONDENT_PROVIDER_ID = "KYC.providerId";
+    public static final String KYC_CORRESPONDENT_STEP_TO_GO = "KYC.stepToGo";
     public static final String KYC_CORRESPONDENT_JOIN_COMPETITION = "KYC.joinCompetition";
     protected String currentCountry;
 
@@ -64,14 +74,36 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
         thRouter.inject(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkIfFromPush(getIntent());
+    }
+
     @NonNull @Override protected Bundle getInitialBundle() {
         Bundle args = super.getInitialBundle();
+        thRouter.inject(this);
 
         int providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+
+        if (providerId == 0 && deepLinkProviderId != null) {
+            providerId = deepLinkProviderId;
+        }
+
         boolean isJoining = getIntent().getBooleanExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);
 
         LiveSignUpMainFragment.putProviderId(args, providerId);
         LiveSignUpMainFragment.isToJoinCompetition(isJoining);
+
+        if (stepToGo != null) {
+            stepToGo -= 1;
+
+            if (stepToGo < 0 || stepToGo > 4) {
+                stepToGo = 0;
+            }
+            LiveSignUpMainFragment.putStepToGo(args, stepToGo);
+        }
 
         return args;
     }
@@ -188,6 +220,19 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
                 break;
             default:
                 break;
+        }
+    }
+
+    // Looks like any Activity want to handle deeplink need to have this method, should create a generic one for all activity? - James
+    private void checkIfFromPush(Intent intent){
+        if(intent!=null
+                && intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
+
+            String message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+            if(message!=null && !message.isEmpty()){
+                CustomAirshipReceiver.createDialog(this, message);
+                getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+            }
         }
     }
 }
