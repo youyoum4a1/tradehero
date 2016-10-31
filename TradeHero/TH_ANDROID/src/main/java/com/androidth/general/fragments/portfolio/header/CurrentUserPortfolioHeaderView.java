@@ -3,20 +3,25 @@ package com.androidth.general.fragments.portfolio.header;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.models.number.THSignedPercentage;
+import com.androidth.general.utils.LiveConstants;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import io.realm.Realm;
 import rx.Observable;
 
 /**
@@ -27,7 +32,10 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     protected PortfolioCompactDTO portfolioCompactDTO;
 
     @Bind(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
+    @Bind(R.id.header_portfolio_total_value_text) protected TextView totalValueText;
+
     @Bind(R.id.header_portfolio_cash_value) @Nullable protected TextView cashValueTextView;
+    @Bind(R.id.header_portfolio_cash_value_text) protected TextView cashValueText;
     @Bind(R.id.roi_value) @Nullable protected TextView roiTextView;
     @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
 
@@ -105,12 +113,26 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
     public void displayTotalValueTextView()
     {
-        if (totalValueTextView != null)
-        {
-            if (portfolioCompactDTO != null)
+
+        if (totalValueTextView != null) {
+            if(!LiveConstants.isInLiveMode) {
+                if (portfolioCompactDTO != null) {
+                    String valueString = String.format("%s %,.0f", this.portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
+                    totalValueTextView.setText(valueString);
+                    YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
+                }
+            }
+            else
             {
-                String valueString = String.format("%s %,.0f", this.portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
+                Realm realm = Realm.getDefaultInstance();
+                AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
+                        .findFirst();
+
+                String valueString = String.format("%s %,.0f",
+                        accountBalanceResponseDTO.Currency,
+                        accountBalanceResponseDTO.CashBalance);
                 totalValueTextView.setText(valueString);
+                totalValueText.setText("Cash Balance");
                 YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
             }
         }
@@ -118,12 +140,25 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
     public void displayCashValueTextView()
     {
-        if (cashValueTextView != null)
-        {
-            if (portfolioCompactDTO != null)
+        if (cashValueTextView != null) {
+            if(!LiveConstants.isInLiveMode) {
+                if (portfolioCompactDTO != null) {
+                    String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalance);
+                    cashValueTextView.setText(cashString);
+                    YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
+                }
+            }
+            else
             {
-                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalance);
-                cashValueTextView.setText(cashString);
+                Realm realm = Realm.getDefaultInstance();
+                AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
+                        .findFirst();
+
+                String valueString = String.format("%s %,.0f",
+                        accountBalanceResponseDTO.Currency,
+                        accountBalanceResponseDTO.MarginAvailable);
+                cashValueTextView.setText(valueString);
+                cashValueText.setText("Margin Available");
                 YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
             }
         }

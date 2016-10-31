@@ -29,6 +29,7 @@
             android:layout_marginRight="@dimen/margin_xsmall"
             android:layout_marginEnd="@dimen/margin_xsmall"
             android:text="@string/portfolio_header_total_value"
+            android:id="@+id/header_portfolio_total_value_text"
             android:gravity="end"
             android:textColor="@color/portfolio_header_text_color"
             style="@style/TH.Caption.Portfolio"
@@ -54,6 +55,7 @@
             android:layout_marginRight="@dimen/margin_xsmall"
             android:layout_marginEnd="@dimen/margin_xsmall"
             android:text="@string/portfolio_header_cash_value"
+            android:id="@+id/header_portfolio_cash_value_text"
             android:gravity="end"
             android:textColor="@color/portfolio_header_text_color"
             style="@style/TH.Caption.Portfolio"/>
