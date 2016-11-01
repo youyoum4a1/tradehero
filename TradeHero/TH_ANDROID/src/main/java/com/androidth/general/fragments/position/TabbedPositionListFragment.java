@@ -518,7 +518,7 @@ public class TabbedPositionListFragment extends DashboardFragment
 
     private void userLoginLoader()
     {
-        if(LiveConstants.isInLiveMode && LiveConstants.hasLiveAccount)
+        if(LiveConstants.isInLiveMode)
         {
             if(getPositionsSubscription==null||getPositionsSubscription.isUnsubscribed()) {
                 getPositionsSubscription = live1BServiceWrapper.getPositions()

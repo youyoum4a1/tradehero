@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.BuildConfig;
@@ -60,6 +61,7 @@ import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTOList;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
+import com.androidth.general.network.service.Live1BServiceWrapper;
 import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.live.CompositeExchangeSecurityCacheRx;
 import com.androidth.general.persistence.market.ExchangeCompactListCacheRx;
@@ -95,8 +97,10 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
+import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -151,6 +155,10 @@ public class TrendingMainFragment extends DashboardFragment
     private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
     private BehaviorSubject<Boolean> virtualLiveModeSubject;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
+
+    private Subscription getPositionsSubscription;
+    @Inject
+    Live1BServiceWrapper live1BServiceWrapper;
 
     //Live-related
     private UserLiveAccount userLiveAccount;
@@ -340,6 +348,10 @@ public class TrendingMainFragment extends DashboardFragment
         GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_TRENDING_SCREEN);
 
         Log.d("TMF.java", "onResume: i am resuming....");
+        if(LiveConstants.isInLiveMode) {
+            userLoginLoader();
+            startLiveSignalR();
+        }
     }
 
     @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
@@ -1039,9 +1051,9 @@ public class TrendingMainFragment extends DashboardFragment
     }
 
     private void startLiveSignalR(){
-        if(signalRManager!=null){
-            return;
-        }
+//        if(signalRManager!=null){
+//            return;
+//        } // need to relisten??
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
             @Override
@@ -1121,5 +1133,49 @@ public class TrendingMainFragment extends DashboardFragment
         RealmResults<UserLiveAccount> result = query.findAll();
         Log.v("Live1b", "Query result: "+result);
         return result.first();
+    }
+
+    private void userLoginLoader()
+    {
+        if(LiveConstants.isInLiveMode)
+        {
+            if(getPositionsSubscription==null||getPositionsSubscription.isUnsubscribed()) {
+                getPositionsSubscription = live1BServiceWrapper.getPositions()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                if (throwable != null) {
+                                    if (throwable instanceof RetrofitError) {
+
+                                        RetrofitError error = (RetrofitError) throwable;
+                                        Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
+                                        if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
+
+                                            LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+
+                                        } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
+                                            Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                        else {
+                                            Toast.makeText(getContext(), "Error in stock purchase: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
+                                            Log.d("PLF.java", "Error: " + error.getResponse() + " " + error.getBody().toString() + " --URL--> " + error.getResponse().getUrl());
+
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
+                        .subscribe(new Action1<String>() {
+                                       @Override
+                                       public void call(String getPositions) {
+                                           Log.d("PLF.java", "Success getPositions, result: " + getPositions);
+                                       }
+                                   }
+
+                                , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+            }
+        }
+
     }
 }

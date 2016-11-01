@@ -18,8 +18,14 @@ public class PositionsResponseDTO extends RealmObject {
 
     @Override
     public String toString() {
+        String positionListString = "";
+
+        for(LivePositionDTO pos : Positions)
+        {
+            positionListString = positionListString + ",LivePositionDTO{Product=" + pos.Product.toString() + ", OrderId=" + pos.OrderId + "}";
+        }
         return "PositionsResponseDTO{" +
-                "Positions=" + Positions +
+                "Positions=" + positionListString +
                 ", IsFullReport=" + IsFullReport +
                 '}';
     }
