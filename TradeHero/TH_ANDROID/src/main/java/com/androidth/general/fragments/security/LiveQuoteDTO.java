@@ -8,11 +8,9 @@ import com.androidth.general.api.RawResponseKeeper;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * Created by ayushnvijay on 6/24/16.
- */
+import io.realm.RealmObject;
 
-public class LiveQuoteDTO implements RawResponseKeeper, Cloneable{
+public class LiveQuoteDTO extends RealmObject implements RawResponseKeeper, Cloneable{
 
     public LiveQuoteDTO() {
         super();
@@ -34,6 +32,8 @@ public class LiveQuoteDTO implements RawResponseKeeper, Cloneable{
     public Double v;//Volume
 
     public String l;
+
+    public String n;
 
     @Nullable
     public double usdr;//toUSDRate
@@ -288,5 +288,22 @@ public class LiveQuoteDTO implements RawResponseKeeper, Cloneable{
         return cloned;
     }
 
-
+    @Override
+    public String toString() {
+        return "LiveQuoteDTO{" +
+                "id=" + id +
+                ", a=" + a +
+                ", b=" + b +
+                ", v=" + v +
+                ", l='" + l + '\'' +
+                ", n='" + n + '\'' +
+                ", usdr=" + usdr +
+                ", ciso='" + ciso + '\'' +
+                ", cd='" + cd + '\'' +
+                ", g='" + g + '\'' +
+                ", rp=" + rp +
+                ", lp=" + lp +
+                ", rawResponse='" + rawResponse + '\'' +
+                '}';
+    }
 }

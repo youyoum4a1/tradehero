@@ -28,6 +28,7 @@ import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.exception.THException;
@@ -70,6 +71,7 @@ import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
+import com.facebook.internal.LockOnGetVariable;
 import com.tradehero.route.RouteProperty;
 
 import java.util.concurrent.TimeUnit;
@@ -79,6 +81,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import rx.Observable;
 import rx.Subscription;
@@ -474,6 +477,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_BUY_SELL);
             }
         }
+        signalRBuySellPrices(); // reset FX rate...
     }
 
     //<editor-fold desc="ActionBar">
@@ -535,59 +539,77 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     public void signalRBuySellPrices(){
 
         onStopSubscriptions.add(securityObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(securityDTO ->{
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(securityDTO ->{
+                // everytime a user changes exchange location and UI is resume, we need to reset the FX request to match new location
+                if(signalRManager==null) {
+                    signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
+                            Integer.toString(securityCompactDTO.getResourceId()));
+                }
+                else{
+                    if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null)
+                    {
+                        Log.v("SignalR", "Invoking updatequote");
+                        signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
-                    if(signalRManager==null){
-                        if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null){
-                            signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
-
-                            Log.v("SignalR", "Invoking updatequote");
-                            signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
-
-                                @Override
-                                public void run(SignatureContainer2 signatureContainer2) {
-                                    LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
-                                    if (signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
-                                        return;
-                                    } else {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-//                                                if(liveQuote!=null) {
+                            @Override
+                            public void run(SignatureContainer2 signatureContainer2) {
+                                LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
+                                if (signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
+                                    return;
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                          // need to differentiate live quote between FX and the one for the security the user is buying
+                                            if(liveQuote!=null && liveQuote.n!=null) {
+                                                if (!liveQuote.n.toLowerCase().contains("outright")) // TODO find a better condition
+                                                {
                                                     displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
                                                     if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
                                                         quoteSubscription.unsubscribe();
-//                                                }
+                                                }
+
+                                                // TODO Need to ask JEFF how to store between LIVE & VIRTUAL portfolio 
+                                                // at the moment just hard code (Diana VIRTUAL currency USD, LIVE currency GBP 
+                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote);
+                                                portfolioCompactDTO.currencyISO = "GBP";
+                                                if(portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                    return;
+                                                if (liveQuote.n.contains(portfolioCompactDTO.currencyISO) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
+                                                    Realm realm = Realm.getDefaultInstance();
+                                                    realm.beginTransaction();
+                                                    realm.delete(LiveQuoteDTO.class);
+                                                    realm.copyToRealm(liveQuote);
+                                                    realm.commitTransaction();
+
+                                                }
                                             }
-                                        });
+                                        }
+                                    });
 
-                                    }
                                 }
-                            }, SignatureContainer2.class);
+                            }
+                        }, SignatureContainer2.class);
 
-                            Log.v("SignalR", "Invoking fx");
-                            signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_FX_RATE, new String[]{"SGD", "EUR"});
-                            Log.v("SignalR", "Invoked fx");
-                            signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_FX_RATE, new SubscriptionHandler1<String>() {
-                                @Override
-                                public void run(String s) {
-                                    Log.v("Buysell", "FX = "+s);
-                                }
-                            }, String.class);
 
-                            signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.getResourceId()));
-
-                        }
+                        // TODO Need to ask JEFF how to store between LIVE & VIRTUAL portfolio 
+                        // at the moment just hard code (Diana VIRTUAL currency USD, LIVE currency GBP 
+                        portfolioCompactDTO.currencyISO = "GBP";
+                        Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + portfolioCompactDTO.currencyISO + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
+                        signalRManager.startConnectionNoUserID(LiveNetworkConstants.PROXY_METHOD_FX_RATE,
+                                new String[] { portfolioCompactDTO.currencyISO, securityCompactDTO.currencyISO } );
 
                     }
+                }
 
 //            signalRManager.getConnection().start().done(actionVoid -> {
 //                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
 //            });
 
-                }, new TimberOnErrorAction1("SignalR prices error")));
+            }, new TimberOnErrorAction1("SignalR prices error")));
     }
 
     @NonNull protected Requisite createRequisite()

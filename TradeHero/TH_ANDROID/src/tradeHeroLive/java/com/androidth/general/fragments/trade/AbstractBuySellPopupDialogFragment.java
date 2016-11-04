@@ -27,6 +27,7 @@ import com.android.internal.util.Predicate;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
@@ -934,13 +935,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         Realm realm = Realm.getDefaultInstance();
         AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
                 .findFirst();
-
-        portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
-        portfolioCompactDTO.marginAvailableRefCcy = accountBalanceResponseDTO.MarginAvailable;
-        portfolioCompactDTO.currencyISO = accountBalanceResponseDTO.Currency;
-        portfolioCompactDTO.id = currentUserId.get();
-        portfolioCompactDTO.currencyDisplay = accountBalanceResponseDTO.Currency;
-
+        if(accountBalanceResponseDTO!=null) {
+            portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
+            portfolioCompactDTO.marginAvailableRefCcy = accountBalanceResponseDTO.MarginAvailable;
+            portfolioCompactDTO.currencyISO = accountBalanceResponseDTO.Currency;
+            portfolioCompactDTO.id = currentUserId.get();
+            portfolioCompactDTO.currencyDisplay = accountBalanceResponseDTO.Currency;
+        }
         return Observable.just(portfolioCompactDTO);
     }
 
@@ -1019,7 +1020,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     // get list of live positions user has available
-    @NonNull
+
     protected Observable<LivePositionDTO> getLivePositionObservable()
     {
 //        // Obtain a Realm instance
@@ -1031,8 +1032,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
 
         Realm realm = Realm.getDefaultInstance();
+
         PositionsResponseDTO positionResponseDTO = realm.where(PositionsResponseDTO.class).findFirst();
-        return Observable.from(positionResponseDTO.Positions);
+        if(positionResponseDTO!=null)
+            return Observable.from(positionResponseDTO.Positions);
+        else
+            return Observable.just(null);
 
 
 //                .findAllAsync()
@@ -1497,9 +1502,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
         else
         {
-            // TODO change 1 to the FX rate!!
-            double remaining = portfolioCompactDTO.cashBalance * 1;
-            remaining = remaining - (quantity * quoteDTO.getAskPrice());
+            double fxRate = getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
+
+            Log.v("live1b","getLiveTradeValueText fx rate from realm : " + fxRate);
+            double tradeValueInUserCurrency = (quantity * quoteDTO.getAskPrice()) / fxRate;
+            double remaining = portfolioCompactDTO.cashBalance - tradeValueInUserCurrency;
+
             THSignedNumber thSignedNumber = THSignedNumber
                     .builder(remaining)
                     .withOutSign()
@@ -1509,6 +1517,30 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
         return cashLeftText;
     }
+
+    public Double getFXRate(String myCurrencyISO, String securityCurrency)
+    {
+
+        if(myCurrencyISO.equals(securityCurrency))
+            return 1.0;
+        try {
+            Realm realm = Realm.getDefaultInstance();
+            LiveQuoteDTO fxRate = realm.where(LiveQuoteDTO.class).findFirst();
+
+            if (fxRate != null) {
+                if (fxRate.n.indexOf(myCurrencyISO) == 0) // GBP_SGD is the amount to multiply to convert GBP to SGD, SGD_GBP is the amount to multiply to convert SGD to GBP
+                    return fxRate.a; // if myCurrency is left, give ask price
+                else
+                    return 1 / fxRate.b; // if myCurrency is right, give 1/bidPrice
+            }
+        }
+        catch(Exception ex) {
+
+            Log.v("live1b", "Error in getFXRate " + ex.toString());
+        }
+        return 1.0;
+    }
+
     @NonNull
     public String getRemainingWhenBuy(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
@@ -1589,10 +1621,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             @Nullable Integer quantity) {
         String valueText = "-";
         if (portfolioCompactDTO != null && quoteDTO != null && quantity != null) {
-            // TODO CURRENCY to be calcuated... in LIVE
-            double value = quantity * 1;
-            value = value * quoteDTO.getAskPrice();
-            THSignedNumber thTradeValue = THSignedNumber.builder(value)
+
+            double fxRate = getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
+            Log.v("live1b","getLiveTradeValueText fx rate from realm : " + fxRate);
+            double valueInUserCurrency = (quantity * quoteDTO.getAskPrice()) / fxRate;
+
+            THSignedNumber thTradeValue = THSignedNumber.builder(valueInUserCurrency)
                     .withOutSign()
                     .build();
             valueText = thTradeValue.toString();

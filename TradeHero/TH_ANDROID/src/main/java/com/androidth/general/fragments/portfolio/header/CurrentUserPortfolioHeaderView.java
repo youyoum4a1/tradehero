@@ -127,11 +127,18 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                 Realm realm = Realm.getDefaultInstance();
                 AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
                         .findFirst();
+                if(accountBalanceResponseDTO!=null) {
+                    String valueString = String.format("%s %,.0f",
+                            accountBalanceResponseDTO.Currency,
+                            accountBalanceResponseDTO.CashBalance);
 
-                String valueString = String.format("%s %,.0f",
-                        accountBalanceResponseDTO.Currency,
-                        accountBalanceResponseDTO.CashBalance);
-                totalValueTextView.setText(valueString);
+                    totalValueTextView.setText(valueString);
+
+                }
+                else
+                {
+                    totalValueTextView.setText("0.00");
+                }
                 totalValueText.setText("Cash Balance");
                 YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
             }
@@ -154,10 +161,17 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                 AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
                         .findFirst();
 
-                String valueString = String.format("%s %,.0f",
-                        accountBalanceResponseDTO.Currency,
-                        accountBalanceResponseDTO.MarginAvailable);
-                cashValueTextView.setText(valueString);
+                if(accountBalanceResponseDTO!=null) {
+                    String valueString = String.format("%s %,.0f",
+                            accountBalanceResponseDTO.Currency,
+                            accountBalanceResponseDTO.MarginAvailable);
+                    cashValueTextView.setText(valueString);
+                }
+                else
+                {
+                    cashValueTextView.setText("0.00");
+                }
+
                 cashValueText.setText("Margin Available");
                 YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
             }
