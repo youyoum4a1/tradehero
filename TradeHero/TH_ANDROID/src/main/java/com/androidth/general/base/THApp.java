@@ -8,6 +8,7 @@ import android.util.Log;
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityBuildTypeUtil;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
@@ -72,7 +73,8 @@ public class THApp extends BaseApplication
 
         context = getApplicationContext();
 
-        setupRealm();
+        RealmInstance.initialise(context);
+
         setupFabricWithTwitter();
         setupTune();
         setupGoogleAnalytics();
@@ -165,14 +167,6 @@ public class THApp extends BaseApplication
     public static THApp context()
     {
         return (THApp) context;
-    }
-
-    private void setupRealm(){
-//        Realm.setDefaultConfiguration(RealmConfiguration.Builder
-//                .name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build());
-        Realm.init(this);
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
-        Realm.setDefaultConfiguration(realmConfig);
     }
 
     private void setupFabricWithTwitter(){

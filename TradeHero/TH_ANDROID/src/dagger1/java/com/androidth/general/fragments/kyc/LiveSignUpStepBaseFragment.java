@@ -15,6 +15,7 @@ import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.kyc.realmDB.CompetitionSteps;
@@ -49,7 +50,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @Bind(R.id.btn_prev) @Nullable protected View btnPrev;
     @Bind(R.id.btn_next) @Nullable protected View btnNext;
-    protected Realm realm;
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
@@ -65,30 +65,47 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     }
 
     protected void updateDB(Boolean complete, Integer step){
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    RealmQuery query = realm.where(CompetitionSteps.class);
-                    RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
-                    //results will always have one row
-                    if(results.size()==0){
-                        CompetitionSteps competitionSteps = realm.createObject(CompetitionSteps.class);
-                        competitionSteps.step = step;
-                        competitionSteps.providerId = getProviderId(getArguments());
-                        competitionSteps.complete = complete;
-                    }
-                    else {
-                        results.get(0).complete = complete;
-                    }
-                }
-            });
+
+        RealmQuery query = RealmInstance.getQuery(CompetitionSteps.class);
+        RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
+
+        if(results.size()==0){
+            CompetitionSteps competitionSteps = new CompetitionSteps();
+            competitionSteps.step = step;
+            competitionSteps.providerId = getProviderId(getArguments());
+            competitionSteps.complete = complete;
+
+            RealmInstance.copyToRealm(competitionSteps);
+
+        }else{
+            results.get(0).complete = complete;
+        }
+
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                RealmQuery query = realm.where(CompetitionSteps.class);
+//                RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
+//                //results will always have one row
+//                if(results.size()==0){
+//                    CompetitionSteps competitionSteps = realm.createObject(CompetitionSteps.class);
+//                    competitionSteps.step = step;
+//                    competitionSteps.providerId = getProviderId(getArguments());
+//                    competitionSteps.complete = complete;
+//                }
+//                else {
+//                    results.get(0).complete = complete;
+//                }
+//            }
+//        });
     }
 
     protected ArrayList<CompetitionSteps> queryStatusesFromDB(int providerId){
 
-        RealmQuery query = realm.where(CompetitionSteps.class);
+//        RealmQuery query = realm.where(CompetitionSteps.class);
+        RealmQuery query = RealmInstance.getQuery(CompetitionSteps.class);
         RealmResults<CompetitionSteps> results = query.equalTo("providerId", providerId).findAll();
-        ArrayList<CompetitionSteps> statusResults = new ArrayList<CompetitionSteps>();
+        ArrayList<CompetitionSteps> statusResults = new ArrayList<>();
         for(CompetitionSteps step: results){
             statusResults.add(step);
         }
@@ -131,7 +148,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        realm = Realm.getDefaultInstance();
+//        realm = Realm.getDefaultInstance();
         try{
             ButterKnife.bind(this, view);
         }catch (Exception e){
@@ -206,7 +223,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     {
         brokerSituationObservable = null;
         kycOptionsObservable = null;
-        realm.close();
         super.onDestroyView();
     }
 

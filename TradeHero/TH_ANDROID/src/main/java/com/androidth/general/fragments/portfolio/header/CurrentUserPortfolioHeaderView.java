@@ -13,6 +13,7 @@ import com.androidth.general.R;
 import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.models.number.THSignedPercentage;
 import com.androidth.general.utils.LiveConstants;
 import com.daimajia.androidanimations.library.Techniques;
@@ -21,7 +22,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import io.realm.Realm;
 import rx.Observable;
 
 /**
@@ -124,9 +124,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
             }
             else
             {
-                Realm realm = Realm.getDefaultInstance();
-                AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
-                        .findFirst();
+                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
                 if(accountBalanceResponseDTO!=null) {
                     String valueString = String.format("%s %,.0f",
                             accountBalanceResponseDTO.Currency,
@@ -157,9 +155,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
             }
             else
             {
-                Realm realm = Realm.getDefaultInstance();
-                AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
-                        .findFirst();
+                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
 
                 if(accountBalanceResponseDTO!=null) {
                     String valueString = String.format("%s %,.0f",

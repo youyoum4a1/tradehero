@@ -16,6 +16,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
 import com.androidth.general.persistence.prefs.AuthHeader;
@@ -39,8 +40,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
-import io.realm.Realm;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -182,14 +181,7 @@ public class SplashActivity extends BaseActivity
                                 dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.first);
 //                                liveUserAccountCacheRx.onNext(currentUserId.toUserBaseKey(), userProfileDTOUserLiveAccountPair.second);
 
-                                Realm realm = Realm.getDefaultInstance();
-                                realm.beginTransaction();
-                                realm.copyToRealm(userProfileDTOUserLiveAccountPair.second);
-                                realm.commitTransaction();
-
-
-                                Log.v("Live1b", "Saving live account: "+currentUserId.toUserBaseKey());
-                                Log.v("Live1b", "Logging live account: "+userProfileDTOUserLiveAccountPair.second);
+                                RealmInstance.replaceOldValueWith(userProfileDTOUserLiveAccountPair.second);
 
 //                                if(userProfileDTOUserLiveAccountPair.second!=null){
 //                                    dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.second);

@@ -46,6 +46,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTO;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
@@ -1064,14 +1065,15 @@ public class TrendingMainFragment extends DashboardFragment
                     JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
                     PositionsResponseDTO responseDTO = gson.fromJson(jsonObject, PositionsResponseDTO.class);
 
+                    RealmInstance.replaceOldValueWith(responseDTO);
 
                     // Obtain a Realm instance
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.delete(PositionsResponseDTO.class);
-                    realm.copyToRealm(responseDTO);
-                    Log.v("Live1b", "Saving positions");
-                    realm.commitTransaction();
+//                    Realm realm = Realm.getDefaultInstance();
+//                    realm.beginTransaction();
+//                    realm.delete(PositionsResponseDTO.class);
+//                    realm.copyToRealm(responseDTO);
+//                    Log.v("Live1b", "Saving positions");
+//                    realm.commitTransaction();
 
 
 //                    if(responseDTO!=null) {
@@ -1112,13 +1114,7 @@ public class TrendingMainFragment extends DashboardFragment
             @Override
             public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
                 if(accountBalanceResponseDTO!=null){
-                    // Obtain a Realm instance
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.delete(AccountBalanceResponseDTO.class);
-                    realm.copyToRealm(accountBalanceResponseDTO);
-                    Log.v("Live1b", "Saving account");
-                    realm.commitTransaction();
+                    RealmInstance.replaceOldValueWith(accountBalanceResponseDTO);
                 }
             }
 
@@ -1128,11 +1124,9 @@ public class TrendingMainFragment extends DashboardFragment
     }
 
     private UserLiveAccount getUserLiveAccount(){
-        Realm realm = Realm.getDefaultInstance();
-        RealmQuery<UserLiveAccount> query = realm.where(UserLiveAccount.class);
-        RealmResults<UserLiveAccount> result = query.findAll();
-        Log.v("Live1b", "Query result: "+result);
-        return result.first();
+
+        UserLiveAccount userLiveAccount = (UserLiveAccount) RealmInstance.getOne(UserLiveAccount.class);
+        return userLiveAccount;
     }
 
     private void userLoginLoader()
