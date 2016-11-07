@@ -1618,9 +1618,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             double fxRate = getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
 
             Log.v("live1b","getLiveTradeValueText fx rate from realm : " + fxRate);
-            double tradeValueInUserCurrency = (quantity * quoteDTO.getAskPrice()) / fxRate;
-            double remaining = portfolioCompactDTO.cashBalance - tradeValueInUserCurrency;
+            double costInUserCurrency = (quantity * quoteDTO.getAskPrice()) / fxRate;
+            double costInUserCurrencyAfterLeverage = costInUserCurrency * 1/ currentLeverage;
 
+            double remaining = portfolioCompactDTO.cashBalance - costInUserCurrencyAfterLeverage;
+
+
+            Log.v("live1b","getLiveTradeValueText cashBalance : " + portfolioCompactDTO.cashBalance );
             THSignedNumber thSignedNumber = THSignedNumber
                     .builder(remaining)
                     .withOutSign()
