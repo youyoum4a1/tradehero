@@ -36,13 +36,6 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
 
         Observable<Pair<DTOKeyType, DTOType>> cachedObservable = super.getOrCreateObservable(key);
 
-        if(key instanceof TrendingSecurityListType)
-        {
-            TrendingSecurityListType trendingType = (TrendingSecurityListType) key;
-            if(trendingType.exchange==null) // don't add, means haven't fully loaded the securityExchangeSpinnerDTO yet
-                return cachedObservable;
-        }
-
         if (cachedFetcherSubscriptions.get(key) == null)
         {
             cachedFetcherSubscriptions.put(key, fetch(key)

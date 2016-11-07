@@ -1,6 +1,9 @@
 package com.androidth.general.persistence.security;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.androidth.general.api.security.key.TrendingSecurityListType;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;
@@ -36,6 +39,12 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
 
     @NonNull @Override protected Observable<SecurityCompactDTOList> fetch(@NonNull SecurityListType key)
     {
+        if(key instanceof TrendingSecurityListType){
+            if(((TrendingSecurityListType) key).exchange==null){
+                Log.v("Security", "!!!!! empty");
+                return Observable.empty();
+            }
+        }
         return securityServiceWrapper.get().getSecuritiesRx(key);
     }
 
