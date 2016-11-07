@@ -132,6 +132,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     public Double minLeverage;
     public Double midLeverage;
+    public Double maxLeverage;
 
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
@@ -279,6 +280,17 @@ public class SecurityCompactDTO implements DTO, Parcelable
         return new TillExchangeOpenDuration(createdAtNanoTime, days, hours, minutes, seconds);
     }
 
+
+
+    public Double getVolume() {
+        return volume;
+    }
+
+    public Double getRisePercent() {
+        return risePercent;
+    }
+
+
     @Override
     public String toString() {
         return "SecurityCompactDTO{" +
@@ -341,17 +353,9 @@ public class SecurityCompactDTO implements DTO, Parcelable
                 ", sector='" + sector + '\'' +
                 ", minLeverage=" + minLeverage +
                 ", midLeverage=" + midLeverage +
+                ", maxLeverage=" + maxLeverage +
                 '}';
     }
-
-    public Double getVolume() {
-        return volume;
-    }
-
-    public Double getRisePercent() {
-        return risePercent;
-    }
-
 
     /**
      * Parcelable implementations

@@ -3,6 +3,7 @@ package com.androidth.general.fragments.trade;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -139,6 +140,20 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @Bind(R.id.dialog_buy_sell_security_name)
     protected TextView securityName;
 
+    @Bind(R.id.dialog_margin_leverage)
+    protected TextView marginLeverageText;
+
+    @Bind(R.id.dialog_closed_trade_text)
+    protected TextView closedTradeText;
+
+    @Bind(R.id.dialog_closed_trade)
+    protected TextView closedTrade;
+
+    @Bind(R.id.dialog_trade_size_amount)
+    protected TextView tradeSizeAmount;
+
+    @Bind(R.id.dialog_trade_size_leverage)
+    protected TextView tradeSizeLeverage;
 
     ////// Order Summary Table
     @Bind(R.id.dialog_buy_sell_security_symbol)
@@ -292,6 +307,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private boolean isInCompetition;
     private boolean isBuy;
 
+    private Double currentLeverage;
+
     @Nullable
     protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
                                            @NonNull LiveQuoteDTO quoteDTO,
@@ -364,18 +381,28 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+
         // set Order Summary logic
         if(LiveConstants.isInLiveMode)
         {
             buySellTRMarginRate.setVisibility(View.VISIBLE);
             buySellTRStopLoss.setVisibility(View.VISIBLE);
+            closedTrade.setVisibility(View.VISIBLE);
+            closedTradeText.setVisibility(View.VISIBLE);
+            marginLeverageText.setVisibility(View.VISIBLE);
             buySellTRCost.setVisibility(View.GONE);
             buySellTRCashLeft.setVisibility(View.GONE);
+
         }
         else
         {
             buySellTRMarginRate.setVisibility(View.GONE);
             buySellTRStopLoss.setVisibility(View.GONE);
+            closedTrade.setVisibility(View.GONE);
+            closedTradeText.setVisibility(View.GONE);
+
+            marginLeverageText.setVisibility(View.VISIBLE);
+            marginLeverageText.setText("Cash Trade: No Margin Rate.");
             buySellTRCost.setVisibility(View.VISIBLE);
             buySellTRCashLeft.setVisibility(View.VISIBLE);
         }
@@ -835,6 +862,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 buySellTransactionCostCcy.setText(portfolioCompactDTO.currencyDisplay);
                                 buySellStopLossCcy.setText(portfolioCompactDTO.currencyDisplay);
 
+
                                 enableUI();
                                 updateDisplay();
 
@@ -977,9 +1005,19 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     @Override
                     public void call(@NonNull SecurityCompactDTO securityCompactDTO) {
                         initSecurityRelatedInfo(securityCompactDTO);
+                        Log.v("live1b", "scurityCompactDTO: " + securityCompactDTO);
+                        Log.v("live1b", "usedDTO.securityCompactDTO: " + usedDTO.securityCompactDTO);
+                        Log.v("live1b", "current Mode: " + LiveConstants.isInLiveMode + "\n currentLeverage= " + currentLeverage);
+
 //                        String dateTime = DateUtils.getDisplayableDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc,
 //                                R.string.data_format_dd_mmm_yyyy_kk_mm_z);
 //                        mPriceUpdatedTime.setText(getString(R.string.buy_sell_market_price_time, dateTime));
+                        if(currentLeverage==null && LiveConstants.isInLiveMode) // default is normal/midLeverage
+                        {
+                            ImageView vConfident = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_bullish);
+                            vConfident.setBackgroundColor(Color.GRAY);
+                            currentLeverage = usedDTO.securityCompactDTO.midLeverage;
+                        }
                     }
                 })
                 .share();
@@ -1186,7 +1224,14 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 new Func2<PortfolioCompactDTO, LiveQuoteDTO, Integer>() {
                                     @Override // buying don't need closeablePosition
                                     public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull LiveQuoteDTO quoteDTO) {
-                                        return (int)(portfolioCompactDTO.cashBalance/quoteDTO.getAskPrice());
+                                        if(usedDTO.securityCompactDTO.lotSize==null) {
+                                        //    return (int) (portfolioCompactDTO.cashBalance / quoteDTO.getAskPrice());
+                                            double sharePriceInUserCurrency = quoteDTO.getAskPrice() * getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
+                                            Double maxShareAmount = (usedDTO.portfolioCompactDTO.cashBalance / sharePriceInUserCurrency) / ( 1/currentLeverage );
+                                            return maxShareAmount.intValue();
+                                        }
+                                        else
+                                            return usedDTO.securityCompactDTO.lotSize;
                                     }
                                 });
                     }
@@ -1692,12 +1737,22 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
             double fxRate = getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
             Log.v("live1b","getLiveTradeValueText fx rate from realm : " + fxRate);
+
             double valueInUserCurrency = (quantity * quoteDTO.getAskPrice()) / fxRate;
 
-            THSignedNumber thTradeValue = THSignedNumber.builder(valueInUserCurrency)
+            tradeSizeAmount.setText(portfolioCompactDTO.currencyISO + " " +
+                                                THSignedNumber.builder(valueInUserCurrency)
+                                                        .withOutSign()
+                                                        .build());
+            tradeSizeLeverage.setText(currentLeverage + "x");
+
+            double valueInUserCurrencyAfterLeverage = (1/currentLeverage) * (quantity * quoteDTO.getAskPrice()) / fxRate;
+
+            THSignedNumber thTradeValue = THSignedNumber.builder(valueInUserCurrencyAfterLeverage)
                     .withOutSign()
                     .build();
             valueText = thTradeValue.toString();
+
         }
         return valueText;
     }
@@ -1807,6 +1862,20 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
     }
 
+    private void updateValuesOnLeverageChange()
+    {
+        double fxRate = getFXRate(usedDTO.portfolioCompactDTO.currencyISO, usedDTO.quoteDTO.getCurrencyISO());
+        double valueInUserCurrency = (usedDTO.clampedQuantity * usedDTO.quoteDTO.getAskPrice()) / fxRate;
+        double valueInUserCurrencyAfterLeverage = valueInUserCurrency * 1/currentLeverage;
+        // update mLeftNumber aka Cost
+        mLeftNumber.setText(THSignedNumber.builder(valueInUserCurrencyAfterLeverage).withOutSign().build().toString());
+        tradeSizeAmount.setText(usedDTO.securityCompactDTO.currencyISO + " " + THSignedNumber.builder(valueInUserCurrency).withOutSign().build().toString());
+        tradeSizeLeverage.setText(currentLeverage + "x");
+        Log.v("live1b", "updateValuesOnLeverageChange() cashBalance = " + usedDTO.portfolioCompactDTO.cashBalance);
+        mRightNumber.setText(THSignedNumber.builder(usedDTO.portfolioCompactDTO.cashBalance - valueInUserCurrencyAfterLeverage).withOutSign().build().toString());;
+    }
+
+
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.img_buy_sell_lev_confident)
     void onLeverageConfidentClicked(View view)
@@ -1814,6 +1883,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         Log.v("live1b","Image Confident Clicked");
         view.setBackgroundColor(Color.GRAY);
         resetLevImageBackground(R.id.img_buy_sell_lev_confident);
+        currentLeverage = usedDTO.securityCompactDTO.minLeverage;
+        updateValuesOnLeverageChange();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -1823,6 +1894,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         Log.v("live1b","Image Bullish Clicked");
         view.setBackgroundColor(Color.GRAY);
         resetLevImageBackground(R.id.img_buy_sell_lev_bullish);
+        currentLeverage = usedDTO.securityCompactDTO.midLeverage;
+        updateValuesOnLeverageChange();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -1832,6 +1905,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         Log.v("live1b","Image Certain Clicked");
         view.setBackgroundColor(Color.GRAY);
         resetLevImageBackground(R.id.img_buy_sell_lev_certain);
+        currentLeverage = usedDTO.securityCompactDTO.maxLeverage;
+        updateValuesOnLeverageChange();
     }
 
     @Deprecated
