@@ -577,19 +577,20 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                 }
 
 
+                                                if(LiveConstants.isInLiveMode) {
+                                                    portfolioCompactDTO.currencyISO = getLiveCurrency();
+                                                    Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + portfolioCompactDTO.currencyISO);
 
-                                                portfolioCompactDTO.currencyISO = getLiveCurrency();
-                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + portfolioCompactDTO.currencyISO);
+                                                    if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                        return;
+                                                    if (liveQuote.n.contains(portfolioCompactDTO.currencyISO) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
+                                                        Realm realm = Realm.getDefaultInstance();
+                                                        realm.beginTransaction();
+                                                        realm.delete(LiveQuoteDTO.class);
+                                                        realm.copyToRealm(liveQuote);
+                                                        realm.commitTransaction();
 
-                                                if(portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
-                                                    return;
-                                                if (liveQuote.n.contains(portfolioCompactDTO.currencyISO) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
-                                                    Realm realm = Realm.getDefaultInstance();
-                                                    realm.beginTransaction();
-                                                    realm.delete(LiveQuoteDTO.class);
-                                                    realm.copyToRealm(liveQuote);
-                                                    realm.commitTransaction();
-
+                                                    }
                                                 }
                                             }
                                         }

@@ -2,6 +2,7 @@ package com.androidth.general.fragments.trade;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,14 +21,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.api.live.LiveViewProvider;
 import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.live1b.PositionsResponseDTO;
@@ -50,9 +50,7 @@ import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
-import com.androidth.general.common.billing.googleplay.Security;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
@@ -91,9 +89,7 @@ import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.facebook.internal.LockOnGetVariable;
 import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.core.internal.TwitterCollection;
 
 
 import java.util.List;
@@ -107,7 +103,6 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import dagger.Lazy;
 import io.realm.Realm;
-import io.realm.RealmList;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -118,11 +113,8 @@ import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.functions.Func4;
-import rx.functions.Func5;
 import rx.functions.Func6;
-import rx.functions.Func7;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -145,11 +137,50 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @Bind(R.id.dialog_buy_sell_security_name)
     protected TextView securityName;
 
+
+    ////// Order Summary Table
     @Bind(R.id.dialog_buy_sell_security_symbol)
     protected TextView securitySymbol;
 
     @Bind(R.id.dialog_buy_sell_quantity)
     protected TextView buySellQuantity;
+
+    @Bind(R.id.dialog_buy_sell_margin_rate)
+    protected TextView buySellMarginRate;
+
+    @Bind(R.id.tablerow_margin_rate)
+    protected TableRow buySellTRMarginRate;
+
+    @Bind(R.id.dialog_buy_sell_stoploss_ccy)
+    protected TextView buySellStopLossCcy;
+
+    @Bind(R.id.dialog_buy_sell_stoploss_ccy_value)
+    protected TextView buySellStopLossCcyValue;
+
+    @Bind(R.id.tablerow_stop_loss)
+    protected TableRow buySellTRStopLoss;
+
+    @Bind(R.id.dialog_buy_sell_transaction_cost_ccy)
+    protected TextView buySellTransactionCostCcy;
+
+    @Bind(R.id.dialog_buy_sell_transaction_cost_ccy_value)
+    protected TextView buySellTransactionCostCcyValue;
+
+    @Bind(R.id.dialog_buy_sell_cost_ccy)
+    protected TextView buySellCostCcy;
+
+    @Bind(R.id.tablerow_cost)
+    protected TableRow buySellTRCost;
+
+    @Bind(R.id.dialog_buy_sell_cash_left_ccy)
+    protected TextView buySellCashLeftCcy;
+
+    @Bind(R.id.dialog_buy_sell_cash_left_ccy_value)
+    protected TextView buySellCashLeftCcyValue;
+
+    @Bind(R.id.tablerow_cash_left)
+    protected TableRow buySellTRCashLeft;
+    ////// End Order Summary Table
 
     @Bind(R.id.vtrade_value)
     protected TextView mLeftNumber;
@@ -317,6 +348,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             isInCompetition = false;
         }
 
+
     }
 
     @Override
@@ -329,6 +361,22 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        // set Order Summary logic
+        if(LiveConstants.isInLiveMode)
+        {
+            buySellTRMarginRate.setVisibility(View.VISIBLE);
+            buySellTRStopLoss.setVisibility(View.VISIBLE);
+            buySellTRCost.setVisibility(View.GONE);
+            buySellTRCashLeft.setVisibility(View.GONE);
+        }
+        else
+        {
+            buySellTRMarginRate.setVisibility(View.GONE);
+            buySellTRStopLoss.setVisibility(View.GONE);
+            buySellTRCost.setVisibility(View.VISIBLE);
+            buySellTRCashLeft.setVisibility(View.VISIBLE);
+        }
 
         //is in competition
         if(topBarColor!=null){
@@ -494,6 +542,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                                     .build().toString();
 
                                             mLeftNumber.setText(tradeValueText);
+
                                         }
                                     }
                                 }
@@ -779,7 +828,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                                 mSymbolCashValue.setText(portfolioCompactDTO.currencyDisplay);
                                 mSymbolCashLeft.setText(portfolioCompactDTO.currencyDisplay);
-
+                                buySellCashLeftCcy.setText(portfolioCompactDTO.currencyDisplay);
+                                buySellCostCcy.setText(portfolioCompactDTO.currencyDisplay);
+                                buySellTransactionCostCcy.setText(portfolioCompactDTO.currencyDisplay);
+                                buySellStopLossCcy.setText(portfolioCompactDTO.currencyDisplay);
 
                                 enableUI();
                                 updateDisplay();
@@ -854,7 +906,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 if (clamped != null)
                                 {
-                                    mRightNumber.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
+                                    String cashLeft = getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
+                                    mRightNumber.setText(cashLeft);
+                                    buySellCashLeftCcyValue.setText(cashLeft);
                                 }
 
                                 //                                    mTradeValue.setText(getString(R.string.buy_sell_fx_quantity));
@@ -1392,6 +1446,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         mSymbolCashValue.setText(portfolioCompactDTO.currencyDisplay);
         mSymbolCashLeft.setText(portfolioCompactDTO.currencyDisplay);
 
+        buySellCashLeftCcy.setText(portfolioCompactDTO.currencyDisplay);
+        buySellCostCcy.setText(portfolioCompactDTO.currencyDisplay);
+        buySellTransactionCostCcy.setText(portfolioCompactDTO.currencyDisplay);
+
         enableUI();
 
 //        if (clamped != null) {
@@ -1725,11 +1783,29 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         getDialog().hide();
     }
 
+    private void resetLevImageBackground(int currentImage)
+    {
+        if(currentImage!=R.id.img_buy_sell_lev_confident) {
+            ImageView vConfident = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_confident);
+            vConfident.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(currentImage!=R.id.img_buy_sell_lev_bullish) {
+            ImageView vBullish = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_bullish);
+            vBullish.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(currentImage!=R.id.img_buy_sell_lev_certain) {
+            ImageView vCertain = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_certain);
+            vCertain.setBackgroundColor(Color.TRANSPARENT);
+        }
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.img_buy_sell_lev_confident)
     void onLeverageConfidentClicked(View view)
     {
         Log.v("live1b","Image Confident Clicked");
+        view.setBackgroundColor(Color.GRAY);
+        resetLevImageBackground(R.id.img_buy_sell_lev_confident);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -1737,6 +1813,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     void onLeverageBullishClicked(View view)
     {
         Log.v("live1b","Image Bullish Clicked");
+        view.setBackgroundColor(Color.GRAY);
+        resetLevImageBackground(R.id.img_buy_sell_lev_bullish);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -1744,6 +1822,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     void onLeverageCertainClicked(View view)
     {
         Log.v("live1b","Image Certain Clicked");
+        view.setBackgroundColor(Color.GRAY);
+        resetLevImageBackground(R.id.img_buy_sell_lev_certain);
     }
 
     @Deprecated

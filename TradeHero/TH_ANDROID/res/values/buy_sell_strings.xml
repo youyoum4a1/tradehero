@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+  <string name="buy_sell_cost">Cost</string>
   <string name="buy_sell_cash_left">Cash Left</string>
   <string name="buy_sell_fx_cash_left">Margin Available</string>
   <string name="buy_sell_share_left">Shares Left</string>

@@ -349,7 +349,7 @@ public class TrendingMainFragment extends DashboardFragment
 
         Log.d("TMF.java", "onResume: i am resuming....");
         if(LiveConstants.isInLiveMode) {
-            userLoginLoader();
+        //    userLoginLoader();
             startLiveSignalR();
         }
     }
@@ -1134,7 +1134,7 @@ public class TrendingMainFragment extends DashboardFragment
         Log.v("Live1b", "Query result: "+result);
         return result.first();
     }
-
+/*
     private void userLoginLoader()
     {
         if(LiveConstants.isInLiveMode)
@@ -1178,4 +1178,5 @@ public class TrendingMainFragment extends DashboardFragment
         }
 
     }
+    */
 }
