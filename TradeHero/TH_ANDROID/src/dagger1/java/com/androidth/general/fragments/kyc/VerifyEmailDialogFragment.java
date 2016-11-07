@@ -240,15 +240,6 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
     protected Subscription createEmailSubscription()
     {
-//        return liveServiceWrapper.verifyEmail(userId, emailAddress, providerId).subscribe(new Action1<Boolean>() {
-//            @Override
-//            public void call(Boolean aBoolean) {
-//
-//                Log.v(getTag(), "JEFF SUCCESS EMAIL "+aBoolean);
-//            }
-//        },
-//                new TimberOnErrorAction1("Failed on sending sms message"));
-
         return liveServiceWrapper.verifyEmail(userId, emailAddress, providerId).subscribe(new Subscriber<Response>() {
             @Override
             public void onCompleted() {
@@ -273,11 +264,8 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
             @Override
             public void onNext(Response response) {
-                Log.v(getTag(), "JEFF SUCCESS EMAIL "+response.getStatus());
                 String responseString = getStringFromResponse(response);
-                Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString+"...");
                 if(responseString.equals("Verified")){
-                    Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString);
                     dismissWithResult(null);
                 }
             }
@@ -443,7 +431,6 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
     @OnClick(R.id.email_sent_go_to_inbox_button)
     protected void onGoToInboxClicked(Button button)
     {
-        Log.v(getTag(),"Jeff Go to inbox");
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_APP_EMAIL);
         getActivity().startActivity(intent);
