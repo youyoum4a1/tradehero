@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -277,9 +278,9 @@ abstract public class TimelineFragment extends DashboardFragment {
     }
 
     protected void loadLatestTimeline() {
-        onStopSubscriptions.add(getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
-                shownUserBaseKey,
-                subTimelineAdapter.getLatestRange()))
+        onStopSubscriptions.add(
+                getTimelineObservable(
+                        new TimelineKey(TimelineSection.Timeline, shownUserBaseKey, subTimelineAdapter.getLatestRange()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>() {
@@ -289,8 +290,13 @@ abstract public class TimelineFragment extends DashboardFragment {
                                 subTimelineAdapter.notifyDataSetChanged();
                                 swipeRefreshContainer.setRefreshing(false);
                             }
-                        },
-                        new ToastOnErrorAction1()));
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                new ToastOnErrorAction1();
+                            }
+                        }));
     }
 
     protected void loadOlderTimeline() {
@@ -310,7 +316,7 @@ abstract public class TimelineFragment extends DashboardFragment {
                                 subTimelineAdapter.notifyDataSetChanged();
                             }
                         },
-                        new ToastOnErrorAction1()));
+                        new ToastOnErrorAction1("YA")));
     }
 
     @NonNull
