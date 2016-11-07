@@ -550,7 +550,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 // everytime a user changes exchange location and UI is resume, we need to reset the FX request to match new location
                 if(signalRManager==null) {
                     signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
-                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
+                    signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
                             Integer.toString(securityCompactDTO.getResourceId()));
                 }
                 else{
@@ -611,7 +611,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         Log.v("SignalR", "liveCurrency: " + liveCurrency);
 
                         Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + liveCurrency + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
-                        signalRManager.startConnectionNoUserID(LiveNetworkConstants.PROXY_METHOD_FX_RATE,
+                        signalRManager.startConnectionWithoutUserID(LiveNetworkConstants.PROXY_METHOD_FX_RATE,
                                 new String[] { liveCurrency, securityCompactDTO.currencyISO } );
 
                     }

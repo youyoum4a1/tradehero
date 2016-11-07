@@ -1120,7 +1120,7 @@ public class TrendingMainFragment extends DashboardFragment
 
         }, AccountBalanceResponseDTO.class);
 
-        signalRManager.startConnection();
+        signalRManager.startConnectionNow();
     }
 
     private UserLiveAccount getUserLiveAccount(){

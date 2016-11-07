@@ -93,7 +93,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                     try{
                         currentVisibleItemsList = getCurrentVisibleItems(listView);
                         String str[] = getSecurityIds(currentVisibleItemsList);
-                        signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str);
+                        signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str);
 
                         signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 

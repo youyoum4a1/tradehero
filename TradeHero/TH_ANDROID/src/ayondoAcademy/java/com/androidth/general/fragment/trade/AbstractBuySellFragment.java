@@ -541,7 +541,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                     if(signalRManager==null){
                         if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null){
                             signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
-                            signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.getResourceId()));
+                            signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.getResourceId()));
 
                             signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 

@@ -1121,7 +1121,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             }
         }, EmailVerifiedDTO.class);
 
-        signalRManager.startConnection();
+        signalRManager.startConnectionNow();
     }
 
     @MainThread

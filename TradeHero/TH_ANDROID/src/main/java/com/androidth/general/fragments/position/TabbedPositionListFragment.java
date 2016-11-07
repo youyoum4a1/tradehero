@@ -720,7 +720,7 @@ public class TabbedPositionListFragment extends DashboardFragment
             }
         }, Object.class);
 
-        signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
+        signalRManager.startConnectionWithUserId("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
 
 
     }

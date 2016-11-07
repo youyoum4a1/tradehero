@@ -1595,12 +1595,12 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
 //            }
 //        }, List.class);
 //
-//        signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
+//        signalRManager.startConnectionWithUserId("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
 //    }
 
     private void disconnectSignalR(PortfolioCompactDTO portfolioCompactDTO){
 //        if(portfolioCompactDTO!=null && signalRManager!=null){
-//            signalRManager.startConnection("UnsubscribeFromPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
+//            signalRManager.startConnectionWithUserId("UnsubscribeFromPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
 //
 //            signalRManager.getCurrentConnection().disconnect();
 //        }
@@ -1677,10 +1677,7 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
 
         }, ErrorResponseDTO.class);
 
-
-
-
-        signalRManager.startConnection();
+        signalRManager.startConnectionNow();
     }
 
 //    private void GetLivePositions()
