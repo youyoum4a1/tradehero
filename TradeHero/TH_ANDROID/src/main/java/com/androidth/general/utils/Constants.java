@@ -79,4 +79,9 @@ public class Constants
     public static final String DATE_FORMAT_STANDARD_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String DATE_FORMAT_PRECISE = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     public static final String DATE_FORMAT_PRECISE_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+    public static final String TAPSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
+    public static final String TAPSTREAM_APP_NAME = "tradehero";
+
+
 }

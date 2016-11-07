@@ -28,6 +28,7 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.metrics.MetricsModule;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
+import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tune.Tune;
@@ -52,7 +53,7 @@ public class SplashActivity extends BaseActivity
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreens;
 
-    @Inject Lazy<Tapstream> tapStream;
+//    @Inject Lazy<Tapstream> tapStream;
     //TODO Change Analytics
     //@Inject
     //Analytics analytics;
@@ -117,7 +118,7 @@ public class SplashActivity extends BaseActivity
 
 //        AppEventsLogger.activateApp(this, SocialConstants.FACEBOOK_APP_ID);//old
 
-        tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
+        setupTapStream();
 
         Tune.getInstance().setReferralSources(this);
         Tune.getInstance().measureSession();
@@ -275,5 +276,15 @@ public class SplashActivity extends BaseActivity
             }
         }
 
+    }
+
+    private void setupTapStream(){
+        Config config = new Config(Constants.TAPSTREAM_APP_NAME, Constants.TAPSTREAM_KEY);
+//        config.setFireAutomaticOpenEvent(false);//this will send twice
+        config.setInstallEventName(getString(Constants.TAP_STREAM_TYPE.installResId));
+
+        Tapstream.create(getApplication(), config);
+        Tapstream.getInstance().fireEvent(new Event("App started", false));//Jeff
+//        Tapstream.getInstance().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
     }
 }
