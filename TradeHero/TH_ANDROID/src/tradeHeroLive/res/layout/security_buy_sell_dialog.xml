@@ -419,7 +419,7 @@
         android:layout_margin="@dimen/size_2"
         android:padding="@dimen/size_1"
         android:background="@color/grey"
-        android:stretchColumns="0,1"
+        android:stretchColumns="0,1,2"
         >
         <TableRow
             android:layout_width="match_parent"
@@ -463,7 +463,7 @@
                 android:gravity="right"
                 style="@style/TH.Body"
                 tools:text="SIBE:SCYR"
-                android:layout_column="1"
+                android:layout_column="2"
                 />
         </TableRow>
 
@@ -490,63 +490,9 @@
                 android:gravity="right"
                 style="@style/TH.Body"
                 android:text="1"
-                android:layout_column="1"
+                android:layout_column="2"
                 />
         </TableRow>
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <TextView
-                style="@style/TH.Body"
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Margin Rate"
-                android:layout_column="0"
-                />
-
-            <TextView
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                style="@style/TH.Body"
-                android:text="% 100"
-                android:layout_column="1"
-                />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <TextView
-                style="@style/TH.Body"
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Stop Loss"
-                android:layout_column="0"
-                />
-
-            <TextView
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                style="@style/TH.Body"
-                android:text="US$ 100"
-                android:layout_column="1"
-                />
-        </TableRow>
-
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -568,10 +514,95 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 style="@style/TH.Body"
-                android:text="US$ 100"
+                android:text="US$"
+                android:layout_column="1"
+                />
+
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="10.00"
+                android:layout_column="2"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                style="@style/TH.Body"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Cost"
+                android:layout_column="0"
+                />
+
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="US$"
+                android:layout_column="1"
+                />
+
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="500.00"
+                android:layout_column="2"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                style="@style/TH.Body"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Cash Left"
+                android:layout_column="0"
+                />
+
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="US$"
+                android:layout_column="1"
+                />
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="9,500.00"
                 android:layout_column="1"
                 />
         </TableRow>
+
+
+
+
     </TableLayout>
 
 
