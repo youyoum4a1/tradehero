@@ -219,7 +219,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/buy_sell_trade_value"
+                android:text="@string/buy_sell_cost"
                 />
 
             <TextView
@@ -493,6 +493,77 @@
                 android:layout_column="2"
                 />
         </TableRow>
+
+        <TableRow
+            android:id="@+id/tablerow_margin_rate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                style="@style/TH.Body"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Margin Rate"
+                android:layout_column="0"
+                />
+
+            <TextView
+                android:id="@+id/dialog_buy_sell_margin_rate"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="50%"
+                android:layout_column="2"
+                />
+
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tablerow_stop_loss"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                style="@style/TH.Body"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Stop Loss"
+                android:layout_column="0"
+                />
+
+            <TextView
+                android:id="@+id/dialog_buy_sell_stoploss_ccy"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="US$"
+                android:layout_column="1"
+                />
+
+            <TextView
+                android:id="@+id/dialog_buy_sell_stoploss_ccy_value"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                style="@style/TH.Body"
+                android:text="250.00"
+                android:layout_column="2"
+                />
+        </TableRow>
+
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -509,6 +580,7 @@
                 />
 
             <TextView
+                android:id="@+id/dialog_buy_sell_transaction_cost_ccy"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -519,6 +591,7 @@
                 />
 
             <TextView
+                android:id="@+id/dialog_buy_sell_transaction_cost_ccy_value"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -530,6 +603,7 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/tablerow_cost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
@@ -545,6 +619,7 @@
                 />
 
             <TextView
+                android:id="@+id/dialog_buy_sell_cost_ccy"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -555,6 +630,7 @@
                 />
 
             <TextView
+                android:id="@+id/dialog_buy_sell_cost_ccy_value"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -566,6 +642,7 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/tablerow_cash_left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
@@ -581,6 +658,7 @@
                 />
 
             <TextView
+                android:id="@+id/dialog_buy_sell_cash_left_ccy"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -590,6 +668,7 @@
                 android:layout_column="1"
                 />
             <TextView
+                android:id="@+id/dialog_buy_sell_cash_left_ccy_value"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

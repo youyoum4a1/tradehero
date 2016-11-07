@@ -175,7 +175,7 @@ public class TrendingMainFragment extends DashboardFragment
         router.registerAlias("trending-fx/my-fx", "trending-fx/tab-index/" + TrendingFXTabType.Portfolio.ordinal());
         router.registerAlias("trending-fx/trade-fx", "trending-fx/tab-index/" + TrendingFXTabType.FX.ordinal());
         router.registerAlias("trending-stocks/my-stocks", "trending-stocks/tab-index/" + TrendingStockTabType.StocksMain.ordinal());
-        router.registerAlias("trending-stocks/favorites", "trending-stocks/tab-index/" + TrendingStockTabType.Favorites.ordinal());
+//        router.registerAlias("trending-stocks/favorites", "trending-stocks/tab-index/" + TrendingStockTabType.Favorites.ordinal());
         router.registerAlias("trending-stocks/trending", "trending-stocks/tab-index/" + TrendingStockTabType.Trending.ordinal());
         router.registerAlias("trending-stocks/price-action", "trending-stocks/tab-index/" + TrendingStockTabType.Price.ordinal());
         router.registerAlias("trending-stocks/unusual-volumes", "trending-stocks/tab-index/" + TrendingStockTabType.Volume.ordinal());
@@ -350,7 +350,7 @@ public class TrendingMainFragment extends DashboardFragment
 
         Log.d("TMF.java", "onResume: i am resuming....");
         if(LiveConstants.isInLiveMode) {
-            userLoginLoader();
+        //    userLoginLoader();
             startLiveSignalR();
         }
     }
@@ -1128,7 +1128,7 @@ public class TrendingMainFragment extends DashboardFragment
         UserLiveAccount userLiveAccount = (UserLiveAccount) RealmInstance.getOne(UserLiveAccount.class);
         return userLiveAccount;
     }
-
+/*
     private void userLoginLoader()
     {
         if(LiveConstants.isInLiveMode)
@@ -1172,4 +1172,5 @@ public class TrendingMainFragment extends DashboardFragment
         }
 
     }
+    */
 }

@@ -585,7 +585,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                     return;
                                                 }
 
+                                                    if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                        return;
                                                 if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
+                                                        Realm realm = Realm.getDefaultInstance();
+                                                        realm.beginTransaction();
+                                                        realm.delete(LiveQuoteDTO.class);
+                                                        realm.copyToRealm(liveQuote);
+                                                        realm.commitTransaction();
 
                                                     RealmInstance.replaceOldValueWith(liveQuote);
 
