@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -30,6 +31,7 @@ import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.DashboardNavigator;
@@ -82,6 +84,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import rx.Observable;
 import rx.Subscription;
@@ -572,10 +576,11 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                         quoteSubscription.unsubscribe();
                                                 }
 
-                                                // TODO Need to ask JEFF how to store between LIVE & VIRTUAL portfolio 
-                                                // at the moment just hard code (Diana VIRTUAL currency USD, LIVE currency GBP 
-                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote);
-                                                portfolioCompactDTO.currencyISO = "GBP";
+
+
+                                                portfolioCompactDTO.currencyISO = getLiveCurrency();
+                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + portfolioCompactDTO.currencyISO);
+
                                                 if(portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
                                                     return;
                                                 if (liveQuote.n.contains(portfolioCompactDTO.currencyISO) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
@@ -595,9 +600,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         }, SignatureContainer2.class);
 
 
-                        // TODO Need to ask JEFF how to store between LIVE & VIRTUAL portfolio 
-                        // at the moment just hard code (Diana VIRTUAL currency USD, LIVE currency GBP 
-                        portfolioCompactDTO.currencyISO = "GBP";
+                        portfolioCompactDTO.currencyISO = getLiveCurrency();
+                        Log.v("SignalR", "liveCurrency: " + portfolioCompactDTO.currencyISO);
+
                         Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + portfolioCompactDTO.currencyISO + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
                         signalRManager.startConnectionNoUserID(LiveNetworkConstants.PROXY_METHOD_FX_RATE,
                                 new String[] { portfolioCompactDTO.currencyISO, securityCompactDTO.currencyISO } );
@@ -610,6 +615,17 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 //            });
 
             }, new TimberOnErrorAction1("SignalR prices error")));
+    }
+
+
+    protected String getLiveCurrency()
+    {
+        Realm realm = Realm.getDefaultInstance();
+        AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
+                .findFirst();
+        if(accountBalanceResponseDTO!=null)
+            return accountBalanceResponseDTO.Currency;
+        return portfolioCompactDTO.currencyISO;
     }
 
     @NonNull protected Requisite createRequisite()
