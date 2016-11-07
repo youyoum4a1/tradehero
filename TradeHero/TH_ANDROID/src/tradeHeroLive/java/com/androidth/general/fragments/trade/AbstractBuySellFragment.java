@@ -32,6 +32,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.DashboardNavigator;
@@ -576,19 +577,23 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                         quoteSubscription.unsubscribe();
                                                 }
 
+                                                String liveCurrency = getLiveCurrency();
+                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
 
-
-                                                portfolioCompactDTO.currencyISO = getLiveCurrency();
-                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + portfolioCompactDTO.currencyISO);
-
-                                                if(portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                if(liveCurrency==null || liveCurrency.equals(securityCompactDTO.currencyISO)){
+                                                    //it is already in correct currency
                                                     return;
-                                                if (liveQuote.n.contains(portfolioCompactDTO.currencyISO) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
-                                                    Realm realm = Realm.getDefaultInstance();
-                                                    realm.beginTransaction();
-                                                    realm.delete(LiveQuoteDTO.class);
-                                                    realm.copyToRealm(liveQuote);
-                                                    realm.commitTransaction();
+                                                }
+
+                                                if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
+
+                                                    RealmInstance.replaceOldValueWith(liveQuote);
+
+//                                                    Realm realm = Realm.getDefaultInstance();
+//                                                    realm.beginTransaction();
+//                                                    realm.delete(LiveQuoteDTO.class);
+//                                                    realm.copyToRealm(liveQuote);
+//                                                    realm.commitTransaction();
 
                                                 }
                                             }
@@ -599,13 +604,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                             }
                         }, SignatureContainer2.class);
 
+                        String liveCurrency = getLiveCurrency();
 
-                        portfolioCompactDTO.currencyISO = getLiveCurrency();
-                        Log.v("SignalR", "liveCurrency: " + portfolioCompactDTO.currencyISO);
+                        Log.v("SignalR", "liveCurrency: " + liveCurrency);
 
-                        Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + portfolioCompactDTO.currencyISO + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
+                        Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + liveCurrency + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
                         signalRManager.startConnectionNoUserID(LiveNetworkConstants.PROXY_METHOD_FX_RATE,
-                                new String[] { portfolioCompactDTO.currencyISO, securityCompactDTO.currencyISO } );
+                                new String[] { liveCurrency, securityCompactDTO.currencyISO } );
 
                     }
                 }
@@ -620,12 +625,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     protected String getLiveCurrency()
     {
-        Realm realm = Realm.getDefaultInstance();
-        AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
-                .findFirst();
+        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
         if(accountBalanceResponseDTO!=null)
             return accountBalanceResponseDTO.Currency;
-        return portfolioCompactDTO.currencyISO;
+        else{
+            return null;
+        }
+
     }
 
     @NonNull protected Requisite createRequisite()

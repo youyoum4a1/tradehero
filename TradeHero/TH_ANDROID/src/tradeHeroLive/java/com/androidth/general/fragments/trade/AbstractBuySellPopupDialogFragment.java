@@ -53,6 +53,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.common.billing.googleplay.Security;
+import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
@@ -780,10 +781,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 mSymbolCashValue.setText(portfolioCompactDTO.currencyDisplay);
                                 mSymbolCashLeft.setText(portfolioCompactDTO.currencyDisplay);
 
-
                                 enableUI();
                                 updateDisplay();
-
 
                                 if(livePositionDTO!=null){//is selling
                                     mSymbolCashLeft.setVisibility(View.INVISIBLE);
@@ -934,17 +933,21 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     {
         PortfolioCompactDTO portfolioCompactDTO = new PortfolioCompactDTO();
 
-        Realm realm = Realm.getDefaultInstance();
-        AccountBalanceResponseDTO accountBalanceResponseDTO = realm.where(AccountBalanceResponseDTO.class)
-                .findFirst();
+        AccountBalanceResponseDTO accountBalanceResponseDTO =  (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
+
         if(accountBalanceResponseDTO!=null) {
             portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
             portfolioCompactDTO.marginAvailableRefCcy = accountBalanceResponseDTO.MarginAvailable;
             portfolioCompactDTO.currencyISO = accountBalanceResponseDTO.Currency;
             portfolioCompactDTO.id = currentUserId.get();
             portfolioCompactDTO.currencyDisplay = accountBalanceResponseDTO.Currency;
+            return Observable.just(portfolioCompactDTO);
+
+        }else{
+            //use the virtual one
+            return getPortfolioCompactObservable();
         }
-        return Observable.just(portfolioCompactDTO);
+
     }
 
     @NonNull
@@ -1033,9 +1036,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //    //    realm.commitTransaction();
 
 
-        Realm realm = Realm.getDefaultInstance();
+        PositionsResponseDTO positionResponseDTO =  (PositionsResponseDTO) RealmInstance.getOne(PositionsResponseDTO.class);
 
-        PositionsResponseDTO positionResponseDTO = realm.where(PositionsResponseDTO.class).findFirst();
         if(positionResponseDTO!=null)
             return Observable.from(positionResponseDTO.Positions);
         else
@@ -1067,8 +1069,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 new Func2<LivePositionDTO, SecurityCompactDTO, LivePositionDTO>() {
                     @Override
                     public LivePositionDTO call(@NonNull LivePositionDTO livePositionDTO, SecurityCompactDTO securityCompactDTO) {
-                        if(securityCompactDTO.getSecurityId().toString().equals(livePositionDTO.SecurityId))
-                            return livePositionDTO;
+                        if(livePositionDTO!=null && securityCompactDTO!=null){
+                            if(securityCompactDTO.getSecurityId().toString().equals(livePositionDTO.SecurityId))
+                                return livePositionDTO;
+                        }
+
                         return null;
                     }
                 })
@@ -1525,9 +1530,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
         if(myCurrencyISO.equals(securityCurrency))
             return 1.0;
+
         try {
-            Realm realm = Realm.getDefaultInstance();
-            LiveQuoteDTO fxRate = realm.where(LiveQuoteDTO.class).findFirst();
+            LiveQuoteDTO fxRate = (LiveQuoteDTO) RealmInstance.getOne(LiveQuoteDTO.class);
 
             if (fxRate != null) {
                 if (fxRate.n.indexOf(myCurrencyISO) == 0) // GBP_SGD is the amount to multiply to convert GBP to SGD, SGD_GBP is the amount to multiply to convert SGD to GBP
