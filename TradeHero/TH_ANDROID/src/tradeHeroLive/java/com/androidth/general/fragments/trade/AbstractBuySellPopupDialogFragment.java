@@ -50,6 +50,7 @@ import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.common.billing.googleplay.Security;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -90,6 +91,7 @@ import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.facebook.internal.LockOnGetVariable;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.internal.TwitterCollection;
 
@@ -1721,6 +1723,27 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
 
         getDialog().hide();
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.img_buy_sell_lev_confident)
+    void onLeverageConfidentClicked(View view)
+    {
+        Log.v("live1b","Image Confident Clicked");
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.img_buy_sell_lev_bullish)
+    void onLeverageBullishClicked(View view)
+    {
+        Log.v("live1b","Image Bullish Clicked");
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.img_buy_sell_lev_certain)
+    void onLeverageCertainClicked(View view)
+    {
+        Log.v("live1b","Image Certain Clicked");
     }
 
     @Deprecated
