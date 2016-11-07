@@ -313,7 +313,7 @@
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/size_1"
@@ -330,13 +330,24 @@
             android:textColor="@color/black"/>
 
         <TextView
+            android:id="@+id/dialog_trade_size_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textColor="@color/light_green_pressed"
-            android:text="$200 (1x)"
+            android:text="USD 200"
             android:textSize="@dimen/size_2"/>
 
+
+        <TextView
+            android:id="@+id/dialog_trade_size_leverage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:textColor="@color/light_green_pressed"
+            android:text="(1x)"
+            android:layout_marginLeft="@dimen/size_1"
+            android:textSize="@dimen/size_2"/>
     </LinearLayout>
 
 
@@ -375,16 +386,39 @@
             android:clickable="true"
             />
     </LinearLayout>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/size_1">
-
+        android:textAlignment="center"
+        >
 
 
         <TextView
+            android:id="@+id/dialog_margin_leverage"
+            android:textSize="14sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="20% Margin = 5x Leverage"
+            android:textAlignment="center"
+            android:layout_gravity="end"
+            android:textColor="@color/black"
+            android:layout_weight="2"
 
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+   >
+
+        <TextView
+            android:id="@+id/dialog_closed_trade_text"
             android:textSize="14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -398,7 +432,7 @@
             />
 
         <TextView
-
+            android:id="@+id/dialog_closed_trade"
             android:textSize="14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -410,7 +444,7 @@
             android:layout_weight="1"
             />
 
-        </LinearLayout>
+    </LinearLayout>
 
 
     <TableLayout
