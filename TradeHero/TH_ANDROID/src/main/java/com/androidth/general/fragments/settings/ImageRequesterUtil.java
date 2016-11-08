@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +20,7 @@ import com.androidth.general.R;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -106,7 +108,33 @@ public class ImageRequesterUtil implements ActivityResultRequester
                 && data != null)
         {
             currentRequest = REQUEST_GALLERY;
-            startPhotoZoom(activity, data.getData());
+//            startPhotoZoom(activity, data.getData());
+
+            Bitmap tempBitmap = null;
+
+            Uri selectedImageUri = data.getData();
+            if(selectedImageUri!=null) {
+                FileOutputStream out = null;
+
+                try {
+                    InputStream imageStream = activity.getContentResolver().openInputStream(selectedImageUri);
+
+                    tempBitmap = BitmapFactory.decodeStream(imageStream);
+
+                    saveBitmapToFile(activity, tempBitmap, true);
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (out != null) {
+                            out.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
         else if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
         {
@@ -115,24 +143,30 @@ public class ImageRequesterUtil implements ActivityResultRequester
         }
         else if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
         {
-            Bundle bundle = data.getExtras();
-            if (bundle != null)
-            {
-                Bitmap bitmap = bundle.getParcelable("data");
-                if (bitmap == null || saveBitmapToFile(activity, bitmap))
-                {
-                    return;
-                }
 
-                if (currentRequest == REQUEST_CAMERA)
-                {
-                    currentRequest = -1;
-                    bitmapSubject.onNext(bitmap);
-                }
-                else if (currentRequest == REQUEST_GALLERY)
-                {
-                    currentRequest = -1;
-                    bitmapSubject.onNext(bitmap);
+            Uri selectedImageUri = data.getData();
+            if(selectedImageUri!=null){
+                try{
+                    InputStream imageStream = activity.getContentResolver().openInputStream(selectedImageUri);
+
+                    Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                    if (bitmap == null || saveBitmapToFile(activity, bitmap, false))
+                    {
+                        return;
+                    }
+
+                    if (currentRequest == REQUEST_CAMERA)
+                    {
+                        currentRequest = -1;
+                        bitmapSubject.onNext(bitmap);
+                    }
+                    else if (currentRequest == REQUEST_GALLERY)
+                    {
+                        currentRequest = -1;
+                        bitmapSubject.onNext(bitmap);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         }
@@ -158,7 +192,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
         }
         if (cropSizeY != null)
         {
-            intent.putExtra("outputY", cropAspectY);
+            intent.putExtra("outputY", cropSizeY);
         }
         intent.putExtra("return-data", true);
         activity.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
@@ -166,7 +200,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
 
     //TODO Maybe make this static, such that Bitmap from netVerify can be stored in the same file
     //And return the fileName
-    private boolean saveBitmapToFile(@NonNull ContextWrapper contextWrapper, @NonNull Bitmap bitmap)
+    private boolean saveBitmapToFile(@NonNull ContextWrapper contextWrapper, @NonNull Bitmap bitmap, boolean mustStartEditing)
     {
         croppedPhotoFile = createImageFile(contextWrapper);
         if (croppedPhotoFile == null)
@@ -191,6 +225,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
                 try
                 {
                     outputStream.close();
+
                 } catch (IOException e)
                 {
                     Timber.e(e, "Close");
@@ -212,6 +247,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
                     ".jpg",         /* suffix */
                     storageDir      /* directory */
             );
+
         } catch (IOException e)
         {
             Timber.e(e, "createImageFile");
@@ -219,4 +255,5 @@ public class ImageRequesterUtil implements ActivityResultRequester
         }
         return image;
     }
+
 }

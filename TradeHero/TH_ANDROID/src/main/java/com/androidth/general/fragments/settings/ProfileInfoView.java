@@ -5,11 +5,14 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -18,8 +21,10 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.androidth.general.Manifest;
 import com.androidth.general.R;
 import com.androidth.general.api.form.UserFormDTO;
 import com.androidth.general.api.users.UserBaseDTO;
@@ -28,6 +33,7 @@ import com.androidth.general.common.activities.ActivityResultRequester;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.graphics.BitmapTypedOutput;
+import com.androidth.general.models.graphics.ForUserPhoto;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
@@ -41,6 +47,8 @@ import com.androidth.general.widget.validation.TextValidator;
 import com.androidth.general.widget.validation.ValidatedText;
 import com.androidth.general.widget.validation.ValidatedView;
 import com.androidth.general.widget.validation.ValidationMessage;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,6 +78,7 @@ public class ProfileInfoView extends LinearLayout
     private static final int INDEX_CHOICE_FROM_CAMERA = 0;
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
 
+    private static final int REQUEST_CODE_PERMISSION_CAMERA = 1234;
 
     @Bind(R.id.authentication_sign_up_email) EmailValidatedText email;
     @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
@@ -89,10 +98,15 @@ public class ProfileInfoView extends LinearLayout
     @Bind(R.id.et_lastname) EditText lastName;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
 
-    @NonNull final AccountManager accountManager;
+    @NonNull AccountManager accountManager;
     private UserProfileDTO userProfileDTO;
     @NonNull protected SubscriptionList subscriptions;
     private ImageRequesterUtil imageRequesterUtil;
+    private Context context;
+    private ImageView profileImage;
+
+    @Inject Picasso picasso;
+    @Inject @ForUserPhoto Transformation userPhotoTransformation;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context, AttributeSet attrs)
@@ -100,7 +114,7 @@ public class ProfileInfoView extends LinearLayout
         super(context, attrs);
         HierarchyInjector.inject(this);
         subscriptions = new SubscriptionList();
-        accountManager = AccountManager.get(context);
+        this.context = context;
     }
     //</editor-fold>
 
@@ -127,46 +141,13 @@ public class ProfileInfoView extends LinearLayout
             e.printStackTrace();
         }
 
+        try{
+            profileImage = (ImageView) findViewById(R.id.image_optional);
+        }catch (Exception e){
+            //coz only profile_info has this
+            e.printStackTrace();
+        }
 
-        /*email.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.i("Email focus","Changed");
-                if(!hasFocus && email.getText()!=null){
-                    email_focus = true;
-                }
-                if(hasFocus){
-                    //password_focus = false;
-                    //display_name_focus = false;
-                }
-            }
-        });
-        password.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.i("Password focus","Changed");
-                if(!hasFocus && password.getText()!=null){
-                    password_focus = true;
-                }
-                if(hasFocus){
-                    //email_focus = false;
-                    //display_name_focus = false;
-                }
-            }
-        });
-        displayName.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.i("Username Focus","Changed");
-                if(!hasFocus && displayName.getText()!=null){
-                    display_name_focus = true;
-                }
-                if(hasFocus){
-                    //email_focus = false;
-                    //password_focus = false;
-                }
-            }
-        });*/
         email.setOnFocusChangeListener(emailValidator);
         email.addTextChangedListener(emailValidator);
         password.setOnFocusChangeListener(passwordValidator);
@@ -341,31 +322,31 @@ public class ProfileInfoView extends LinearLayout
 
     public void displayProfileImage(Bitmap newImage)
     {
-        /*if (this.profileImage != null)
+        if (this.profileImage != null)
         {
             profileImage.setImageBitmap(userPhotoTransformation.transform(newImage));
-        }*/
+        }
     }
 
     public void displayProfileImage(UserBaseDTO userBaseDTO)
     {
-        /*if (this.profileImage != null)
+        if (this.profileImage != null)
         {
             picasso.load(userBaseDTO.picture)
                     .placeholder(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
                     .into(profileImage);
-        }*/
+        }
     }
 
     public void displayDefaultProfileImage()
     {
-        /*if (this.profileImage != null && picasso != null)
+        if (this.profileImage != null && picasso != null)
         {
             picasso.load(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
                     .into(profileImage);
-        }*/
+        }
     }
     //endregion
 
@@ -380,6 +361,7 @@ public class ProfileInfoView extends LinearLayout
     private void populateCredentials()
     {
         try{
+            accountManager = AccountManager.get(context);
             Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
 
             if (accounts != null && accounts.length > 0)
@@ -455,7 +437,17 @@ public class ProfileInfoView extends LinearLayout
                         switch (event.which)
                         {
                             case INDEX_CHOICE_FROM_CAMERA:
-                                imageRequesterUtil.onImageFromCameraRequested((Activity) getContext(), ImageRequesterUtil.REQUEST_CAMERA);
+                                if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
+                                        != PackageManager.PERMISSION_GRANTED){
+
+                                    //doesnt handle onPermissionRequest coz it's in SettingsActivity
+                                    ActivityCompat.requestPermissions((Activity) getContext(),
+                                            new String[] {android.Manifest.permission.CAMERA}, REQUEST_CODE_PERMISSION_CAMERA);
+
+                                }else{
+                                    imageRequesterUtil.onImageFromCameraRequested((Activity) getContext(), ImageRequesterUtil.REQUEST_CAMERA);
+                                }
+
                                 break;
                             case INDEX_CHOICE_FROM_LIBRARY:
                                 imageRequesterUtil.onImageFromLibraryRequested((Activity) getContext(), ImageRequesterUtil.REQUEST_GALLERY);
@@ -465,17 +457,21 @@ public class ProfileInfoView extends LinearLayout
                     }
                 })
                 .subscribe(
-                        new Action1<Bitmap>()
-                        {
-                            @Override public void call(Bitmap bitmap)
-                            {
-                                /*if (profileImage != null)
-                                {
+                        new Action1<Bitmap>() {
+                            @Override
+                            public void call(Bitmap bitmap) {
+                                if (profileImage != null) {
                                     profileImage.setImageBitmap(bitmap);
-                                }*/
+                                }
                             }
-                        },
-                        new TimberOnErrorAction1("Failed to ask for and get bitmap")));
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                new TimberOnErrorAction1("Failed to ask for and get bitmap "+throwable.getLocalizedMessage());
+                            }
+                        }
+        ));
     }
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
@@ -549,4 +545,5 @@ public class ProfileInfoView extends LinearLayout
 
         return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
+
 }
