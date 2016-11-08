@@ -862,8 +862,16 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 buySellCostCcy.setText(portfolioCompactDTO.currencyDisplay);
                                 buySellTransactionCostCcy.setText(portfolioCompactDTO.currencyDisplay);
                                 buySellStopLossCcy.setText(portfolioCompactDTO.currencyDisplay);
+                                Log.v("live1b","initFetchesLive() livePositionDTO = " + livePositionDTO);
+                                if(livePositionDTO!=null) {
+                                    buySellCashLeftCcy.setText(portfolioCompactDTO.currencyDisplay);
+                                    THSignedNumber thStopLoss = THSignedNumber.builder(livePositionDTO.StopLoss)
+                                            .withOutSign()
+                                            .build();
 
-
+                                    buySellStopLossCcyValue.setText(thStopLoss.toString());
+                                    closedTradeText.setText(portfolioCompactDTO.currencyDisplay + " " + thStopLoss.toString());
+                                }
                                 enableUI();
                                 updateDisplay();
 
