@@ -300,6 +300,7 @@ abstract public class BasePagedRecyclerRxFragment<
     {
         Timber.d("Page loaded: %d", key.getPage());
         itemViewAdapter.addPage(key.getPage(), value.getList());
+        itemViewAdapter.notifyDataSetChanged();
         updateVisibilities();
 
         nearEndScrollListener.lowerEndFlag();
