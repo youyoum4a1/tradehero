@@ -411,115 +411,108 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
         displayActionBarTitle(portfolioDTO);
     }
 
-    @Override public void onStart()
-    {
+    @Override public void onStart() {
         super.onStart();
 
         nothingDTO = new PositionNothingView.DTO(null, shownUser.equals(currentUserId.toUserBaseKey()));
 
-//        onStopSubscriptions.add(Observable.combineLatest(
-//                getProfileAndHeaderObservable(),
-//                getPositionsObservable(),
-//                new Func2<Pair<UserProfileDTO, PortfolioHeaderView>, List<Pair<PositionDTO, SecurityCompactDTO>>, PortfolioHeaderView>()
-//                {
-//                    @Override public PortfolioHeaderView call(
-//                            @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
-//                            @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
-//                    {
-//                        //TODO Translate to 0 to restore position
-//                        //inflatedHeader.animate().translationY(0f).start();
-//                        Log.v("Positions", "Getting positions done");
-//                        return profileAndHeaderPair.second;
-//                    }
-//                })
-//                .distinctUntilChanged()
-//                .flatMap(new Func1<PortfolioHeaderView, Observable<UserProfileDTO>>()
-//                {
-//                    @Override public Observable<UserProfileDTO> call(PortfolioHeaderView portfolioHeaderView)
-//                    {
-//                        Log.v("Positions", "Getting positions done and mapped");
-//                        return portfolioHeaderView.getUserActionObservable()
-//                                .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>()
-//                                {
-//                                    @Override public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction)
-//                                    {
-//                                        return handleHeaderUserAction(userAction);
-//                                    }
-//                                })
-//                                .doOnError(new Action1<Throwable>()
-//                                {
-//                                    @Override public void call(Throwable e)
-//                                    {
-//                                        try{
-//                                            AlertDialogRxUtil.popErrorMessage(
-//                                                    PositionListFragment.this.getActivity(),
-//                                                    e);
-//                                        }catch (Exception e1){
-//                                            e1.printStackTrace();
-//                                        }
-//
-//                                        // TODO
-//                                    }
-//                                });
-//                    }
-//                })
-//                .doOnError(new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        Log.v("Positions", "Error"+throwable.getLocalizedMessage());
-//                    }
-//                })
-//                .subscribe(
-//                        new Action1<UserProfileDTO>()
-//                        {
-//                            @Override public void call(UserProfileDTO newProfile)
-//                            {
-//                                // Nothing to do
-//                            }
-//                        },
-//                        new TimberOnErrorAction1("Failed to collect all")));
-//
-//        onStopSubscriptions.add(
-//                Observable.combineLatest(
-//                        positionItemAdapter.getUserActionObservable()
-//                                .observeOn(AndroidSchedulers.mainThread()),
-//                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
-//                                .observeOn(AndroidSchedulers.mainThread()),
-//                        new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>()
-//                        {
-//                            @Override public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
-//                                    Pair<UserBaseKey, PortfolioCompactDTOList> pair)
-//                            {
-//                                handleDialogGoToTrade(true,
-//                                        userAction.securityCompactDTO,
-//                                        userAction.positionDTO,
-//                                        PortfolioCompactDTOUtil.getPurchaseApplicablePortfolio(
-//                                                pair.second,
-//                                                purchaseApplicableOwnedPortfolioId,
-//                                                null,
-//                                                userAction.securityCompactDTO.getSecurityId())
-//                                                .getOwnedPortfolioId());
-//
-//                                return userAction;
-//                            }
-//                        })
-//                        .doOnError(new Action1<Throwable>() {
-//                            @Override
-//                            public void call(Throwable throwable) {
-//                                Log.v("Positions", "Error 1"+throwable.getLocalizedMessage());
-//                            }
-//                        })
-//                        .subscribe(
-//                                new Action1<PositionPartialTopView.CloseUserAction>()
-//                                {
-//                                    @Override public void call(PositionPartialTopView.CloseUserAction userAction)
-//                                    {
-//                                        // Nothing to do
-//                                    }
-//                                },
-//                                new TimberAndToastOnErrorAction1("Failed to listen to user action")));
+        if (!LiveConstants.isInLiveMode) {
+            onStopSubscriptions.add(Observable.combineLatest(
+                    getProfileAndHeaderObservable(),
+                    getPositionsObservable(),
+                    new Func2<Pair<UserProfileDTO, PortfolioHeaderView>, List<Pair<PositionDTO, SecurityCompactDTO>>, PortfolioHeaderView>() {
+                        @Override
+                        public PortfolioHeaderView call(
+                                @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
+                                @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs) {
+                            //TODO Translate to 0 to restore position
+                            //inflatedHeader.animate().translationY(0f).start();
+                            Log.v("Positions", "Getting positions done");
+                            return profileAndHeaderPair.second;
+                        }
+                    })
+                    .distinctUntilChanged()
+                    .flatMap(new Func1<PortfolioHeaderView, Observable<UserProfileDTO>>() {
+                        @Override
+                        public Observable<UserProfileDTO> call(PortfolioHeaderView portfolioHeaderView) {
+                            Log.v("Positions", "Getting positions done and mapped");
+                            return portfolioHeaderView.getUserActionObservable()
+                                    .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>() {
+                                        @Override
+                                        public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction) {
+                                            return handleHeaderUserAction(userAction);
+                                        }
+                                    })
+                                    .doOnError(new Action1<Throwable>() {
+                                        @Override
+                                        public void call(Throwable e) {
+                                            try {
+                                                AlertDialogRxUtil.popErrorMessage(
+                                                        PositionListFragment.this.getActivity(),
+                                                        e);
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();
+                                            }
 
+                                            // TODO
+                                        }
+                                    });
+                        }
+                    })
+                    .doOnError(new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Log.v("Positions", "Error" + throwable.getLocalizedMessage());
+                        }
+                    })
+                    .subscribe(
+                            new Action1<UserProfileDTO>() {
+                                @Override
+                                public void call(UserProfileDTO newProfile) {
+                                    // Nothing to do
+                                }
+                            },
+                            new TimberOnErrorAction1("Failed to collect all")));
 
+            onStopSubscriptions.add(
+                    Observable.combineLatest(
+                            positionItemAdapter.getUserActionObservable()
+                                    .observeOn(AndroidSchedulers.mainThread()),
+                            portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+                                    .observeOn(AndroidSchedulers.mainThread()),
+                            new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>() {
+                                @Override
+                                public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
+                                                                                   Pair<UserBaseKey, PortfolioCompactDTOList> pair) {
+                                    handleDialogGoToTrade(true,
+                                            userAction.securityCompactDTO,
+                                            userAction.positionDTO,
+                                            PortfolioCompactDTOUtil.getPurchaseApplicablePortfolio(
+                                                    pair.second,
+                                                    purchaseApplicableOwnedPortfolioId,
+                                                    null,
+                                                    userAction.securityCompactDTO.getSecurityId())
+                                                    .getOwnedPortfolioId());
+
+                                    return userAction;
+                                }
+                            })
+                            .doOnError(new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                    Log.v("Positions", "Error 1" + throwable.getLocalizedMessage());
+                                }
+                            })
+                            .subscribe(
+                                    new Action1<PositionPartialTopView.CloseUserAction>() {
+                                        @Override
+                                        public void call(PositionPartialTopView.CloseUserAction userAction) {
+                                            // Nothing to do
+                                        }
+                                    },
+                                    new TimberAndToastOnErrorAction1("Failed to listen to user action")));
+
+        }
 
 
 
