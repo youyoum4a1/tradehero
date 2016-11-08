@@ -1087,11 +1087,14 @@ public class PositionListFragment
                     {
                         super.onScrolled(recyclerView, dx, dy);
 
-                        if (recyclerView.getChildAt(0).getTop() >= inflatedView.getHeight() / 2)
-                        {
-                            headerStub.setVisibility(View.VISIBLE);
-                        }
-                        else {
+                        if(recyclerView!=null && recyclerView.getChildAt(0)!=null){
+                            if (recyclerView.getChildAt(0).getTop() >= inflatedView.getHeight() / 2)
+                            {
+                                headerStub.setVisibility(View.VISIBLE);
+                            }else{
+                                headerStub.setVisibility(View.GONE);
+                            }
+                        } else {
                             headerStub.setVisibility(View.GONE);
                         }
                     }
