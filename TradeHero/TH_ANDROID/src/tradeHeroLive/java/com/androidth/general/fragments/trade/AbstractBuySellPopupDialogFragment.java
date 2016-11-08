@@ -52,6 +52,7 @@ import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.common.billing.googleplay.Security;
 import com.androidth.general.common.persistence.RealmInstance;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -1017,6 +1018,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             ImageView vConfident = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_bullish);
                             vConfident.setBackgroundColor(Color.GRAY);
                             currentLeverage = usedDTO.securityCompactDTO.midLeverage;
+                            marginLeverageText.setText(getCurrentMarginLeverageText());
                         }
                     }
                 })
@@ -1617,14 +1619,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         {
             double fxRate = getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
 
-            Log.v("live1b","getLiveTradeValueText fx rate from realm : " + fxRate);
+        //    Log.v("live1b","getLiveTradeValueText fx rate from realm : " + fxRate);
             double costInUserCurrency = (quantity * quoteDTO.getAskPrice()) / fxRate;
             double costInUserCurrencyAfterLeverage = costInUserCurrency * 1/ currentLeverage;
 
             double remaining = portfolioCompactDTO.cashBalance - costInUserCurrencyAfterLeverage;
 
-
-            Log.v("live1b","getLiveTradeValueText cashBalance : " + portfolioCompactDTO.cashBalance );
+        //    Log.v("live1b","getLiveTradeValueText cashBalance : " + portfolioCompactDTO.cashBalance );
             THSignedNumber thSignedNumber = THSignedNumber
                     .builder(remaining)
                     .withOutSign()
@@ -1633,6 +1634,20 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             cashLeftText = thSignedNumber.toString();
         }
         return cashLeftText;
+    }
+
+    private String getCurrentMarginLeverageText()
+    {
+        int marginPercent = (int)(100/currentLeverage);
+
+        return String.format("%1$d%% Margin = ", marginPercent) + fmt(currentLeverage) + "x Leverage";
+    }
+    private String fmt(double d)
+    {
+        if(d == (long) d)
+            return String.format("%d",(long)d);
+        else
+            return String.format("%s",d);
     }
 
     public Double getFXRate(String myCurrencyISO, String securityCurrency)
@@ -1868,49 +1883,55 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     private void updateValuesOnLeverageChange()
     {
+        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
+        if(accountBalanceResponseDTO!=null) {
+            usedDTO.portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
+            usedDTO.portfolioCompactDTO.currencyISO = accountBalanceResponseDTO.Currency;
+        }
         double fxRate = getFXRate(usedDTO.portfolioCompactDTO.currencyISO, usedDTO.quoteDTO.getCurrencyISO());
         double valueInUserCurrency = (usedDTO.clampedQuantity * usedDTO.quoteDTO.getAskPrice()) / fxRate;
         double valueInUserCurrencyAfterLeverage = valueInUserCurrency * 1/currentLeverage;
+        Log.v("live1b","updateValuesOnLeverageChange() \nfxRate=" + fxRate + " \nclampedQuantity=" + usedDTO.clampedQuantity + " \nusedDTO.quoteDTO.getAskPrice() " + usedDTO.quoteDTO.getAskPrice());
         // update mLeftNumber aka Cost
         mLeftNumber.setText(THSignedNumber.builder(valueInUserCurrencyAfterLeverage).withOutSign().build().toString());
-        tradeSizeAmount.setText(usedDTO.securityCompactDTO.currencyISO + " " + THSignedNumber.builder(valueInUserCurrency).withOutSign().build().toString());
+        tradeSizeAmount.setText(usedDTO.portfolioCompactDTO.currencyISO + " " + THSignedNumber.builder(valueInUserCurrency).withOutSign().build().toString());
         tradeSizeLeverage.setText(currentLeverage + "x");
+
+
         Log.v("live1b", "updateValuesOnLeverageChange() cashBalance = " + usedDTO.portfolioCompactDTO.cashBalance);
         mRightNumber.setText(THSignedNumber.builder(usedDTO.portfolioCompactDTO.cashBalance - valueInUserCurrencyAfterLeverage).withOutSign().build().toString());;
+        marginLeverageText.setText(getCurrentMarginLeverageText());
+
+        buySellMarginRate.setText(((int)(100/currentLeverage)) + "%");
     }
 
+    private void handleLeverageBucketClicked(Double leverage, int imageClicked, View view)
+    {
+        view.setBackgroundColor(Color.GRAY);
+        resetLevImageBackground(imageClicked);
+        currentLeverage = leverage;
+        updateValuesOnLeverageChange();
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.img_buy_sell_lev_confident)
     void onLeverageConfidentClicked(View view)
     {
-        Log.v("live1b","Image Confident Clicked");
-        view.setBackgroundColor(Color.GRAY);
-        resetLevImageBackground(R.id.img_buy_sell_lev_confident);
-        currentLeverage = usedDTO.securityCompactDTO.minLeverage;
-        updateValuesOnLeverageChange();
+        handleLeverageBucketClicked(usedDTO.securityCompactDTO.minLeverage, R.id.img_buy_sell_lev_confident, view);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.img_buy_sell_lev_bullish)
     void onLeverageBullishClicked(View view)
     {
-        Log.v("live1b","Image Bullish Clicked");
-        view.setBackgroundColor(Color.GRAY);
-        resetLevImageBackground(R.id.img_buy_sell_lev_bullish);
-        currentLeverage = usedDTO.securityCompactDTO.midLeverage;
-        updateValuesOnLeverageChange();
+        handleLeverageBucketClicked(usedDTO.securityCompactDTO.midLeverage, R.id.img_buy_sell_lev_bullish, view);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.img_buy_sell_lev_certain)
     void onLeverageCertainClicked(View view)
     {
-        Log.v("live1b","Image Certain Clicked");
-        view.setBackgroundColor(Color.GRAY);
-        resetLevImageBackground(R.id.img_buy_sell_lev_certain);
-        currentLeverage = usedDTO.securityCompactDTO.maxLeverage;
-        updateValuesOnLeverageChange();
+        handleLeverageBucketClicked(usedDTO.securityCompactDTO.maxLeverage, R.id.img_buy_sell_lev_certain, view);
     }
 
     @Deprecated
