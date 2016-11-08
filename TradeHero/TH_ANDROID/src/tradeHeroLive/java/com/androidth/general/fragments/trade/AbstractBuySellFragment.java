@@ -584,12 +584,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                     //it is already in correct currency
                                                     return;
                                                 }
+                                                if(securityCompactDTO!=null && portfolioCompactDTO!=null) {
+                                                    if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                        return;
+                                                    if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
 
-                                                if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
-                                                    return;
-                                                if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
-
-                                                    RealmInstance.replaceOldValueWith(liveQuote);
+                                                        RealmInstance.replaceOldValueWith(liveQuote);
 
 //                                                    Realm realm = Realm.getDefaultInstance();
 //                                                    realm.beginTransaction();
@@ -597,6 +597,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 //                                                    realm.copyToRealm(liveQuote);
 //                                                    realm.commitTransaction();
 
+                                                    }
                                                 }
                                             }
                                         }

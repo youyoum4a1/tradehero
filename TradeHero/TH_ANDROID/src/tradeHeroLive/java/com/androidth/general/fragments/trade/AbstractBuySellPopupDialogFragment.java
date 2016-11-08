@@ -180,12 +180,15 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     @Bind(R.id.dialog_buy_sell_transaction_cost_ccy)
     protected TextView buySellTransactionCostCcy;
-    @Bind(R.id.dialog_buy_sell_transaction_cost_ccy_value)
 
+    @Bind(R.id.dialog_buy_sell_transaction_cost_ccy_value)
     protected TextView buySellTransactionCostCcyValue;
 
     @Bind(R.id.dialog_buy_sell_cost_ccy)
     protected TextView buySellCostCcy;
+
+    @Bind(R.id.dialog_buy_sell_cost_ccy_value)
+    protected TextView buySellCostCcyValue;
 
     @Bind(R.id.tablerow_cost)
     protected TableRow buySellTRCost;
@@ -943,6 +946,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 updateDisplay();
 
                                 mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+                                buySellCostCcyValue.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 if (clamped != null)
                                 {
                                     String cashLeft = getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
@@ -1418,6 +1422,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 }
                                 mMiddleNumber.setSelection(mMiddleNumber.getText().length());
                             }
+
+                            updateLeverageBucketForVirtual(clampedQuantity);
                         }
                     }
                 })
@@ -1889,6 +1895,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
     }
 
+    // used in LIVE mode
     private void updateValuesOnLeverageChange()
     {
         AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
@@ -1915,10 +1922,60 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     private void handleLeverageBucketClicked(Double leverage, int imageClicked, View view)
     {
-        view.setBackgroundColor(Color.GRAY);
         resetLevImageBackground(imageClicked);
-        currentLeverage = leverage;
-        updateValuesOnLeverageChange();
+        view.setBackgroundColor(Color.GRAY);
+        if(LiveConstants.isInLiveMode) {
+            currentLeverage = leverage;
+            updateValuesOnLeverageChange();
+        }
+        else
+        {
+            int maxValue = mSeekBar.getMax();
+            Double quantityClicked = 0.0;
+            if(imageClicked==R.id.img_buy_sell_lev_confident)
+            {
+                quantityClicked = (maxValue * 0.25);
+            }
+            else if(imageClicked==R.id.img_buy_sell_lev_bullish)
+            {
+                quantityClicked = (maxValue * 0.50);
+            }
+            else if(imageClicked==R.id.img_buy_sell_lev_certain)
+            {
+                quantityClicked = (maxValue * 0.75);
+            }
+            quantitySubject.onNext(quantityClicked.intValue());
+        }
+    }
+    // highlight the bucket with the one nearest
+    private void updateLeverageBucketForVirtual(int clampedQuantity)
+    {
+        int maxValue = mSeekBar.getMax();
+        Double minBucket = (maxValue * 0.25);
+        Double midBucket = (maxValue * 0.50);
+        Double maxBucket = (maxValue * 0.75);
+        int nearestBucket = getNearestBucketId(new int[] {minBucket.intValue(), midBucket.intValue(), maxBucket.intValue()}, clampedQuantity);
+        resetLevImageBackground(nearestBucket);
+
+        ImageView bucketView = (ImageView) getView().findViewById(nearestBucket);
+        bucketView.setBackgroundColor(Color.GRAY);
+    }
+
+    private int getNearestBucketId(int[] buckets, int clampedQuantity)
+    {
+        if(clampedQuantity<=buckets[0])
+            return R.id.img_buy_sell_lev_confident;
+
+        if(clampedQuantity>=buckets[2])
+            return R.id.img_buy_sell_lev_certain;
+
+        if(Math.abs(clampedQuantity-buckets[0]) < Math.abs(clampedQuantity-buckets[1]))
+            return R.id.img_buy_sell_lev_confident;
+
+        if(Math.abs(clampedQuantity-buckets[2]) < Math.abs(clampedQuantity-buckets[1]))
+            return R.id.img_buy_sell_lev_certain;
+
+        return R.id.img_buy_sell_lev_bullish;
     }
 
     @SuppressWarnings("UnusedDeclaration")
