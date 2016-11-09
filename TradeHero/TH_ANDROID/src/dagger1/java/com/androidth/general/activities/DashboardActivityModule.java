@@ -123,7 +123,7 @@ import dagger.Provides;
                 UpdateCenterFragment.class,
                 WebViewFragment.class,
 //                LiveSignUpStep1AyondoFragment.class,
-//                SignUpLiveActivity.class,
+                SignUpLiveActivity.class,
                 LiveSignUpMainFragment.class,
                 IdentityPromptActivity.class,
                 LiveActivityUtil.getRoutableKYC(),

@@ -246,7 +246,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<UserProfileDTO>() {
             @Override
             public void call(UserProfileDTO userProfileDTO) {
-                if(userProfileDTO!=null && userProfileDTO.email!=null && email != null)
+                // maybe we need to have filter list for email host some where? iOS also don't have this - James
+                if(userProfileDTO!=null && userProfileDTO.email!=null && email != null && !userProfileDTO.email.contains("facebook.com"))
                     email.setText(userProfileDTO.email, TextView.BufferType.EDITABLE);
             }
         }, new TimberOnErrorAction1("Live Step 1: user profile cache get() failed."));
@@ -1225,7 +1226,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         String emailText = kycForm.getEmail();
-        if (email != null && emailText != null /* && !emailText.equals(email.getText().toString())*/)
+        // maybe we need to have filter list for email host some where? iOS also don't have this - James
+        if (email != null && emailText != null && !emailText.contains("facebook.com") /* && !emailText.equals(email.getText().toString())*/)
         {
             email.setText(emailText);
             String currentVerifiedEmail = kycForm.getVerifiedEmailAddress();
