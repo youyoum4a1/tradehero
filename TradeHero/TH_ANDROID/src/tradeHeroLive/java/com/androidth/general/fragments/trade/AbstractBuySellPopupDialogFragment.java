@@ -2,11 +2,14 @@ package com.androidth.general.fragments.trade;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.util.Log;
@@ -1028,7 +1031,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         if(currentLeverage==null && LiveConstants.isInLiveMode) // default is normal/midLeverage
                         {
                             ImageView vConfident = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_bullish);
-                            vConfident.setBackgroundColor(Color.GRAY);
+                            vConfident.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.lev_image_border));
                             currentLeverage = usedDTO.securityCompactDTO.midLeverage;
                             marginLeverageText.setText(getCurrentMarginLeverageText());
                         }
@@ -1806,6 +1809,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         .withOutSign()
                         .build();
                 valueText = thTradeValue.toString();
+                tradeSizeAmount.setText(portfolioCompactDTO.currencyISO + " " + valueText);
             }
         }
         return valueText;
@@ -1898,6 +1902,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     // used in LIVE mode
     private void updateValuesOnLeverageChange()
     {
+        if(currentLeverage==null)
+            currentLeverage = usedDTO.securityCompactDTO.midLeverage;
         AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
         if(accountBalanceResponseDTO!=null) {
             usedDTO.portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
@@ -1912,7 +1918,6 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         tradeSizeAmount.setText(usedDTO.portfolioCompactDTO.currencyISO + " " + THSignedNumber.builder(valueInUserCurrency).withOutSign().build().toString());
         tradeSizeLeverage.setText(currentLeverage + "x");
 
-
         Log.v("live1b", "updateValuesOnLeverageChange() cashBalance = " + usedDTO.portfolioCompactDTO.cashBalance);
         mRightNumber.setText(THSignedNumber.builder(usedDTO.portfolioCompactDTO.cashBalance - valueInUserCurrencyAfterLeverage).withOutSign().build().toString());;
         marginLeverageText.setText(getCurrentMarginLeverageText());
@@ -1923,7 +1928,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private void handleLeverageBucketClicked(Double leverage, int imageClicked, View view)
     {
         resetLevImageBackground(imageClicked);
-        view.setBackgroundColor(Color.GRAY);
+
+        view.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.lev_image_border));
+
         if(LiveConstants.isInLiveMode) {
             currentLeverage = leverage;
             updateValuesOnLeverageChange();
@@ -1958,7 +1965,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         resetLevImageBackground(nearestBucket);
 
         ImageView bucketView = (ImageView) getView().findViewById(nearestBucket);
-        bucketView.setBackgroundColor(Color.GRAY);
+//        Resources res = getResources();
+//        Drawable shape = res.getDrawable(R.drawable.lev_image_border);
+//        bucketView.setBackground(shape);
+        bucketView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.lev_image_border));
     }
 
     private int getNearestBucketId(int[] buckets, int clampedQuantity)

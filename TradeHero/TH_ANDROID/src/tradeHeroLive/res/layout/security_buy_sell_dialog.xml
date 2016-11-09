@@ -355,6 +355,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/size_1"
+        android:layout_marginRight="@dimen/size_1"
       >
 
         <ImageView
@@ -365,7 +367,9 @@
             android:src="@drawable/buy_sell_lev_confident"
             android:layout_weight="1"
             android:clickable="true"
+            android:scaleType="centerInside"
             />
+
         <ImageView
             android:id="@+id/img_buy_sell_lev_bullish"
             android:layout_width="match_parent"
@@ -374,6 +378,7 @@
             android:src="@drawable/buy_sell_lev_bullish"
             android:layout_weight="1"
             android:clickable="true"
+            android:scaleType="centerInside"
            />
 
         <ImageView
@@ -383,6 +388,7 @@
             android:layout_gravity="center_horizontal"
             android:src="@drawable/buy_sell_lev_certain"
             android:layout_weight="1"
+            android:scaleType="centerInside"
             android:clickable="true"
             />
     </LinearLayout>
@@ -743,9 +749,7 @@
     </LinearLayout>
 
 
-
-
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         >
