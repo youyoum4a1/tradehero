@@ -111,8 +111,10 @@ public class DiscoveryMainFragment extends DashboardFragment
         }
         //liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
 
-        if(getArguments().containsKey(CustomAirshipReceiver.MESSAGE)){
-            CustomAirshipReceiver.createDialogWithListener(getActivity(), getArguments().getString(CustomAirshipReceiver.MESSAGE));
+        String fromPushMessage = CustomAirshipReceiver.getPushMessage(getArguments());
+
+        if(fromPushMessage!=null){
+            CustomAirshipReceiver.createDialogWithListener(getActivity(), fromPushMessage);
         }
     }
 

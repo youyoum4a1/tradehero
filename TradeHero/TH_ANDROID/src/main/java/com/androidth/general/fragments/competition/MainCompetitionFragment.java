@@ -262,12 +262,15 @@ public class MainCompetitionFragment extends DashboardFragment
         GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.COMP_MAIN_PAGE);
 
         String fromPushMessage = null;
-        if(getArguments().containsKey(CustomAirshipReceiver.MESSAGE)){
-            fromPushMessage = getArguments().getString(CustomAirshipReceiver.MESSAGE);
+        String fromPushMessage1 = CustomAirshipReceiver.getPushMessage(getArguments());
+        String fromPushMessage2 = CustomAirshipReceiver.getPushMessage(getActivity().getIntent());
+
+        if(fromPushMessage1!=null){
+            fromPushMessage = fromPushMessage1;
             getArguments().remove(CustomAirshipReceiver.MESSAGE);
 
-        }else if(getActivity().getIntent().hasExtra(CustomAirshipReceiver.MESSAGE)){
-            fromPushMessage = getActivity().getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
+        }else if(fromPushMessage2!=null){
+            fromPushMessage = fromPushMessage2;
             getActivity().getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
         }
 

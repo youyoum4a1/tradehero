@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -126,5 +127,29 @@ public class CustomAirshipReceiver extends AirshipReceiver {
         dialog.show();
     }
 
+    public static String getPushMessage(Intent intent) {
+        if (intent != null
+                && intent.hasExtra(CustomAirshipReceiver.MESSAGE)) {
 
+            String uaMessage = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+            if(uaMessage.isEmpty()){
+                return null;
+            }else{
+                return uaMessage;
+            }
+        }
+        return null;
+    }
+
+    public static String getPushMessage(Bundle bundle) {
+        if(bundle.containsKey(CustomAirshipReceiver.MESSAGE)) {
+            String uaMessage = bundle.getString(CustomAirshipReceiver.MESSAGE);
+            if(uaMessage.isEmpty()){
+                return null;
+            }else{
+                return uaMessage;
+            }
+        }
+        return null;
+    }
 }

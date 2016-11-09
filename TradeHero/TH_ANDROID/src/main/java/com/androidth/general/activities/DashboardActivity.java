@@ -556,14 +556,14 @@ public class DashboardActivity extends BaseActivity
             if(intent.getData()!=null){
                 if(intent.getData().toString().startsWith("tradehero://Url/")){
                     String url = intent.getData().toString().replace("tradehero://Url/", "http://");
-                    String message = "";
-                    if(intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
-                        message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
-                    }
+                    String message = CustomAirshipReceiver.getPushMessage(intent);
 
                     getIntent().setData(null);
                     getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
-                    CustomAirshipReceiver.createDialogWithListener(this, message);
+                    if(message!=null){
+                        CustomAirshipReceiver.createDialogWithListener(this, message);
+                    }
+
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
                     startActivity(intent);
@@ -571,18 +571,13 @@ public class DashboardActivity extends BaseActivity
                     thRouter.open(intent.getData().getHost()+intent.getData().getPath(), this);
                 }
 
-//            }else if(intent.hasExtra(CustomAirshipReceiver.DEEPLINK)){
-//                Uri deepLink = intent.getParcelableExtra(CustomAirshipReceiver.DEEPLINK);
-//                try{
-////                    Bundle bundle = new Bundle();
-////                    bundle.putInt("enrollProviderId", 55);
-//                    thRouter.open(deepLink.getHost()+deepLink.getPath(), bundle);
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-
             }else{
-                checkIfFromPush(intent);
+//                checkIfFromPush(intent);
+                String fromPushMessage = CustomAirshipReceiver.getPushMessage(intent);
+                if(fromPushMessage!=null){
+                    CustomAirshipReceiver.createDialog(this, fromPushMessage);
+                    getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
+                }
             }
         }
     }
@@ -789,15 +784,14 @@ public class DashboardActivity extends BaseActivity
         ActivityBuildTypeUtil.flagLowMemory();
     }
 
-    private void checkIfFromPush(Intent intent){
-        if(intent!=null
-                && intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
-
-            String message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
-            if(message!=null && !message.isEmpty()){
-                CustomAirshipReceiver.createDialog(this, message);
-                getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);
-            }
-        }
-    }
+//    private void checkIfFromPush(Intent intent){
+//        if(intent!=null
+//                && intent.hasExtra(CustomAirshipReceiver.MESSAGE)){
+//
+//            String message = intent.getStringExtra(CustomAirshipReceiver.MESSAGE);
+//            if(message!=null && !message.isEmpty()){
+//
+//            }
+//        }
+//    }
 }

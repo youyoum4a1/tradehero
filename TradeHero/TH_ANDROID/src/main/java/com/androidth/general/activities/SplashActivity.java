@@ -92,11 +92,13 @@ public class SplashActivity extends BaseActivity
         }
 
         if(getIntent()!=null && getIntent().getAction()!=null){
+            String fromPushMessage = CustomAirshipReceiver.getPushMessage(getIntent());
+
             if(getIntent().getAction().equals(CustomAirshipReceiver.NOTIFICATION_OPENED)
-                    && getIntent().hasExtra(CustomAirshipReceiver.MESSAGE)){
+                    && fromPushMessage!=null){
 
                 isFromPush = true;
-                uaMessage = getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
+                uaMessage = fromPushMessage;
             }
         }
 

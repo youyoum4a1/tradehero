@@ -114,13 +114,16 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Override public void onResume() {
         super.onResume();
-        if(getActivity().getIntent().hasExtra(CustomAirshipReceiver.MESSAGE)){
-            uaMessage = getActivity().getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
-            if(uaMessage==null || uaMessage.isEmpty()){
-                uaMessage = null;
-            }
-            getActivity().getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);//remove after getting it
-        }
+
+        uaMessage = CustomAirshipReceiver.getPushMessage(getActivity().getIntent());
+
+//        if(uaMessage!=null){
+//            uaMessage = getActivity().getIntent().getStringExtra(CustomAirshipReceiver.MESSAGE);
+//            if(uaMessage==null || uaMessage.isEmpty()){
+//                uaMessage = null;
+//            }
+//            getActivity().getIntent().removeExtra(CustomAirshipReceiver.MESSAGE);//remove after getting it
+//        }
         fetchProviderIdList(providerListCache.getCachedValue(new ProviderListKey()));
 
     }
