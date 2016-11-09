@@ -230,14 +230,25 @@ public class Live1BServiceWrapper {
             }
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
-                received = this.live1BServiceRx.getTrendingSecuritiesByPrice(
+                //no api yet for this
+//                received = this.live1BServiceRx.getTrendingSecuritiesByPrice(
+//                        trendingKey.exchange,
+//                        trendingKey.getPage(),
+//                        trendingKey.perPage);
+                received = this.live1BServiceRx.getTrendingSecurities(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
-                received = this.live1BServiceRx.getTrendingSecuritiesByVolume(
+                //no api yet for this
+//                received = this.live1BServiceRx.getTrendingSecuritiesByVolume(
+//                        trendingKey.exchange,
+//                        trendingKey.getPage(),
+//                        trendingKey.perPage);
+
+                received = this.live1BServiceRx.getTrendingSecurities(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
