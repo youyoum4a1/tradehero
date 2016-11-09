@@ -3,6 +3,8 @@ package com.androidth.general.fragments.kyc;
 import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.TrendingLiveFragmentUtil;
 import com.androidth.general.fragments.kyc.FragmentAyondoModule;
+import com.androidth.general.fragments.trade.Live1BWebLoginDialogFragment;
+
 import dagger.Module;
 
 @Module(
@@ -17,7 +19,8 @@ import dagger.Module;
                 DatePickerDialogFragment.class,
                 VerifyPhoneDialogFragment.class,
                 VerifyEmailDialogFragment.class,
-                LiveFormConfirmationFragment.class
+                LiveFormConfirmationFragment.class,
+                Live1BWebLoginDialogFragment.class
         },
         library = true,
         complete = false

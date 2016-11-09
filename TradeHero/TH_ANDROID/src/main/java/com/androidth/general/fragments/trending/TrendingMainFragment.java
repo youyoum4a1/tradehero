@@ -1101,7 +1101,7 @@ public class TrendingMainFragment extends DashboardFragment
                     switch (errorCode){
                         case 1:
                         case 3:
-                            LiveViewProvider.showTradeHubLogin(getActivity());
+                            LiveViewProvider.showTradeHubLogin(TrendingMainFragment.this);
                             break;
                     }
 

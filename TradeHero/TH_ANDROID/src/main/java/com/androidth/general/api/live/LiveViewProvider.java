@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ public class LiveViewProvider {
 
     private static String currentRedirectUrl;
 
-    public static void showTradeHubLogin(Activity activity, Throwable errorResponse){
+    public static void showTradeHubLogin(Fragment fragment, Throwable errorResponse){
         try {
             if (LiveConstants.hasLiveAccount) {
 
@@ -33,36 +34,49 @@ public class LiveViewProvider {
 
                 currentRedirectUrl = redirectURL;//just for backup
 
-                showTradeHubLogin(activity, redirectURL);
+                showTradeHubLogin(fragment, redirectURL);
 
             }
 
         } catch (Exception e) {
-            Toast.makeText(activity, "Error in redirection" , Toast.LENGTH_LONG).show();
+            Toast.makeText(fragment.getContext(), "Error in redirection" , Toast.LENGTH_LONG).show();
             Log.d("flipLiveLogin Error ", e.toString());
         }
     }
 
-    public static void showTradeHubLogin(Activity activity){
-        showTradeHubLogin(activity, currentRedirectUrl);
+    public static void showTradeHubLogin(Fragment fragment){
+        showTradeHubLogin(fragment, currentRedirectUrl);
     }
 
-    public static void showTradeHubLogin(Activity activity, String redirectUrl){
+//    public static void showTradeHubLogin(Activity activity, String redirectUrl){
+//        Bundle args = new Bundle();
+//        args.putString(BUNDLE_KEY_REDIRECT_URL_ID, redirectUrl);
+////        Live1BWebLoginDialogFragment liveLoginFragment = new Live1BWebLoginDialogFragment();
+////        liveLoginFragment.setArguments(args);
+////
+////        liveLoginFragment.setOnDismissListener(new DialogInterface.OnDismissListener(){
+////            @Override
+////            public void onDismiss(DialogInterface dialog) {
+////                //    Toast.makeText(getContext(),"Now you can start trading Live!", Toast.LENGTH_LONG).show();
+////
+////            }
+////        });
+//
+//        try{
+//            Live1BWebLoginDialogFragment.show(activity.getFragmentManager().get,
+//                    Live1BWebLoginDialogFragment.class.getName(), args, 0);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
+
+    public static void showTradeHubLogin(Fragment fragment, String redirectUrl){
         Bundle args = new Bundle();
         args.putString(BUNDLE_KEY_REDIRECT_URL_ID, redirectUrl);
-        Live1BWebLoginDialogFragment liveLoginFragment = new Live1BWebLoginDialogFragment();
-        liveLoginFragment.setArguments(args);
-
-        liveLoginFragment.setOnDismissListener(new DialogInterface.OnDismissListener(){
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                //    Toast.makeText(getContext(),"Now you can start trading Live!", Toast.LENGTH_LONG).show();
-
-            }
-        });
 
         try{
-            liveLoginFragment.show(activity.getFragmentManager(), Live1BWebLoginDialogFragment.class.getName());
+            Live1BWebLoginDialogFragment.show(fragment,
+                    Live1BWebLoginDialogFragment.class.getName(), args, 0);
         }catch (Exception e){
             e.printStackTrace();
         }

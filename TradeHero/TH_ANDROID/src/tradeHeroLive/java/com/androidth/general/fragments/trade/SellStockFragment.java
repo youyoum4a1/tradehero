@@ -143,7 +143,7 @@ public class SellStockFragment extends AbstractStockTransactionFragment
                                     RetrofitError error = (RetrofitError) throwable;
                                     Log.d("SellStockFragmentError", error.getResponse() + " " + error.toString());
                                     if(error.getResponse()!=null && error.getResponse().getStatus()==302)  {
-                                        LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+                                        LiveViewProvider.showTradeHubLogin(SellStockFragment.this, throwable);
                                     }
                                     else
                                         Toast.makeText(getContext(),"Error in stock sale: " + error.getBody().toString(),Toast.LENGTH_LONG).show();

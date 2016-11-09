@@ -136,7 +136,7 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                                             Log.d("BuyStockFragment.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
                                             if (error.getResponse() != null && error.getResponse().getStatus() == 302)
                                             {
-                                                LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+                                                LiveViewProvider.showTradeHubLogin(BuyStockFragment.this, throwable);
                                                 dismiss();
                                             }
                                             else if (error.getResponse() != null && error.getResponse().getStatus() == 404)

@@ -1661,7 +1661,7 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
                     switch (errorCode){
                         case 1:
                         case 3:
-                            LiveViewProvider.showTradeHubLogin(getActivity());
+                            LiveViewProvider.showTradeHubLogin(PositionListFragment.this);
                             break;
                     }
 
