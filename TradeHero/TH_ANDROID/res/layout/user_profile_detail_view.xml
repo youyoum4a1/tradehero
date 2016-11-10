@@ -83,13 +83,32 @@
           android:layout_toEndOf="@id/user_profile_avatar"
           android:layout_toRightOf="@id/user_profile_avatar" />
 
+      <View
+          android:id="@+id/user_profile_line_under_badges"
+          android:layout_width="fill_parent"
+          android:layout_height="1sp"
+          android:layout_below="@id/user_profile_badges"
+          android:layout_toRightOf="@id/user_profile_avatar"
+          android:layout_toEndOf="@id/user_profile_avatar"
+          android:background="@color/grey" />
+
+      <TextView
+          android:id="@+id/user_profile_text_trading_level"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/user_profile_line_under_badges"
+          android:gravity="center"
+          android:layout_toRightOf="@id/user_profile_avatar"
+          android:layout_toEndOf="@id/user_profile_avatar"
+          android:padding="5sp"
+          android:text="Trading Level"/>
 
       <include
           android:id="@+id/user_level_progress_bar"
           layout="@layout/user_level_progressbar"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
-          android:layout_below="@id/user_profile_badges"
+          android:layout_below="@id/user_profile_text_trading_level"
           android:layout_toRightOf="@id/user_profile_avatar"
           android:layout_toEndOf="@id/user_profile_avatar"
           />

@@ -24,7 +24,8 @@
         android:src="@drawable/ic_profile_followers"
         android:tint="@color/black"
         android:layout_gravity="center_horizontal"
-        />
+        android:adjustViewBounds="false"
+        android:cropToPadding="false" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -188,9 +189,9 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="Timelines"
+          tools:text="Timeline"
           android:layout_gravity="center"
-          android:text="@string/user_profile_achievements_count"
+          android:text="@string/dashboard_timeline"
           android:textSize="10sp"
           android:ellipsize="end"
           android:lines="1"
