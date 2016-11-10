@@ -117,6 +117,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
             return fragment;
 
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
 
