@@ -8,13 +8,23 @@ import android.util.Log;
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityBuildTypeUtil;
+import com.androidth.general.api.live.LiveViewProvider;
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
+import com.androidth.general.api.live1b.ErrorResponseDTO;
+import com.androidth.general.api.live1b.PositionsResponseDTO;
+import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
 import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
+import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.dagger.AppModule;
 import com.androidth.general.utils.metrics.MetricsModule;
 import com.appsflyer.AppsFlyerLib;
@@ -26,6 +36,9 @@ import com.flurry.android.FlurryAgent;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.tune.Tune;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -40,6 +53,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import timber.log.Timber;
 
 public class THApp extends BaseApplication
@@ -62,7 +76,14 @@ public class THApp extends BaseApplication
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject UserXPAchievementHandler userXPAchievementHandler;
 
+    @Inject
+    RequestHeaders requestHeaders;
+
+    @Inject CurrentUserId currentUserId;
+
     private ObjectGraph objectGraph;
+
+    private SignalRManager signalRManager;
 
     @Override public void onCreate()
     {
@@ -119,6 +140,11 @@ public class THApp extends BaseApplication
 //                }
 //            }
 //        });
+
+        if(LiveConstants.isInLiveMode) {
+            //    userLoginLoader();
+            startLiveSignalR();
+        }
 
     }
 
@@ -278,5 +304,62 @@ public class THApp extends BaseApplication
 //                }
 //            }
 //        });
+    }
+
+    private void startLiveSignalR(){
+//        if(signalRManager!=null){
+//            return;
+//        } // need to relisten??
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
+            @Override
+            public void run(Object positionsResponseDTO) {
+
+                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+                try {
+                    JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
+                    PositionsResponseDTO responseDTO = gson.fromJson(jsonObject, PositionsResponseDTO.class);
+
+                    RealmManager.replaceOldValueWith(responseDTO);
+
+                    // Obtain a Realm instance
+//                    Realm realm = Realm.getDefaultInstance();
+//                    realm.beginTransaction();
+//                    realm.delete(PositionsResponseDTO.class);
+//                    realm.copyToRealm(responseDTO);
+//                    Log.v("Live1b", "Saving positions");
+//                    realm.commitTransaction();
+
+
+//                    if(responseDTO!=null) {
+//                        Log.d("Positions", "positionsResponseDTO = " + responseDTO.toString());
+//                        List<Object> adapterObjects = new ArrayList<>();
+//                        for(LivePositionDTO dto: responseDTO.Positions){
+//
+//                            adapterObjects.add(new LivePositionListRowView.LiveDTO(dto));
+//                        }
+//
+//                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+        }, Object.class);
+
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ACCOUNTS_RESPONSE, new SubscriptionHandler1<AccountBalanceResponseDTO>() {
+            @Override
+            public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
+                if(accountBalanceResponseDTO!=null){
+                    RealmManager.replaceOldValueWith(accountBalanceResponseDTO);
+
+                    Live1BResponseDTO.accountBalanceResponseDTOBehaviorSubject.onNext(accountBalanceResponseDTO);
+                }
+            }
+
+        }, AccountBalanceResponseDTO.class);
+
+        signalRManager.startConnectionNow();
     }
 }

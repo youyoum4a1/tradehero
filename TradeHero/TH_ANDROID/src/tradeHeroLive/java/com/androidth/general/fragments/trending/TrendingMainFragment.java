@@ -65,6 +65,7 @@ import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.Live1BServiceWrapper;
 import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.live.CompositeExchangeSecurityCacheRx;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.persistence.market.ExchangeCompactListCacheRx;
 import com.androidth.general.persistence.market.ExchangeMarketPreference;
 import com.androidth.general.persistence.prefs.PreferredExchangeMarket;
@@ -349,10 +350,6 @@ public class TrendingMainFragment extends DashboardFragment
         GAnalyticsProvider.sendGAScreenEvent(getActivity(), GAnalyticsProvider.LOCAL_TRENDING_SCREEN);
 
         Log.d("TMF.java", "onResume: i am resuming....");
-        if(LiveConstants.isInLiveMode) {
-        //    userLoginLoader();
-            startLiveSignalR();
-        }
     }
 
     @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
@@ -1051,78 +1048,6 @@ public class TrendingMainFragment extends DashboardFragment
 //        exchangeSpinnerDTOSubject.onNext(dto);
     }
 
-    private void startLiveSignalR(){
-//        if(signalRManager!=null){
-//            return;
-//        } // need to relisten??
-        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
-        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
-            @Override
-            public void run(Object positionsResponseDTO) {
-
-                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
-                try {
-                    JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
-                    PositionsResponseDTO responseDTO = gson.fromJson(jsonObject, PositionsResponseDTO.class);
-
-                    RealmManager.replaceOldValueWith(responseDTO);
-
-                    // Obtain a Realm instance
-//                    Realm realm = Realm.getDefaultInstance();
-//                    realm.beginTransaction();
-//                    realm.delete(PositionsResponseDTO.class);
-//                    realm.copyToRealm(responseDTO);
-//                    Log.v("Live1b", "Saving positions");
-//                    realm.commitTransaction();
-
-
-//                    if(responseDTO!=null) {
-//                        Log.d("Positions", "positionsResponseDTO = " + responseDTO.toString());
-//                        List<Object> adapterObjects = new ArrayList<>();
-//                        for(LivePositionDTO dto: responseDTO.Positions){
-//
-//                            adapterObjects.add(new LivePositionListRowView.LiveDTO(dto));
-//                        }
-//
-//                    }
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-        }, Object.class);
-
-        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ERROR_RESPONSE, new SubscriptionHandler1<ErrorResponseDTO>() {
-            @Override
-            public void run(ErrorResponseDTO errorResponseDTO) {
-                if(errorResponseDTO!=null){
-                    int errorCode = (int)errorResponseDTO.ErrorCode;
-                    switch (errorCode){
-                        case 1:
-                        case 3:
-                            LiveViewProvider.showTradeHubLogin(TrendingMainFragment.this);
-                            break;
-                    }
-
-                }
-            }
-
-        }, ErrorResponseDTO.class);
-
-        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ACCOUNTS_RESPONSE, new SubscriptionHandler1<AccountBalanceResponseDTO>() {
-            @Override
-            public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
-                if(accountBalanceResponseDTO!=null){
-                    RealmManager.replaceOldValueWith(accountBalanceResponseDTO);
-                }
-            }
-
-        }, AccountBalanceResponseDTO.class);
-
-        signalRManager.startConnectionNow();
-    }
-
     private UserLiveAccount getUserLiveAccount(){
 
         UserLiveAccount userLiveAccount = (UserLiveAccount) RealmManager.getOne(UserLiveAccount.class);
@@ -1173,4 +1098,23 @@ public class TrendingMainFragment extends DashboardFragment
 
     }
     */
+
+    private void startLiveSignalR(){
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ERROR_RESPONSE, new SubscriptionHandler1<ErrorResponseDTO>() {
+            @Override
+            public void run(ErrorResponseDTO errorResponseDTO) {
+                if(errorResponseDTO!=null){
+                    int errorCode = (int)errorResponseDTO.ErrorCode;
+                    switch (errorCode){
+                        case 1:
+                        case 3:
+                            LiveViewProvider.showTradeHubLogin(TrendingMainFragment.this);
+                            break;
+                    }
+
+                }
+            }
+
+        }, ErrorResponseDTO.class);
+    }
 }

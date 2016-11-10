@@ -15,6 +15,7 @@ import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.models.number.THSignedPercentage;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.utils.LiveConstants;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -23,6 +24,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Header displayed on a Portfolio owned by the authenticated user.
@@ -38,6 +41,8 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     @Bind(R.id.header_portfolio_cash_value_text) protected TextView cashValueText;
     @Bind(R.id.roi_value) @Nullable protected TextView roiTextView;
     @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
+
+    private Subscription accountBalanceSubscription;
 
     //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)
@@ -155,21 +160,29 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
             }
             else
             {
-                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
 
-                if(accountBalanceResponseDTO!=null) {
-                    String valueString = String.format("%s %,.0f",
-                            accountBalanceResponseDTO.Currency,
-                            accountBalanceResponseDTO.MarginAvailable);
-                    cashValueTextView.setText(valueString);
-                }
-                else
-                {
-                    cashValueTextView.setText("0.00");
-                }
+//                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
 
-                cashValueText.setText("Margin Available");
-                YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
+                accountBalanceSubscription = Live1BResponseDTO.getAccountBalanceObservable()
+                        .doOnNext(new Action1<AccountBalanceResponseDTO>() {
+                            @Override
+                            public void call(AccountBalanceResponseDTO accountBalanceResponseDTO) {
+                                if(accountBalanceResponseDTO!=null) {
+                                    String valueString = String.format("%s %,.0f",
+                                            accountBalanceResponseDTO.Currency,
+                                            accountBalanceResponseDTO.MarginAvailable);
+                                    cashValueTextView.setText(valueString);
+                                }
+                                else
+                                {
+                                    cashValueTextView.setText("0.00");
+                                }
+
+                                cashValueText.setText("Margin Available");
+                                YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
+                            }
+                        }).subscribe();
+
             }
         }
     }
