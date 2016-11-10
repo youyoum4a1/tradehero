@@ -43,6 +43,7 @@ import com.androidth.general.fragments.discussion.DiscussionFragmentUtil;
 import com.androidth.general.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.androidth.general.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
+import com.androidth.general.fragments.position.TabbedPositionsCashFragment;
 import com.androidth.general.fragments.social.follower.FollowersFragment;
 import com.androidth.general.fragments.social.hero.HeroesFragment;
 import com.androidth.general.fragments.watchlist.MainWatchlistPositionFragment;
@@ -56,6 +57,7 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
+import com.androidth.general.utils.LiveConstants;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.MultiScrollListener;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
@@ -482,7 +484,7 @@ abstract public class TimelineFragment extends DashboardFragment {
                 if (displayablePortfolioDTO.portfolioDTO.isWatchlist) {
                     pushWatchlistPositionFragment();
                 } else if (displayablePortfolioDTO.ownedPortfolioId != null) {
-                    pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId, displayablePortfolioDTO.portfolioDTO);
+                    pushPositionsCashListFragment(displayablePortfolioDTO.ownedPortfolioId, displayablePortfolioDTO.portfolioDTO);
                 }
             }
         } else if (item.equals(SubTimelineAdapterNew.DTO_CALL_ACTION)) {
@@ -491,6 +493,45 @@ abstract public class TimelineFragment extends DashboardFragment {
             Timber.d("TimelineFragment, unhandled view %s", view);
         }
     }
+
+    private void pushPositionsCashListFragment(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO) {
+        Bundle args = new Bundle();
+
+        if (ownedPortfolioId.userId.equals(currentUserId.get())) {
+            TabbedPositionsCashFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+        TabbedPositionsCashFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+        TabbedPositionsCashFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+
+        if (portfolioDTO != null) {
+            TabbedPositionsCashFragment.putIsFX(args, portfolioDTO.assetClass);
+            if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0) {
+                ProviderId providerId = new ProviderId(portfolioDTO.providerId);
+                onStopSubscriptions.add(providerCacheRx.get(providerId).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+                    @Override
+                    public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
+                        if (!providerIdProviderDTOPair.second.canTradeNow) {
+                            MainCompetitionFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+                            MainCompetitionFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                            navigator.get().pushFragment(MainCompetitionFragment.class, args);
+                            return;
+                        } else {
+                            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerIdProviderDTOPair.second.navigationLogoUrl);
+                            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, providerIdProviderDTOPair.second.hexColor);
+
+                            CompetitionLeaderboardPositionListFragment.putProviderId(args, providerIdProviderDTOPair.first);
+                            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+                            return;
+                        }
+                    }
+                }, new TimberOnErrorAction1("Timeline Fragment: provider cache rx failed.")));
+                return;
+            }
+        }
+        navigator.get().pushFragment(TabbedPositionsCashFragment.class, args);
+
+    }
+
 
     private void pushPositionListFragment(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO) {
         Bundle args = new Bundle();

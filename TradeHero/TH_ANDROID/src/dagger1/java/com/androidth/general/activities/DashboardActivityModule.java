@@ -31,6 +31,7 @@ import com.androidth.general.fragments.live.LiveViewFragment;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.position.PositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
+import com.androidth.general.fragments.position.TabbedPositionsCashFragment;
 import com.androidth.general.fragments.settings.SettingsFragment;
 import com.androidth.general.fragments.social.follower.FollowersFragment;
 import com.androidth.general.fragments.social.friend.FriendsInvitationFragment;
@@ -118,6 +119,7 @@ import dagger.Provides;
                 SettingsFragment.class,
                 StoreScreenFragment.class,
                 TabbedPositionListFragment.class,
+                TabbedPositionsCashFragment.class,
                 TradeListFragment.class,
                 TrendingMainFragment.class,
                 UpdateCenterFragment.class,

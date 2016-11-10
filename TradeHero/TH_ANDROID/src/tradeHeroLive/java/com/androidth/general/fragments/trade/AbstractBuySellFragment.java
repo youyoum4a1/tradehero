@@ -577,7 +577,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                         quoteSubscription.unsubscribe();
                                                 }
 
-                                                String liveCurrency = getLiveCurrency();
+                                                String liveCurrency = "GBP";//getLiveCurrency();
                                                 Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
 
                                                 if(liveCurrency==null || liveCurrency.equals(securityCompactDTO.currencyISO)){

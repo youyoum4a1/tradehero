@@ -240,6 +240,11 @@ public class PositionListFragment extends DashboardFragment implements WithTutor
         return new UserBaseKey(userBundle);
     }
 
+    public static void putPositionType(@NonNull Bundle args, TabbedPositionsCashFragment.TabType positionType)
+    {
+        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
+    }
+
     public static void putPositionType(@NonNull Bundle args, TabbedPositionListFragment.TabType positionType)
     {
         args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
