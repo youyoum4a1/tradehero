@@ -8,7 +8,7 @@ import android.util.Log;
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityBuildTypeUtil;
-import com.androidth.general.common.persistence.RealmInstance;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
@@ -73,7 +73,7 @@ public class THApp extends BaseApplication
 
         context = getApplicationContext();
 
-        RealmInstance.initialise(context);
+        RealmManager.initialise(context);
 
         setupFabricWithTwitter();
         setupTune();

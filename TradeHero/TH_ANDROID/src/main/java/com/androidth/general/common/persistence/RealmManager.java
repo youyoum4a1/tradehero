@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
+import com.androidth.general.api.live1b.PositionsResponseDTO;
 import com.androidth.general.api.users.UserLiveAccount;
+import com.androidth.general.models.realm.DataService;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
@@ -14,12 +16,17 @@ import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.annotations.RealmClass;
+import io.realm.exceptions.RealmException;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 /**
  * Created by jeffgan on 7/11/16.
  */
 
-public class RealmInstance {
+public class RealmManager{
 
     public static void initialise(Context context){
         Realm.init(context);
@@ -78,4 +85,45 @@ public class RealmInstance {
         Realm realm = Realm.getDefaultInstance();
         return realm.where(objectClass);
     }
+
+    public static abstract class OnSubscribeRealm<T extends RealmObject> implements Observable.OnSubscribe<T> {
+        Realm realm = Realm.getDefaultInstance();
+
+        @Override
+        public void call(Subscriber<? super T> subscriber) {
+            subscriber.add(Subscriptions.create(new Action0() {
+                @Override
+                public void call() {
+                    try {
+                        Log.v("Realm", "Closing from call");
+                        realm.close();
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
+                }
+            }));
+
+            T object;
+            realm.beginTransaction();
+            try {
+                object = get(realm);
+                realm.commitTransaction();
+            } catch (RuntimeException e) {
+                realm.cancelTransaction();
+                subscriber.onError(new RealmException("Error during transaction.", e));
+                return;
+            } catch (Error e) {
+                realm.cancelTransaction();
+                subscriber.onError(e);
+                return;
+            }
+            if (object != null) {
+                subscriber.onNext(object);
+            }
+            subscriber.onCompleted();
+        }
+
+        public abstract T get(Realm realm);
+    }
+
 }

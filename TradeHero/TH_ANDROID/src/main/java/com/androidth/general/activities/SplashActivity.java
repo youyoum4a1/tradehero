@@ -16,7 +16,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
-import com.androidth.general.common.persistence.RealmInstance;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
 import com.androidth.general.persistence.prefs.AuthHeader;
@@ -183,7 +183,7 @@ public class SplashActivity extends BaseActivity
                                 dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.first);
 //                                liveUserAccountCacheRx.onNext(currentUserId.toUserBaseKey(), userProfileDTOUserLiveAccountPair.second);
 
-                                RealmInstance.replaceOldValueWith(userProfileDTOUserLiveAccountPair.second);
+                                RealmManager.replaceOldValueWith(userProfileDTOUserLiveAccountPair.second);
 
 //                                if(userProfileDTOUserLiveAccountPair.second!=null){
 //                                    dtoCacheUtil.prefetchesUponLogin(userProfileDTOUserLiveAccountPair.second);

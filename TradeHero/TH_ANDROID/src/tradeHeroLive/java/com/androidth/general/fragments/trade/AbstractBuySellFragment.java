@@ -32,7 +32,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
-import com.androidth.general.common.persistence.RealmInstance;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.DashboardNavigator;
@@ -589,7 +589,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                         return;
                                                     if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
 
-                                                        RealmInstance.replaceOldValueWith(liveQuote);
+                                                        RealmManager.replaceOldValueWith(liveQuote);
 
 //                                                    Realm realm = Realm.getDefaultInstance();
 //                                                    realm.beginTransaction();
@@ -628,7 +628,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     protected String getLiveCurrency()
     {
-        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
+        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
         if(accountBalanceResponseDTO!=null)
             return accountBalanceResponseDTO.Currency;
         else{

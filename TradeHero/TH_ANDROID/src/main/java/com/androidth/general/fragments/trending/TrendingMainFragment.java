@@ -46,7 +46,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTO;
-import com.androidth.general.common.persistence.RealmInstance;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
@@ -1065,7 +1065,7 @@ public class TrendingMainFragment extends DashboardFragment
                     JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
                     PositionsResponseDTO responseDTO = gson.fromJson(jsonObject, PositionsResponseDTO.class);
 
-                    RealmInstance.replaceOldValueWith(responseDTO);
+                    RealmManager.replaceOldValueWith(responseDTO);
 
                     // Obtain a Realm instance
 //                    Realm realm = Realm.getDefaultInstance();
@@ -1114,7 +1114,7 @@ public class TrendingMainFragment extends DashboardFragment
             @Override
             public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
                 if(accountBalanceResponseDTO!=null){
-                    RealmInstance.replaceOldValueWith(accountBalanceResponseDTO);
+                    RealmManager.replaceOldValueWith(accountBalanceResponseDTO);
                 }
             }
 
@@ -1125,7 +1125,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     private UserLiveAccount getUserLiveAccount(){
 
-        UserLiveAccount userLiveAccount = (UserLiveAccount) RealmInstance.getOne(UserLiveAccount.class);
+        UserLiveAccount userLiveAccount = (UserLiveAccount) RealmManager.getOne(UserLiveAccount.class);
         return userLiveAccount;
     }
 /*

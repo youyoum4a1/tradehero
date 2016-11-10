@@ -57,7 +57,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserLiveAccount;
 import com.androidth.general.common.billing.googleplay.Security;
-import com.androidth.general.common.persistence.RealmInstance;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
@@ -1045,7 +1045,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     {
         PortfolioCompactDTO portfolioCompactDTO = new PortfolioCompactDTO();
 
-        AccountBalanceResponseDTO accountBalanceResponseDTO =  (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
+        AccountBalanceResponseDTO accountBalanceResponseDTO =  (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
 
         if(accountBalanceResponseDTO!=null) {
             portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
@@ -1148,7 +1148,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //    //    realm.commitTransaction();
 
 
-        PositionsResponseDTO positionResponseDTO =  (PositionsResponseDTO) RealmInstance.getOne(PositionsResponseDTO.class);
+        PositionsResponseDTO positionResponseDTO =  (PositionsResponseDTO) RealmManager.getOne(PositionsResponseDTO.class);
 
         if(positionResponseDTO!=null)
             return Observable.from(positionResponseDTO.Positions);
@@ -1674,7 +1674,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             return 1.0;
 
         try {
-            LiveQuoteDTO fxRate = (LiveQuoteDTO) RealmInstance.getOne(LiveQuoteDTO.class);
+            LiveQuoteDTO fxRate = (LiveQuoteDTO) RealmManager.getOne(LiveQuoteDTO.class);
 
             if (fxRate != null) {
                 if (fxRate.n.indexOf(myCurrencyISO) == 0) // GBP_SGD is the amount to multiply to convert GBP to SGD, SGD_GBP is the amount to multiply to convert SGD to GBP
@@ -1904,7 +1904,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     {
         if(currentLeverage==null)
             currentLeverage = usedDTO.securityCompactDTO.midLeverage;
-        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmInstance.getOne(AccountBalanceResponseDTO.class);
+        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
         if(accountBalanceResponseDTO!=null) {
             usedDTO.portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
             usedDTO.portfolioCompactDTO.currencyISO = accountBalanceResponseDTO.Currency;

@@ -15,7 +15,7 @@ import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
-import com.androidth.general.common.persistence.RealmInstance;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.kyc.realmDB.CompetitionSteps;
@@ -66,7 +66,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     protected void updateDB(Boolean complete, Integer step){
 
-        RealmQuery query = RealmInstance.getQuery(CompetitionSteps.class);
+        RealmQuery query = RealmManager.getQuery(CompetitionSteps.class);
         RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
 
         if(results.size()==0){
@@ -75,7 +75,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
             competitionSteps.providerId = getProviderId(getArguments());
             competitionSteps.complete = complete;
 
-            RealmInstance.copyToRealm(competitionSteps);
+            RealmManager.copyToRealm(competitionSteps);
 
         }else{
             results.get(0).complete = complete;
@@ -103,7 +103,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     protected ArrayList<CompetitionSteps> queryStatusesFromDB(int providerId){
 
 //        RealmQuery query = realm.where(CompetitionSteps.class);
-        RealmQuery query = RealmInstance.getQuery(CompetitionSteps.class);
+        RealmQuery query = RealmManager.getQuery(CompetitionSteps.class);
         RealmResults<CompetitionSteps> results = query.equalTo("providerId", providerId).findAll();
         ArrayList<CompetitionSteps> statusResults = new ArrayList<>();
         for(CompetitionSteps step: results){
