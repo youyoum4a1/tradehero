@@ -471,7 +471,7 @@ public class TabbedPositionsCashFragment extends DashboardFragment {
                                         Log.d("PLF.java", error.getResponse() + " " + error.toString() + " --URL--> " + error.getResponse().getUrl());
                                         if (error.getResponse() != null && error.getResponse().getStatus() == 302) {
 
-                                            LiveViewProvider.showTradeHubLogin(getActivity(), throwable);
+                                            LiveViewProvider.showTradeHubLogin(TabbedPositionsCashFragment.this, throwable);
 
                                         } else if (error.getResponse() != null && error.getResponse().getStatus() == 404)
                                             Toast.makeText(getContext(), "Error connecting to service: " + error.getResponse() + " --body-- " + error.getBody().toString(), Toast.LENGTH_LONG).show();
