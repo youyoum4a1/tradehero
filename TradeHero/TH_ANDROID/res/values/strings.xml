@@ -287,4 +287,5 @@
   <string name="redeem_referral_placeholder">Enter your friend\'s Referral Code</string>
   <string name="redeem_referral_button">APPLY</string>
 
+  <string name="position_cash_funding">Funding</string>
 </resources>

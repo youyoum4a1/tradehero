@@ -10,6 +10,7 @@ import com.androidth.general.R;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
+import com.androidth.general.fragments.position.TabbedPositionsCashFragment;
 import com.androidth.general.fragments.timeline.MeTimelineFragment;
 import com.androidth.general.fragments.trade.BuySellStockFragment;
 import com.androidth.general.fragments.trending.TileType;
@@ -225,6 +226,7 @@ public class LiveActivityUtil
         return f instanceof TrendingMainFragment
                 || f instanceof MeTimelineFragment
                 || f instanceof BuySellStockFragment
-                || f instanceof TabbedPositionListFragment;
+                || f instanceof TabbedPositionListFragment
+                || f instanceof TabbedPositionsCashFragment;
     }
 }
