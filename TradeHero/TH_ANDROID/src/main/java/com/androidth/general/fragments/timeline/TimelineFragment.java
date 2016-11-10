@@ -182,7 +182,7 @@ abstract public class TimelineFragment extends DashboardFragment {
     @SuppressLint("InflateParams")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        userProfileView = (UserProfileDetailView) inflater.inflate(R.layout.user_profile_detail_view, null);
+//        userProfileView = (UserProfileDetailView) inflater.inflate(R.layout.user_profile_detail_view, null);
         return inflater.inflate(R.layout.fragment_timeline, container, false);
     }
 
@@ -190,7 +190,9 @@ abstract public class TimelineFragment extends DashboardFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        timelineListView.addHeaderView(userProfileView, null, false);
+//        timelineListView.addHeaderView(userProfileView, null, false);
+        userProfileView = (UserProfileDetailView) view.findViewById(R.id.timeline_fix_header);
+
         timelineListView.setAdapter(getAdapter());
         timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

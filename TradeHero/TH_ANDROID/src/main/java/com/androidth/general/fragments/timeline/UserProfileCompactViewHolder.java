@@ -45,7 +45,7 @@ public class UserProfileCompactViewHolder
         super();
         buttonClickedSubject = PublishSubject.create();
         HierarchyInjector.inject(context, this);
-        clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        this.context = context;
     }
     //</editor-fold>
 
@@ -145,6 +145,8 @@ public class UserProfileCompactViewHolder
     {
         if (userProfileDTO != null)
         {
+            clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
             ClipData clip = ClipData.newPlainText(userProfileDTO.displayName + " id", String.format("%d", userProfileDTO.id));
             clipboardManager.setPrimaryClip(clip);
             THToast.show("UserId " + userProfileDTO.id + " copied to clipboard");

@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@color/white"
     android:orientation="vertical">
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      tools:background="@color/general_brand_color">
+      android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,7 +59,8 @@
           android:layout_marginTop="@dimen/margin_small"
           tools:text="Lorem ipsum dolor sit amet contentulla"
           android:layout_toRightOf="@+id/user_profile_avatar"
-          android:layout_toEndOf="@+id/user_profile_avatar"/>
+          android:layout_toEndOf="@+id/user_profile_avatar"
+          android:visibility="gone"/>
 
       <TextView
           android:id="@+id/user_profile_roi"
@@ -71,7 +72,16 @@
           android:layout_below="@id/user_profile_display_name"
           android:textStyle="bold"
           tools:text="+408%"
-          tools:background="@color/number_up"/>
+          tools:background="@color/number_up"
+          android:visibility="gone"/>
+
+      <include
+          layout="@layout/user_profile_detail_bottom"
+          android:id="@+id/user_profile_badges"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:layout_toEndOf="@id/user_profile_avatar"
+          android:layout_toRightOf="@id/user_profile_avatar" />
 
 
       <include
@@ -79,26 +89,12 @@
           layout="@layout/user_level_progressbar"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
-          android:layout_below="@id/user_profile_roi"
+          android:layout_below="@id/user_profile_badges"
           android:layout_toRightOf="@id/user_profile_avatar"
           android:layout_toEndOf="@id/user_profile_avatar"
           />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          style="@style/TH.Caption.Inverse"
-          android:text="@string/user_profile_roi_in_stocks"
-          android:layout_alignTop="@id/user_profile_roi"
-          android:layout_alignEnd="@id/user_level_progress_bar"
-          android:layout_alignRight="@id/user_level_progress_bar"
-          />
-
     </RelativeLayout>
-
-    <include
-        layout="@layout/user_profile_detail_bottom"
-        />
 
   </LinearLayout>
 

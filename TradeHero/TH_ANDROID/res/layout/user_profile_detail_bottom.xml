@@ -1,164 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/user_profile_detail_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
     >
 
   <LinearLayout
-      android:layout_width="match_parent"
+      android:id="@+id/user_profile_followers_count_wrapper"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:baselineAligned="false"
+      android:layout_weight="1"
+      android:orientation="vertical"
       >
 
-    <LinearLayout
-        android:id="@+id/user_profile_followers_count_wrapper"
-        android:layout_width="0dp"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        style="@style/UserProfile.BottomButtonBar"
-        >
-
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/ic_profile_followers"
-          android:layout_gravity="center_horizontal"
-          />
-
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/user_profile_followers_count"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            tools:text="299"
-            style="@style/UserProfile.Contained.Value"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:layout_height="wrap_content"
-            tools:text="Followers"
-            android:text="@string/user_profile_count_followers"
-            android:layout_width="wrap_content"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/margin_xsmall"
-            android:layout_marginStart="@dimen/margin_xsmall"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            />
-
-      </LinearLayout>
-
-    </LinearLayout>
+        android:src="@drawable/ic_profile_followers"
+        android:tint="@color/black"
+        android:layout_gravity="center_horizontal"
+        />
 
     <LinearLayout
-        android:id="@+id/user_profile_heroes_count_wrapper"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical"
-        style="@style/UserProfile.BottomButtonBar"
+        android:layout_gravity="center"
         >
 
-      <ImageView
-          android:layout_width="wrap_content"
+      <TextView
+          android:id="@+id/user_profile_followers_count"
           android:layout_height="wrap_content"
-          android:src="@drawable/ic_profile_heroes"
-          android:layout_gravity="center_horizontal"
+          android:layout_width="wrap_content"
+          tools:text="299"
+          android:textSize="10sp"
+          android:layout_gravity="center"
           />
 
-      <LinearLayout
-          android:layout_width="wrap_content"
+      <TextView
           android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/user_profile_heroes_count"
-            style="@style/UserProfile.Contained.Value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="32"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Heroes"
-            android:text="@string/user_profile_count_heroes"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/margin_xsmall"
-            android:layout_marginStart="@dimen/margin_xsmall"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            />
-
-      </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/user_profile_achievement_count_wrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        style="@style/UserProfile.BottomButtonBar"
-        >
-
-      <ImageView
+          tools:text="Followers"
+          android:text="@string/user_profile_count_followers"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/ic_profile_achievements"
-          android:layout_gravity="center_horizontal"
+          android:gravity="center"
+          android:textSize="10sp"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
           />
-
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/user_profile_achievement_count"
-            style="@style/UserProfile.Contained.Value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="132"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Achievements"
-            android:gravity="center"
-            android:text="@string/user_profile_achievements_count"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/margin_xsmall"
-            android:layout_marginStart="@dimen/margin_xsmall"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            />
-
-      </LinearLayout>
 
     </LinearLayout>
 
   </LinearLayout>
 
-</merge>
+  <LinearLayout
+      android:id="@+id/user_profile_heroes_count_wrapper"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_profile_heroes"
+        android:layout_gravity="center_horizontal"
+        android:tint="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_heroes_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="32"
+          android:textSize="10sp"
+          android:layout_gravity="center"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Heroes"
+          android:text="@string/user_profile_count_heroes"
+          android:layout_gravity="center"
+          android:textSize="10sp"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
+          />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/user_profile_achievement_count_wrapper"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_profile_achievements"
+        android:layout_gravity="center_horizontal"
+        android:tint="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_achievement_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="10sp"
+          tools:text="132"
+          android:layout_gravity="center" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Achievements"
+          android:layout_gravity="center"
+          android:text="@string/user_profile_achievements_count"
+          android:textSize="10sp"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
+          />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/user_profile_time_count_wrapper"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_profile_achievements"
+        android:layout_gravity="center_horizontal"
+        android:tint="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_timeline_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="132"
+          android:textSize="10sp"
+          android:layout_gravity="center"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Timelines"
+          android:layout_gravity="center"
+          android:text="@string/user_profile_achievements_count"
+          android:textSize="10sp"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
+          />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>
