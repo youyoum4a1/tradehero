@@ -39,12 +39,12 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
 
     @NonNull @Override protected Observable<SecurityCompactDTOList> fetch(@NonNull SecurityListType key)
     {
-        if(key instanceof TrendingSecurityListType){
-            if(((TrendingSecurityListType) key).exchange==null){
-                Log.v("Security", "!!!!! empty");
-                return Observable.empty();
-            }
-        }
+//        if(key instanceof TrendingSecurityListType){
+//            if(((TrendingSecurityListType) key).exchange==null){
+//                Log.v("Security", "!!!!! empty");
+//                return Observable.empty();
+//            }
+//        }
         return securityServiceWrapper.get().getSecuritiesRx(key);
     }
 

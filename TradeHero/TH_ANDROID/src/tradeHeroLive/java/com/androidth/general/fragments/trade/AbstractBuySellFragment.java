@@ -578,6 +578,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                 }
 
                                                 String liveCurrency = getLiveCurrency();
+                                                if(liveCurrency==null)
+                                                    liveCurrency = "USD";
                                                 Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
 
                                                 if(liveCurrency==null || liveCurrency.equals(securityCompactDTO.currencyISO)){
@@ -608,7 +610,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         }, SignatureContainer2.class);
 
                         String liveCurrency = getLiveCurrency();
-
+                        if(liveCurrency==null) liveCurrency = "USD";
                         Log.v("SignalR", "liveCurrency: " + liveCurrency);
 
                         Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + liveCurrency + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
