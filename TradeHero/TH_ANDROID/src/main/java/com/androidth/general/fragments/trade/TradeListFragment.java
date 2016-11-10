@@ -295,7 +295,7 @@ public class TradeListFragment extends DashboardFragment
                                 .subscribeOn(Schedulers.computation())
                                 .startWith(mappedAlerts)
                                 .observeOn(AndroidSchedulers.mainThread()),
-                        positionCache.getOne(positionDTOKey)
+                        positionCache.get(positionDTOKey)
                                 .subscribeOn(Schedulers.computation())
                                 .map(new Func1<Pair<PositionDTOKey, PositionDTO>, PositionDTO>()
                                 {
