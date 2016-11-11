@@ -684,6 +684,7 @@ public class TrendingMainFragment extends DashboardFragment
                             @Override public void call(Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO> pair)
                             {
                                 exchangeCompactSpinnerDTOList = pair.first;
+                                exchangeAdapter.clear();
                                 exchangeAdapter.addAll(pair.first);
                                 exchangeAdapter.notifyDataSetChanged();
                                 handleExchangeRouting(pair.second);
