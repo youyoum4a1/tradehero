@@ -339,6 +339,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
 
         onStopSubscriptions.add(
                 Live1BResponseDTO.getLiveQuoteObservable()
+                        .distinctUntilChanged()
                         .doOnNext(new Action1<LiveQuoteDTO>() {
                             @Override
                             public void call(LiveQuoteDTO liveQuoteDTO) {

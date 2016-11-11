@@ -573,34 +573,29 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                             if(liveQuote!=null && liveQuote.n!=null) {
                                                 if (!liveQuote.n.toLowerCase().contains("outright")) // TODO find a better condition
                                                 {
-                                                    Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
                                                     displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
                                                     if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
                                                         quoteSubscription.unsubscribe();
                                                 }
+                                                else {
+                                                    String liveCurrency = getLiveCurrency();
+                                                    if (liveCurrency == null)
+                                                        liveCurrency = "USD";
+                                                    Log.v("SignalR", "Have liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
 
-                                                String liveCurrency = getLiveCurrency();
-                                                if(liveCurrency==null)
-                                                    liveCurrency = "USD";
-                                                Log.v("SignalR", "Have liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
-
-                                                if(liveCurrency==null || liveCurrency.equals(securityCompactDTO.currencyISO)){
-                                                    //it is already in correct currency
-                                                    return;
-                                                }
-                                                if(securityCompactDTO!=null && portfolioCompactDTO!=null) {
-                                                    if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                    if (liveCurrency == null || liveCurrency.equals(securityCompactDTO.currencyISO)) {
+                                                        //it is already in correct currency
                                                         return;
-                                                    if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
+                                                    }
+                                                    if (securityCompactDTO != null && portfolioCompactDTO != null) {
+                                                        if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                            return;
+                                                        if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
 
-                                                        RealmManager.replaceOldValueWith(liveQuote);
+                                                            RealmManager.replaceOldValueWith(liveQuote);
+                                                            Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
 
-//                                                    Realm realm = Realm.getDefaultInstance();
-//                                                    realm.beginTransaction();
-//                                                    realm.delete(LiveQuoteDTO.class);
-//                                                    realm.copyToRealm(liveQuote);
-//                                                    realm.commitTransaction();
-
+                                                        }
                                                     }
                                                 }
                                             }

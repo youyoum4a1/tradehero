@@ -633,6 +633,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         });
 
         onStopSubscriptions.add(Live1BResponseDTO.getLiveQuoteObservable()
+                .distinctUntilChanged()
                 .doOnNext(new Action1<LiveQuoteDTO>() {
                     @Override
                     public void call(LiveQuoteDTO quoteDTO) {
