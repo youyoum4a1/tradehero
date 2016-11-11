@@ -12,6 +12,7 @@ import com.androidth.general.adapters.GenericArrayAdapter;
 import com.androidth.general.api.portfolio.DisplayablePortfolioDTO;
 import com.androidth.general.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
 import com.androidth.general.api.portfolio.DummyFxDisplayablePortfolioDTO;
+import com.androidth.general.api.portfolio.LiveAccountPortfolioItemHeader;
 import com.androidth.general.fragments.timeline.TimelineFragment;
 import com.androidth.general.fragments.timeline.TimelineHeaderButtonView;
 import java.util.ArrayList;
@@ -30,9 +31,11 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     private static final int VIEW_TYPE_REGULAR_POSITION = 1;
     private static final int VIEW_TYPE_LOADING = 2;
     private static final int VIEW_TYPE_SPACING = 3;
+    private static final int VIEW_TYPE_LIVE_ACCOUNT = 4;
 
     public static final String DTO_LOADING = "Loading";
     public static final String DTO_SPACING = "Spacing";
+    public static final String LIVE_ACCOUNT_POSITION = "TH Live Account";
 
     private List<Object> orderedItems;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
@@ -194,6 +197,12 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                 {
                     convertView = getInflater().inflate(spacingLayoutRes, parent, false);
                 }
+                break;
+
+            case VIEW_TYPE_LIVE_ACCOUNT:
+                Object liveItem = getItem(position);
+                convertView = conditionalInflate(position, convertView, parent);
+                ((PortfolioListItemView) convertView).display((LiveAccountPortfolioItemHeader) liveItem);
                 break;
 
             default:

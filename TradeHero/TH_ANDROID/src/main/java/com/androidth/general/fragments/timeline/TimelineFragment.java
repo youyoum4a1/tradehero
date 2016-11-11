@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
@@ -21,6 +22,7 @@ import com.androidth.general.api.level.LevelDefDTOList;
 import com.androidth.general.api.level.key.LevelDefListId;
 import com.androidth.general.api.portfolio.DisplayablePortfolioDTO;
 import com.androidth.general.api.portfolio.DisplayablePortfolioDTOList;
+import com.androidth.general.api.portfolio.LiveAccountPortfolioItemHeader;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.timeline.TimelineDTO;
@@ -166,6 +168,7 @@ abstract public class TimelineFragment extends DashboardFragment {
         portfolioListAdapter.setCurrentTabType(currentTab);
         //noinspection ArraysAsListWithZeroOrOneArgument
         portfolioListAdapter.setItems(Arrays.asList(SimpleOwnPortfolioListItemAdapter.DTO_LOADING));
+
         subTimelineAdapter = new SubTimelineAdapterNew(
                 getActivity(),
                 R.layout.timeline_item_view,
@@ -319,8 +322,13 @@ abstract public class TimelineFragment extends DashboardFragment {
                                 subTimelineAdapter.appendTail(subTimelineAdapter.reprocess(processed));
                                 subTimelineAdapter.notifyDataSetChanged();
                             }
-                        },
-                        new ToastOnErrorAction1("YA")));
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                new ToastOnErrorAction1();
+                            }
+                        }));
     }
 
     @NonNull
@@ -423,6 +431,12 @@ abstract public class TimelineFragment extends DashboardFragment {
                     public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
                         swipeRefreshContainer.setRefreshing(false);
                         cancelRefreshingOnResume = true;
+
+                        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+                            LiveAccountPortfolioItemHeader liveAccountRow = new LiveAccountPortfolioItemHeader();
+                            displayablePortfolioDTOs.add(liveAccountRow);
+                        }
+
                         portfolioListAdapter.setItems((List) displayablePortfolioDTOs);
                         portfolioListAdapter.notifyDataSetChanged();
                     }
