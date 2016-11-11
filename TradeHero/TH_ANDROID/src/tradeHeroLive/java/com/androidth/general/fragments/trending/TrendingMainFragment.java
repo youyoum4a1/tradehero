@@ -1100,6 +1100,10 @@ public class TrendingMainFragment extends DashboardFragment
     */
 
     private void startLiveSignalR(){
+        if(signalRManager!=null){
+            return;
+        }
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ERROR_RESPONSE, new SubscriptionHandler1<ErrorResponseDTO>() {
             @Override
             public void run(ErrorResponseDTO errorResponseDTO) {
