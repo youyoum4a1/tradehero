@@ -36,52 +36,67 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class BuyStockFragment extends AbstractStockTransactionFragment
-{
+public class BuyStockFragment extends AbstractStockTransactionFragment {
     private static final boolean IS_BUY = true;
 
-    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration")
+    @Inject
+    Context doNotRemoveOrItFails;
 
-    public BuyStockFragment(){
+    public BuyStockFragment() {
         super();
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
-    {
+    @Override
+    protected void setBuyEventFor(SharingOptionsEvent.Builder builder) {
         builder.setBuyEvent(IS_BUY);
     }
 
-    @Override protected String getLabel(@NonNull LiveQuoteDTO quoteDTO)
-    {
-        if (quoteDTO.getAskPrice() == null)
-        {
+    @Override
+    protected String getLabel(@NonNull LiveQuoteDTO quoteDTO) {
+        if (quoteDTO.getAskPrice() == null) {
             return getString(R.string.na);
         }
         THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.getAskPrice());
         return bThSignedNumber.toString();
     }
 
-    @Override @Nullable protected Double getProfitOrLossUsd(
+    @Override
+    @Nullable
+    protected Double getProfitOrLossUsd(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
-            @Nullable Integer quantity)
-    {
+            @Nullable Integer quantity) {
         return null;
     }
 
-    @Override @NonNull public String getCashShareLeft(
+    @Override
+    @NonNull
+    public String getCashShareLeft(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
             @NonNull LiveQuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact closeablePosition, int quantity)
-    {
+            @Nullable PositionDTOCompact closeablePosition, int quantity) {
         return getRemainingWhenBuy(portfolioCompactDTO, quoteDTO, closeablePosition, quantity);
     }
+
+    public String getCashShareLeft(Double tradeValue, @NonNull PortfolioCompactDTO portfolioCompactDTO)
+    {
+        Double remaining = portfolioCompactDTO.cashBalance - tradeValue;
+        THSignedNumber thSignedNumber = THSignedNumber
+                .builder(remaining)
+                .withOutSign()
+//                        .currency(portfolioCompactDTO.currencyDisplay)//disable currency
+                .build();
+
+        return thSignedNumber.toString();
+    }
+
 
     @Override @Nullable protected Integer getMaxValue(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,

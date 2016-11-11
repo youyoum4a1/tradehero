@@ -124,6 +124,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func4;
 import rx.functions.Func6;
+import rx.functions.Func7;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -548,7 +549,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                                         if (quantityValue.equals(getMaxSellableShares(portfolioCompactDTO, quoteDTO, positionDTO))) {
                                             String calculateTradeValueText =
-                                                    getTradeValueText(portfolioCompactDTO, quoteDTO, quantityValue).replace(",", "");
+                                                    getTradeValueText(getTradeValue(portfolioCompactDTO, quoteDTO, quantityValue, null), portfolioCompactDTO.currencyISO).replace(",", "");
 
                                             if (!calculateTradeValueText.equals(tradeValueText)) {
                                                 mLeftNumber.setText(calculateTradeValueText);
@@ -632,19 +633,19 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             }
                         });
 
-        onStopSubscriptions.add(Live1BResponseDTO.getLiveQuoteObservable()
-                .distinctUntilChanged()
-                .doOnNext(new Action1<LiveQuoteDTO>() {
-                    @Override
-                    public void call(LiveQuoteDTO quoteDTO) {
-                        if (!quoteDTO.n.toLowerCase().contains("outright")) {
-                            UpdateBuySellDialogValues(quoteDTO);
-                        } else {
-                            Log.v("SignalR", "Updating New FX Rate " + quoteDTO);
-                            RealmManager.replaceOldValueWith(quoteDTO);
-                        }
-                    }
-                }).subscribe());
+//        onStopSubscriptions.add(Live1BResponseDTO.getLiveQuoteObservable()
+//                .distinctUntilChanged()
+//                .doOnNext(new Action1<LiveQuoteDTO>() {
+//                    @Override
+//                    public void call(LiveQuoteDTO quoteDTO) {
+//                        if (!quoteDTO.n.toLowerCase().contains("outright")) {
+//                            UpdateBuySellDialogValues(quoteDTO);
+//                        } else {
+//                            Log.v("SignalR", "Updating New FX Rate " + quoteDTO);
+//                            RealmManager.replaceOldValueWith(quoteDTO);
+//                        }
+//                    }
+//                }).subscribe());
 
         if (LiveConstants.isInLiveMode) {
             liveVirtualSwitcher.setIsOn(true, true);
@@ -836,13 +837,17 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private void initFetchesLive() {
         onStopSubscriptions.add(
                 Observable.combineLatest(
+                        Live1BResponseDTO.getLiveQuoteObservable()
+                                .distinctUntilChanged().filter(lq -> lq.n.toLowerCase().contains("outright")),
                         getSecurityObservable(),
                         getLivePortfolioCompactObservable(),
                         getQuoteObservable(),
                         getLiveCloseablePositionObservable(),
                         getLiveMaxValueObservable(),
                         getLiveClampedQuantityObservable(),
-                        new Func6<SecurityCompactDTO,
+                        new Func7<
+                                LiveQuoteDTO,
+                                SecurityCompactDTO,
                                 PortfolioCompactDTO,
                                 LiveQuoteDTO,
                                 LivePositionDTO,
@@ -852,6 +857,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                             @Override
                             public Boolean call(
+                                    @Nullable LiveQuoteDTO fxQuoteDTO,
                                     @NonNull SecurityCompactDTO securityCompactDTO,
                                     @NonNull final PortfolioCompactDTO portfolioCompactDTO,
                                     @NonNull LiveQuoteDTO quoteDTO,
@@ -928,21 +934,25 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private void initFetches() {
         onStopSubscriptions.add(
                 Observable.combineLatest(
+                        Live1BResponseDTO.getLiveQuoteObservable()
+                                .distinctUntilChanged().filter(lq -> lq.n.toLowerCase().contains("outright")),
                         getSecurityObservable(),
                         getPortfolioCompactObservable(),
                         getQuoteObservable(),
                         getCloseablePositionObservable(),
                         getMaxValueObservable(),
                         getClampedQuantityObservable(),
-                        new Func6<SecurityCompactDTO,
-                                PortfolioCompactDTO,
-                                LiveQuoteDTO,
-                                PositionDTO,
-                                Integer,
-                                Integer,
-                                Boolean>() {
+                        new Func7<LiveQuoteDTO,
+                            SecurityCompactDTO,
+                            PortfolioCompactDTO,
+                            LiveQuoteDTO,
+                            PositionDTO,
+                            Integer,
+                            Integer,
+                            Boolean>() {
                             @Override
                             public Boolean call(
+                                    @Nullable LiveQuoteDTO fxQuoteDTO,
                                     @NonNull SecurityCompactDTO securityCompactDTO,
                                     @NonNull final PortfolioCompactDTO portfolioCompactDTO,
                                     @NonNull LiveQuoteDTO quoteDTO,
@@ -950,16 +960,23 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     @Nullable Integer maxValue,
                                     @Nullable Integer clamped) {
 
-                                initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
+                                initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition, clamped, fxQuoteDTO);
 
                                 updateDisplay();
 
-                                mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
-                                buySellCostCcyValue.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+                                Double tradeValue = getTradeValue(portfolioCompactDTO, quoteDTO, clamped, fxQuoteDTO);
+                                String tradeValueText = getTradeValueText(tradeValue, portfolioCompactDTO.currencyISO);
+                                mLeftNumber.setText(tradeValueText);
+                                buySellCostCcyValue.setText(tradeValueText);
+
                                 if (clamped != null) {
-                                    String cashLeft = getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
-                                    mRightNumber.setText(cashLeft);
-                                    buySellCashLeftCcyValue.setText(cashLeft);
+                                //    String cashLeft = getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
+                                    Double cashLeft = portfolioCompactDTO.cashBalance - tradeValue;
+                                    String cashLeftText = THSignedNumber.builder(cashLeft)
+                                            .withOutSign()
+                                            .build().toString();
+                                    mRightNumber.setText(cashLeftText);
+                                    buySellCashLeftCcyValue.setText(cashLeftText);
                                 }
 
                                 //                                    mTradeValue.setText(getString(R.string.buy_sell_fx_quantity));
@@ -1113,7 +1130,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 .share();
     }
 
-    private void UpdateBuySellDialogValues(LiveQuoteDTO quoteDTO)
+    private void UpdateBuySellDialogValues(LiveQuoteDTO quoteDTO) // this LiveQuoteDTO is for the live price of security user is buying/selling
     {
         usedDTO.quoteDTO = quoteDTO;
         mStockPriceTextView.setText(String.valueOf(getLabel(quoteDTO)));
@@ -1514,12 +1531,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
-            @Nullable Integer clamped) {
+            @Nullable Integer clamped,
+            @Nullable LiveQuoteDTO fxQuoteDTO) {
 
         updateDisplay();
 
         if (!hasTradeValueTextFieldFocus) {
-            mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+            getTradeValueText(getTradeValue(portfolioCompactDTO, quoteDTO, clamped, fxQuoteDTO), portfolioCompactDTO.currencyISO);
         }
 
 //        mTradeSymbol.setText(portfolioCompactDTO.currencyDisplay);
@@ -1802,25 +1820,35 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         return valueText;
     }
 
-    public String getTradeValueText(
+    public Double getTradeValue(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable LiveQuoteDTO quoteDTO,
-            @Nullable Integer quantity) {
-        String valueText = "-";
+            @Nullable Integer quantity,
+            @Nullable LiveQuoteDTO fxQuoteDTO)
+    {
         if (portfolioCompactDTO != null && quoteDTO != null && quantity != null) {
-            Double priceRefCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
+            Double priceRefCcy;
+            if(fxQuoteDTO!=null)
+                priceRefCcy = quoteDTO.getAskPrice()/fxQuoteDTO.getAskPrice();
+            else
+                priceRefCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
             if (priceRefCcy != null) {
                 double value = quantity * priceRefCcy;
                 if (portfolioCompactDTO.leverage != null && portfolioCompactDTO.leverage != 0) {
                     value /= portfolioCompactDTO.leverage;
                 }
-                THSignedNumber thTradeValue = THSignedNumber.builder(value)
-                        .withOutSign()
-                        .build();
-                valueText = thTradeValue.toString();
-                tradeSizeAmount.setText(portfolioCompactDTO.currencyISO + " " + valueText);
+                return value;
             }
         }
+        return 0.0;
+    }
+
+    public String getTradeValueText(Double value, String currencyISO) {
+        THSignedNumber thTradeValue = THSignedNumber.builder(value)
+                .withOutSign()
+                .build();
+        String valueText = thTradeValue.toString();
+        tradeSizeAmount.setText(currencyISO + " " + valueText);
         return valueText;
     }
 
