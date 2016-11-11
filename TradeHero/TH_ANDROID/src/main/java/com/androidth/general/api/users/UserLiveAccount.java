@@ -15,6 +15,10 @@ public class UserLiveAccount extends RealmObject implements DTO
     public String userNameTwo;
     public Date createdOnUTC;
     public boolean isActive;
+    public String email;
+    public String currency;
+    public Double cashBalance;
+    public Double marginAvailable;
 
     public int getId() {
         return id;
