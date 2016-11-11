@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import com.androidth.general.fragments.security.WatchlistEditFragment;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.number.THSignedPercentage;
 import com.androidth.general.persistence.alert.AlertCompactListCacheRx;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.StringUtils;
@@ -104,6 +106,9 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
 
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
     @Nullable protected WatchlistPositionDTOList watchedList;
+
+
+
 
     @ColorRes private static final int COLOR_RES_UNWATCHED = R.color.darker_grey;
     @ColorRes private static final int COLOR_RES_WATCHED = R.color.watchlist_button_color;
@@ -331,6 +336,20 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                             }
                         }, new TimberOnErrorAction1("Failed to fetch list of watch list items")));
         //analytics.fireEvent(new ChartTimeEvent(requisite.securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
+
+        onStopSubscriptions.add(
+                Live1BResponseDTO.getLiveQuoteObservable()
+                        .distinctUntilChanged()
+                        .doOnNext(new Action1<LiveQuoteDTO>() {
+                            @Override
+                            public void call(LiveQuoteDTO liveQuoteDTO) {
+                                // update live prices
+                                if(!liveQuoteDTO.n.toLowerCase().contains("outright")) {
+                                    Log.v("LiveQuoteObservable", "displaying updated live price... " + liveQuoteDTO);
+                                    displayBuySellPrice(liveQuoteDTO.getAskPrice(), liveQuoteDTO.getBidPrice());
+                                }
+                            }
+                        }).subscribe());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -474,7 +493,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                 });
     }
 
-    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double ask, @Nullable Double bid)
+    public void displayBuySellPrice(@Nullable Double ask, @Nullable Double bid)
     {
         if (buyPrice != null && sellPrice != null && lastPrice != null)
         {
@@ -525,6 +544,11 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
             sellPrice.setText(sellPriceText);
             lastPrice.setText(lastPriceText);
         }
+    }
+
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double ask, @Nullable Double bid)
+    {
+        displayBuySellPrice(ask, bid);
 
         displayStockRoi(securityCompactDTO);
     }

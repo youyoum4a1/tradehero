@@ -52,6 +52,7 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.QuoteServiceWrapper;
 import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -576,29 +577,25 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                     if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
                                                         quoteSubscription.unsubscribe();
                                                 }
+                                                else {
+                                                    String liveCurrency = getLiveCurrency();
+                                                    if (liveCurrency == null)
+                                                        liveCurrency = "USD";
+                                                    Log.v("SignalR", "Have liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
 
-                                                String liveCurrency = getLiveCurrency();
-                                                if(liveCurrency==null)
-                                                    liveCurrency = "USD";
-                                                Log.v("SignalR", "Have FX Rate liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
-
-                                                if(liveCurrency==null || liveCurrency.equals(securityCompactDTO.currencyISO)){
-                                                    //it is already in correct currency
-                                                    return;
-                                                }
-                                                if(securityCompactDTO!=null && portfolioCompactDTO!=null) {
-                                                    if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                    if (liveCurrency == null || liveCurrency.equals(securityCompactDTO.currencyISO)) {
+                                                        //it is already in correct currency
                                                         return;
-                                                    if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
+                                                    }
+                                                    if (securityCompactDTO != null && portfolioCompactDTO != null) {
+                                                        if (portfolioCompactDTO.currencyISO.equals(securityCompactDTO.currencyISO))
+                                                            return;
+                                                        if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
 
-                                                        RealmManager.replaceOldValueWith(liveQuote);
+                                                            RealmManager.replaceOldValueWith(liveQuote);
+                                                            Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
 
-//                                                    Realm realm = Realm.getDefaultInstance();
-//                                                    realm.beginTransaction();
-//                                                    realm.delete(LiveQuoteDTO.class);
-//                                                    realm.copyToRealm(liveQuote);
-//                                                    realm.commitTransaction();
-
+                                                        }
                                                     }
                                                 }
                                             }
@@ -891,7 +888,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         //Nothing to do.
     }
 
-    abstract public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double askPrice, @Nullable Double bidPrice);
+    abstract public void  displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @Nullable Double askPrice, @Nullable Double bidPrice);
 
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {

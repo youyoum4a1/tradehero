@@ -214,6 +214,7 @@ public class SignalRManager {
             public void onError(Throwable throwable) {
                 throwable.printStackTrace();
                 if(throwable!=null){
+                    throwable.printStackTrace();
                     Log.v("SignalR", "ERROR! "+throwable.getMessage());
                 }else{
                     Log.v("SignalR", "ERROR starting connection");
