@@ -78,6 +78,7 @@ import com.androidth.general.network.service.QuoteServiceWrapper;
 import com.androidth.general.network.service.SecurityServiceWrapper;
 import com.androidth.general.network.share.SocialSharer;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.androidth.general.persistence.position.PositionListCacheRx;
@@ -110,6 +111,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import dagger.Lazy;
 import io.realm.Realm;
+import io.realm.RealmObject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -222,11 +224,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @Bind(R.id.dialog_buy_sell_top_text_1) protected TextView topText1;
     @Bind(R.id.dialog_buy_sell_top_text_2) protected TextView topText2;
 
-    @Bind(R.id.vmarket_symbol)
-    protected TextView mMarketPriceSymbol;
+    @Bind(R.id.vmarket_symbol) protected TextView mMarketPriceSymbol;
 
-    @Bind(R.id.dialog_buy_sell_top_competition_view) ViewGroup topCompetitionView;
-    @Bind(R.id.dialog_buy_sell_top_normal_view) ViewGroup topNormalView;
+    @Bind(R.id.dialog_buy_sell_top_competition_view)
+    ViewGroup topCompetitionView;
+    @Bind(R.id.dialog_buy_sell_top_normal_view)
+    ViewGroup topNormalView;
 
 //    @Bind(R.id.price_updated_time)
 //    protected TextView mPriceUpdatedTime;
@@ -249,7 +252,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     protected TextView mCommentsEditText;
     @Bind(R.id.dialog_btn_confirm)
     protected Button mConfirm;
-//    @Bind(R.id.portfolio_spinner)
+    //    @Bind(R.id.portfolio_spinner)
 //    protected Spinner mPortfolioSpinner;
 //    @Bind(R.id.cash_or_stock_left)
 //    protected TextView mCashOrStockLeft;
@@ -365,11 +368,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         usedDTO.quoteDTO = requisite.quoteDTO;
         quantitySubject.onNext(requisite.quantity);
         shareDelegateFragment.onCreate(savedInstanceState);
-        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
+        if (getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
             topBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
-            Log.v(getTag(), "HEX_COLOR="+topBarColor);
+            Log.v(getTag(), "HEX_COLOR=" + topBarColor);
             isInCompetition = true;
-        }else{
+        } else {
             Log.v(getTag(), "HEX_COLOR nothing");
             isInCompetition = false;
         }
@@ -390,8 +393,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
 
         // set Order Summary logic
-        if(LiveConstants.isInLiveMode)
-        {
+        if (LiveConstants.isInLiveMode) {
             buySellTRMarginRate.setVisibility(View.VISIBLE);
             buySellTRStopLoss.setVisibility(View.VISIBLE);
             closedTrade.setVisibility(View.VISIBLE);
@@ -400,9 +402,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             buySellTRCost.setVisibility(View.GONE);
             buySellTRCashLeft.setVisibility(View.GONE);
 
-        }
-        else
-        {
+        } else {
             buySellTRMarginRate.setVisibility(View.GONE);
             buySellTRStopLoss.setVisibility(View.GONE);
             closedTrade.setVisibility(View.GONE);
@@ -415,7 +415,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
 
         //is in competition
-        if(topBarColor!=null){
+        if(topBarColor!=null) {
             topBarView.setBackgroundColor(GraphicUtil.parseColor(topBarColor));
             topCompetitionView.setVisibility(View.VISIBLE);
             topNormalView.setVisibility(View.GONE);
@@ -429,18 +429,18 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
-                if(isInCompetition){
-                    if(isBuy){
+                if(isInCompetition) {
+                    if(isBuy) {
                         GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_INPUT);
-                    }else{
+                    } else {
                         GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL_INPUT);
                     }
                 }
                 if(usedDTO.securityCompactDTO!=null
-                        && usedDTO.securityCompactDTO.lotSize!=null){
-                    if(Integer.parseInt(textView.getText().toString()) % usedDTO.securityCompactDTO.lotSize != 0){
+                        && usedDTO.securityCompactDTO.lotSize != null) {
+                    if (Integer.parseInt(textView.getText().toString()) % usedDTO.securityCompactDTO.lotSize != 0) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-                        dialog.setMessage("Quantity must be a multiple of "+usedDTO.securityCompactDTO.lotSize);
+                        dialog.setMessage("Quantity must be a multiple of " + usedDTO.securityCompactDTO.lotSize);
                         dialog.setNeutralButton("Got it", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -465,7 +465,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
             isBuy = false;
-        }else if (this.getClass() == BuyStockFragment.class || this.getClass() == BuyFXFragment.class) {
+        } else if (this.getClass() == BuyStockFragment.class || this.getClass() == BuyFXFragment.class) {
             mConfirm.setText(R.string.buy_sell_confirm_buy_now);
             isBuy = true;
         }//else, it's "Confirm"
@@ -474,43 +474,40 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
         shareDelegateFragment.onViewCreated(view, savedInstanceState);
 
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
-        {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
-                if(usedDTO.securityCompactDTO!=null
-                        && usedDTO.securityCompactDTO.lotSize!=null){
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (usedDTO.securityCompactDTO != null
+                        && usedDTO.securityCompactDTO.lotSize != null) {
 
-                    int newValue = (progress/usedDTO.securityCompactDTO.lotSize) * 100;
+                    int newValue = (progress / usedDTO.securityCompactDTO.lotSize) * 100;
                     progress = newValue;
                 }
-                if (fromUser)
-                {
+                if (fromUser) {
                     quantitySubject.onNext(progress);
                     mPriceSelectionMethod = AnalyticsConstants.Slider;
 
                 }
-                if(isInCompetition){
-                    if(isBuy){
+                if (isInCompetition) {
+                    if (isBuy) {
                         GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_BUY_MOVE_SLIDER);
-                    }else{
+                    } else {
                         GAnalyticsProvider.sendGAActionEvent("Competition", GAnalyticsProvider.ACTION_ENTER_SELL_MOVE_SLIDER);
                     }
 
                 }
             }
 
-            @Override public void onStartTrackingTouch(SeekBar seekBar)
-            {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
             }
 
-            @Override public void onStopTrackingTouch(SeekBar seekBar)
-            {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
-        if (requisite.quantity != null && requisite.quantity > 0)
-        {
+        if (requisite.quantity != null && requisite.quantity > 0) {
             mSeekBar.setMax(requisite.quantity);
             mSeekBar.setEnabled(requisite.quantity > 0);
             mSeekBar.setProgress(requisite.quantity);
@@ -566,7 +563,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                                         if (portfolioCompactDTO.providerId != null) {
                                             ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
-                                            if (providerDTO!=null && providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
+                                            if (providerDTO != null && providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
                                                 maxTradeValue = providerDTO.maxLimitPerTrade;
                                             }
                                         }
@@ -604,9 +601,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         .doOnError(new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-                                if(throwable!=null){
+                                if (throwable != null) {
                                     new TimberOnErrorAction1(throwable.getMessage());
-                                }else{
+                                } else {
                                     new TimberOnErrorAction1("Abstract buy sell popup error");
                                 }
                             }
@@ -615,35 +612,45 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         );
 
         liveVirtualSwitcher.getSwitchObservable()
-            .subscribe(
-                new Action1<OffOnViewSwitcherEvent>() {
-                    @Override
-                    public void call(final OffOnViewSwitcherEvent offOnViewSwitcherEvent) {
-                        getActivity().runOnUiThread(new Runnable() {
+                .subscribe(
+                        new Action1<OffOnViewSwitcherEvent>() {
                             @Override
-                            public void run() {
+                            public void call(final OffOnViewSwitcherEvent offOnViewSwitcherEvent) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
 
-                                if(liveVirtualSwitcher.getIsOn()) {
-                                    topBarView.setBackgroundColor(getResources().getColor(R.color.general_red_live));
-                                    mConfirm.setBackgroundColor(getResources().getColor(R.color.general_red_live));
-                                }
-                                else {
-                                    topBarView.setBackgroundColor(getResources().getColor(R.color.general_brand_color));
-                                    mConfirm.setBackgroundColor(getResources().getColor(R.color.general_brand_color));
-                                }
+                                        if (liveVirtualSwitcher.getIsOn()) {
+                                            topBarView.setBackgroundColor(getResources().getColor(R.color.general_red_live));
+                                            mConfirm.setBackgroundColor(getResources().getColor(R.color.general_red_live));
+                                        } else {
+                                            topBarView.setBackgroundColor(getResources().getColor(R.color.general_brand_color));
+                                            mConfirm.setBackgroundColor(getResources().getColor(R.color.general_brand_color));
+                                        }
+                                    }
+                                });
                             }
                         });
+
+        onStopSubscriptions.add(Live1BResponseDTO.getLiveQuoteObservable()
+                .doOnNext(new Action1<LiveQuoteDTO>() {
+                    @Override
+                    public void call(LiveQuoteDTO quoteDTO) {
+                        if (!quoteDTO.n.toLowerCase().contains("outright")) {
+                            UpdateBuySellDialogValues(quoteDTO);
+                        } else {
+                            Log.v("SignalR", "Updating New FX Rate " + quoteDTO);
+                            RealmManager.replaceOldValueWith(quoteDTO);
+                        }
                     }
-                });
+                }).subscribe());
 
-
-        if(LiveConstants.isInLiveMode) {
+        if (LiveConstants.isInLiveMode) {
             liveVirtualSwitcher.setIsOn(true, true);
             int liveColor = getResources().getColor(R.color.general_red_live);
             topBarView.setBackgroundColor(liveColor);
             mConfirm.setBackgroundColor(liveColor);
-        }
-        else {
+        } else {
             int virtualColor = getResources().getColor(R.color.general_brand_color);
             topBarView.setBackgroundColor(virtualColor);
             mConfirm.setBackgroundColor(virtualColor);
@@ -652,14 +659,14 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     private void setupCompetitionDisplay(Integer providerId) {
 
-        if(providerId!=null){
+        if (providerId != null) {
             topText1.setVisibility(View.GONE);
             topText2.setVisibility(View.GONE);
 
             ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(providerId));
             picasso.load(providerDTO.navigationLogoUrl).into(topBarImageView);
 
-        }else{
+        } else {
             topBarImageView.setVisibility(View.GONE);
         }
     }
@@ -673,7 +680,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         super.onStart();
 
         disableUI();
-        if(!LiveConstants.isInLiveMode)
+        if (!LiveConstants.isInLiveMode)
             initFetches();
         else
             initFetchesLive();
@@ -781,9 +788,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         populateComment();
 
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
-        if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment))
-        {
-            if(getDialog()!=null){
+        if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment)) {
+            if (getDialog() != null) {
                 getDialog().hide();
             }
         }
@@ -825,6 +831,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 })
                 .share();
     }
+
     private void initFetchesLive() {
         onStopSubscriptions.add(
                 Observable.combineLatest(
@@ -850,15 +857,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     @Nullable LivePositionDTO livePositionDTO, // guess this is close position??
                                     @Nullable Integer maxValue,
                                     @Nullable Integer clamped
-                            )
-                            {
+                            ) {
 
                                 if (!hasTradeValueTextFieldFocus) {
                                     mLeftNumber.setText(getLiveTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 }
 
-                                if (clamped != null)
-                                {
+                                if (clamped != null) {
                                     mRightNumber.setText(getLiveRemainingWhenBuy(portfolioCompactDTO, quoteDTO, livePositionDTO, clamped));
                                 }
 
@@ -868,8 +873,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 buySellCostCcy.setText(portfolioCompactDTO.currencyDisplay);
                                 buySellTransactionCostCcy.setText(portfolioCompactDTO.currencyDisplay);
                                 buySellStopLossCcy.setText(portfolioCompactDTO.currencyDisplay);
-                                Log.v("live1b","initFetchesLive() livePositionDTO = " + livePositionDTO);
-                                if(livePositionDTO!=null) {
+                                Log.v("live1b", "initFetchesLive() livePositionDTO = " + livePositionDTO);
+                                if (livePositionDTO!=null) {
                                     buySellCashLeftCcy.setText(portfolioCompactDTO.currencyDisplay);
                                     THSignedNumber thStopLoss = THSignedNumber.builder(livePositionDTO.StopLoss)
                                             .withOutSign()
@@ -882,7 +887,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                 updateDisplay();
 
 
-                                if(livePositionDTO!=null){//is selling
+                                if (livePositionDTO != null) {//is selling
                                     mSymbolCashLeft.setVisibility(View.INVISIBLE);
 
                                     mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_share_left));
@@ -891,20 +896,20 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //                                        mSeekBar.setMax(providerDTO.maxLimitPerTrade.intValue());
 //                                    }
 
-                                }else{
+                                } else {
 
-                                        mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_cash_left));
+                                    mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_cash_left));
                                 }
 
                                 return true;
                             }
                         }).doOnError(new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                throwable.printStackTrace();
-                                Log.v("Error", "initFetchesLive "+throwable.getLocalizedMessage());
-                            }
-                        })
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        Log.v("Error", "initFetchesLive " + throwable.getLocalizedMessage());
+                    }
+                })
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<Boolean>() {
@@ -929,12 +934,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         getMaxValueObservable(),
                         getClampedQuantityObservable(),
                         new Func6<SecurityCompactDTO,
-                            PortfolioCompactDTO,
-                            LiveQuoteDTO,
-                            PositionDTO,
-                            Integer,
-                            Integer,
-                            Boolean>() {
+                                PortfolioCompactDTO,
+                                LiveQuoteDTO,
+                                PositionDTO,
+                                Integer,
+                                Integer,
+                                Boolean>() {
                             @Override
                             public Boolean call(
                                     @NonNull SecurityCompactDTO securityCompactDTO,
@@ -950,8 +955,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                                 mLeftNumber.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 buySellCostCcyValue.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
-                                if (clamped != null)
-                                {
+                                if (clamped != null) {
                                     String cashLeft = getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
                                     mRightNumber.setText(cashLeft);
                                     buySellCashLeftCcyValue.setText(cashLeft);
@@ -966,21 +970,21 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
                                 }
 
-                                if(closeablePosition!=null){//is selling
+                                if (closeablePosition != null) {//is selling
                                     mSymbolCashLeft.setVisibility(View.INVISIBLE);
-                                    if(isFx){
+                                    if (isFx) {
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_fx_quantity_left));
-                                    }else{
+                                    } else {
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_share_left));
                                     }
-                                    if(providerDTO!=null && mSeekBar.getMax()>providerDTO.maxLimitPerTrade){
+                                    if (providerDTO != null && mSeekBar.getMax() > providerDTO.maxLimitPerTrade) {
                                         mSeekBar.setMax(providerDTO.maxLimitPerTrade.intValue());
                                     }
 
-                                }else{
-                                    if(isFx){
+                                } else {
+                                    if (isFx) {
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_fx_cash_left));
-                                    }else{
+                                    } else {
                                         mCashOrStocksLeftLabel.setText(getString(R.string.buy_sell_cash_left));
                                     }
                                 }
@@ -992,7 +996,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             @Override
                             public void call(Throwable throwable) {
                                 throwable.printStackTrace();
-                                Log.v("", "Buysell "+throwable.getLocalizedMessage());
+                                Log.v("", "Buysell " + throwable.getLocalizedMessage());
                             }
                         })
                         .subscribeOn(AndroidSchedulers.mainThread())
@@ -1028,7 +1032,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 //                        String dateTime = DateUtils.getDisplayableDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc,
 //                                R.string.data_format_dd_mmm_yyyy_kk_mm_z);
 //                        mPriceUpdatedTime.setText(getString(R.string.buy_sell_market_price_time, dateTime));
-                        if(currentLeverage==null && LiveConstants.isInLiveMode) // default is normal/midLeverage
+                        if (currentLeverage == null && LiveConstants.isInLiveMode) // default is normal/midLeverage
                         {
                             ImageView vConfident = (ImageView) getView().findViewById(R.id.img_buy_sell_lev_bullish);
                             vConfident.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.lev_image_border));
@@ -1041,13 +1045,12 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     @NonNull
-    protected Observable<PortfolioCompactDTO>  getLivePortfolioCompactObservable()
-    {
+    protected Observable<PortfolioCompactDTO> getLivePortfolioCompactObservable() {
         PortfolioCompactDTO portfolioCompactDTO = new PortfolioCompactDTO();
 
-        AccountBalanceResponseDTO accountBalanceResponseDTO =  (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
+        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
 
-        if(accountBalanceResponseDTO!=null) {
+        if (accountBalanceResponseDTO != null) {
             portfolioCompactDTO.cashBalance = accountBalanceResponseDTO.CashBalance;
             portfolioCompactDTO.marginAvailableRefCcy = accountBalanceResponseDTO.MarginAvailable;
             portfolioCompactDTO.currencyISO = accountBalanceResponseDTO.Currency;
@@ -1055,7 +1058,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             portfolioCompactDTO.currencyDisplay = accountBalanceResponseDTO.Currency;
             return Observable.just(portfolioCompactDTO);
 
-        }else{
+        } else {
             //use the virtual one
             return getPortfolioCompactObservable();
         }
@@ -1103,17 +1106,22 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 .doOnNext(new Action1<LiveQuoteDTO>() {
                     @Override
                     public void call(@NonNull LiveQuoteDTO quoteDTO) {
-                        usedDTO.quoteDTO = quoteDTO;
-                        mStockPriceTextView.setText(String.valueOf(getLabel(quoteDTO)));
-                        mMarketPriceSymbol.setText(quoteDTO.getCurrencyDisplay());
-
-                        if(mConfirm.getText().toString().toLowerCase().contains(getString(R.string.buy_sell_confirm_buy_now).toLowerCase()))
-                            mConfirm.setText(getString(R.string.buy_sell_confirm_buy_now) + " @ " + quoteDTO.getCurrencyDisplay() + " " + String.valueOf(getLabel(quoteDTO)));
-                        if(mConfirm.getText().toString().toLowerCase().contains(getString(R.string.buy_sell_confirm_sell_now).toLowerCase()))
-                            mConfirm.setText(getString(R.string.buy_sell_confirm_sell_now) + " @ " + quoteDTO.getCurrencyDisplay() + " " + String.valueOf(getLabel(quoteDTO)));
+                        UpdateBuySellDialogValues(quoteDTO);
                     }
                 })
                 .share();
+    }
+
+    private void UpdateBuySellDialogValues(LiveQuoteDTO quoteDTO)
+    {
+        usedDTO.quoteDTO = quoteDTO;
+        mStockPriceTextView.setText(String.valueOf(getLabel(quoteDTO)));
+        mMarketPriceSymbol.setText(quoteDTO.getCurrencyDisplay());
+
+        if (mConfirm.getText().toString().toLowerCase().contains(getString(R.string.buy_sell_confirm_buy_now).toLowerCase()))
+            mConfirm.setText(getString(R.string.buy_sell_confirm_buy_now) + " @ " + quoteDTO.getCurrencyDisplay() + " " + String.valueOf(getLabel(quoteDTO)));
+        if (mConfirm.getText().toString().toLowerCase().contains(getString(R.string.buy_sell_confirm_sell_now).toLowerCase()))
+            mConfirm.setText(getString(R.string.buy_sell_confirm_sell_now) + " @ " + quoteDTO.getCurrencyDisplay() + " " + String.valueOf(getLabel(quoteDTO)));
     }
 
     @NonNull
