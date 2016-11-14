@@ -3,6 +3,7 @@ package com.androidth.general.fragments.security;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.androidth.general.api.RawResponseKeeper;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -307,16 +308,17 @@ public class LiveQuoteDTO extends RealmObject implements RawResponseKeeper, Clon
                 '}';
     }
 
-    @Override public boolean equals(Object o)
-    {
-
+    @Override public boolean equals(Object o) {
         if (this == o) return true;
-        if (o==null) return false;
-        LiveQuoteDTO liveQuoteDTO = (LiveQuoteDTO)o;
-        if(liveQuoteDTO.a == this.a &&
-                liveQuoteDTO.b == this.b &&
-                liveQuoteDTO.n == this.n)
+        if (o == null) return false;
+        LiveQuoteDTO liveQuoteDTO = (LiveQuoteDTO) o;
+
+        if (liveQuoteDTO.a.equals(this.a) &&
+                liveQuoteDTO.b.equals(this.b) &&
+                liveQuoteDTO.n.equals(this.n)) {
+            Log.v(".java", "RETURNS TRUE LiveQuoteDTO equals: this=" + this + " o=" + o);
             return true;
+        }
         return false;
     }
 }

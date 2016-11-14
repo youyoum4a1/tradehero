@@ -89,6 +89,7 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
+import oauth.signpost.signature.HmacSha1MessageSigner;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -557,7 +558,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 else{
                     if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null)
                     {
-                        Log.v("SignalR", "Invoking updatequote");
+                        Log.v("SignalR", "Invoking UpdateQuote");
                         signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
                             @Override
@@ -566,22 +567,27 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 if (signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
                                     return;
                                 } else {
-                                    getActivity().runOnUiThread(new Runnable() {
+                                    if(getActivity()!=null)
+                                        mActivity = getActivity();
+                                    else
+                                        Log.v("SignalR.java","mActivity = " + mActivity + " , getActivity = " + getActivity());
+
+                                    mActivity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                           // need to differentiate live quote between FX and the one for the security the user is buying
                                             if(liveQuote!=null && liveQuote.n!=null) {
-                                                if (!liveQuote.n.toLowerCase().contains("outright")) // TODO find a better condition
+                                                if (liveQuote.id==securityDTO.id) // This is a security LiveQuoteDTO
                                                 {
                                                     displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
                                                     if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
                                                         quoteSubscription.unsubscribe();
                                                 }
-                                                else {
+                                                else { // This is an FX LiveQuoteDTO
                                                     String liveCurrency = getLiveCurrency();
                                                     if (liveCurrency == null)
                                                         liveCurrency = "USD";
-                                                    Log.v("SignalR", "Have liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
+                                                    Log.v("SignalR", "Have FX liveQuote: " + liveQuote + ",\n liveCurrency: " + liveCurrency);
 
                                                     if (liveCurrency == null || liveCurrency.equals(securityCompactDTO.currencyISO)) {
                                                         //it is already in correct currency
@@ -593,8 +599,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                         if (liveQuote.n.contains(liveCurrency) && liveQuote.n.contains(securityCompactDTO.currencyISO)) {
 
                                                             RealmManager.replaceOldValueWith(liveQuote);
-                                                            Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
-
+                                                            try {
+                                                                Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
+                                                            }
+                                                            catch(NullPointerException ex)
+                                                            {
+                                                                ex.printStackTrace();
+                                                                Live1BResponseDTO.liveQuoteDTOBehaviorSubject.create();
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -608,8 +620,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                         String liveCurrency = getLiveCurrency();
                         if(liveCurrency==null) liveCurrency = "USD";
-                        Log.v("SignalR", "liveCurrency: " + liveCurrency);
-
                         Log.v("SignalR","Invoking FXRates portfolioCompactDTO.currencyISO " + liveCurrency + " securityCompactDTO.currencyISO = " + securityCompactDTO.currencyISO);
                         signalRManager.startConnectionWithoutUserID(LiveNetworkConstants.PROXY_METHOD_FX_RATE,
                                 new String[] { liveCurrency, securityCompactDTO.currencyISO } );

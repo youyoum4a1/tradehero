@@ -838,7 +838,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         onStopSubscriptions.add(
                 Observable.combineLatest(
                         Live1BResponseDTO.getLiveQuoteObservable()
-                                .distinctUntilChanged().filter(lq -> lq.n.toLowerCase().contains("outright")),
+                                .distinctUntilChanged(),
                         getSecurityObservable(),
                         getLivePortfolioCompactObservable(),
                         getQuoteObservable(),
@@ -866,6 +866,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     @Nullable Integer clamped
                             ) {
 
+                                Log.v(".java", "initFetchesLive getLiveQuoteObservable fxQuoteDTO = " + fxQuoteDTO);
                                 if (!hasTradeValueTextFieldFocus) {
                                     mLeftNumber.setText(getLiveTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 }
@@ -935,7 +936,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         onStopSubscriptions.add(
                 Observable.combineLatest(
                         Live1BResponseDTO.getLiveQuoteObservable()
-                                .distinctUntilChanged().filter(lq -> lq.n.toLowerCase().contains("outright")),
+                                .distinctUntilChanged(),
                         getSecurityObservable(),
                         getPortfolioCompactObservable(),
                         getQuoteObservable(),
@@ -960,6 +961,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     @Nullable Integer maxValue,
                                     @Nullable Integer clamped) {
 
+                                Log.v(".java", "initFetches getLiveQuoteObservable fxQuoteDTO = " + fxQuoteDTO);
                                 initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition, clamped, fxQuoteDTO);
 
                                 updateDisplay();
