@@ -53,6 +53,7 @@ public class RealmManager{
 
     public static RealmAsyncTask replaceOldValueWith(RealmModel object){
         Realm realm = Realm.getDefaultInstance();
+        Log.v ("Realm", "Replacing now");
         return realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -67,6 +68,20 @@ public class RealmManager{
 //        realm.delete(object.getClass());
 //        realm.copyToRealm(object);
 //        realm.commitTransaction();
+    }
+
+    public static void ReplaceSyncOldValueWith(RealmModel object)
+    {
+        Realm realm = Realm.getDefaultInstance();
+        Log.v ("Realm", "Replacing now");
+        realm.executeTransaction(new Realm.Transaction() {
+                                                 @Override
+                                                 public void execute(Realm realm) {
+                                                     realm.delete(object.getClass());
+                                                     realm.copyToRealm(object);
+                                                     Log.v("Realm", "Replacing "+object);
+                                                 }
+                                             });
     }
 
     public static RealmModel getOne(Class objectClass){

@@ -140,12 +140,10 @@ public class THApp extends BaseApplication
 //                }
 //            }
 //        });
-
-        if(LiveConstants.isInLiveMode) {
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE) {
             //    userLoginLoader();
             startLiveSignalR();
         }
-
     }
 
     private void buildObjectGraphAndInject()
@@ -310,11 +308,12 @@ public class THApp extends BaseApplication
 //        if(signalRManager!=null){
 //            return;
 //        } // need to relisten??
+        Log.v("SignalR.java", "startLiveSignalR THApp ORDERMANAGEMENTHUB!!!!!");
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
             @Override
             public void run(Object positionsResponseDTO) {
-
+                Log.v("SignalR.java", "startLiveSignalR THApp " + positionsResponseDTO);
                 Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
                 try {
                     JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
@@ -352,9 +351,10 @@ public class THApp extends BaseApplication
             @Override
             public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
                 if(accountBalanceResponseDTO!=null){
-                    RealmManager.replaceOldValueWith(accountBalanceResponseDTO);
-
                     Live1BResponseDTO.accountBalanceResponseDTOBehaviorSubject.onNext(accountBalanceResponseDTO);
+                    RealmManager.ReplaceSyncOldValueWith(accountBalanceResponseDTO);
+
+
                 }
             }
 
