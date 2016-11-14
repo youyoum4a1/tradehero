@@ -34,8 +34,9 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     private static final int VIEW_TYPE_REGULAR_POSITION = 1;
     private static final int VIEW_TYPE_LOADING = 2;
     private static final int VIEW_TYPE_SPACING_PORTFOLIO = 3;
-    private static final int VIEW_TYPE_SPACING_COMPETITIONS = 4;
-    private static final int VIEW_TYPE_SPACING_WATCHLISTS = 5;
+    private static final int VIEW_TYPE_SPACING_WATCHLISTS = 4;
+    private static final int VIEW_TYPE_SPACING_COMPETITIONS = 5;
+
 
     private static final int VIEW_TYPE_LIVE_ACCOUNT = 200;
 
