@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.androidth.general.R;
 import com.androidth.general.adapters.GenericArrayAdapter;
 import com.androidth.general.api.portfolio.DisplayablePortfolioDTO;
@@ -30,12 +33,18 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     private static final int VIEW_TYPE_FIRST_POSITION = 0;
     private static final int VIEW_TYPE_REGULAR_POSITION = 1;
     private static final int VIEW_TYPE_LOADING = 2;
-    private static final int VIEW_TYPE_SPACING = 3;
-    private static final int VIEW_TYPE_LIVE_ACCOUNT = 4;
+    private static final int VIEW_TYPE_SPACING_PORTFOLIO = 3;
+    private static final int VIEW_TYPE_SPACING_COMPETITIONS = 4;
+    private static final int VIEW_TYPE_SPACING_WATCHLISTS = 5;
+
+    private static final int VIEW_TYPE_LIVE_ACCOUNT = 200;
 
     public static final String DTO_LOADING = "Loading";
-    public static final String DTO_SPACING = "Spacing";
-    public static final String LIVE_ACCOUNT_POSITION = "TH Live Account";
+    public static final String DTO_SPACING_PORTFOLIOS = "Portfolios";
+    public static final String DTO_SPACING_COMPETITIONS = "Competitions";
+    public static final String DTO_SPACING_WATCHLISTS = "Watchlists";
+
+    public static final String DTO_LIVE_ACCOUNT = "TH Live Account";
 
     private List<Object> orderedItems;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
@@ -45,6 +54,8 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     @NonNull private final PublishSubject<TimelineFragment.TabType> tabTypeSubject;
 
     @NonNull private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
+
+    private int currentCount = 0;
 
     //<editor-fold desc="Constructors">
     public SimpleOwnPortfolioListItemAdapter(
@@ -102,18 +113,36 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                 }
             }
             boolean hadCompetition = false;
+            DisplayablePortfolioDTO.PORTFOLIO_TYPE currentDisplay = DisplayablePortfolioDTO.PORTFOLIO_TYPE.OTHERS;
+
             for (DisplayablePortfolioDTO displayablePortfolioDTO : ownPortfolios)
             {
                 if (displayablePortfolioDTO.portfolioDTO != null)
                 {
-                    if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
-                    {
-                        preparedOrderedItems.add(DTO_SPACING);
-                    }
-                    else if (displayablePortfolioDTO.portfolioDTO.providerId != null && !hadCompetition)
-                    {
+                    if(currentDisplay.equals(DisplayablePortfolioDTO.PORTFOLIO_TYPE.OTHERS)
+                            && !currentDisplay.equals(DisplayablePortfolioDTO.PORTFOLIO_TYPE.PORTFOLIOS)){
+
+                        currentDisplay = DisplayablePortfolioDTO.PORTFOLIO_TYPE.PORTFOLIOS;
+                        preparedOrderedItems.add(DTO_SPACING_PORTFOLIOS);
+
+                    } else if (displayablePortfolioDTO.portfolioDTO.isWatchlist) {
+
+                        if(!currentDisplay.equals(DisplayablePortfolioDTO.PORTFOLIO_TYPE.WATCHLISTS)){
+                            currentDisplay = DisplayablePortfolioDTO.PORTFOLIO_TYPE.WATCHLISTS;
+
+                            //add spacing
+                            preparedOrderedItems.add(DTO_SPACING_WATCHLISTS);
+                        }
+
+                    } else if (displayablePortfolioDTO.portfolioDTO.providerId != null && !hadCompetition) {
                         hadCompetition = true;
-                        preparedOrderedItems.add(DTO_SPACING);
+
+                        if(!currentDisplay.equals(DisplayablePortfolioDTO.PORTFOLIO_TYPE.COMPETITIONS)){
+                            currentDisplay = DisplayablePortfolioDTO.PORTFOLIO_TYPE.COMPETITIONS;
+
+                            preparedOrderedItems.add(DTO_SPACING_COMPETITIONS);
+                        }
+
                     }
                 }
                 preparedOrderedItems.add(displayablePortfolioDTO);
@@ -124,34 +153,51 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
             preparedOrderedItems.addAll(items);
         }
 
+        currentCount = ownPortfolios.size() + 1;
+
         this.orderedItems = preparedOrderedItems;
     }
 
     @Override public int getCount()
     {
         int count = this.orderedItems.size(); // HACK because first item is not clickable
-        return count == 0 ? 0 : count + 1;
+        return count == 0 ? 0 : count;
     }
 
     @Override public int getViewTypeCount()
     {
-        return 4;
+        return currentCount;
     }
 
     @Override public int getItemViewType(int position)
     {
-        if (position == 0)
-        {
-            return VIEW_TYPE_FIRST_POSITION;
-        }
+//        if (position == 0)
+//        {
+//            return VIEW_TYPE_FIRST_POSITION;
+//        }
         Object item = getItem(position);
+        if(item==null){
+            return VIEW_TYPE_LOADING;
+        }
+
         if (item.equals(DTO_LOADING))
         {
             return VIEW_TYPE_LOADING;
         }
-        if (item.equals(DTO_SPACING))
+        if (item.equals(DTO_SPACING_PORTFOLIOS))
         {
-            return VIEW_TYPE_SPACING;
+            return VIEW_TYPE_SPACING_PORTFOLIO;
+        }
+        if (item.equals(DTO_SPACING_COMPETITIONS))
+        {
+            return VIEW_TYPE_SPACING_COMPETITIONS;
+        }
+        if (item.equals(DTO_SPACING_WATCHLISTS))
+        {
+            return VIEW_TYPE_SPACING_WATCHLISTS;
+        }
+        if(item instanceof LiveAccountPortfolioItemHeader){
+            return VIEW_TYPE_FIRST_POSITION;
         }
 
         return VIEW_TYPE_REGULAR_POSITION;
@@ -164,8 +210,12 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 
     @Override public Object getItem(int position)
     {
-        position = position == 0 ? position : position - 1; // HACK because first item is not clickable
-        return this.orderedItems.get(position);
+//        position = position == 0 ? position : position - 1; // HACK because first item is not clickable
+        if(this.orderedItems!=null && this.orderedItems.size()>0){
+            return this.orderedItems.get(position);
+        }else{
+            return null;
+        }
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -173,9 +223,26 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
         switch (getItemViewType(position))
         {
             case VIEW_TYPE_FIRST_POSITION:
-                if (convertView == null)
-                {
-                    convertView = new View(getContext());
+                Object liveItem = getItem(position);
+
+                if(liveItem!=null && liveItem.equals(DTO_LOADING)){
+                    if (convertView == null)
+                    {
+                        convertView = new View(getContext());
+                    }
+
+                }else if(liveItem instanceof LiveAccountPortfolioItemHeader){
+                    convertView = conditionalInflate(position, convertView, parent);
+
+                    if(convertView instanceof LinearLayout){
+                        ((LinearLayout) convertView).removeAllViews();
+                        convertView = inflate(position, parent);
+                    }
+                    try{
+                        ((PortfolioListItemView) convertView).display((LiveAccountPortfolioItemHeader) liveItem);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
                 break;
 
@@ -192,17 +259,28 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                 }
                 break;
 
-            case VIEW_TYPE_SPACING:
+            case VIEW_TYPE_SPACING_PORTFOLIO:
                 if (convertView == null)
                 {
                     convertView = getInflater().inflate(spacingLayoutRes, parent, false);
+                    ((TextView)convertView).setText("Portfolios");
                 }
                 break;
 
-            case VIEW_TYPE_LIVE_ACCOUNT:
-                Object liveItem = getItem(position);
-                convertView = conditionalInflate(position, convertView, parent);
-                ((PortfolioListItemView) convertView).display((LiveAccountPortfolioItemHeader) liveItem);
+            case VIEW_TYPE_SPACING_COMPETITIONS:
+                if (convertView == null)
+                {
+                    convertView = getInflater().inflate(spacingLayoutRes, parent, false);
+                    ((TextView)convertView).setText("Competitions");
+                }
+                break;
+
+            case VIEW_TYPE_SPACING_WATCHLISTS:
+                if (convertView == null)
+                {
+                    convertView = getInflater().inflate(spacingLayoutRes, parent, false);
+                    ((TextView)convertView).setText("Watchlists");
+                }
                 break;
 
             default:
@@ -220,7 +298,9 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     {
         int viewType = getItemViewType(position);
         return viewType != VIEW_TYPE_LOADING
-                && viewType != VIEW_TYPE_SPACING;
+                && (viewType != VIEW_TYPE_SPACING_PORTFOLIO
+                || viewType != VIEW_TYPE_SPACING_COMPETITIONS
+                || viewType != VIEW_TYPE_SPACING_WATCHLISTS);
     }
 
     @Nullable protected Boolean containsMainFx(@NonNull Collection<DisplayablePortfolioDTO> items)

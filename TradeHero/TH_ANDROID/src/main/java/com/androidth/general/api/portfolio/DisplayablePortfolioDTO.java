@@ -12,6 +12,10 @@ public class DisplayablePortfolioDTO implements Comparable
     @Nullable public UserBaseDTO userBaseDTO;
     @Nullable public PortfolioDTO portfolioDTO;
 
+    public enum PORTFOLIO_TYPE{
+        PORTFOLIOS, COMPETITIONS, WATCHLISTS, OTHERS
+    }
+
     //<editor-fold desc="Constructors">
     public DisplayablePortfolioDTO()
     {

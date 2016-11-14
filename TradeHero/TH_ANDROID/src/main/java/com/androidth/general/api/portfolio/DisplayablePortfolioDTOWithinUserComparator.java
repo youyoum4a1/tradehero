@@ -18,6 +18,9 @@ public class DisplayablePortfolioDTOWithinUserComparator implements Comparator<D
 
     @Override public int compare(@NonNull DisplayablePortfolioDTO lhs, @NonNull DisplayablePortfolioDTO rhs)
     {
+        if(lhs instanceof LiveAccountPortfolioItemHeader || rhs instanceof LiveAccountPortfolioItemHeader){
+            return 1;//make it first
+        }
         if (lhs.portfolioDTO != null && rhs.portfolioDTO != null)
         {
             int portfolioComp = this.portfolioCompactDTODisplayComparator.compare(lhs.portfolioDTO, rhs.portfolioDTO);

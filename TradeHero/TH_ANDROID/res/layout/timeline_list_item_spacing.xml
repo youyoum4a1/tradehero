@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Space
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/margin_small"
+    android:layout_height="wrap_content"
+    android:padding="5sp"
+    android:textSize="10sp"
+    android:textAllCaps="true"
+
     />

@@ -11,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import com.androidth.general.api.portfolio.LiveAccountPortfolioItemHeader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.androidth.general.R;
@@ -85,6 +87,11 @@ public class PortfolioListItemView extends RelativeLayout
         displayDescription();
         displayRoiValue();
         displayImage();
+    }
+
+    public void display(LiveAccountPortfolioItemHeader liveAccountPortfolioItemHeader){
+        title.setText("TradeHero Live");
+        description.setText("Open a trading account now!");
     }
 
     private void displayImage()

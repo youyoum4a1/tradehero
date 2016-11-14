@@ -416,31 +416,52 @@ abstract public class TimelineFragment extends DashboardFragment {
     private void fetchPortfolioList() {
         onStopSubscriptions.add(displayablePortfolioFetchAssistant.get(shownUserBaseKey)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DisplayablePortfolioDTOList>() {
+                .subscribe(new Action1<DisplayablePortfolioDTOList>() {
                     @Override
-                    public void onCompleted() {
-                        Timber.d("completed");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e, "error");
-                    }
-
-                    @Override
-                    public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
+                    public void call(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
                         swipeRefreshContainer.setRefreshing(false);
                         cancelRefreshingOnResume = true;
 
                         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
                             LiveAccountPortfolioItemHeader liveAccountRow = new LiveAccountPortfolioItemHeader();
-                            displayablePortfolioDTOs.add(liveAccountRow);
+                            displayablePortfolioDTOs.add(0, liveAccountRow);
                         }
 
-                        portfolioListAdapter.setItems((List) displayablePortfolioDTOs);
-                        portfolioListAdapter.notifyDataSetChanged();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                portfolioListAdapter.setItems((List) displayablePortfolioDTOs);
+                                portfolioListAdapter.notifyDataSetChanged();
+                            }
+                        });
+
                     }
                 }));
+//                .subscribe(new Observer<DisplayablePortfolioDTOList>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Timber.d("completed");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Timber.e(e, "error");
+//                    }
+//
+//                    @Override
+//                    public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
+//                        swipeRefreshContainer.setRefreshing(false);
+//                        cancelRefreshingOnResume = true;
+//
+//                        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+//                            LiveAccountPortfolioItemHeader liveAccountRow = new LiveAccountPortfolioItemHeader();
+//                            displayablePortfolioDTOs.add(0, liveAccountRow);
+//                        }
+//
+//                        portfolioListAdapter.setItems((List) displayablePortfolioDTOs);
+//                        portfolioListAdapter.notifyDataSetChanged();
+//                    }
+//                }));
     }
 
     protected void linkWith(@NonNull UserProfileDTO userProfileDTO) {

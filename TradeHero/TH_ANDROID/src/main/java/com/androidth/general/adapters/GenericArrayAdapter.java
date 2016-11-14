@@ -30,7 +30,8 @@ public class GenericArrayAdapter<T> extends BaseAdapter
 
     public void setItems(@NonNull List<T> items)
     {
-        this.items = items;
+        this.items.clear();
+        this.items.addAll(items);
         notifyDataSetChanged();
     }
 
