@@ -337,19 +337,6 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                         }, new TimberOnErrorAction1("Failed to fetch list of watch list items")));
         //analytics.fireEvent(new ChartTimeEvent(requisite.securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
 
-        onStopSubscriptions.add(
-                Live1BResponseDTO.getLiveQuoteObservable()
-                        .distinctUntilChanged()
-                        .doOnNext(new Action1<LiveQuoteDTO>() {
-                            @Override
-                            public void call(LiveQuoteDTO liveQuoteDTO) {
-                                // update live prices
-                                if(!liveQuoteDTO.n.toLowerCase().contains("outright")) {
-                                    Log.v("LiveQuoteObservable", "displaying updated live price... " + liveQuoteDTO);
-                                    displayBuySellPrice(liveQuoteDTO.getAskPrice(), liveQuoteDTO.getBidPrice());
-                                }
-                            }
-                        }).subscribe());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
