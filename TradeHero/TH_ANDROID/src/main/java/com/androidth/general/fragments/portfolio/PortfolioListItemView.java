@@ -2,10 +2,15 @@ package com.androidth.general.fragments.portfolio;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import com.androidth.general.api.portfolio.LiveAccountPortfolioItemHeader;
+import com.androidth.general.fragments.education.VideoView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.androidth.general.R;
@@ -40,6 +46,8 @@ public class PortfolioListItemView extends RelativeLayout
     @Bind(R.id.portfolio_description) protected TextView description;
     @Bind(R.id.roi_value) @Nullable protected TextView roiValue;
     @Bind(R.id.portfolio_image) @Nullable protected ImageView portfolioImage;
+    @Bind(R.id.portfolio_live_video) protected android.widget.VideoView liveAccountVideo;
+    @Bind(R.id.portfolio_common_item) protected RelativeLayout commonRowItem;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     @Nullable private Subscription userWatchlistSubscription;
@@ -89,9 +97,23 @@ public class PortfolioListItemView extends RelativeLayout
         displayImage();
     }
 
-    public void display(LiveAccountPortfolioItemHeader liveAccountPortfolioItemHeader){
-        title.setText("TradeHero Live");
-        description.setText("Open a trading account now!");
+    public void display(Context context, LiveAccountPortfolioItemHeader liveAccountPortfolioItemHeader){
+        liveAccountVideo.setVisibility(VISIBLE);
+        String path = "android.resource://"+ context.getPackageName() +"/"+ R.raw.live_account_status_fresh;
+        liveAccountVideo.setVideoPath(path);
+
+        liveAccountVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
+        commonRowItem.setVisibility(View.GONE);
+
+        liveAccountVideo.start();
+//        title.setText("TradeHero Live");
+//        description.setText("Open a trading account now!");
     }
 
     private void displayImage()

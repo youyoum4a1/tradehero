@@ -1,73 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.androidth.general.fragments.portfolio.PortfolioListItemView
-    style="@style/TH.ListItem.Clickable"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="5sp"
+    android:paddingTop="5sp"
     >
 
-  <ImageView
-      android:id="@+id/hint_open_portfolio"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:contentDescription="@null"
-      android:scaleType="fitXY"
-      android:src="@drawable/settings_forward_light"
-      />
+    <VideoView
+        android:id="@+id/portfolio_live_video"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/big_image_w_h"
+        android:layout_centerInParent="true"
+        tools:background="@color/grey"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/portfolio_common_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/hint_open_portfolio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:contentDescription="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/settings_forward_light"
+            />
+
+        <ImageView
+            android:id="@+id/portfolio_image"
+            android:layout_width="@dimen/medium_image_w_h"
+            android:layout_height="@dimen/medium_image_w_h"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/portfolio_image"
+            android:layout_toLeftOf="@+id/hint_open_portfolio"
+            android:layout_toRightOf="@id/portfolio_image"
+            android:layout_marginRight="10sp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/portfolio_title"
+                style="@style/TH.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:maxLines="1"
+                tools:text="Default Portfolio"
+                />
+
+            <TextView
+                android:id="@+id/roi_value"
+                style="@style/TH.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="▼77.6%"
+                />
 
 
-  <ImageView
-      android:id="@+id/portfolio_image"
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true"
-      android:layout_centerVertical="true"
-      />
+            <TextView
+                android:id="@+id/portfolio_description"
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:maxLines="1"
+                tools:text="You have 3 open positions"
+                />
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_toEndOf="@id/portfolio_image"
-      android:layout_toLeftOf="@+id/hint_open_portfolio"
-      android:layout_toRightOf="@id/portfolio_image"
-      android:orientation="vertical"
-      >
+        </LinearLayout>
 
-      <TextView
-          android:id="@+id/portfolio_title"
-          style="@style/TH.Subhead"
-          android:layout_width="wrap_content"
-          android:layout_height="0dp"
-          android:layout_weight="3"
-          android:maxLines="1"
-          tools:text="Default Portfolio"
-        />
-
-      <TextView
-          android:id="@+id/roi_value"
-          style="@style/TH.Body"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="▼77.6%"
-          />
+    </RelativeLayout>
 
 
-      <TextView
-          android:id="@+id/portfolio_description"
-          style="@style/TH.Caption"
-          android:layout_width="wrap_content"
-          android:layout_height="0dp"
-          android:layout_weight="2"
-          android:maxLines="1"
-          tools:text="You have 3 open positions"
-        />
-
-  </LinearLayout>
 
 </com.androidth.general.fragments.portfolio.PortfolioListItemView>

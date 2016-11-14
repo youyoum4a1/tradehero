@@ -239,7 +239,7 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                         convertView = inflate(position, parent);
                     }
                     try{
-                        ((PortfolioListItemView) convertView).display((LiveAccountPortfolioItemHeader) liveItem);
+                        ((PortfolioListItemView) convertView).display(getContext(), (LiveAccountPortfolioItemHeader) liveItem);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -328,13 +328,15 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 
     @Override public View getHeaderView(int i, View convertView, ViewGroup viewGroup)
     {
-        if (convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_profile_detail_bottom_buttons, viewGroup, false);
-            ((TimelineHeaderButtonView) convertView).getTabTypeObservable().subscribe(tabTypeSubject);
-        }
-        ((TimelineHeaderButtonView) convertView).setActive(currentTabType);
-        return convertView;
+//        if (convertView == null)
+//        {
+//            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_profile_detail_bottom_buttons, viewGroup, false);
+//            ((TimelineHeaderButtonView) convertView).getTabTypeObservable().subscribe(tabTypeSubject);
+//        }
+//        ((TimelineHeaderButtonView) convertView).setActive(currentTabType);
+//
+//        return convertView;
+        return new View(viewGroup.getContext());
     }
 
     @Override public long getHeaderId(int i)
