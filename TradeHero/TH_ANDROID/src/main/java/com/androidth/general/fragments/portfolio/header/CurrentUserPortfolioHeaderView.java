@@ -163,7 +163,8 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
 //                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
 
-                accountBalanceSubscription = Live1BResponseDTO.getAccountBalanceObservable()
+                if(accountBalanceSubscription==null||accountBalanceSubscription.isUnsubscribed())
+                    accountBalanceSubscription = Live1BResponseDTO.getAccountBalanceObservable()
                         .doOnNext(new Action1<AccountBalanceResponseDTO>() {
                             @Override
                             public void call(AccountBalanceResponseDTO accountBalanceResponseDTO) {
