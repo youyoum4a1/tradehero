@@ -18,6 +18,7 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.level.LevelDefDTOList;
 import com.androidth.general.api.level.key.LevelDefListId;
 import com.androidth.general.api.portfolio.DisplayablePortfolioDTO;
@@ -33,6 +34,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseDTOUtil;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.common.widget.FlagNearEdgeScrollListener;
 import com.androidth.general.fragments.achievement.AchievementListFragment;
@@ -414,7 +416,8 @@ abstract public class TimelineFragment extends DashboardFragment {
 
     //<editor-fold desc="Display methods">
     private void fetchPortfolioList() {
-        onStopSubscriptions.add(displayablePortfolioFetchAssistant.get(shownUserBaseKey)
+        onStopSubscriptions.add(
+                displayablePortfolioFetchAssistant.get(shownUserBaseKey)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<DisplayablePortfolioDTOList>() {
                     @Override
@@ -423,8 +426,8 @@ abstract public class TimelineFragment extends DashboardFragment {
                         cancelRefreshingOnResume = true;
 
                         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
-                            LiveAccountPortfolioItemHeader liveAccountRow = new LiveAccountPortfolioItemHeader();
-                            displayablePortfolioDTOs.add(0, liveAccountRow);
+
+                            displayablePortfolioDTOs.add(0, new LiveAccountPortfolioItemHeader());
                         }
 
                         getActivity().runOnUiThread(new Runnable() {

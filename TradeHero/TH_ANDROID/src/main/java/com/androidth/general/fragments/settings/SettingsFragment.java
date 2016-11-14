@@ -32,6 +32,7 @@ import com.androidth.general.auth.AuthenticationProvider;
 import com.androidth.general.auth.SocialAuth;
 import com.androidth.general.billing.THBillingInteractorRx;
 import com.androidth.general.billing.report.PurchaseReportResult;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.common.persistence.prefs.StringPreference;
 import com.androidth.general.common.rx.DurationMeasurer;
@@ -817,6 +818,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                             @Override public void call(UserProfileDTO profile)
                             {
                                 SettingsFragment.this.onSignedOut(profile);
+                                RealmManager.clearDatabase();
                             }
                         },
                         new TimberOnErrorAction1("Failed to sign out")));

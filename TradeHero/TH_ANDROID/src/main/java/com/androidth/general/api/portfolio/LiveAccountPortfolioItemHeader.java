@@ -2,6 +2,7 @@ package com.androidth.general.api.portfolio;
 
 import android.support.annotation.Nullable;
 
+import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.users.UserBaseDTO;
 
 /**
@@ -10,4 +11,6 @@ import com.androidth.general.api.users.UserBaseDTO;
 
 public class LiveAccountPortfolioItemHeader extends DisplayablePortfolioDTO {
 
+    public LiveAccountPortfolioItemHeader(){
+    }
 }

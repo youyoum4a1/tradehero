@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 
 import com.androidth.general.api.portfolio.LiveAccountPortfolioItemHeader;
 import com.androidth.general.fragments.education.VideoView;
+import com.androidth.general.models.live.THLiveManager;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.androidth.general.R;
@@ -98,22 +99,14 @@ public class PortfolioListItemView extends RelativeLayout
     }
 
     public void display(Context context, LiveAccountPortfolioItemHeader liveAccountPortfolioItemHeader){
-        liveAccountVideo.setVisibility(VISIBLE);
-        String path = "android.resource://"+ context.getPackageName() +"/"+ R.raw.live_account_status_fresh;
-        liveAccountVideo.setVideoPath(path);
 
-        liveAccountVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-            }
-        });
+        if(THLiveManager.getInstance().getBrokerApplicationDTO()!=null){
+            title.setText("TradeHero Live");
+            description.setText(THLiveManager.getInstance().getBrokerApplicationDTO().applicationStatus);
 
-        commonRowItem.setVisibility(View.GONE);
-
-        liveAccountVideo.start();
-//        title.setText("TradeHero Live");
-//        description.setText("Open a trading account now!");
+        }else{
+            setupLiveVideo(context);
+        }
     }
 
     private void displayImage()
@@ -227,4 +220,22 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
     //</editor-fold>
+
+    private void setupLiveVideo(Context context){
+        liveAccountVideo.setVisibility(VISIBLE);
+        String path = "android.resource://"+ context.getPackageName() +"/"+ R.raw.live_account_status_fresh;
+        liveAccountVideo.setVideoPath(path);
+
+        liveAccountVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
+        commonRowItem.setVisibility(View.GONE);
+
+        liveAccountVideo.start();
+
+    }
 }

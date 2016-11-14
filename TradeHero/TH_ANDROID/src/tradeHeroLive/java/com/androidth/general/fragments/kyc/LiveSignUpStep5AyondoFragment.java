@@ -36,6 +36,7 @@ import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.common.persistence.RealmManager;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
@@ -52,6 +53,7 @@ import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
 import com.androidth.general.models.fastfill.ScannedDocument;
 import com.androidth.general.models.fastfill.jumio.NetverifyFastFillUtil;
+import com.androidth.general.models.live.THLiveManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
@@ -735,6 +737,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         }
 
                         onNext(new LiveBrokerSituationDTO(currentBroker, form));
+
+                        //update database
+                        THLiveManager.getInstance().setBrokerApplicationDTO(brokerApplicationDTO);
 
 //                        getActivity().finish();
                     }

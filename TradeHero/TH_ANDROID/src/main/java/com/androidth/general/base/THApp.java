@@ -18,6 +18,7 @@ import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
 import com.androidth.general.models.level.UserXPAchievementHandler;
+import com.androidth.general.models.live.THLiveManager;
 import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -320,7 +321,7 @@ public class THApp extends BaseApplication
                     JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
                     PositionsResponseDTO responseDTO = gson.fromJson(jsonObject, PositionsResponseDTO.class);
 
-                    RealmManager.replaceOldValueWith(responseDTO);
+                    THLiveManager.getInstance().setPositionsResponseDTO(responseDTO);
 
                     // Obtain a Realm instance
 //                    Realm realm = Realm.getDefaultInstance();
@@ -351,11 +352,10 @@ public class THApp extends BaseApplication
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ACCOUNTS_RESPONSE, new SubscriptionHandler1<AccountBalanceResponseDTO>() {
             @Override
             public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
-                if(accountBalanceResponseDTO!=null){
-                    RealmManager.replaceOldValueWith(accountBalanceResponseDTO);
 
-                    Live1BResponseDTO.accountBalanceResponseDTOBehaviorSubject.onNext(accountBalanceResponseDTO);
-                }
+                THLiveManager.getInstance().setAccountBalanceResponseDTO(accountBalanceResponseDTO);
+                Live1BResponseDTO.accountBalanceResponseDTOBehaviorSubject.onNext(accountBalanceResponseDTO);
+
             }
 
         }, AccountBalanceResponseDTO.class);

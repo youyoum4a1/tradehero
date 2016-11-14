@@ -58,6 +58,7 @@ import com.androidth.general.fragments.market.SecurityTypeSpinner;
 import com.androidth.general.fragments.position.FXMainPositionListFragment;
 import com.androidth.general.fragments.position.live1b.LivePositionListRowView;
 import com.androidth.general.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
+import com.androidth.general.models.live.THLiveManager;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 import com.androidth.general.models.market.ExchangeCompactSpinnerDTOList;
 import com.androidth.general.network.LiveNetworkConstants;
@@ -359,7 +360,7 @@ public class TrendingMainFragment extends DashboardFragment
         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE && event.isFromUser) {
 
 //            userLiveAccount = liveUserAccountCacheRx.getCachedValue(currentUserId.toUserBaseKey());
-            userLiveAccount = getUserLiveAccount();
+            userLiveAccount = THLiveManager.getInstance().getUserLiveAccount();
             Log.v("Live1b", "Has user live account? "+userLiveAccount);
             Log.d("Live1b", "using key" + currentUserId.toUserBaseKey());
 
@@ -1049,11 +1050,6 @@ public class TrendingMainFragment extends DashboardFragment
 //        exchangeSpinnerDTOSubject.onNext(dto);
     }
 
-    private UserLiveAccount getUserLiveAccount(){
-
-        UserLiveAccount userLiveAccount = (UserLiveAccount) RealmManager.getOne(UserLiveAccount.class);
-        return userLiveAccount;
-    }
 /*
     private void userLoginLoader()
     {

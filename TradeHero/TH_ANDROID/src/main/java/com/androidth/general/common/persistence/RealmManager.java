@@ -86,6 +86,16 @@ public class RealmManager{
         return realm.where(objectClass);
     }
 
+    public static void clearDatabase(){
+        try{
+            Realm.getDefaultInstance().close();
+            Realm.deleteRealm(Realm.getDefaultInstance().getConfiguration());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
     public static abstract class OnSubscribeRealm<T extends RealmObject> implements Observable.OnSubscribe<T> {
         Realm realm = Realm.getDefaultInstance();
 
