@@ -48,7 +48,7 @@ public class THLiveManager {
 
     public void setAccountBalanceResponseDTO(AccountBalanceResponseDTO accountBalanceResponseDTO) {
         if(accountBalanceResponseDTO!=null){
-            RealmManager.replaceOldValueWith(accountBalanceResponseDTO);
+            RealmManager.ReplaceSyncOldValueWith(accountBalanceResponseDTO);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.androidth.general.fragments.portfolio.header;
 
 import android.support.annotation.NonNull;
+
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import rx.Observable;
@@ -12,6 +14,7 @@ public interface PortfolioHeaderView
 {
     void linkWith(UserProfileDTO userProfileDTO);
     void linkWith(PortfolioCompactDTO portfolioDTO);
+    void linkWith(AccountBalanceResponseDTO accountBalanceResponseDTO);
 
     @NonNull Observable<UserAction> getUserActionObservable();
 

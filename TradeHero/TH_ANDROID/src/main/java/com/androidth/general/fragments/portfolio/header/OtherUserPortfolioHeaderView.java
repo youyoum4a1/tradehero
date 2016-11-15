@@ -12,6 +12,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.androidth.general.R;
@@ -147,6 +149,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             }
         }
     }
+
+    @Override public void linkWith(AccountBalanceResponseDTO accountBalanceResponseDTO)
+    {}
 
     private void configureUserViews()
     {

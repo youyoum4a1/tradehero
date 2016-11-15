@@ -97,6 +97,7 @@ import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.squareup.picasso.Picasso;
 
 
@@ -834,14 +835,15 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                 .share();
     }
 
+    @RxLogObservable
     private void initFetchesLive() {
         onStopSubscriptions.add(
                 Observable.combineLatest(
-                        Live1BResponseDTO.getLiveQuoteObservable()
+                        Live1BResponseDTO.getLiveFXQuoteObservable()
                                 .distinctUntilChanged(),
                         getSecurityObservable(),
                         getLivePortfolioCompactObservable(),
-                        getQuoteObservable(),
+                        Live1BResponseDTO.getLiveQuoteObservable(),
                         getLiveCloseablePositionObservable(),
                         getLiveMaxValueObservable(),
                         getLiveClampedQuantityObservable(),
@@ -915,7 +917,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
-                        Log.v("Error", "initFetchesLive " + throwable.getLocalizedMessage());
+                        Log.v("Error.java", "initFetchesLive " + throwable.getLocalizedMessage());
                     }
                 })
                         .subscribeOn(AndroidSchedulers.mainThread())
@@ -935,7 +937,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private void initFetches() {
         onStopSubscriptions.add(
                 Observable.combineLatest(
-                        Live1BResponseDTO.getLiveQuoteObservable()
+                        Live1BResponseDTO.getLiveFXQuoteObservable()
                                 .distinctUntilChanged(),
                         getSecurityObservable(),
                         getPortfolioCompactObservable(),
@@ -1041,6 +1043,9 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> {
+                    Log.v("error.java","getSecurityObservable " + throwable);
+                })
                 .doOnNext(new Action1<SecurityCompactDTO>() {
                     @Override
                     public void call(@NonNull SecurityCompactDTO securityCompactDTO) {
@@ -1217,6 +1222,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                         return null;
                     }
                 })
+                .doOnError(throwable -> Log.v("Error.java","getLiveCloseablePositionObservable " + throwable))
                 .observeOn(AndroidSchedulers.mainThread())
                 .share();
 
@@ -1265,13 +1271,14 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
                         return Observable.combineLatest(
                                 getLivePortfolioCompactObservable(),
-                                getQuoteObservable(),
+                                Live1BResponseDTO.getLiveQuoteObservable(),
                                 new Func2<PortfolioCompactDTO, LiveQuoteDTO, Integer>() {
                                     @Override // buying don't need closeablePosition
                                     public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull LiveQuoteDTO quoteDTO) {
                                         if(usedDTO.securityCompactDTO.lotSize==null) {
+                                        //    usedDTO.portfolioCompactDTO = portfolioCompactDTO;
                                         //    return (int) (portfolioCompactDTO.cashBalance / quoteDTO.getAskPrice());
-                                            double sharePriceInUserCurrency = quoteDTO.getAskPrice() * getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
+                                            double sharePriceInUserCurrency = quoteDTO.getAskPrice() / getFXRate(portfolioCompactDTO.currencyISO, quoteDTO.getCurrencyISO());
                                             Double maxShareAmount = (usedDTO.portfolioCompactDTO.cashBalance / sharePriceInUserCurrency) / ( 1/currentLeverage );
                                             return maxShareAmount.intValue();
                                         }
@@ -1372,6 +1379,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                     }
                 }
         )
+                .doOnError(throwable -> Log.v("Error.java","getLiveClampedQuantityObservable " + throwable))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Integer>() {
                     @Override
@@ -1939,6 +1947,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     }
 
     // used in LIVE mode
+
     private void updateValuesOnLeverageChange()
     {
         if(currentLeverage==null)
@@ -1962,6 +1971,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         marginLeverageText.setText(getCurrentMarginLeverageText());
 
         buySellMarginRate.setText(((int)(100/currentLeverage)) + "%");
+        int maxValue = (int)((accountBalanceResponseDTO.CashBalance * currentLeverage)/(usedDTO.quoteDTO.getAskPrice()/fxRate));
+        // need to update the mSeekBar maxvalue
+        mSeekBar.setMax(maxValue);
+        if(Integer.parseInt(mMiddleNumber.getText().toString())>maxValue)
+            quantitySubject.onNext(maxValue);
     }
 
     private void handleLeverageBucketClicked(Double leverage, int imageClicked, View view)

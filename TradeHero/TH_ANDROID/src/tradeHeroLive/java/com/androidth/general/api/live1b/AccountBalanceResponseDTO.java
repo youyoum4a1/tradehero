@@ -2,6 +2,7 @@ package com.androidth.general.api.live1b;
 import com.androidth.general.common.persistence.DTO;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import io.realm.RealmObject;
 
@@ -35,5 +36,24 @@ public class AccountBalanceResponseDTO extends RealmObject implements DTO
         this.CashBalance = bundle.getDouble(BUNDLE_KEY_CASH_BALANCE);
         this.MarginAvailable = bundle.getDouble(BUNDLE_KEY_MARGIN_AVAILABLE);
         this.Currency = bundle.getString(BUNDLE_KEY_CURRENCY);
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+
+        AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) o;
+
+        if (!this.AccountId.equals(accountBalanceResponseDTO.AccountId))
+            return false;
+
+        if (accountBalanceResponseDTO.Currency.equals(this.Currency) &&
+                accountBalanceResponseDTO.MarginAvailable.equals(this.MarginAvailable) &&
+                accountBalanceResponseDTO.CashBalance.equals(this.CashBalance)
+                ) {
+            Log.v(".java", "RETURNS TRUE accountBalanceResponseDTO equals: this=" + this + " o=" + o);
+            return true;
+        }
+        return false;
     }
 }

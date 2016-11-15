@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import com.androidth.general.api.quote.RawQuoteParser;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
+import com.androidth.general.utils.LiveConstants;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,10 +54,15 @@ import rx.Observable;
 //                .onErrorResumeNext(
 //                        quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol()))
 //                .flatMap(rawQuoteParser);
-        return quoteServiceRx.getRawQuote(securityId)
+
+        if(!LiveConstants.isInLiveMode)
+            return quoteServiceRx.getRawQuote(securityId)
                 .onErrorResumeNext(
                         quoteServiceRx.getRawQuote(0))
                 .flatMap(rawQuoteParser);
+        else
+            return Live1BResponseDTO.getLiveQuoteObservable();
+
     }
 
 //    @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
