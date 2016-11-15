@@ -839,17 +839,16 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private void initFetchesLive() {
         onStopSubscriptions.add(
                 Observable.combineLatest(
-                        Live1BResponseDTO.getLiveFXQuoteObservable()
-                                .distinctUntilChanged(),
-                        getSecurityObservable(),
+                        Live1BResponseDTO.getLiveFXQuoteObservable(),
+//                        getSecurityObservable(),
                         getLivePortfolioCompactObservable(),
-                        Live1BResponseDTO.getLiveQuoteObservable(),
+                        Live1BResponseDTO.getLiveQuoteObservable().cache(),
                         getLiveCloseablePositionObservable(),
                         getLiveMaxValueObservable(),
                         getLiveClampedQuantityObservable(),
-                        new Func7<
+                        new Func6<
                                 LiveQuoteDTO,
-                                SecurityCompactDTO,
+//                                SecurityCompactDTO,
                                 PortfolioCompactDTO,
                                 LiveQuoteDTO,
                                 LivePositionDTO,
@@ -860,7 +859,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                             @Override
                             public Boolean call(
                                     @Nullable LiveQuoteDTO fxQuoteDTO,
-                                    @NonNull SecurityCompactDTO securityCompactDTO,
+//                                    @NonNull SecurityCompactDTO securityCompactDTO,
                                     @NonNull final PortfolioCompactDTO portfolioCompactDTO,
                                     @NonNull LiveQuoteDTO quoteDTO,
                                     @Nullable LivePositionDTO livePositionDTO, // guess this is close position??
