@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.kyc;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -93,7 +94,7 @@ public class LiveSignUpMainFragment extends BaseFragment
 
     private static int getProviderId(@NonNull Bundle args)
     {
-        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 1);
+        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
     }
 
     private static int getStepToGo(@NonNull Bundle args)
@@ -108,26 +109,34 @@ public class LiveSignUpMainFragment extends BaseFragment
         inflater.inflate(R.menu.settings_menu, menu);
 
         Integer providerId = getProviderId(getArguments());
-        providerCacheRx.get(new ProviderId(providerId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
-            @Override
-            public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
-                ProviderDTO providerDTO = providerIdProviderDTOPair.second;
-                if(providerDTO.isUserEnrolled)
-                    notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
 
-                else notificationLogoUrl = providerDTO.navigationLogoUrl;
+        if(providerId.equals(0)){
+            setActionBarColor(getResources().getColor(R.color.general_red_live));
+            setActionBarTitle("Create Live Account");
 
-                isEnrolled = providerDTO.isUserEnrolled;
-                hexColor = providerDTO.hexColor;
+        }else{
+            onStopSubscriptions.add(
+                    providerCacheRx.get(new ProviderId(providerId))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+                                @Override
+                                public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
+                                    ProviderDTO providerDTO = providerIdProviderDTOPair.second;
+                                    if(providerDTO.isUserEnrolled)
+                                        notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
 
-                setActionBarTitle("");
-                setActionBarColor(providerDTO.hexColor);
-                setActionBarImage(notificationLogoUrl);
-            }
-        }, new TimberOnErrorAction1("Live Signup provider error"));
+                                    else notificationLogoUrl = providerDTO.navigationLogoUrl;
+
+                                    isEnrolled = providerDTO.isUserEnrolled;
+                                    hexColor = providerDTO.hexColor;
+
+                                    setActionBarTitle("");
+                                    setActionBarColor(providerDTO.hexColor);
+                                    setActionBarImage(notificationLogoUrl);
+                                }
+                            }, new TimberOnErrorAction1("Live Signup provider error")));
+        }
     }
 
     private void setActionBarImage(String url){

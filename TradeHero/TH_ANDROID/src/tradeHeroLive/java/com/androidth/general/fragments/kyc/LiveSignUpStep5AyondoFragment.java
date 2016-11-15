@@ -205,29 +205,36 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
-        providerId = providerDTO.id;
+        if(providerDTO!=null){
+            providerId = providerDTO.id;
+        }else{
+            providerId = 0;
+        }
 
         List<Subscription> subscriptions = new ArrayList<>();
         final Observable<ScannedDocument> documentObservable =
                 fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
 
-        if(providerDTO.getTermsConditionsUrl()==null)
-        {
-            termsConditions.setVisibility(View.GONE);
-            termsConditionsCheckBox.setVisibility(View.GONE);
-            termsConditionsCheckBox.setChecked(true);
+        if(providerDTO!=null){
+            if(providerDTO.getTermsConditionsUrl()==null)
+            {
+                termsConditions.setVisibility(View.GONE);
+                termsConditionsCheckBox.setVisibility(View.GONE);
+                termsConditionsCheckBox.setChecked(true);
+            }
+            if(providerDTO.getDataSharingUrl()==null)
+            {
+                dataSharing.setVisibility(View.GONE);
+                dataSharingCheckBox.setVisibility(View.GONE);
+                dataSharingCheckBox.setChecked(true);
+            }
+            if(providerDTO.getRiskDisclosureUrl()==null){
+                riskWarning.setVisibility(View.GONE);
+                riskWarningCheckBox.setVisibility(View.GONE);
+                riskWarningCheckBox.setChecked(true);
+            }
         }
-        if(providerDTO.getDataSharingUrl()==null)
-        {
-            dataSharing.setVisibility(View.GONE);
-            dataSharingCheckBox.setVisibility(View.GONE);
-            dataSharingCheckBox.setChecked(true);
-        }
-        if(providerDTO.getRiskDisclosureUrl()==null){
-            riskWarning.setVisibility(View.GONE);
-            riskWarningCheckBox.setVisibility(View.GONE);
-            riskWarningCheckBox.setChecked(true);
-        }
+
         subscriptions.add(
                 Observable.zip(
                         kycAyondoFormOptionsDTOObservable
@@ -246,12 +253,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                                         LollipopArrayAdapter<ResidenceDocumentDTO> residenceDocumentTypeAdapter = new LollipopArrayAdapter<>(
                                                 getActivity(),
-                                                ResidenceDocumentDTO.createList(getResources(), kycAyondoFormOptionsDTO.residenceDocumentTypes));
+                                                ResidenceDocumentDTO.createList(getResources(), kycAyondoFormOptionsDTO.getResidenceDocumentTypes()));
                                         residenceDocumentTypeSpinner.setAdapter(residenceDocumentTypeAdapter);
 
                                         LollipopArrayAdapter<CurrencyDTO> currencyAdapter = new LollipopArrayAdapter<>(
                                                 getActivity(),
-                                                CurrencyDTO.createList(getResources(), kycAyondoFormOptionsDTO.currencies));
+                                                CurrencyDTO.createList(getResources(), kycAyondoFormOptionsDTO.getCurrencies()));
                                         currencySpinner.setAdapter(currencyAdapter);
                                     }
                                 }),
@@ -266,7 +273,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 update.pickFrom(populateIdentityDocumentType((KYCAyondoForm) situationDTO.kycForm,
                                         kycAyondoFormOptionsDTO.getIdentityDocumentTypes()));
                                 update.pickFrom(populateResidenceDocumentType((KYCAyondoForm) situationDTO.kycForm,
-                                        kycAyondoFormOptionsDTO.residenceDocumentTypes));
+                                        kycAyondoFormOptionsDTO.getResidenceDocumentTypes()));
 //                                update.pickFrom(populateCurrency((KYCAyondoForm) situationDTO.kycForm.,
 //                                        kycAyondoFormOptionsDTO.currencies));
 
@@ -637,14 +644,30 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public Observable<String> call(KYCAyondoFormOptionsDTO optionsDTO)
                     {
-                        return Observable.merge(
-                                ViewObservable.clicks(termsConditions)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getTermsConditionsUrl())),
-                                ViewObservable.clicks(riskWarning)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getRiskDisclosureUrl())),
-                                ViewObservable.clicks(dataSharing)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getDataSharingUrl()))
-                        );
+                        if(providerDTO!=null){
+                            return Observable.merge(
+                                    ViewObservable.clicks(termsConditions)
+                                            .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getTermsConditionsUrl())),
+                                    ViewObservable.clicks(riskWarning)
+                                            .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getRiskDisclosureUrl())),
+                                    ViewObservable.clicks(dataSharing)
+                                            .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getDataSharingUrl()))
+                            );
+                        }else{
+                            if(optionsDTO!=null){
+                                return Observable.merge(
+                                        ViewObservable.clicks(termsConditions)
+                                                .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.getTermsConditionsUrl())),
+                                        ViewObservable.clicks(riskWarning)
+                                                .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.getRiskWarningDisclaimerUrl())),
+                                        ViewObservable.clicks(dataSharing)
+                                                .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.getDataSharingAgreementUrl()))
+                                );
+                            }else{
+                                return Observable.just("");
+                            }
+                        }
+
                     }
                 })
                 .subscribe(
@@ -652,7 +675,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(String url)
                             {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                                if(url!=null && !url.isEmpty()){
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                                }
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
@@ -705,7 +730,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public Observable<BrokerApplicationDTO> call(KYCAyondoForm kycAyondoForm)
                     {
-                        return liveServiceWrapper.submitApplication(kycAyondoForm, providerDTO.id);
+                        if(providerDTO!=null){
+                            return liveServiceWrapper.submitApplication(kycAyondoForm, providerDTO.id);
+                        }else{
+                            return liveServiceWrapper.submitApplication(kycAyondoForm, 0);
+                        }
+
                     }
                 })
                 .finallyDo(new Action0()
@@ -723,9 +753,13 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //                        THToast.show("success");
                         progressDialog.dismiss();
 
+                        String logoUrl = "";
+                        if(providerDTO!=null){
+                            logoUrl = providerDTO.logoUrl;
+                        }
                         LiveFormConfirmationFragment
                                 .show(REQUEST_LIVE_CONFIRMATION_CODE, LiveSignUpStep5AyondoFragment.this,
-                                        isIdSubmitted, isPRSubmitted, providerId, providerDTO.logoUrl);
+                                        isIdSubmitted, isPRSubmitted, providerId, logoUrl);
 
                         KYCAyondoForm form = new KYCAyondoForm();
                         if(isPRSubmitted && isIdSubmitted){

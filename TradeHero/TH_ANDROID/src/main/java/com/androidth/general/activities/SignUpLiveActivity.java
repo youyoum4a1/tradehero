@@ -45,6 +45,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
     public static final String KYC_CORRESPONDENT_PROVIDER_ID = "KYC.providerId";
     public static final String KYC_CORRESPONDENT_STEP_TO_GO = "KYC.stepToGo";
     public static final String KYC_CORRESPONDENT_JOIN_COMPETITION = "KYC.joinCompetition";
+
     protected String currentCountry;
 
     private final int PERMISSIONS_REQUEST_LOCATION = 10000;
@@ -71,7 +72,6 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        thRouter.inject(this);
     }
 
     @Override
@@ -87,7 +87,11 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
 
     @NonNull @Override protected Bundle getInitialBundle() {
         Bundle args = super.getInitialBundle();
-        thRouter.inject(this);
+        try{
+            thRouter.inject(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         int providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
 

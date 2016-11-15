@@ -90,7 +90,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 LollipopArrayAdapter<TradingPerQuarterDTO> tradingPerQuarterAdapter =
                                         new LollipopArrayAdapter<>(getActivity(),
                                                 TradingPerQuarterDTO.createList(getResources(),
-                                                        kycAyondoFormOptionsDTO.tradingPerQuarterOptions));
+                                                        kycAyondoFormOptionsDTO.getTradingPerQuarterOptions()));
                                 tradingPerQuarterSpinner.setAdapter(tradingPerQuarterAdapter);
                             }
                         }),
@@ -101,7 +101,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         //noinspection ConstantConditions
                         populateTradingPerQuarter((KYCAyondoForm) situationDTO.kycForm,
-                                kycFormOptionsDTO.tradingPerQuarterOptions);
+                                kycFormOptionsDTO.getTradingPerQuarterOptions());
                         populate(((KYCAyondoForm) situationDTO.kycForm));
                         return null;
                     }

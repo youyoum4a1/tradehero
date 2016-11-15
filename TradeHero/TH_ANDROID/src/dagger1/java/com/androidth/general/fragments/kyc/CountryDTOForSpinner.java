@@ -27,7 +27,7 @@ class CountryDTOForSpinner
     }
     public CountryDTOForSpinner(@NonNull Context context, @NonNull KYCAyondoFormOptionsDTO options, Country country){
 
-        genders = Collections.unmodifiableList(options.genders);
+        genders = Collections.unmodifiableList(options.getGenders());
         Comparator<CountrySpinnerAdapter.DTO> dtoComparator;
 
         if(country != null) {
@@ -38,23 +38,23 @@ class CountryDTOForSpinner
         }
 
         List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(
-                options.allowedMobilePhoneCountries, null);
+                options.getAllowedMobilePhoneCountries(), null);
         Collections.sort(allowedMobilePhoneCountryDTOs, dtoComparator);
 
         this.allowedMobilePhoneCountryDTOs = allowedMobilePhoneCountryDTOs;
 
         List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs = CountrySpinnerAdapter.createDTOs(
-                options.allowedResidencyCountries, null);
+                options.getAllowedResidencyCountries(), null);
         Collections.sort(allowedResidencyCountryDTOs, dtoComparator);
         this.allowedResidencyCountryDTOs = Collections.unmodifiableList(allowedResidencyCountryDTOs);
 
         List<CountrySpinnerAdapter.DTO> allowedNationalityCountryDTOs = CountrySpinnerAdapter.createDTOs(
-                options.allowedNationalityCountries, null);
+                options.getAllowedNationalityCountries(), null);
         Collections.sort(allowedNationalityCountryDTOs, dtoComparator);
         this.allowedNationalityCountryDTOs = Collections.unmodifiableList(allowedNationalityCountryDTOs);
 
-        this.residenceStateList = options.residenceState;
-        this.howYouKnowTHList = options.howYouKnowTH;
+        this.residenceStateList = options.getResidenceState();
+        this.howYouKnowTHList = options.getHowYouKnowTH();
     }
 
     @Override public boolean equals(Object o)

@@ -32,7 +32,7 @@
         android:fadingEdge="vertical"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
-        android:headerDividersEnabled="true"
+        android:headerDividersEnabled="false"
         android:listSelector="@color/transparent"
         android:paddingBottom="@dimen/dashboard_tabhost_height"
         android:smoothScrollbar="true"

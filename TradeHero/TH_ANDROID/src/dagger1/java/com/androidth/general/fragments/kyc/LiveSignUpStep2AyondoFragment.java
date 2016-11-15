@@ -113,27 +113,27 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         LollipopArrayAdapter<AnnualIncomeDTO> annualIncomeAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
-                                                        AnnualIncomeDTO.createList(getResources(), kycAyondoFormOptionsDTO.annualIncomeOptions));
+                                                        AnnualIncomeDTO.createList(getResources(), kycAyondoFormOptionsDTO.getAnnualIncomeOptions()));
                                         annualIncomeSpinner.setAdapter(annualIncomeAdapter);
                                         annualIncomeAdapter.notifyDataSetChanged();
 
                                         LollipopArrayAdapter<NetWorthDTO> netWorthAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
-                                                        NetWorthDTO.createList(getResources(), kycAyondoFormOptionsDTO.netWorthOptions));
+                                                        NetWorthDTO.createList(getResources(), kycAyondoFormOptionsDTO.getNetWorthOptions()));
                                         netWorthSpinner.setAdapter(netWorthAdapter);
                                         netWorthAdapter.notifyDataSetChanged();
 
                                         LollipopArrayAdapter<PercentNetWorthDTO> percentageInvestmentAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
                                                         PercentNetWorthDTO.createList(getResources(),
-                                                                kycAyondoFormOptionsDTO.percentNetWorthOptions));
+                                                                kycAyondoFormOptionsDTO.getPercentNetWorthOptions()));
                                         percentageInvestmentSpinner.setAdapter(percentageInvestmentAdapter);
                                         percentageInvestmentAdapter.notifyDataSetChanged();
 
                                         LollipopArrayAdapter<EmploymentStatusDTO> employmentStatusAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
                                                         EmploymentStatusDTO.createList(getResources(),
-                                                                kycAyondoFormOptionsDTO.employmentStatusOptions));
+                                                                kycAyondoFormOptionsDTO.getEmploymentStatusOptions()));
                                         employmentStatusSpinner.setAdapter(employmentStatusAdapter);
                                         employmentStatusAdapter.notifyDataSetChanged();
                                     }
@@ -151,12 +151,12 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 KYCAyondoForm update = new KYCAyondoForm();
                                 //noinspection ConstantConditions
                                 update.pickFrom(
-                                        populateAnnualIncome((KYCAyondoForm) situationDTO.kycForm, kycFormOptionsDTO.annualIncomeOptions));
-                                update.pickFrom(populateNetWorth((KYCAyondoForm) situationDTO.kycForm, kycFormOptionsDTO.netWorthOptions));
+                                        populateAnnualIncome((KYCAyondoForm) situationDTO.kycForm, kycFormOptionsDTO.getAnnualIncomeOptions()));
+                                update.pickFrom(populateNetWorth((KYCAyondoForm) situationDTO.kycForm, kycFormOptionsDTO.getNetWorthOptions()));
                                 update.pickFrom(populatePercentNetWorth((KYCAyondoForm) situationDTO.kycForm,
-                                        kycFormOptionsDTO.percentNetWorthOptions));
+                                        kycFormOptionsDTO.getPercentNetWorthOptions()));
                                 update.pickFrom(populateEmploymentStatus((KYCAyondoForm) situationDTO.kycForm,
-                                        kycFormOptionsDTO.employmentStatusOptions));
+                                        kycFormOptionsDTO.getEmploymentStatusOptions()));
                                 onNext(new LiveBrokerSituationDTO(situationDTO.broker, update));
                                 return null;
                             }

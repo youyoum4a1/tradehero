@@ -66,21 +66,23 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     protected void updateDB(Boolean complete, Integer step){
 
-        RealmQuery query = RealmManager.getQuery(CompetitionSteps.class);
-        RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
+        //new
+//        RealmQuery query = RealmManager.getQuery(CompetitionSteps.class);
+//        RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
+//
+//        if(results.size()==0){
+//            CompetitionSteps competitionSteps = new CompetitionSteps();
+//            competitionSteps.step = step;
+//            competitionSteps.providerId = getProviderId(getArguments());
+//            competitionSteps.complete = complete;
+//
+//            RealmManager.copyToRealm(competitionSteps);
+//
+//        }else{
+//            results.get(0).complete = complete;
+//        }
 
-        if(results.size()==0){
-            CompetitionSteps competitionSteps = new CompetitionSteps();
-            competitionSteps.step = step;
-            competitionSteps.providerId = getProviderId(getArguments());
-            competitionSteps.complete = complete;
-
-            RealmManager.copyToRealm(competitionSteps);
-
-        }else{
-            results.get(0).complete = complete;
-        }
-
+        //old
 //        realm.executeTransaction(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {

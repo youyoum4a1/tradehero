@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.portfolio;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -9,6 +10,8 @@ import android.media.MediaPlayer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.portfolio.LiveAccountPortfolioItemHeader;
 import com.androidth.general.fragments.education.VideoView;
 import com.androidth.general.models.live.THLiveManager;
@@ -105,7 +109,7 @@ public class PortfolioListItemView extends RelativeLayout
             description.setText(THLiveManager.getInstance().getBrokerApplicationDTO().applicationStatus);
 
         }else{
-            setupLiveVideo(context);
+            setupLiveVideo(context, liveAccountPortfolioItemHeader);
         }
     }
 
@@ -221,7 +225,7 @@ public class PortfolioListItemView extends RelativeLayout
     }
     //</editor-fold>
 
-    private void setupLiveVideo(Context context){
+    private void setupLiveVideo(Context context, LiveAccountPortfolioItemHeader liveAccountPortfolioItemHeader){
         liveAccountVideo.setVisibility(VISIBLE);
         String path = "android.resource://"+ context.getPackageName() +"/"+ R.raw.live_account_status_fresh;
         liveAccountVideo.setVideoPath(path);
@@ -230,6 +234,15 @@ public class PortfolioListItemView extends RelativeLayout
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
+            }
+        });
+
+        liveAccountVideo.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Intent intent = new Intent(context, SignUpLiveActivity.class);
+                context.startActivity(intent);
+                return false;
             }
         });
 

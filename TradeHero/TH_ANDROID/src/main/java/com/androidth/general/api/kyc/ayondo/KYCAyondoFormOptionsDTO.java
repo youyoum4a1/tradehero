@@ -162,4 +162,82 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     public void setHowYouKnowTH(@NonNull List<String> howYouKnowTH) {
         this.howYouKnowTH = howYouKnowTH;
     }
+
+    @NonNull
+    public List<Gender> getGenders() {
+        return genders;
+    }
+
+    @NonNull
+    public List<Country> getAllowedMobilePhoneCountries() {
+        return allowedMobilePhoneCountries;
+    }
+
+    @NonNull
+    public List<Country> getAllowedNationalityCountries() {
+        return allowedNationalityCountries;
+    }
+
+    @NonNull
+    public List<Country> getAllowedResidencyCountries() {
+        return allowedResidencyCountries;
+    }
+
+    @NonNull
+    public List<AnnualIncomeRange> getAnnualIncomeOptions() {
+        return annualIncomeOptions;
+    }
+
+    @NonNull
+    public List<NetWorthRange> getNetWorthOptions() {
+        return netWorthOptions;
+    }
+
+    @NonNull
+    public List<PercentNetWorthForInvestmentRange> getPercentNetWorthOptions() {
+        return percentNetWorthOptions;
+    }
+
+    @NonNull
+    public List<EmploymentStatus> getEmploymentStatusOptions() {
+        return employmentStatusOptions;
+    }
+
+    @NonNull
+    public List<TradingPerQuarter> getTradingPerQuarterOptions() {
+        return tradingPerQuarterOptions;
+    }
+
+    public int getMaxAddressRequired() {
+        return maxAddressRequired;
+    }
+
+    @NonNull
+    public List<ResidenceScannedDocumentType> getResidenceDocumentTypes() {
+        return residenceDocumentTypes;
+    }
+
+    @NonNull
+    public String getTermsConditionsUrl() {
+        return termsConditionsUrl;
+    }
+
+    @NonNull
+    public String getRiskWarningDisclaimerUrl() {
+        return riskWarningDisclaimerUrl;
+    }
+
+    @NonNull
+    public String getDataSharingAgreementUrl() {
+        return dataSharingAgreementUrl;
+    }
+
+    public int getMinAge() {
+        return minAge;
+    }
+
+    @NonNull
+    public List<Currency> getCurrencies() {
+        return currencies;
+    }
 }
