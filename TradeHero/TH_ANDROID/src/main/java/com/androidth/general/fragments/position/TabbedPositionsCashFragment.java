@@ -22,6 +22,7 @@ import com.android.common.SlidingTabLayout;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.leaderboard.position.LeaderboardMarkUserId;
 import com.androidth.general.api.live.LiveViewProvider;
+import com.androidth.general.api.live1b.AccountBalanceResponseDTO;
 import com.androidth.general.api.live1b.LivePositionDTO;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -42,6 +43,7 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.Live1BServiceWrapper;
 import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -129,6 +131,7 @@ public class TabbedPositionsCashFragment extends DashboardFragment {
 
     private Subscription portfolioSubscription;
     private Subscription getPositionsSubscription;
+    private Subscription accountBalanceSubscription;
 
     private LivePositionDTO livePositionDTOFromBuySell;
     private String requestIdFromBuySell;
@@ -289,7 +292,8 @@ public class TabbedPositionsCashFragment extends DashboardFragment {
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.general_tab_indicator_color));
         pagerSlidingTabStrip.setDistributeEvenly(true);
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-
+        if(LiveConstants.isInLiveMode)
+            userLoginLoader();
 
     }
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
@@ -430,6 +434,8 @@ public class TabbedPositionsCashFragment extends DashboardFragment {
         if(getPositionsSubscription!=null)
             getPositionsSubscription.unsubscribe();
 
+        if(accountBalanceSubscription!=null)
+            accountBalanceSubscription.unsubscribe();
         portfolioSubscription = getProfileAndHeaderObservable().subscribe();
     }
 
@@ -441,6 +447,9 @@ public class TabbedPositionsCashFragment extends DashboardFragment {
         }
         if(getPositionsSubscription!=null)
             getPositionsSubscription.unsubscribe();
+
+        if(accountBalanceSubscription!=null)
+            accountBalanceSubscription.unsubscribe();
         inflatedView = null;
     }
 
@@ -484,15 +493,32 @@ public class TabbedPositionsCashFragment extends DashboardFragment {
                                 }
                             }
                         })
-                        //    .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
                         .subscribe(new Action1<String>() {
                                        @Override
                                        public void call(String getPositions) {
                                            Log.d("PLF.java", "Success getPositions, result: " + getPositions);
                                        }
                                    }
-
                                 , new TimberOnErrorAction1("Error purchasing stocks in live mode."));
+            }
+
+            if(accountBalanceSubscription==null||accountBalanceSubscription.isUnsubscribed()) {
+                accountBalanceSubscription = Live1BResponseDTO.getAccountBalanceObservable()
+                        .distinctUntilChanged()
+                        .doOnNext(new Action1<AccountBalanceResponseDTO>() {
+                            @Override
+                            public void call(AccountBalanceResponseDTO accountBalanceResponseDTO) {
+                                Log.v("SignalR tabbed.java", "received accountBalanceResponseDTO " + accountBalanceResponseDTO);
+                                if (accountBalanceResponseDTO != null) {
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            portfolioHeaderView.linkWith(accountBalanceResponseDTO);
+                                        }
+                                    });
+                                }
+                            }
+                        }).subscribe();
             }
         }
 

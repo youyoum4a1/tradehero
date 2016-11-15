@@ -314,7 +314,7 @@ public class THApp extends BaseApplication
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
             @Override
             public void run(Object positionsResponseDTO) {
-                Log.v("SignalR.java", "startLiveSignalR THApp " + positionsResponseDTO);
+                Log.v("SignalR THApp.java", "startLiveSignalR THApp positionsResponseDTO " + positionsResponseDTO);
                 Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
                 try {
                     JsonObject jsonObject = gson.toJsonTree(positionsResponseDTO).getAsJsonObject();
@@ -351,7 +351,7 @@ public class THApp extends BaseApplication
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_ACCOUNTS_RESPONSE, new SubscriptionHandler1<AccountBalanceResponseDTO>() {
             @Override
             public void run(AccountBalanceResponseDTO accountBalanceResponseDTO) {
-
+                Log.v("SignalR THApp.java","accountBalanceResponseDTO " + accountBalanceResponseDTO);
                 THLiveManager.getInstance().setAccountBalanceResponseDTO(accountBalanceResponseDTO);
                 Live1BResponseDTO.accountBalanceResponseDTOBehaviorSubject.onNext(accountBalanceResponseDTO);
 

@@ -33,6 +33,7 @@ import rx.functions.Action1;
 public class CurrentUserPortfolioHeaderView extends LinearLayout implements PortfolioHeaderView
 {
     protected PortfolioCompactDTO portfolioCompactDTO;
+    protected AccountBalanceResponseDTO accountBalanceResponseDTO;
 
     @Bind(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
     @Bind(R.id.header_portfolio_total_value_text) protected TextView totalValueText;
@@ -71,6 +72,56 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     {
         return Observable.empty();
     }
+
+    @Override public void linkWith(AccountBalanceResponseDTO accountBalanceDTO)
+    {
+        this.accountBalanceResponseDTO = accountBalanceDTO;
+        displayLiveCashValueTextView();
+        displayLiveTotalValueTextView();
+        if(roiTextView!=null)
+            roiTextView.setText("123");
+        if (lastUpdatedDate != null)
+        {
+            lastUpdatedDate.setText("updated.....tbc");
+        }
+    }
+
+    public void displayLiveCashValueTextView()
+    {
+        if(accountBalanceResponseDTO!=null) {
+            String valueString = String.format("%s %,.0f",
+                    accountBalanceResponseDTO.Currency,
+                    accountBalanceResponseDTO.MarginAvailable);
+            cashValueTextView.setText(valueString);
+        }
+        else
+        {
+            cashValueTextView.setText("0.00");
+        }
+
+        cashValueText.setText("Margin Available");
+        YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
+
+    }
+
+    public void displayLiveTotalValueTextView()
+    {
+        if(accountBalanceResponseDTO!=null) {
+            String valueString = String.format("%s %,.0f",
+                    accountBalanceResponseDTO.Currency,
+                    accountBalanceResponseDTO.CashBalance);
+
+            totalValueTextView.setText(valueString);
+
+        }
+        else
+        {
+            totalValueTextView.setText("0.00");
+        }
+        totalValueText.setText("Cash Balance");
+        YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
+    }
+
 
     @Override public void linkWith(PortfolioCompactDTO portfolioDTO)
     {
@@ -127,24 +178,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                     YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
                 }
             }
-            else
-            {
-                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
-                if(accountBalanceResponseDTO!=null) {
-                    String valueString = String.format("%s %,.0f",
-                            accountBalanceResponseDTO.Currency,
-                            accountBalanceResponseDTO.CashBalance);
 
-                    totalValueTextView.setText(valueString);
-
-                }
-                else
-                {
-                    totalValueTextView.setText("0.00");
-                }
-                totalValueText.setText("Cash Balance");
-                YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
-            }
         }
     }
 
@@ -158,33 +192,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                     YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
                 }
             }
-            else
-            {
 
-//                AccountBalanceResponseDTO accountBalanceResponseDTO = (AccountBalanceResponseDTO) RealmManager.getOne(AccountBalanceResponseDTO.class);
-
-                if(accountBalanceSubscription==null||accountBalanceSubscription.isUnsubscribed())
-                    accountBalanceSubscription = Live1BResponseDTO.getAccountBalanceObservable()
-                        .doOnNext(new Action1<AccountBalanceResponseDTO>() {
-                            @Override
-                            public void call(AccountBalanceResponseDTO accountBalanceResponseDTO) {
-                                if(accountBalanceResponseDTO!=null) {
-                                    String valueString = String.format("%s %,.0f",
-                                            accountBalanceResponseDTO.Currency,
-                                            accountBalanceResponseDTO.MarginAvailable);
-                                    cashValueTextView.setText(valueString);
-                                }
-                                else
-                                {
-                                    cashValueTextView.setText("0.00");
-                                }
-
-                                cashValueText.setText("Margin Available");
-                                YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
-                            }
-                        }).subscribe();
-
-            }
         }
     }
 }
