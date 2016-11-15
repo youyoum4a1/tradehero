@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.ScrollView;
 import butterknife.Bind;
 import com.androidth.general.common.utils.THToast;
@@ -17,9 +18,12 @@ import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.alert.AlertSlotDTO;
 import com.androidth.general.models.alert.SecurityAlertCountingHelper;
 import com.androidth.general.network.service.QuoteServiceWrapper;
+import com.androidth.general.persistence.live.Live1BResponseDTO;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction1;
+import com.androidth.general.utils.LiveConstants;
+
 import rx.Notification;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -150,20 +154,22 @@ abstract public class BaseAlertEditFragmentHolder
 
     protected void fetchQuote(@NonNull final AlertDTO alertDTO)
     {
-        onStopSubscriptions.add(
-                quoteServiceWrapper.getQuoteRx(alertDTO.security.getSecurityId().getSecurityIdNumber())
-                        .retry(2)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                new Action1<LiveQuoteDTO>()
-                                {
-                                    @Override public void call(LiveQuoteDTO quoteDTO)
-                                    {
-                                        alertSecurityProfile.display(new AlertSecurityProfile.DTO(resources, alertDTO, quoteDTO));
-                                        startRefreshAnimation(alertDTO);
-                                    }
-                                },
-                                new TimberOnErrorAction1("Failed to fetch quote")));
+
+            onStopSubscriptions.add(
+                    quoteServiceWrapper.getQuoteRx(alertDTO.security.getSecurityId().getSecurityIdNumber())
+                            .filter(lq -> lq.id != 0)
+                            .retry(2)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    new Action1<LiveQuoteDTO>() {
+                                        @Override
+                                        public void call(LiveQuoteDTO quoteDTO) {
+                                            alertSecurityProfile.display(new AlertSecurityProfile.DTO(resources, alertDTO, quoteDTO));
+                                            startRefreshAnimation(alertDTO);
+                                        }
+                                    },
+                                    new TimberOnErrorAction1("Failed to fetch quote")));
+
     }
 
     @NonNull public Observable<AlertCompactDTO> conditionalSaveAlert()

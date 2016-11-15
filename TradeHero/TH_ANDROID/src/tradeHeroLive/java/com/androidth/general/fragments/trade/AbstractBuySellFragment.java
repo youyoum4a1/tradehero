@@ -253,7 +253,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-        quoteObservable = createQuoteObservable();
+        if(!LiveConstants.isInLiveMode)
+            quoteObservable = createQuoteObservable();
+        else
+            quoteObservable = Live1BResponseDTO.getLiveQuoteObservable();
         securityObservable = createSecurityObservable();
 
         onStopSubscriptions.add(quoteObservable
@@ -457,6 +460,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
+
+
     @Override public void onResume()
     {
         super.onResume();
@@ -576,10 +581,24 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                         @Override
                                         public void run() {
                                           // need to differentiate live quote between FX and the one for the security the user is buying
+
                                             if(liveQuote!=null && liveQuote.n!=null) {
+                                                Log.v("SignalR.java","liveQuote.id = " + liveQuote.id + " , securityDTO.id = " + securityDTO.id);
                                                 if (liveQuote.id==securityDTO.id) // This is a security LiveQuoteDTO
                                                 {
+                                                    Log.v("SignalR.java","Security LiveQuote: " + liveQuote);
                                                     displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
+                                                    try {
+//                                                        if(Live1BResponseDTO.liveQuoteDTOBehaviorSubject==null)
+//                                                            Live1BResponseDTO.liveQuoteDTOBehaviorSubject.create();
+                                                        
+                                                        Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
+                                                    }
+                                                    catch(NullPointerException ex)
+                                                    {
+                                                        ex.printStackTrace();
+
+                                                    }
                                                     if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
                                                         quoteSubscription.unsubscribe();
                                                 }
@@ -600,12 +619,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                                                             RealmManager.replaceOldValueWith(liveQuote);
                                                             try {
-                                                                Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
+                                                                if(Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject==null)
+                                                                    Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject.create();
+                                                                Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject.onNext(liveQuote);
                                                             }
                                                             catch(NullPointerException ex)
                                                             {
                                                                 ex.printStackTrace();
-                                                                Live1BResponseDTO.liveQuoteDTOBehaviorSubject.create();
+
                                                             }
                                                         }
                                                     }
