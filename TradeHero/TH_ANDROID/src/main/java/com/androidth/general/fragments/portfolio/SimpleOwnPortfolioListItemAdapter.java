@@ -34,10 +34,10 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 {
     private static final int VIEW_TYPE_FIRST_POSITION = 0;
     private static final int VIEW_TYPE_REGULAR_POSITION = 1;
-    private static final int VIEW_TYPE_LOADING = 2;
-    private static final int VIEW_TYPE_SPACING_PORTFOLIO = 3;
-    private static final int VIEW_TYPE_SPACING_WATCHLISTS = 4;
-    private static final int VIEW_TYPE_SPACING_COMPETITIONS = 5;
+//    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_SPACING_PORTFOLIO = 2;
+    private static final int VIEW_TYPE_SPACING_WATCHLISTS = 3;
+    private static final int VIEW_TYPE_SPACING_COMPETITIONS = 4;
 
 
     private static final int VIEW_TYPE_LIVE_ACCOUNT = 200;
@@ -180,12 +180,12 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 //        }
         Object item = getItem(position);
         if(item==null){
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_FIRST_POSITION;
         }
 
         if (item.equals(DTO_LOADING))
         {
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_FIRST_POSITION;
         }
         if (item.equals(DTO_SPACING_PORTFOLIOS))
         {
@@ -208,7 +208,11 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 
     @Override public long getItemId(int position)
     {
-        return getItem(position).hashCode();
+        if(getItem(position)!=null){
+            return getItem(position).hashCode();
+        }else{
+            return 1;
+        }
     }
 
     @Override public Object getItem(int position)
@@ -235,32 +239,39 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                     }
 
                 }else if(liveItem instanceof LiveAccountPortfolioItemHeader){
+
+                    if(convertView!=null && convertView instanceof LinearLayout){
+                        ((LinearLayout) convertView).removeAllViews();
+//                        convertView = inflate(position, parent);
+                    }
                     convertView = conditionalInflate(position, convertView, parent);
 
-                    if(convertView instanceof LinearLayout){
-                        ((LinearLayout) convertView).removeAllViews();
-                        convertView = inflate(position, parent);
-                    }
                     try{
                         ((PortfolioListItemView) convertView).display(getContext(), (LiveAccountPortfolioItemHeader) liveItem);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
+
+                }else{
+                    convertView = new View(parent.getContext());
                 }
                 break;
 
             case VIEW_TYPE_REGULAR_POSITION:
                 Object item = getItem(position);
                 convertView = conditionalInflate(position, convertView, parent);
-                ((PortfolioListItemView) convertView).display((DisplayablePortfolioDTO) item);
+                if(item!=null){
+                    ((PortfolioListItemView) convertView).display((DisplayablePortfolioDTO) item);
+                }
+
                 break;
 
-            case VIEW_TYPE_LOADING:
-                if (convertView == null)
-                {
-                    convertView = getInflater().inflate(loadingLayoutRes, parent, false);
-                }
-                break;
+//            case VIEW_TYPE_LOADING:
+//                if (convertView == null)
+//                {
+//                    convertView = getInflater().inflate(loadingLayoutRes, parent, false);
+//                }
+//                break;
 
             case VIEW_TYPE_SPACING_PORTFOLIO:
                 if (convertView == null)
@@ -300,10 +311,13 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     @Override public boolean isEnabled(int position)
     {
         int viewType = getItemViewType(position);
-        return viewType != VIEW_TYPE_LOADING
-                && (viewType != VIEW_TYPE_SPACING_PORTFOLIO
+//        return viewType != VIEW_TYPE_LOADING
+//                && (viewType != VIEW_TYPE_SPACING_PORTFOLIO
+//                || viewType != VIEW_TYPE_SPACING_COMPETITIONS
+//                || viewType != VIEW_TYPE_SPACING_WATCHLISTS);
+        return viewType != VIEW_TYPE_SPACING_PORTFOLIO
                 || viewType != VIEW_TYPE_SPACING_COMPETITIONS
-                || viewType != VIEW_TYPE_SPACING_WATCHLISTS);
+                || viewType != VIEW_TYPE_SPACING_WATCHLISTS;
     }
 
     @Nullable protected Boolean containsMainFx(@NonNull Collection<DisplayablePortfolioDTO> items)

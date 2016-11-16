@@ -52,6 +52,7 @@ import com.androidth.general.fragments.social.follower.FollowersFragment;
 import com.androidth.general.fragments.social.hero.HeroesFragment;
 import com.androidth.general.fragments.watchlist.MainWatchlistPositionFragment;
 import com.androidth.general.models.discussion.UserDiscussionAction;
+import com.androidth.general.models.live.THLiveManager;
 import com.androidth.general.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.level.LevelDefListCacheRx;
@@ -425,7 +426,8 @@ abstract public class TimelineFragment extends DashboardFragment {
                         swipeRefreshContainer.setRefreshing(false);
                         cancelRefreshingOnResume = true;
 
-                        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+                        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE
+                                && THLiveManager.getInstance().getUserLiveAccount()==null){
 
                             displayablePortfolioDTOs.add(0, new LiveAccountPortfolioItemHeader());
                         }
