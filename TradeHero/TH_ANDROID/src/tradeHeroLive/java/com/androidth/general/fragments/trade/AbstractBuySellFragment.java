@@ -591,7 +591,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                     try {
 //                                                        if(Live1BResponseDTO.liveQuoteDTOBehaviorSubject==null)
 //                                                            Live1BResponseDTO.liveQuoteDTOBehaviorSubject.create();
-                                                        
+
                                                         Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
                                                     }
                                                     catch(NullPointerException ex)
@@ -619,9 +619,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                                                             RealmManager.replaceOldValueWith(liveQuote);
                                                             try {
-                                                                if(Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject==null)
-                                                                    Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject.create();
-                                                                Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject.onNext(liveQuote);
+//                                                                if(Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject==null)
+//                                                                    Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject.create();
+                                                                Live1BResponseDTO.getLiveFXQuoteDTOBehaviorSubject().onNext(liveQuote);
                                                             }
                                                             catch(NullPointerException ex)
                                                             {
