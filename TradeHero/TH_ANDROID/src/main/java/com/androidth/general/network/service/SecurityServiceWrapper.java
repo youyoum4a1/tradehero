@@ -1,6 +1,7 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.competition.key.ProviderSecurityListType;
@@ -28,6 +29,7 @@ import com.androidth.general.api.security.key.TrendingPriceSecurityListType;
 import com.androidth.general.api.security.key.TrendingSecurityListType;
 import com.androidth.general.api.security.key.TrendingVolumeSecurityListType;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.common.billing.googleplay.Security;
 import com.androidth.general.models.security.DTOProcessorMultiSecurities;
 import com.androidth.general.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
@@ -163,6 +165,14 @@ import rx.functions.Func1;
         return received;
     }
     //</editor-fold> V2
+
+    @NonNull public Observable<SecurityCompactDTO> getQuote(@NonNull SecurityId securityId)
+    {
+        Log.v("live1b","getQuote: securityId == " + securityId);
+        return securityServiceRx.getQuote(securityId.getSecurityIdNumber())
+                .map(securityResponse -> securityResponse.security);
+    }
+
 
     //<editor-fold desc="Get Securities V2">
     @NonNull public Observable<SecurityCompositeDTO> getSecuritiesV2Rx(@NonNull BasicProviderSecurityV2ListType key)

@@ -108,7 +108,8 @@ public class Live1BWebLoginDialogFragment extends BaseDialogFragment
             if(bundle.containsKey(LiveViewProvider.BUNDLE_KEY_REDIRECT_URL_ID)){
                 url = bundle.getString(LiveViewProvider.BUNDLE_KEY_REDIRECT_URL_ID);
             }else{
-                Toast.makeText(getActivity(),"No redirect url", Toast.LENGTH_LONG);
+             //   Toast.makeText(getActivity(),"No redirect url", Toast.LENGTH_LONG);
+                Log.d("LWeb.java", "No redirect url URL : " + url);
                 return;
             }
         }
@@ -118,7 +119,7 @@ public class Live1BWebLoginDialogFragment extends BaseDialogFragment
 
             public void onPageFinished (WebView view, String url) {
                 super.onPageFinished(view,url);
-                Log.d("LWeb.java", "onPageFinished: ");
+                Log.d("LWeb.java", "onPageFinished: " + url);
                 progressDialog.dismiss();
                 if(!urlHasLoaded || !userHasLogin) {
                     if(getDialog()!=null) {
@@ -132,7 +133,6 @@ public class Live1BWebLoginDialogFragment extends BaseDialogFragment
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Toast.makeText(getActivity(),"shouldOverrideUrlLoading url received: " + url, Toast.LENGTH_LONG);
 
                 Log.d("LWeb.java", "current URL : " + url);
 
@@ -147,7 +147,7 @@ public class Live1BWebLoginDialogFragment extends BaseDialogFragment
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             //    webView.loadUrl("http://localhost/"); // if no internet
-
+                Log.d("LWeb.java","onReceivedError errorCode=" + errorCode + ", description=" + description + ", failingUrl=" + failingUrl);
             }
         });
     }

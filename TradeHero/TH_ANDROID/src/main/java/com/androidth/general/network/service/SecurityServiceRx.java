@@ -7,9 +7,12 @@ import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
+import com.androidth.general.api.security.SecurityResponse;
 import com.androidth.general.api.security.TransactionFormDTO;
 import java.util.List;
 import java.util.Map;
+
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -144,5 +147,11 @@ public interface SecurityServiceRx
     @GET("/FX/batchFxQuote")
     Observable<List<QuoteDTO>> getFXSecuritiesAllPrice();
     //</editor-fold>
+
+
+    @GET("/securities/{securityId}")
+    Observable<SecurityResponse> getQuote(
+            @Path("securityId") long securityId
+    );
 }
 

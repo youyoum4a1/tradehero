@@ -589,15 +589,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                                     Log.v("SignalR.java","Security LiveQuote: " + liveQuote);
                                                     displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
                                                     try {
-//                                                        if(Live1BResponseDTO.liveQuoteDTOBehaviorSubject==null)
-//                                                            Live1BResponseDTO.liveQuoteDTOBehaviorSubject.create();
-
-                                                        Live1BResponseDTO.liveQuoteDTOBehaviorSubject.onNext(liveQuote);
+                                                        Live1BResponseDTO.getLiveQuoteDTOBehaviorSubject().onNext(liveQuote);
                                                     }
                                                     catch(NullPointerException ex)
                                                     {
                                                         ex.printStackTrace();
-
+                                                        Log.v("Error.java", "error onNext liveQuoteDTO " + ex.toString());
                                                     }
                                                     if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
                                                         quoteSubscription.unsubscribe();
@@ -619,14 +616,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                                                             RealmManager.replaceOldValueWith(liveQuote);
                                                             try {
-//                                                                if(Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject==null)
-//                                                                    Live1BResponseDTO.liveFXQuoteDTOBehaviorSubject.create();
                                                                 Live1BResponseDTO.getLiveFXQuoteDTOBehaviorSubject().onNext(liveQuote);
                                                             }
                                                             catch(NullPointerException ex)
                                                             {
                                                                 ex.printStackTrace();
-
+                                                                Log.v("Error.java", "error onNext liveFXQuoteDTO " + ex.toString());
                                                             }
                                                         }
                                                     }
