@@ -2,6 +2,7 @@ package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.androidth.general.api.quote.RawQuoteParser;
 import com.androidth.general.api.security.SecurityId;
@@ -60,8 +61,11 @@ import rx.Observable;
                 .onErrorResumeNext(
                         quoteServiceRx.getRawQuote(0))
                 .flatMap(rawQuoteParser);
-        else
-            return Live1BResponseDTO.getLiveQuoteObservable();
+        else {
+            Log.v("haha.java","in live mode and getQuoteRx is called!!! but no observable");
+            return Observable.empty();
+        }
+        //    return Live1BResponseDTO.getLiveQuoteObservable();
 
     }
 

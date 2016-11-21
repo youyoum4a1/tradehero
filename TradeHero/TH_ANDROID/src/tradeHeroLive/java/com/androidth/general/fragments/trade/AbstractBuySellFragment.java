@@ -47,6 +47,7 @@ import com.androidth.general.fragments.settings.AskForInviteDialogFragment;
 import com.androidth.general.fragments.settings.SendLoveBroadcastSignal;
 import com.androidth.general.fragments.trade.view.PortfolioSelectorView;
 import com.androidth.general.fragments.tutorial.WithTutorial;
+import com.androidth.general.models.live.THPriceManager;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -155,6 +156,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     public Observable<SecurityCompactDTO> securityObservable;
 
     private SignalRManager signalRManager;
+    private THPriceManager liveQuotePriceMgr;
 
     Subscription quoteSubscription;
     String topBarColor;
@@ -253,10 +255,11 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-        if(!LiveConstants.isInLiveMode)
-            quoteObservable = createQuoteObservable();
-        else
-            quoteObservable = Live1BResponseDTO.getLiveQuoteObservable();
+//        if(!LiveConstants.isInLiveMode)
+//            quoteObservable = createQuoteObservable();
+//        else
+//            quoteObservable = Live1BResponseDTO.getLiveQuoteObservable();
+        quoteObservable = createQuoteObservable();
         securityObservable = createSecurityObservable();
 
         onStopSubscriptions.add(quoteObservable
@@ -550,6 +553,33 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     public void signalRBuySellPrices(){
 
+        onStopSubscriptions.add(liveQuotePriceMgr
+                .getLiveQuoteSubjectObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<LiveQuoteDTO>()
+                        {
+                            @Override public void call(@NonNull LiveQuoteDTO quoteDTO)
+                            {
+                                Log.v("haha.java","liveQuotePriceMgr got liveQuoteDTO " + quoteDTO);
+                            }
+                        },
+                        new ToastOnErrorAction1()));
+
+//        onStopSubscriptions.add(
+//                liveQuotePriceMgr
+//                        .getLiveQuoteSubjectObservable()
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .doOnNext(new Action1<LiveQuoteDTO>() {
+//                            @Override
+//                            public void call(@NonNull LiveQuoteDTO quoteDTO) {
+//                                Log.v("haha.java","liveQuotePriceMgr got liveQuoteDTO " + quoteDTO);
+//                            }
+//                        })
+//                        .share()
+//        , new TimberOnErrorAction1("SignalR prices error")));
+
+
         onStopSubscriptions.add(securityObservable
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
@@ -561,8 +591,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                             Integer.toString(securityCompactDTO.getResourceId()));
                 }
                 else{
-                    if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null)
-                    {
+                    if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null) {
+                        Log.v("haha.java","securityCompactDTO!=null, securityCompactDTO = " + securityCompactDTO);
+
+                        /*
                         Log.v("SignalR", "Invoking UpdateQuote");
                         signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
@@ -641,6 +673,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 new String[] { liveCurrency, securityCompactDTO.currencyISO } );
 
                     }
+                    */
+                    }
                 }
 
 //            signalRManager.getConnection().start().done(actionVoid -> {
@@ -686,29 +720,37 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     @NonNull protected Observable<LiveQuoteDTO> createQuoteObservable()
     {
-        return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)
-                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
-                {
-                    @Override public Observable<?> call(Observable<? extends Void> observable)
-                    {
-                        return observable.flatMap(new Func1<Void, Observable<?>>()
-                        {
-                            @Override public Observable<?> call(Void aVoid)
-                            {
-                                quoteRepeatSubject.onNext(aVoid);
-                                return quoteRepeatDelayedObservable;
-                            }
-                        });
-                    }
-                })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.v("", "Buysell 1"+throwable.getLocalizedMessage());
-                    }
-                })
-                .share()
-                .cache(1);
+        if(liveQuotePriceMgr==null||liveQuotePriceMgr.getSecurityIdNumber()!=requisite.securityId.getSecurityIdNumber())
+        {
+            liveQuotePriceMgr = new THPriceManager(requisite.securityId.getSecurityIdNumber(),
+                    10,
+                    quoteServiceWrapper,
+                    signalRManager);
+        }
+        return liveQuotePriceMgr.getLiveQuoteSubjectObservable();
+//        return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)
+//                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+//                {
+//                    @Override public Observable<?> call(Observable<? extends Void> observable)
+//                    {
+//                        return observable.flatMap(new Func1<Void, Observable<?>>()
+//                        {
+//                            @Override public Observable<?> call(Void aVoid)
+//                            {
+//                                quoteRepeatSubject.onNext(aVoid);
+//                                return quoteRepeatDelayedObservable;
+//                            }
+//                        });
+//                    }
+//                })
+//                .doOnError(new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        Log.v("", "Buysell 1"+throwable.getLocalizedMessage());
+//                    }
+//                })
+//                .share()
+//                .cache(1);
     }
 
     @NonNull protected Observable<PortfolioCompactDTOList> getPortfolioCompactListObservable()

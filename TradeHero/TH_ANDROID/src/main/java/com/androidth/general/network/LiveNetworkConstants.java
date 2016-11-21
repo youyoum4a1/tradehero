@@ -5,7 +5,7 @@ public class LiveNetworkConstants
     // TODO https
     public static final String TRADEHERO_LIVE_ENDPOINT = "https://live.tradehero.mobi/";
 
-    public static final String TRADEHERO_LIVE_1B_ENDPOINT = "https://devlive.tradehero.mobi/";
+    public static final String TRADEHERO_LIVE_1B_ENDPOINT =  "https://live.tradehero.mobi/";// "https://devlive.tradehero.mobi/";
 
     //"http://192.168.1.10:62998/";
 //    "http://192.168.8.100:62998/"
