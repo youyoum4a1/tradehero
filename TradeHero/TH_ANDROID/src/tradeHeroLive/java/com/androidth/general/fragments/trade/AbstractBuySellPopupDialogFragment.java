@@ -1351,25 +1351,13 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
     @NonNull
     protected Observable<LiveQuoteDTO> getQuoteObservable() {
-//        return quoteServiceWrapper.getQuoteRx(requisite.securityId.getSecurityIdNumber())
-//                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
-//                    @Override
-//                    public Observable<?> call(Observable<? extends Void> observable) {
-//                        return observable.delay(60, TimeUnit.SECONDS);
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnNext(new Action1<LiveQuoteDTO>() {
-//                    @Override
-//                    public void call(@NonNull LiveQuoteDTO quoteDTO) {
-//                        UpdateBuySellDialogValues(quoteDTO);
-//                    }
-//                })
-//                .share();
+        int pollingIntervalSeconds = 10;
+        if(LiveConstants.isInLiveMode)
+            pollingIntervalSeconds = 0;
         if(liveQuotePriceMgr==null||liveQuotePriceMgr.getSecurityIdNumber()!=requisite.securityId.getSecurityIdNumber())
         {
             liveQuotePriceMgr = new THPriceManager(requisite.securityId.getSecurityIdNumber(),
-                    10, quoteServiceWrapper,
+                    pollingIntervalSeconds, quoteServiceWrapper,
                     new SignalRManager(requestHeaders, currentUserId,
                             LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME));
         }

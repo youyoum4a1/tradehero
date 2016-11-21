@@ -74,6 +74,7 @@ public class THPriceManager {
         else
         {
             startLiveQuoteSignalRListening();
+            InvokeLiveQuoteSignalR();
         }
     }
     private void startLiveQuoteSignalRListening()
@@ -155,5 +156,9 @@ public class THPriceManager {
 
     }
 
-
+    public void InvokeLiveQuoteSignalR()
+    {
+        signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
+                Long.toString(this.securityIdNumber));
+    }
 }

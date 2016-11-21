@@ -586,9 +586,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             .subscribe(securityDTO ->{
                 // everytime a user changes exchange location and UI is resume, we need to reset the FX request to match new location
                 if(signalRManager==null) {
-                    signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
-                    signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
-                            Integer.toString(securityCompactDTO.getResourceId()));
+                //    signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+                //    signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
+                //            Integer.toString(securityCompactDTO.getResourceId()));
                 }
                 else{
                     if(securityCompactDTO!=null && securityCompactDTO.getResourceId()!=null) {
