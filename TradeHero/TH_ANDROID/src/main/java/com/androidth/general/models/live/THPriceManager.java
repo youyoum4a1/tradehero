@@ -57,7 +57,8 @@ public class THPriceManager {
     public THPriceManager(long securityIdNumber,
                           int virtualPricingPollIntervalSecs,
                           QuoteServiceWrapper quoteServiceWrapper,
-                          SignalRManager signalRManager)
+                          SignalRManager signalRManager,
+                          Activity mActivity)
     {
         this.securityIdNumber = securityIdNumber;
         liveQuoteDTOBehaviorSubject = BehaviorSubject.create();
@@ -65,6 +66,7 @@ public class THPriceManager {
         this.quoteServiceWrapper = quoteServiceWrapper;
         this.signalRManager = signalRManager;
         this.isFX = false;
+        this.mActivity = mActivity;
 
         if(this.virtualPricingPollIntervalSecs>0)
         {
@@ -73,18 +75,20 @@ public class THPriceManager {
         }
         else
         {
+            Log.v(".java","THPriceManager invoking non FX");
             startLiveQuoteSignalRListening();
             InvokeLiveQuoteSignalR();
         }
     }
     private void startLiveQuoteSignalRListening()
     {
-        Log.v("haha.java","THPriceManager signalR");
+        Log.v("SignalRListen.java","Start listening THPriceManager signalR");
         if(signalRManager!=null) {
             signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
                 @Override
                 public void run(SignatureContainer2 signatureContainer2) {
+                    Log.v("hmm.java","SIGNALR THPriceManager SignatureContainer = " + signatureContainer2.signedObject);
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -93,7 +97,7 @@ public class THPriceManager {
                                 return;
                             } else {
 
-                                Log.v("THPM.java", "Fra THPriceManager signalR liveQuote= " + liveQuote + ", isFX = " + isFX);
+                                Log.v("SignalRListen.java", "Fra THPriceManager signalR liveQuote= " + liveQuote + ", isFX = " + isFX);
                                 liveQuoteDTOBehaviorSubject.onNext(liveQuote);
                             }
                         }
@@ -118,7 +122,7 @@ public class THPriceManager {
                 .doOnNext(new Action1<LiveQuoteDTO>() {
                     @Override
                     public void call(@NonNull LiveQuoteDTO liveQuoteDTO) {
-                        Log.v("THPM.java","Fra THPriceManager API liveQuoteDTO " + liveQuoteDTO);
+                        Log.v("THPM.java","isfx = " + isFX + ", Fra THPriceManager API liveQuoteDTO " + liveQuoteDTO);
                         liveQuoteDTOBehaviorSubject.onNext(liveQuoteDTO);
                     }
                 }).subscribe();
@@ -158,7 +162,8 @@ public class THPriceManager {
 
     public void InvokeLiveQuoteSignalR()
     {
+        Log.v("SignalR.java","THPriceManager livequote  "+ LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP + ", securityID: " + this.securityIdNumber);
         signalRManager.startConnectionWithUserId(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP,
-                Long.toString(this.securityIdNumber));
+         Long.toString(this.securityIdNumber));
     }
 }

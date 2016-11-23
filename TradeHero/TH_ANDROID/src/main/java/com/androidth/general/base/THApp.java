@@ -309,7 +309,7 @@ public class THApp extends BaseApplication
 //        if(signalRManager!=null){
 //            return;
 //        } // need to relisten??
-        Log.v("SignalR.java", "startLiveSignalR THApp ORDERMANAGEMENTHUB!!!!!");
+        Log.v("SignalR.java", "startLiveSignalR THApp ORDERMANAGEMENTHUB Positions & Accounts!!!!!");
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.ORDER_MANAGEMENT_HUB_NAME);
         signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_OM_POSITION_RESPONSE, new SubscriptionHandler1<Object>() {
             @Override

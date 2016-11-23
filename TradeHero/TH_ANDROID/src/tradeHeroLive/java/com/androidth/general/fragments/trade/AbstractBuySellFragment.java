@@ -720,12 +720,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     @NonNull protected Observable<LiveQuoteDTO> createQuoteObservable()
     {
+        int pollingIntervalSeconds = 10;
+        if(LiveConstants.isInLiveMode)
+            pollingIntervalSeconds = 0;
         if(liveQuotePriceMgr==null||liveQuotePriceMgr.getSecurityIdNumber()!=requisite.securityId.getSecurityIdNumber())
         {
             liveQuotePriceMgr = new THPriceManager(requisite.securityId.getSecurityIdNumber(),
-                    10,
+                    pollingIntervalSeconds,
                     quoteServiceWrapper,
-                    signalRManager);
+                    signalRManager, getActivity());
         }
         return liveQuotePriceMgr.getLiveQuoteSubjectObservable();
 //        return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)

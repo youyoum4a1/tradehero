@@ -344,6 +344,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     private THPriceManager liveQuotePriceMgr;
     private THPriceManager liveFXQuotePriceMgr;
     private Subscription liveQuotesSubscriptions;
+    private SignalRManager signalRManager;
 
     @Nullable
     protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
@@ -396,6 +397,8 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         quantitySubject.onNext(requisite.quantity);
 
 
+        signalRManager =  new SignalRManager(requestHeaders, currentUserId,
+                LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
 
         shareDelegateFragment.onCreate(savedInstanceState);
         if (getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
@@ -1339,11 +1342,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
 
             Log.v("haha1.java","usedDTO.portfolioCompactDTO = " + usedDTO.portfolioCompactDTO
                     + ",\n usedDTO.securityCompactDTO=" + usedDTO.securityCompactDTO  + " getActivity()=" + getActivity());
-
+    //    signalRManager =  new SignalRManager(requestHeaders, currentUserId,
+    //            LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
             liveFXQuotePriceMgr = new THPriceManager(usedDTO.portfolioCompactDTO.currencyISO, usedDTO.securityCompactDTO.currencyISO,
         //        liveFXQuotePriceMgr = new THPriceManager("USD", "SGD",
-                    new SignalRManager(requestHeaders, currentUserId,
-                            LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME), getActivity());
+                    signalRManager, getActivity());
 
         return liveFXQuotePriceMgr.getLiveQuoteSubjectObservable();
 
@@ -1356,10 +1359,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             pollingIntervalSeconds = 0;
         if(liveQuotePriceMgr==null||liveQuotePriceMgr.getSecurityIdNumber()!=requisite.securityId.getSecurityIdNumber())
         {
-            liveQuotePriceMgr = new THPriceManager(requisite.securityId.getSecurityIdNumber(),
-                    pollingIntervalSeconds, quoteServiceWrapper,
-                    new SignalRManager(requestHeaders, currentUserId,
-                            LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME));
+     //       signalRManager =  new SignalRManager(requestHeaders, currentUserId,
+     //               LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+             liveQuotePriceMgr = new THPriceManager(requisite.securityId.getSecurityIdNumber(),
+                    pollingIntervalSeconds, quoteServiceWrapper, signalRManager, getActivity());
+
         }
         return liveQuotePriceMgr.getLiveQuoteSubjectObservable();
     }
