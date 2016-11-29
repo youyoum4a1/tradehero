@@ -2,6 +2,7 @@ package com.androidth.general.utils;
 
 import com.androidth.general.BuildConfig;
 import com.androidth.general.api.misc.DeviceType;
+import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
@@ -26,10 +27,15 @@ public class Constants
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
-    public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
-    public static final String PRIVACY_TERMS_OF_SERVICE = BASE_STATIC_CONTENT_URL + "privacy";
-    public static final String PRIVACY_TERMS_OF_USE = BASE_STATIC_CONTENT_URL + "terms";
-    public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
+
+//    public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
+
+//        public static final String BASE_STATIC_CONTENT_URL = "https://dev.tradehero.mobi/";//DEV
+//    public static final String BASE_STATIC_CONTENT_URL = "http://192.168.1.10:1857/";//VJ local
+
+    public static final String PRIVACY_TERMS_OF_SERVICE = NetworkConstants.TRADEHERO_ENDPOINT + "privacy";
+    public static final String PRIVACY_TERMS_OF_USE = NetworkConstants.TRADEHERO_ENDPOINT + "terms";
+    public static final String APP_HOME = NetworkConstants.TRADEHERO_ENDPOINT + "AppHome";
 
     // Request Header
     public static final String ACCEPT_ENCODING = "Accept-Encoding";
