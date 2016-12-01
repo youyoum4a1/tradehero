@@ -283,8 +283,7 @@ import rx.schedulers.Schedulers;
     //<editor-fold desc="Get User">
     @NonNull public Observable<UserProfileDTO> getUserRx(@NonNull UserBaseKey userKey)
     {
-        return userServiceRx.getUser(userKey.key)
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+        return userServiceRx.getUser(userKey.key);
     }
     //</editor-fold>
 

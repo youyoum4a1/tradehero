@@ -59,8 +59,7 @@ import rx.schedulers.Schedulers;
     {
         return this.providerServiceRx.getProviders()
                 .map(new BaseDTOListProcessor<ProviderDTO, ProviderDTOList>(
-                        new DTOProcessorProviderReceived(currentUserId)))
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        new DTOProcessorProviderReceived(currentUserId)));
     }
     //</editor-fold>
 

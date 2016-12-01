@@ -41,8 +41,7 @@ import rx.schedulers.Schedulers;
     {
         return portfolioServiceRx.getPortfolios(userBaseKey.key, includeWatchList)
                 .map(new BaseDTOListProcessor<PortfolioCompactDTO, PortfolioCompactDTOList>(
-                        new DTOProcessorPortfolioReceived<>(userBaseKey)))
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        new DTOProcessorPortfolioReceived<>(userBaseKey)));
     }
     //</editor-fold>
 

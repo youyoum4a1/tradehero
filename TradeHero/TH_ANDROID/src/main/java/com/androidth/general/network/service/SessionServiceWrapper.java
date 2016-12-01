@@ -70,7 +70,6 @@ import timber.log.Timber;
     @NonNull public Observable<SystemStatusDTO> getSystemStatusRx()
     {
         return sessionServiceRx.getSystemStatus()
-                .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                 .onErrorReturn(new Func1<Throwable, SystemStatusDTO>()
                 {
                     @Override public SystemStatusDTO call(Throwable throwable)

@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers;
     //<editor-fold desc="Get Exchanges with Top Securities">
     @NonNull public Observable<ExchangeCompactDTOList> getExchangesRx(@NonNull ExchangeListType exchangeListType)
     {
-        return marketServiceRx.getExchanges(exchangeListType.topNStocks).subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+        return marketServiceRx.getExchanges(exchangeListType.topNStocks);
     }
     //</editor-fold>
 
