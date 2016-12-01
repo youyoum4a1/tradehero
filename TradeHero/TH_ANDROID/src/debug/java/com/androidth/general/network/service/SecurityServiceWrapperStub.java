@@ -33,9 +33,9 @@ import rx.functions.Func1;
     }
     //</editor-fold>
 
-    @NonNull @Override public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull final SecurityListType key)
+    @NonNull @Override public Observable<SecurityCompactDTOList> getSecuritiesRxMainThread(@NonNull final SecurityListType key)
     {
-        return super.getSecuritiesRx(key)
+        return super.getSecuritiesRxMainThread(key)
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends SecurityCompactDTOList>>()
                 {
                     @Override public Observable<? extends SecurityCompactDTOList> call(Throwable throwable)
@@ -44,7 +44,7 @@ import rx.functions.Func1;
                         if (key instanceof ExchangeSectorSecurityListTypeNew)
                         {
                             ExchangeSectorSecurityListTypeNew exchangeKey = (ExchangeSectorSecurityListTypeNew) key;
-                            return getSecuritiesRx(new ExchangeSectorSecurityListType(
+                            return getSecuritiesRxMainThread(new ExchangeSectorSecurityListType(
                                     exchangeKey.exchangeIds == null || exchangeKey.exchangeIds.isEmpty() ? null : exchangeKey.exchangeIds.get(0),
                                     exchangeKey.sectorIds == null || exchangeKey.sectorIds.isEmpty() ? null : exchangeKey.sectorIds.get(0),
                                     exchangeKey.getPage(),

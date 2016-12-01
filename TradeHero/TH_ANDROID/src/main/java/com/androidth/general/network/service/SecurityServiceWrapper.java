@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -75,7 +76,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Securities">
-    @NonNull public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
+    @NonNull public Observable<SecurityCompactDTOList> getSecuritiesRxMainThread(@NonNull SecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
         if (key instanceof TrendingSecurityListType)
@@ -86,28 +87,32 @@ import rx.functions.Func1;
                 received = this.securityServiceRx.getTrendingSecurities(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage);
+                        trendingKey.perPage)
+                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
             }
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
                 received = this.securityServiceRx.getTrendingSecuritiesByPrice(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage);
+                        trendingKey.perPage)
+                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
             }
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
                 received = this.securityServiceRx.getTrendingSecuritiesByVolume(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage);
+                        trendingKey.perPage)
+                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
             }
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
                 received = this.securityServiceRx.getTrendingSecuritiesAllInExchange(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage);
+                        trendingKey.perPage)
+                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
             }
             else
             {
@@ -119,7 +124,9 @@ import rx.functions.Func1;
             // FIXME when the server offers pagination
             if (key.page != null && key.page == 1)
             {
-                received = this.securityServiceRx.getFXSecurities();
+                received = this.securityServiceRx
+                        .getFXSecurities()
+                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
             }
             else
             {
@@ -132,11 +139,14 @@ import rx.functions.Func1;
             received = this.securityServiceRx.searchSecurities(
                     searchKey.searchString,
                     searchKey.getPage(),
-                    searchKey.perPage);
+                    searchKey.perPage)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
         else if (key instanceof ProviderSecurityListType)
         {
-            received = providerServiceWrapper.getProviderSecuritiesRx((ProviderSecurityListType) key);
+            received = providerServiceWrapper
+                    .getProviderSecuritiesRx((ProviderSecurityListType) key)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
         else if (key instanceof ExchangeSectorSecurityListType)
         {
@@ -145,7 +155,8 @@ import rx.functions.Func1;
                     exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
                     exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
-                    key.perPage);
+                    key.perPage)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
         else if (key instanceof ExchangeSectorSecurityListTypeNew)
         {
@@ -154,7 +165,8 @@ import rx.functions.Func1;
                     exchangeKey.getCommaSeparatedExchangeIds(),
                     exchangeKey.getCommaSeparatedSectorIds(),
                     exchangeKey.getPage(),
-                    exchangeKey.perPage);
+                    exchangeKey.perPage)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
         else
         {
@@ -165,9 +177,12 @@ import rx.functions.Func1;
     //</editor-fold> V2
 
     //<editor-fold desc="Get Securities V2">
-    @NonNull public Observable<SecurityCompositeDTO> getSecuritiesV2Rx(@NonNull BasicProviderSecurityV2ListType key)
+    @NonNull public Observable<SecurityCompositeDTO> getSecuritiesV2RxMainThread(@NonNull BasicProviderSecurityV2ListType key)
     {
-        Observable<SecurityCompositeDTO> received = providerServiceWrapper.getProviderSecuritiesV2Rx(key);
+        Observable<SecurityCompositeDTO> received = providerServiceWrapper
+                .getProviderSecuritiesV2Rx(key)
+                .subscribeOn(Schedulers.io());
+
         return received;
     }
     //</editor-fold>

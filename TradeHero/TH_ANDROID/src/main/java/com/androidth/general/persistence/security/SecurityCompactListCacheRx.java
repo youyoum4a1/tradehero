@@ -45,7 +45,7 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
                 return Observable.empty();
             }
         }
-        return securityServiceWrapper.get().getSecuritiesRx(key);
+        return securityServiceWrapper.get().getSecuritiesRxMainThread(key);
     }
 
     @Override public void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)

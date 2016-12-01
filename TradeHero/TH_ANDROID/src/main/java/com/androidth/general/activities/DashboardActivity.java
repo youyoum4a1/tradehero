@@ -498,8 +498,10 @@ public class DashboardActivity extends BaseActivity
                                 @Override public Observable<? extends Pair<ProviderListKey, ProviderDTOList>> call(Intent intent)
                                 {
                                     return providerListCache.get().get(new ProviderListKey());
+
                                 }
                             })
+
                             .flatMap(new Func1<Pair<ProviderListKey, ProviderDTOList>, Observable<ProviderDTO>>()
                             {
                                 @Override public Observable<ProviderDTO> call(Pair<ProviderListKey, ProviderDTOList> pair)

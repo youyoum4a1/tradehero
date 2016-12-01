@@ -47,13 +47,14 @@ import rx.schedulers.Schedulers;
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
-    @NonNull public Observable<PortfolioDTO> getPortfolioRx(
+    @NonNull public Observable<PortfolioDTO> getPortfolioRxMainThread(
             @NonNull OwnedPortfolioId ownedPortfolioId)
     {
         return this.portfolioServiceRx.getPortfolio(
                         ownedPortfolioId.userId,
                         ownedPortfolioId.portfolioId)
-                .map(new DTOProcessorPortfolioReceived<PortfolioDTO>(ownedPortfolioId.getUserBaseKey()));
+                .map(new DTOProcessorPortfolioReceived<PortfolioDTO>(ownedPortfolioId.getUserBaseKey()))
+                .subscribeOn(Schedulers.io());
     }
     //</editor-fold>
 

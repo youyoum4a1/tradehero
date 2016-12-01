@@ -57,6 +57,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DTOCacheUtilImpl implements DTOCacheUtilRx
@@ -338,7 +339,8 @@ public class DTOCacheUtilImpl implements DTOCacheUtilRx
 
     public void preFetchProviders()
     {
-        this.providerListCache.get().getOne(new ProviderListKey());
+        this.providerListCache.get()
+                .getOne(new ProviderListKey());
     }
 
     public void preFetchAlerts()

@@ -43,7 +43,7 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
 
     @Override @NonNull protected Observable<PortfolioDTO> fetch(@NonNull OwnedPortfolioId key)
     {
-        return portfolioServiceWrapper.get().getPortfolioRx(key);
+        return portfolioServiceWrapper.get().getPortfolioRxMainThread(key);
     }
 
     @Override public void onNext(@NonNull OwnedPortfolioId key, @NonNull PortfolioDTO value)

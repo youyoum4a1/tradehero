@@ -41,7 +41,7 @@ public class SecurityCompositeListCacheRx extends BaseFetchDTOCacheRx<
 
     @NonNull @Override protected Observable<SecurityCompositeDTO> fetch(@NonNull BasicProviderSecurityV2ListType key)
     {
-        return securityServiceWrapper.get().getSecuritiesV2Rx(key);
+        return securityServiceWrapper.get().getSecuritiesV2RxMainThread(key);
     }
 
     @Override public void onNext(@NonNull BasicProviderSecurityV2ListType key, @NonNull SecurityCompositeDTO value)

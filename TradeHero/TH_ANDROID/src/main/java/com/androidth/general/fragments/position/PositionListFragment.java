@@ -933,8 +933,8 @@ public class PositionListFragment
         if (getPositionsDTOKey instanceof OwnedPortfolioId)
         {
             return portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey))
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .map(new Func1<Pair<OwnedPortfolioId, PortfolioDTO>, PortfolioDTO>()
                     {
                         @Override public PortfolioDTO call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
