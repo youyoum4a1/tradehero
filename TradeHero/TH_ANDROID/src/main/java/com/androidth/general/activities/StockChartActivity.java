@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import com.androidth.general.common.annotation.ViewVisibilityValue;
 import com.androidth.general.R;
@@ -97,7 +98,11 @@ public class StockChartActivity extends FragmentActivity
         ChartFragment.putButtonSetVisibility(args, getButtonSetVisibility(getIntent(), View.VISIBLE));
         fragment.setArguments(args);
         fragmentTransaction.add(R.id.stock_chart, fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        Log.v("", "!!!Chart fragment adding");
+//        if(!fragment.isAdded()){
+//            fragmentTransaction.commitAllowingStateLoss();
+//        }
+
     }
 
     @Override public void inject(Object o)

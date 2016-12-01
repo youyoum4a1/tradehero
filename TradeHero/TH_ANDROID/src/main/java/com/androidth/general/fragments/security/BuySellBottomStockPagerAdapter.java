@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -88,6 +89,8 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 ChartFragment.putSecurityId(args, securityId);
                 ChartFragment.putButtonSetVisibility(args, View.VISIBLE);
                 ChartFragment.putChartTimeSpan(args, getDefaultChartTimeSpan());
+
+                Log.v("", "!!!Chart fragment adapter adding");
                 break;
             case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();
