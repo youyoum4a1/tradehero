@@ -53,7 +53,7 @@ public class OwnedPortfolioIdListCacheRx extends BaseFetchDTOCacheRx<PortfolioCo
         }
         if (key instanceof SecurityId)
         {
-            return securityServiceWrapper.get().getApplicablePortfolioIdsRx((SecurityId) key);
+            return securityServiceWrapper.get().getApplicablePortfolioIdsRxMainThread((SecurityId) key);
         }
 
         throw new IllegalArgumentException("Unhandled key " + key);

@@ -102,6 +102,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func4;
 import rx.functions.Func6;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -647,6 +648,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @NonNull
     protected Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsObservable() {
         return ownedPortfolioIdListCache.get(requisite.securityId)
+                .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                 .distinctUntilChanged(
                         new Func1<Pair<PortfolioCompactListKey, OwnedPortfolioIdList>, String>() {
                             @Override

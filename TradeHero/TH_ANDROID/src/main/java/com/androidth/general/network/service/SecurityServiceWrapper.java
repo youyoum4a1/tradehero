@@ -215,12 +215,13 @@ import rx.schedulers.Schedulers;
     }
     //</editor-fold>
 
-    @NonNull public Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsRx(
+    @NonNull public Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsRxMainThread(
             @NonNull SecurityId securityId)
     {
         return securityServiceRx.getApplicablePortfolioIds(
                 securityId.getExchange(),
                 securityId.getSecuritySymbol());
+//                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
 
     @NonNull public Observable<PositionDTOList> getSecurityPositions(@NonNull SecurityId securityId)

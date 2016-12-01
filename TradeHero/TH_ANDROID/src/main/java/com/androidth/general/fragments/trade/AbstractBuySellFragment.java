@@ -566,13 +566,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             return Observable.just(securityCompactDTO);
         }else {
             return securityCompactCache.get(requisite.securityId)
+                    .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .share()
                     .cache(1);
         }
     }
 
-    @NonNull protected Observable<LiveQuoteDTO> createQuoteObservable()
+    @NonNull private Observable<LiveQuoteDTO> createQuoteObservable()
     {
         return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)
                 //stop repeating calls
@@ -654,6 +655,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @NonNull protected Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsObservable()
     {
         return ownedPortfolioIdListCache.get(requisite.securityId)
+                .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                 .distinctUntilChanged(
                         new Func1<Pair<PortfolioCompactListKey, OwnedPortfolioIdList>, String>()
                         {

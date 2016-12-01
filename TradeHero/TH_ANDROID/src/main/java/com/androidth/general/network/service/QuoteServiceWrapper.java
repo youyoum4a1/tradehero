@@ -14,6 +14,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 @Singleton public class QuoteServiceWrapper
 {
@@ -58,7 +59,8 @@ import rx.functions.Func1;
         return quoteServiceRx.getRawQuote(securityId)
                 .onErrorResumeNext(
                         quoteServiceRx.getRawQuote(0))
-                .flatMap(rawQuoteParser);
+                .flatMap(rawQuoteParser)
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
 
 //    @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
