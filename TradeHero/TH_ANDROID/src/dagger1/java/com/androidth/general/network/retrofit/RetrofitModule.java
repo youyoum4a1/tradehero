@@ -99,11 +99,11 @@ public class RetrofitModule
         return objectMapper;
     }
 
-//    @Provides @Singleton
-//    Converter.Factory provideConverter(@ForApp ObjectMapper objectMapper)
-//    {
-//        return JacksonConverterFactory.create(objectMapper);
-//    }
+    @Provides @Singleton
+    JacksonConverterFactory provideConverter(@ForApp ObjectMapper objectMapper)
+    {
+        return JacksonConverterFactory.create(objectMapper);
+    }
 
 //    @Provides @Singleton Endpoint provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
 //    {
