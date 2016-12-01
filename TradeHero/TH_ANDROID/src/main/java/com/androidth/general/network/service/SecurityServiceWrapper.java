@@ -212,7 +212,6 @@ import rx.schedulers.Schedulers;
         return securityServiceRx.getApplicablePortfolioIds(
                 securityId.getExchange(),
                 securityId.getSecuritySymbol());
-//                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
 
     @NonNull public Observable<PositionDTOList> getSecurityPositions(@NonNull SecurityId securityId)

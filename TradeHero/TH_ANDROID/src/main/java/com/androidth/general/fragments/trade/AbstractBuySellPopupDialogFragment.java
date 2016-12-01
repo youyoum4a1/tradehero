@@ -648,7 +648,6 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
     @NonNull
     protected Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsObservable() {
         return ownedPortfolioIdListCache.get(requisite.securityId)
-                .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                 .distinctUntilChanged(
                         new Func1<Pair<PortfolioCompactListKey, OwnedPortfolioIdList>, String>() {
                             @Override

@@ -59,8 +59,7 @@ import rx.schedulers.Schedulers;
         return quoteServiceRx.getRawQuote(securityId)
                 .onErrorResumeNext(
                         quoteServiceRx.getRawQuote(0))
-                .flatMap(rawQuoteParser)
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                .flatMap(rawQuoteParser);
     }
 
 //    @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)

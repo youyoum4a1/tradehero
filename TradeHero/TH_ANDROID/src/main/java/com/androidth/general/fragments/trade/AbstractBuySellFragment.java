@@ -566,7 +566,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             return Observable.just(securityCompactDTO);
         }else {
             return securityCompactCache.get(requisite.securityId)
-                    .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .share()
                     .cache(1);
@@ -655,7 +654,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @NonNull protected Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsObservable()
     {
         return ownedPortfolioIdListCache.get(requisite.securityId)
-                .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                 .distinctUntilChanged(
                         new Func1<Pair<PortfolioCompactListKey, OwnedPortfolioIdList>, String>()
                         {

@@ -52,8 +52,7 @@ import rx.schedulers.Schedulers;
         return this.portfolioServiceRx.getPortfolio(
                         ownedPortfolioId.userId,
                         ownedPortfolioId.portfolioId)
-                .map(new DTOProcessorPortfolioReceived<PortfolioDTO>(ownedPortfolioId.getUserBaseKey()))
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                .map(new DTOProcessorPortfolioReceived<PortfolioDTO>(ownedPortfolioId.getUserBaseKey()));
     }
     //</editor-fold>
 
