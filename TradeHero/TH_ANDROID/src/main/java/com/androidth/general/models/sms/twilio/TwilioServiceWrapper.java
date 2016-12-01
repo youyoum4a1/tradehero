@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.models.sms.SMSId;
 import com.androidth.general.models.sms.SMSRequest;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
@@ -11,7 +12,6 @@ import com.androidth.general.models.sms.SMSServiceWrapper;
 
 import javax.inject.Inject;
 
-import retrofit.RetrofitError;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -71,8 +71,8 @@ public class TwilioServiceWrapper implements SMSServiceWrapper
         {
             @Override public Observable<? extends TwilioSMSSentConfirmationDTO> call(Throwable throwable)
             {
-                return throwable instanceof RetrofitError
-                        ? Observable.<TwilioSMSSentConfirmationDTO>error(new TwilioRetrofitException((RetrofitError) throwable))
+                return throwable instanceof THRetrofitException
+                        ? Observable.<TwilioSMSSentConfirmationDTO>error(new TwilioRetrofitException((THRetrofitException) throwable))
                         : Observable.<TwilioSMSSentConfirmationDTO>error(throwable);
             }
         };

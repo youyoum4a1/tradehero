@@ -40,6 +40,7 @@ import com.androidth.general.GooglePlayMarketUtilBase;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.common.utils.THToast;
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.network.service.ProviderServiceRx;
 import com.androidth.general.persistence.competition.MyProviderReferralCacheRx;
@@ -81,7 +82,6 @@ import java.util.Map;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -446,9 +446,11 @@ public class FriendsInvitationFragment extends BaseFragment
                                 String errorMessage = throwable.getMessage();
 
                                 try{
-                                    if (throwable instanceof RetrofitError) {
-                                        RetrofitError error = (RetrofitError) throwable;
-                                        errorMessage = new String(((TypedByteArray)error.getResponse().getBody()).getBytes()).replace("\"", "");
+                                    if (throwable instanceof THRetrofitException) {
+                                        THRetrofitException error = (THRetrofitException) throwable;
+//                                        errorMessage = new String(((TypedByteArray)error.getResponse().getBody()).getBytes()).replace("\"", "");
+                                        //Retrofit 2 way
+                                        errorMessage = error.getResponse().message();
                                     }
                                 }catch (Exception e){}
 

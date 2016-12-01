@@ -8,12 +8,12 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.utils.Constants;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 
-import retrofit.http.Body;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.POST;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
 import rx.Observable;
 
 import static com.androidth.general.utils.Constants.AUTHORIZATION;
@@ -21,23 +21,23 @@ import static com.androidth.general.utils.Constants.AUTHORIZATION;
 interface SessionServiceRx
 {
     //<editor-fold desc="Get System Status">
-    @GET("/systemStatus")
+    @GET("api/systemStatus")
     Observable<SystemStatusDTO> getSystemStatus();
     //</editor-fold>
 
     //<editor-fold desc="Login and social register">
-    @POST("/login")
+    @POST("api/login")
     @RxLogObservable Observable<UserLoginDTO> login(
             @Header(AUTHORIZATION) String authorization,
             @Body LoginSignUpFormDTO loginFormDTO);
 
-    @POST("/signupAndLogin")
+    @POST("api/signupAndLogin")
     @RxLogObservable Observable<UserLoginDTO> signupAndLogin(
             @Header(AUTHORIZATION) String authorization, @Body LoginSignUpFormDTO loginSignUpFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Update Authorization Tokens">
-    @POST("/updateAuthorizationTokens")
+    @POST("api/updateAuthorizationTokens")
     Observable<BaseResponseDTO> updateAuthorizationTokens(
             @Header(Constants.AUTHORIZATION) String authorization,
             @Body LoginSignUpFormDTO userFormDTO);
@@ -45,13 +45,13 @@ interface SessionServiceRx
 
     //<editor-fold desc="Update Device">
     @FormUrlEncoded
-    @POST("/updateDevice")
+    @POST("api/updateDevice")
     Observable<UserProfileDTO> updateDevice(
             @Field("token") String deviceToken);
     //</editor-fold>
 
     //<editor-fold desc="Logout">
-    @POST("/logout")
+    @POST("api/logout")
     Observable<UserProfileDTO> logout(@Body String emptyBody); //HACK, retrofit POST expects a BODY
     //</editor-fold>
 }

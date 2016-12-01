@@ -214,6 +214,7 @@ public class AuthenticationActivity extends BaseActivity
             @NonNull ProgressDialog progressDialog)
     {
         return sessionServiceWrapper.signUpAndLoginOrUpdateTokensRx(loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(new SocialNetworkSpecificExtensions(loginSignUpFormDTO.authData, progressDialog))
                 .map(new Func1<UserLoginDTO, Pair<AuthData, UserProfileDTO>>()

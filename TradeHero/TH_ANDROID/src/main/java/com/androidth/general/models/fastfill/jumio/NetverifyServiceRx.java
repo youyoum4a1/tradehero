@@ -1,7 +1,7 @@
 package com.androidth.general.models.fastfill.jumio;
 
-import retrofit.http.GET;
-import retrofit.http.Path;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -9,11 +9,11 @@ import rx.Observable;
  */
 public interface NetverifyServiceRx
 {
-    @GET("/scans/{scanReference}")
+    @GET("api/scans/{scanReference}")
     Observable<NetverifyScanStatus> getScanStatus(
             @Path("scanReference") String scanReference);
 
-    @GET("/scans/{scanReference}/images")
+    @GET("api/scans/{scanReference}/images")
     Observable<NetverifyScanImagesDTO> getScanImages(
             @Path("scanReference") String scanReference);
 }

@@ -26,6 +26,7 @@ import com.androidth.general.R;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.BaseDialogFragment;
 import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.models.sms.SMSId;
 import com.androidth.general.models.sms.SMSRequestFactory;
 import com.androidth.general.models.sms.SMSSentConfirmationDTO;
@@ -49,7 +50,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -330,10 +330,14 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                 try{
                                     TwilioRetrofitException twilioErr = (TwilioRetrofitException) throwable;
 
-                                    RetrofitError err = twilioErr.retrofitError;
-                                    Log.v(getTag(), "Twilio retrywhen "+err.getResponse());
-                                    int status = err.getResponse().getStatus();
+//                                    RetrofitError err = twilioErr.retrofitError;
+//                                    Log.v(getTag(), "Twilio retrywhen "+err.getResponse());
+//                                    int status = err.getResponse().getStatus();
 
+                                    //retrofit 2 way
+                                    THRetrofitException err = twilioErr.retrofitError;
+                                    Log.v(getTag(), "Twilio retrywhen "+err.getResponse());
+                                    int status = err.getResponse().code();
 /**
  *https://www.twilio.com/docs/api/rest/request#post
  400 BAD REQUEST: The data given in the POST or PUT failed validation. Inspect the response body for details.

@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.RestAdapter;
+import retrofit2.Retrofit;
 
 @Module(
         injects = {
@@ -15,7 +15,7 @@ import retrofit.RestAdapter;
 public class FlavorRetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton AlertPlanCheckServiceRx provideAlertPlanCheckServiceRx(RestAdapter adapter)
+    @Provides @Singleton AlertPlanCheckServiceRx provideAlertPlanCheckServiceRx(Retrofit adapter)
     {
         return adapter.create(AlertPlanCheckServiceRx.class);
     }

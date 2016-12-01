@@ -25,19 +25,20 @@ import com.androidth.general.api.users.payment.UpdateAlipayAccountDTO;
 import com.androidth.general.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.androidth.general.api.users.payment.UpdatePayPalEmailDTO;
 import com.androidth.general.api.users.payment.UpdatePayPalEmailFormDTO;
-import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Part;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.mime.TypedOutput;
+
+import okhttp3.RequestBody;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.androidth.general.utils.Constants.AUTHORIZATION;
@@ -45,7 +46,8 @@ import static com.androidth.general.utils.Constants.AUTHORIZATION;
 public interface UserServiceRx
 {
     //<editor-fold desc="Sign-Up With Email">
-    @FormUrlEncoded @POST("/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
+    @FormUrlEncoded
+    @POST("api/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
             @Header(AUTHORIZATION) String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -63,7 +65,8 @@ public interface UserServiceRx
             @Field("website") String website);
 
 
-    @Multipart @POST("/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
+    @Multipart
+    @POST("api/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
             @Header(AUTHORIZATION) String authorization,
             @Part("biography") String biography,
             @Part("deviceToken") String deviceToken,
@@ -79,11 +82,11 @@ public interface UserServiceRx
             @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Part("username") String username,
             @Part("website") String website,
-            @Part("profilePicture") TypedOutput profilePicture);
+            @Part("profilePicture") RequestBody profilePicture);
     //</editor-fold>
 
     //<editor-fold desc="Signup">
-    @POST("/users")
+    @POST("api/users")
     Observable<UserProfileDTO> signUp(
             @Header(AUTHORIZATION) String authorization,
             @Body UserFormDTO user);
@@ -123,29 +126,29 @@ public interface UserServiceRx
             @Part("biography") String biography,
             @Part("location") String location,
             @Part("website") String website,
-            @Part("profilePicture") TypedOutput profilePicture);
+            @Part("profilePicture") RequestBody profilePicture);
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
-    @GET("/checkDisplayNameAvailable")
+    @GET("api/checkDisplayNameAvailable")
     Observable<UserAvailabilityDTO> checkDisplayNameAvailable(
             @Query("displayName") String username);
     //</editor-fold>
 
     //<editor-fold desc="Check Email Available">
-    @GET("/checkEmailAvailable")
+    @GET("api/checkEmailAvailable")
     Observable<UserAvailabilityDTO> checkEmailAvailable(
             @Query("email") String email);
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    @POST("/forgotPassword")
+    @POST("api/forgotPassword")
     Observable<ForgotPasswordDTO> forgotPassword(
             @Body ForgotPasswordFormDTO forgotPasswordFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
-    @GET("/users/search")
+    @GET("api/users/search")
     Observable<UserSearchResultDTOList> searchUsers(
             @Query("q") String searchString,
             @Query("page") Integer page,
@@ -153,7 +156,7 @@ public interface UserServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
-    @GET("/users/allowableRecipients")
+    @GET("api/users/allowableRecipients")
     Observable<PaginatedAllowableRecipientDTO> searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") Integer page,
@@ -161,98 +164,98 @@ public interface UserServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get User">
-    @GET("/users/{userId}")
+    @GET("api/users/{userId}")
     Observable<UserProfileDTO> getUser(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
 
-    @GET("/users/{userId}/transactionHistory")
+    @GET("api/users/{userId}/transactionHistory")
     Observable<UserTransactionHistoryDTOList> getUserTransactions(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @POST("/users/{userId}/updatePayPalEmail")
+    @POST("api/users/{userId}/updatePayPalEmail")
     Observable<UpdatePayPalEmailDTO> updatePayPalEmail(
             @Path("userId") int userId,
             @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay Account">
-    @POST("/users/{userId}/updateAlipayAccount")
+    @POST("api/users/{userId}/updateAlipayAccount")
     Observable<UpdateAlipayAccountDTO> updateAlipayAccount(
             @Path("userId") int userId,
             @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
-    @GET("/users/{userId}/getFriends")
+    @GET("api/users/{userId}/getFriends")
     Observable<UserFriendsDTOList> getFriends(
             @Path("userId") int userId);
 
-    @GET("/users/{userId}/getWeiboFriends")
+    @GET("api/users/{userId}/getWeiboFriends")
     Observable<UserFriendsDTOList> getSocialWeiboFriends(@Path("userId") int userId);
 
-    @GET("/users/{userId}/getFacebookFriends")
+    @GET("api/users/{userId}/getFacebookFriends")
     Observable<UserFriendsDTOList> getSocialFacebookFriends(@Path("userId") int userId);
 
-    @GET("/users/{userId}/GetNewFriends")
+    @GET("api/users/{userId}/GetNewFriends")
     Observable<UserFriendsDTOList> getSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork);
 
-    @GET("/users/{userId}/SearchFriends")
+    @GET("api/users/{userId}/SearchFriends")
     Observable<UserFriendsDTOList> searchSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork,
             @Query("q") String query);
     //</editor-fold>
 
-    @POST("/users/batchFollow/free")
+    @POST("api/users/batchFollow/free")
     Observable<UserProfileDTO> followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
 
     //<editor-fold desc="Invite Friends">
-    @POST("/users/{userId}/inviteFriends")
+    @POST("api/users/{userId}/inviteFriends")
     Observable<BaseResponseDTO> inviteFriends(
             @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Add Follow Credit">
-    @POST("/users/{userId}/addCredit")
+    @POST("api/users/{userId}/addCredit")
     Observable<UserProfileDTO> addCredit(
             @Path("userId") int userId,
             @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @POST("/users/{userId}/follow/free")
+    @POST("api/users/{userId}/follow/free")
     Observable<UserProfileDTO> freeFollow(
             @Path("userId") int userId, @Body String emptyBody);
 
     //<editor-fold desc="Unfollow Hero">
-    @POST("/users/{userId}/unfollow")
+    @POST("api/users/{userId}/unfollow")
     Observable<UserProfileDTO> unfollow(
             @Path("userId") int userId, @Body String emptyBody);
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">
-    @GET("/users/{userId}/heroes")
+    @GET("api/users/{userId}/heroes")
     Observable<HeroDTOList> getHeroes(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Suggest Heroes">
-    @GET("/users/heroes/bySectorAndExchange")
+    @GET("api/users/heroes/bySectorAndExchange")
     Observable<LeaderboardUserDTOList> suggestHeroes(
             @Query("exchange") Integer exchangeId,
             @Query("sector") Integer sectorId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
-    @GET("/users/heroes/bySectorsAndExchanges")
+    @GET("api/users/heroes/bySectorsAndExchanges")
     Observable<LeaderboardUserDTOList> suggestHeroes(
             @Query("exchanges") String commaSeparatedExchangeIds,
             @Query("sectors") String commaSeparatedSectorIds,
@@ -261,27 +264,27 @@ public interface UserServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
-    @POST("/users/{userId}/updateCountryCode")
+    @POST("api/users/{userId}/updateCountryCode")
     Observable<UpdateCountryCodeDTO> updateCountryCode(
             @Path("userId") int userId,
             @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
-    @POST("/users/{userId}/updateInviteCode")
+    @POST("api/users/{userId}/updateInviteCode")
     Observable<BaseResponseDTO> updateReferralCode(
             @Path("userId") int userId,
             @Body UpdateReferralCodeDTO updateReferralCodeDTO);
     //</editor-fold>
 
     //<editor-fold desc="Send Analytics">
-    @POST("/analytics")
+    @POST("api/analytics")
     Observable<Response> sendAnalytics(
             @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
     //</editor-fold>
 
     //<editor-fold desc="Create FX Portfolio">
-    @POST("/users/{userId}/portfolios/createFX")
+    @POST("api/users/{userId}/portfolios/createFX")
     Observable<PortfolioDTO> createFXPortfolioRx(
             @Path("userId") int userId, @Body String emptyString);
     //</editor-fold>

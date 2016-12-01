@@ -3,9 +3,13 @@ package com.androidth.general.models.graphics;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import java.io.ByteArrayOutputStream;
-import retrofit.mime.TypedByteArray;
+import java.io.IOException;
 
-public class BitmapTypedOutput extends TypedByteArray
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
+
+public class BitmapTypedOutput extends RequestBody
 {
     public static final String TYPE_JPEG = "jpeg";
 
@@ -14,7 +18,7 @@ public class BitmapTypedOutput extends TypedByteArray
     //<editor-fold desc="Constructors">
     public BitmapTypedOutput(@NonNull String type, @NonNull Bitmap bitmap, @NonNull String fileName, int compressQuality)
     {
-        super(getMimeType(type), makeByteArray(type, bitmap, compressQuality));
+        super.create(getMimeType(type), makeByteArray(type, bitmap, compressQuality));
         this.fileName = fileName;
     }
     //</editor-fold>
@@ -26,19 +30,29 @@ public class BitmapTypedOutput extends TypedByteArray
         return bos.toByteArray();
     }
 
-    @Override @NonNull public String fileName()
-    {
-        return this.fileName;
+    @NonNull
+    public String getFileName() {
+        return fileName;
     }
 
-    @NonNull private static String getMimeType(@NonNull String type)
+    @Override
+    public MediaType contentType() {
+        return MediaType.parse("image/jpeg");
+    }
+
+    @NonNull private static MediaType getMimeType(@NonNull String type)
     {
         switch(type)
         {
             case TYPE_JPEG:
-                return "image/jpeg";
+                return MediaType.parse("image/jpeg");
         }
         throw new IllegalArgumentException("Unhandled type " + type);
+    }
+
+    @Override
+    public void writeTo(BufferedSink sink) throws IOException {
+
     }
 
     @NonNull private static Bitmap.CompressFormat getCompressType(@NonNull String type)

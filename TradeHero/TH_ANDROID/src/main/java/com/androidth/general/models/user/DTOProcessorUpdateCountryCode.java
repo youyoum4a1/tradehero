@@ -10,6 +10,8 @@ import com.androidth.general.models.ThroughDTOProcessor;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 
+import rx.schedulers.Schedulers;
+
 public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCountryCodeDTO>
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
@@ -40,7 +42,8 @@ public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCou
                 cachedUserProfile.countryCode = updateCountryCodeFormDTO.countryCode;
             }
             userProfileCache.get(playerId);
-            providerListCache.get(new ProviderListKey());
+            providerListCache.get(new ProviderListKey())
+                    .subscribeOn(Schedulers.io());
         }
 
         return value;

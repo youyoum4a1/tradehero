@@ -8,10 +8,9 @@ import com.androidth.general.fragments.security.LiveQuoteDTO;
 
 import java.io.IOException;
 import javax.inject.Inject;
-import retrofit.client.Response;
-import retrofit.converter.ConversionException;
-import retrofit.converter.Converter;
-import retrofit.mime.TypedByteArray;
+
+import retrofit2.Converter;
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -27,22 +26,25 @@ public class RawQuoteParser extends RawResponseParser
     }
     //</editor-fold>
 
-    @Nullable public LiveQuoteDTO parse(@NonNull Response response) throws IOException, ConversionException
+    @Nullable public LiveQuoteDTO parse(@NonNull Response response) throws IOException
     {
-        LiveQuoteDTO quoteDTO = null;
-        TypedByteArray body = getBodyAsTypedArray(response);
-        if (body != null)
-        {
-            QuoteSignatureContainer signatureContainer = (QuoteSignatureContainer) converter.fromBody(body, QuoteSignatureContainer.class);
-            if (signatureContainer != null)
-            {
-                quoteDTO = signatureContainer.signedObject;
-                if (quoteDTO != null)
-                {
-                    quoteDTO.setRawResponse(new String(body.getBytes()));
-                }
-            }
-        }
+//        LiveQuoteDTO quoteDTO = null;
+//        TypedByteArray body = getBodyAsTypedArray(response);
+//        if (body != null)
+//        {
+//            QuoteSignatureContainer signatureContainer = (QuoteSignatureContainer) converter.fromBody(body, QuoteSignatureContainer.class);
+//            if (signatureContainer != null)
+//            {
+//                quoteDTO = signatureContainer.signedObject;
+//                if (quoteDTO != null)
+//                {
+//                    quoteDTO.setRawResponse(new String(body.getBytes()));
+//                }
+//            }
+//        }
+
+        //Retrofit 2 way
+        LiveQuoteDTO quoteDTO = (LiveQuoteDTO) response.body();
         return quoteDTO;
     }
 

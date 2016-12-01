@@ -378,19 +378,26 @@ dependencies {
         exclude group: "com.squareup.okhttp", module: "okhttp"
         exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
     }
-    compile "com.squareup.okhttp:okhttp:${OKHTTP_VERSION}"
-    compile("com.squareup.okhttp:okhttp-urlconnection:${OKHTTP_VERSION}") {
-        exclude group: "com.squareup.okhttp", module: "okhttp"
+
+    compile "com.jakewharton.picasso:picasso2-okhttp3-downloader:${PICASSO_OKHTTP3}"
+
+    compile "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
+    compile("com.squareup.okhttp3:okhttp-urlconnection:${OKHTTP_VERSION}") {
+        exclude group: "com.squareup.okhttp3", module: "okhttp"
     }
-    compile("com.squareup.retrofit:retrofit:${RETROFIT_VERSION}") {
-        exclude module: 'gson'
-        exclude module: 'rxjava'
+    compile "com.squareup.okhttp3:logging-interceptor:${OKHTTP_VERSION}"
+
+    compile("com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}") {
+//        exclude module: 'gson'
+//        exclude module: 'rxjava'
     }
-    compile("com.squareup.retrofit:converter-jackson:${RETROFIT_VERSION}") {
-        exclude module: 'gson'
-        exclude group: 'com.squareup.retrofit', module: 'retrofit'
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    compile("com.squareup.retrofit2:converter-jackson:${RETROFIT_VERSION}") {
+//        exclude module: 'gson'
+//        exclude group: 'com.squareup.retrofit', module: 'retrofit'
+//        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
+
+    compile "com.squareup.retrofit2:adapter-rxjava:${RETROFIT_VERSION}"
 
     compile('com.github.JakeWharton:ViewPagerIndicator:2.4.1') {
         exclude group: 'com.google.android', module: 'support-v4'

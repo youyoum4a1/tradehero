@@ -35,7 +35,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     @NonNull @Override
     public Observable<Pair<DTOKeyType, DTOType>> get(@NonNull final DTOKeyType key)
     {
-        return getOrCreateObservable(key).asObservable();
+        return this.getOrCreateObservable(key).asObservable();
     }
 
     @NonNull protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateObservable(@NonNull final DTOKeyType key)

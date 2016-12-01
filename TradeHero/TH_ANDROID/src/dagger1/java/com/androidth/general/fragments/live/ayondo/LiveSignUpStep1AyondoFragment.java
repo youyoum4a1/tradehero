@@ -107,7 +107,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
-import retrofit.client.Response;
+import retrofit2.Response;
 import retrofit.mime.TypedInput;
 import rx.Observable;
 import rx.Subscription;
@@ -1044,23 +1044,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     private String getStringFromResponse(Response response) {
-        TypedInput body = response.getBody();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
-            StringBuilder out = new StringBuilder();
-            String newLine = System.getProperty("line.separator");
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.append(line);
-                out.append(newLine);
-            }
+//        TypedInput body = response.getBody();
+//        try {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
+//            StringBuilder out = new StringBuilder();
+//            String newLine = System.getProperty("line.separator");
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                out.append(line);
+//                out.append(newLine);
+//            }
+//
+//            // Prints the correct String representation of body.
+//            return out.toString().replace("\"", "").trim();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-            // Prints the correct String representation of body.
-            return out.toString().replace("\"", "").trim();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        //Retrofit 2 way
+
+        return response.body().toString();
     }
 
     @MainThread

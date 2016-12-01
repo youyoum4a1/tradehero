@@ -2,6 +2,7 @@ package com.androidth.general.exception;
 
 import android.support.annotation.StringRes;
 
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.utils.ExceptionUtils;
 import com.facebook.FacebookOperationCanceledException;
 import com.androidth.general.common.utils.RetrofitHelper;
@@ -11,9 +12,9 @@ import com.androidth.general.api.http.ResponseErrorCode;
 import com.androidth.general.base.THApp;
 import com.androidth.general.utils.Constants;
 import java.util.List;
-import retrofit.RetrofitError;
-import retrofit.client.Header;
-import retrofit.client.Response;
+import retrofit2.Response;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import timber.log.Timber;
 
 public class THException extends Exception
@@ -39,26 +40,47 @@ public class THException extends Exception
             return super.initCause(new Throwable(ExceptionCode.NetworkError.toString()));
         }
         this.code = ExceptionCode.UnknownError;
-        if (throwable instanceof RetrofitError)
+        if (throwable instanceof THRetrofitException)
         {
-            RetrofitError error = (RetrofitError) throwable;
-            if (error.isNetworkError())
+            THRetrofitException error = (THRetrofitException) throwable;
+//            if (error.isNetworkError())
+            if (error.getKind() == THRetrofitException.Kind.NETWORK)
             {
                 this.code = ExceptionCode.NetworkError;
             }
             else if (error.getResponse() != null)
             {
                 Response response = error.getResponse();
-                if (response.getStatus() == 417)
+                if (response.code() == 417)
                 {
                     this.code = ExceptionCode.DoNotRunBelow;
-                    List<Header> headers = response.getHeaders();
+//                    List<Header> headers = response.headers();
+                    okhttp3.Headers headers = response.headers();
                     if (headers != null)
                     {
-                        Header responseCodeHeader = new RetrofitHelper().findHeaderByName(headers, Constants.TH_ERROR_CODE);
-                        if (responseCodeHeader != null)
-                        {
-                            ResponseErrorCode errorCode = ResponseErrorCode.getByCode(responseCodeHeader.getValue());
+//                        Header responseCodeHeader = new RetrofitHelper().findHeaderByName(headers, Constants.TH_ERROR_CODE);
+//                        if (responseCodeHeader != null)
+//                        {
+//                            ResponseErrorCode errorCode = ResponseErrorCode.getByCode(responseCodeHeader.getValue());
+//                            if (errorCode != null)
+//                            {
+//                                switch (errorCode)
+//                                {
+//                                    case OutDatedVersion:
+//                                        this.code = ExceptionCode.DoNotRunBelow;
+//                                        break;
+//
+//                                    case ExpiredSocialToken:
+//                                        this.code = ExceptionCode.RenewSocialToken;
+//                                        break;
+//                                }
+//                            }
+//                        }
+
+                        //Retrofit 2 way
+                        String headerCode = RetrofitHelper.findHeaderCodeByName(headers, Constants.TH_ERROR_CODE);
+                        if(headerCode!=null){
+                            ResponseErrorCode errorCode = ResponseErrorCode.getByCode(headerCode);
                             if (errorCode != null)
                             {
                                 switch (errorCode)
@@ -75,13 +97,13 @@ public class THException extends Exception
                         }
                     }
                 }
-                else if (response.getStatus() != 200) // Bad Request
+                else if (response.code() != 200) // Bad Request
                 {
                     ErrorMessageDTO dto = null;
                     // surprisingly, server does return garbage sometime
                     try
                     {
-                        dto = (ErrorMessageDTO) error.getBodyAs(ErrorMessageDTO.class);
+                        dto = (ErrorMessageDTO) error.getErrorBodyAs(ErrorMessageDTO.class);
                     }
                     catch (Exception ex)
                     {

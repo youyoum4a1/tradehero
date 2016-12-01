@@ -683,6 +683,7 @@ public class DashboardActivity extends BaseActivity
         bindActivity(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .subscribeOn(Schedulers.io())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .first()
                 .subscribe(
@@ -690,19 +691,21 @@ public class DashboardActivity extends BaseActivity
                         {
                             @Override public void call(UserProfileDTO userProfileDTO)
                             {
-                                if (!isOnBoardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
-                                {
-//                                    broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal()); //Jeff disable onboarding
-//                                    return;
-                                }
 
-                                if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
-                                {
-                                    isFxShown.set(true);
-                                    if(Constants.ONBOARD_OANDA_ENABLED)
-                                        FxOnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
-                                    return;
-                                }
+                                //disable onBoarding - Jeff
+//                                if (!isOnBoardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
+//                                {
+////                                    broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal()); //Jeff disable onboarding
+////                                    return;
+//                                }
+//
+//                                if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
+//                                {
+//                                    isFxShown.set(true);
+//                                    if(Constants.ONBOARD_OANDA_ENABLED)
+//                                        FxOnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
+//                                    return;
+//                                }
 
                                 broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
                             }

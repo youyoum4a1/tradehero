@@ -1,15 +1,15 @@
 package com.androidth.general.network.service;
 
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Query;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.androidth.general.utils.Constants.AUTHORIZATION;
 
 interface TranslationServiceBingRx
 {
-    @GET("/v2/Ajax.svc/Translate")
+    @GET("api/v2/Ajax.svc/Translate")
     Observable<String> requestForTranslation(
             @Header(AUTHORIZATION) String authorization,
             @Query("from") String from,

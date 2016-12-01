@@ -12,38 +12,38 @@ import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.api.security.SecurityCompositeDTO;
 
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface ProviderServiceRx
 {
     //<editor-fold desc="Get Providers">
-    @GET("/providers")
+    @GET("api/providers")
     Observable<ProviderDTOList> getProviders();
     //</editor-fold>
 
-    @GET("/providers/redeem/{providerId}/{code}")
+    @GET("api/providers/redeem/{providerId}/{code}")
     Observable<String> validatedRedeemCode(
             @Path("providerId") Integer providerId,
             @Path("code") String typedCode);
 
     //<editor-fold desc="Get Provider">
-    @GET("/providers/{providerId}")
+    @GET("api/providers/{providerId}")
     Observable<ProviderDTO> getProvider(@Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Portfolio">
-    @GET("/providers/{providerId}/portfolio")
+    @GET("api/providers/{providerId}/portfolio")
     Observable<PortfolioDTO> getPortfolio(
             @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    @GET("/providers/{providerId}/securities")
+    @GET("api/providers/{providerId}/securities")
     Observable<SecurityCompactDTOList> getSecurities(
             @Path("providerId") int providerId,
             @Query("page") Integer page,
@@ -51,13 +51,13 @@ public interface ProviderServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    @GET("/providers/{providerId}/securitiesv2")
+    @GET("api/providers/{providerId}/securitiesv2")
     Observable<SecurityCompositeDTO> getSecuritiesV2(
             @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Warrant Underlyers">
-    @GET("/providers/{providerId}/warrantUnderlyers")
+    @GET("api/providers/{providerId}/warrantUnderlyers")
     Observable<SecurityCompactDTOList> getWarrantUnderlyers(
             @Path("providerId") int providerId,
             @Query("page") Integer page,
@@ -65,7 +65,7 @@ public interface ProviderServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Search Provider Securities">
-    @GET("/providers/{providerId}/securities")
+    @GET("api/providers/{providerId}/securities")
     Observable<SecurityCompactDTOList> searchSecurities(
             @Path("providerId") int providerId,
             @Query("q") String searchString,
@@ -74,36 +74,36 @@ public interface ProviderServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
-    @GET("/providers/{providerId}/helpVideos")
+    @GET("api/providers/{providerId}/helpVideos")
     Observable<HelpVideoDTOList> getHelpVideos(
             @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Cells">
-    @GET("/providers/{providerId}/displaycells")
+    @GET("api/providers/{providerId}/displaycells")
     Observable<ProviderDisplayCellDTOList> getDisplayCells(
             @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Cells">
-    @GET("/providers/{providerId}/preSeason")
+    @GET("api/providers/{providerId}/preSeason")
     Observable<CompetitionPreSeasonDTO> getPreseasonDetails(
             @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Share Preseason">
-    @POST("/social/prizeShare")
+    @POST("api/social/prizeShare")
     Observable<BaseResponseDTO> sharePreseason(
             @Body CompetitionPreseasonShareFormDTO competitionPreseasonShareFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Get ProviderPrizePool">
-    @GET("/providers/{providerId}/prizepool")
+    @GET("api/providers/{providerId}/prizepool")
     Observable<ProviderPrizePoolDTO> getProviderPrizePool(@Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Warrants">
-    @GET("/providers/{providerId}/securities")
+    @GET("api/providers/{providerId}/securities")
     Observable<SecurityCompactDTOList> getProviderWarrants(
             @Path("providerId") int providerId,
             @Query("page") Integer page,

@@ -38,7 +38,7 @@ import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -350,9 +350,18 @@ public class PushableTimelineFragment extends TimelineFragment
 
         @Override public void onError(Throwable e)
         {
-            if (!(e instanceof RetrofitError) ||
-                    (((RetrofitError) e).getResponse() != null &&
-                            ((RetrofitError) e).getResponse().getStatus() != 404))
+//            if (!(e instanceof RetrofitError) ||
+//                    (((RetrofitError) e).getResponse() != null &&
+//                            ((RetrofitError) e).getResponse().getStatus() != 404))
+//            {
+//                THToast.show(R.string.error_fetch_message_thread_header);
+//                Timber.e(e, "Error while getting message thread");
+//            }
+
+            //Retrofit 2 way
+            if (!(e instanceof HttpException) ||
+                    (((HttpException) e).getMessage() != null &&
+                            ((HttpException) e).code() != 404))
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
                 Timber.e(e, "Error while getting message thread");

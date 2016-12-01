@@ -45,7 +45,9 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity
@@ -151,6 +153,8 @@ public class SplashActivity extends BaseActivity
             userProfileSubscription = AppObservable.bindActivity(
                     this,
                     userProfileCache.get(currentUserId.toUserBaseKey()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                             {

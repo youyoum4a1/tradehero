@@ -8,6 +8,9 @@ import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.billing.THOrderId;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+
 public class THIABOrderId
         extends IABOrderId
         implements THOrderId
@@ -28,7 +31,15 @@ public class THIABOrderId
     {
         if (developerPayload != null)
         {
-            return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
+            try{
+                return (OwnedPortfolioId) THJsonAdapter.getInstance()
+                        .fromBody(ResponseBody.create(MediaType.parse("text/plain"), developerPayload.toString()));
+            }catch (IOException e){
+                e.printStackTrace();
+                return null;
+            }
+
+//            return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
         }
         return null;
     }

@@ -4,19 +4,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.squareup.okhttp.OkHttpClient;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import com.androidth.general.common.log.RetrofitErrorHandlerLogger;
 import com.androidth.general.models.fastfill.DocumentCheckService;
 import com.androidth.general.models.fastfill.ForDocumentChecker;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.dagger.ForPicasso;
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
+import retrofit2.Retrofit;
 
 @Module(
         complete = false,
@@ -24,27 +25,28 @@ import retrofit.RestAdapter;
 )
 public class NetverifyModule
 {
-    private RestAdapter createNetverifyRestAdapter(
-            RestAdapter.Builder builder,
-            RetrofitErrorHandlerLogger errorHandlerLogger)
+    private Retrofit createNetverifyRestAdapter(
+            Retrofit.Builder builder)
+//            RetrofitErrorHandlerLogger errorHandlerLogger)
     {
         return builder
-                .setEndpoint(Endpoints.newFixedEndpoint(NetverifyConstants.NETVERIFY_END_POINT))
-                .setRequestInterceptor(new NetverifyRetrofitRequestInterceptor())
-                .setLogLevel(RestAdapter.LogLevel.FULL) //to activate logging
-                .setErrorHandler(errorHandlerLogger)
+//                .setEndpoint(Endpoints.newFixedEndpoint(NetverifyConstants.NETVERIFY_END_POINT))
+//                .setRequestInterceptor(new NetverifyRetrofitRequestInterceptor())
+//                .setLogLevel(RestAdapter.LogLevel.FULL) //to activate logging
+//                .setErrorHandler(errorHandlerLogger)
+                .baseUrl(NetverifyConstants.NETVERIFY_END_POINT)
                 .build();
     }
 
-    @Provides NetverifyServiceRx provideNetverifyServiceRx(RestAdapter.Builder builder,
-            RetrofitErrorHandlerLogger errorHandlerLogger)
+    @Provides NetverifyServiceRx provideNetverifyServiceRx(Retrofit.Builder builder)
+//            RetrofitErrorHandlerLogger errorHandlerLogger)
     {
-        return createNetverifyRestAdapter(builder, errorHandlerLogger).create(NetverifyServiceRx.class);
+        return createNetverifyRestAdapter(builder).create(NetverifyServiceRx.class);
     }
 
     @Provides @ForDocumentChecker Picasso provideNetverifyPicasso(Context context, @ForPicasso LruCache lruFileCache, OkHttpClient okHttpClient)
     {
-        OkHttpClient netverifyClient = okHttpClient.clone();
+        OkHttpClient netverifyClient = okHttpClient;
         netverifyClient.interceptors().add(new NetverifyPicassoRequestInterceptor());
 
 //        Log.v("", "!!!Network setting interceptor");
@@ -53,7 +55,7 @@ public class NetverifyModule
 //        netverifyClient.networkInterceptors().add(loggingInterceptor);
 
         Picasso mPicasso = new Picasso.Builder(context)
-                .downloader(new OkHttpDownloader(netverifyClient))
+                .downloader(new OkHttp3Downloader(netverifyClient))
                 .memoryCache(lruFileCache)
                 .build();
         mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);

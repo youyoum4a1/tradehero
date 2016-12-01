@@ -10,7 +10,7 @@ import com.androidth.general.fragments.security.LiveQuoteDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit.client.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;

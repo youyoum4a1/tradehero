@@ -16,95 +16,95 @@ import com.androidth.general.api.kyc.CountryDocumentTypes;
 
 import java.util.ArrayList;
 
-import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.Part;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.mime.TypedOutput;
+import okhttp3.RequestBody;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface LiveServiceRx {
-    @GET("/liveTradingSituation")
+    @GET("api/liveTradingSituation")
     Observable<LiveTradingSituationDTO> getLiveTradingSituation();
 
-    @POST("/applyBroker/{liveBrokerId}")
+    @POST("api/applyBroker/{liveBrokerId}")
     Observable<StepStatusesDTO> applyLiveBroker(
             @Path("liveBrokerId") int brokerId,
             @Body KYCForm kycForm);
 
-    @GET("/kycFormOptions/{liveBrokerId}")
+    @GET("api/kycFormOptions/{liveBrokerId}")
     Observable<KYCFormOptionsDTO> getKYCFormOptions(
             @Path("liveBrokerId") int brokerId);
 
-    @GET("/kyc/{liveBrokerId}/checkusername")
+    @GET("api/kyc/{liveBrokerId}/checkusername")
     Observable<UsernameValidationResultDTO> validateUserName(
             @Path("liveBrokerId") int brokerId,
             @Query("username") String username);
 
     @Multipart
-    @POST("/documentsUpload")
+    @POST("api/documentsUpload")
     Observable<BrokerDocumentUploadResponseDTO> uploadDocument(
-            @Part("image") TypedOutput image
+            @Part("image") RequestBody image
     );
 
  //https://live.tradehero.mobi/api//kyc/proofs/ic/my
     //https://live.tradehero.mobi/api/kyc/proofs/documents/my
-    @GET("/kyc/proofs/documents/{countrycode}")
+    @GET("api/kyc/proofs/documents/{countrycode}")
     Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
             @Path("countrycode") String countrycode);
 
-    @GET("/competition/enroll/{providerId}/{userId}")
+    @GET("api/competition/enroll/{providerId}/{userId}")
     Observable<Boolean>enrollCompetition(
             @Path("providerId") int providerId,
             @Path("userId") int userId
     );
 
-    @GET("/{validateURL}")
+    @GET("api/{validateURL}")
     Observable<Boolean>validateData(
             @Path("validateURL") String validateURL
     );
 
-    @GET("/email/confirmation/{userId}/{email}/{providerId}")
+    @GET("api/email/confirmation/{userId}/{email}/{providerId}")
     Observable<Response> verifyEmail(
             @Path("userId") Integer userId,
             @Path("email") String email,
             @Path("providerId") Integer providerId
     );
 
-    @GET("/kyc/idProof/scanResult/{scanReference}")
+    @GET("api/kyc/idProof/scanResult/{scanReference}")
     Observable<Boolean>scanJumioResult(
             @Path("scanReference") String scanReference
     );
 
-    @POST("/kyc/ayondo/scanReference/{providerId}")
+    @POST("api/kyc/ayondo/scanReference/{providerId}")
     Observable<Response> uploadScanReference(
             @Body JumioVerifyBodyDTO jumioVerifyBodyDTO,
             @Path("providerId") int providerId
     );
 
-    @GET("/kyc/ayondo/getAdditionalQuestionnaires/{providerId}")
+    @GET("api/kyc/ayondo/getAdditionalQuestionnaires/{providerId}")
     Observable<ArrayList<ProviderQuestionnaireDTO>> getAdditionalQuestionnaires(
             @Path("providerId") int providerId
     );
 
     //<editor-fold desc="Get Competition Referral Status">
-    @GET("/competition/myreferralcode/{providerId}")
+    @GET("api/competition/myreferralcode/{providerId}")
     Observable<MyProviderReferralDTO> getMyProviderReferralStatus(
             @Path("providerId") int providerId
     );
     //</editor-fold>
 
-    @GET("/competition/rewardreferrar/{referralCode}/{providerId}")
+    @GET("api/competition/rewardreferrar/{referralCode}/{providerId}")
     Observable<String> redeemReferralCode(
             @Path("referralCode") String referralCode,
             @Path("providerId") int providerId
     );
 
-    @GET("/kyc/ayondo/getLead/{providerId}")
+    @GET("api/kyc/ayondo/getLead/{providerId}")
     Observable<AyondoLeadDTO> getLead(
             @Path("providerId") int providerId
     );

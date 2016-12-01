@@ -11,6 +11,7 @@ import com.androidth.general.network.service.ProviderServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @Singleton @UserCache
 public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, ProviderDTOList>
@@ -36,7 +37,7 @@ public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, Pr
     {
         if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {
-            return providerServiceWrapper.getProvidersRx();
+            return providerServiceWrapper.getProvidersRxMainThread();
         }
 
         throw new IllegalArgumentException("Unknown ProviderListKey " + key);

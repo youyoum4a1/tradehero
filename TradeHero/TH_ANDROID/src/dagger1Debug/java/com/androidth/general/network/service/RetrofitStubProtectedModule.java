@@ -2,8 +2,9 @@ package com.androidth.general.network.service;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
+
 import javax.inject.Singleton;
-import retrofit.RestAdapter;
 
 @Module(
         overrides = true,
@@ -12,7 +13,7 @@ import retrofit.RestAdapter;
 )
 public class RetrofitStubProtectedModule
 {
-    @Provides @Singleton AchievementMockServiceRx provideAchievementMockServiceRx(RestAdapter adapter)
+    @Provides @Singleton AchievementMockServiceRx provideAchievementMockServiceRx(Retrofit adapter)
     {
         return adapter.create(AchievementMockServiceRx.class);
     }

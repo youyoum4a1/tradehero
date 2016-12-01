@@ -54,8 +54,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import retrofit.client.Response;
-import retrofit.http.Path;
+import retrofit2.Response;
+import retrofit2.http.Path;
 import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;

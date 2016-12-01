@@ -15,6 +15,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class AchievementServiceWrapper
 {
@@ -30,7 +31,7 @@ public class AchievementServiceWrapper
     //<editor-fold desc="Get Level Defs">
     @NonNull public Observable<LevelDefDTOList> getLevelDefsRx()
     {
-        return achievementServiceRx.getLevelDefs();
+        return achievementServiceRx.getLevelDefs().subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 

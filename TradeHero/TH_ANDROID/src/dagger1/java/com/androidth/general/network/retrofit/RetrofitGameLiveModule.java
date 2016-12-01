@@ -1,6 +1,5 @@
 package com.androidth.general.network.retrofit;
 
-import com.androidth.general.common.log.RetrofitErrorHandlerLogger;
 import com.androidth.general.common.persistence.prefs.StringPreference;
 import com.androidth.general.network.ForLive;
 import com.androidth.general.network.ForLive1B;
@@ -12,7 +11,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
-import retrofit.RestAdapter;
+import retrofit2.Retrofit;
 
 @Module(
         injects = {
@@ -27,15 +26,18 @@ public class RetrofitGameLiveModule
         return Endpoints.newFixedEndpoint(serverEndpointPreference.get());
     }
 
-    @Provides @Singleton @ForLive RestAdapter provideLiveRestAdapter(RestAdapter.Builder builder,
-            @ForLive Endpoint server,
-            RequestHeaders requestHeaders,
-            RetrofitErrorHandlerLogger errorHandlerLogger)
+    @Provides @Singleton @ForLive
+    Retrofit provideLiveRestAdapter(Retrofit.Builder builder
+//                                    @ForLive Endpoint server,
+//                                    RequestHeaders requestHeaders,
+//                                    RetrofitErrorHandlerLogger errorHandlerLogger
+    )
     {
         return builder
-                .setEndpoint(server)
-                .setRequestInterceptor(requestHeaders)
-                .setErrorHandler(errorHandlerLogger)
+//                .setEndpoint(server)
+                .baseUrl("https://live.tradehero.mobi/")
+//                .setRequestInterceptor(requestHeaders)
+//                .setErrorHandler(errorHandlerLogger)
                 .build();
     }
 
@@ -44,15 +46,15 @@ public class RetrofitGameLiveModule
         return Endpoints.newFixedEndpoint(serverEndpointPreference.get());
     }
 
-    @Provides @Singleton @ForLive1B RestAdapter provideLive1BRestAdapter(RestAdapter.Builder builder,
-                                                                     @ForLive1B Endpoint server,
-                                                                     RequestHeaders requestHeaders,
-                                                                     RetrofitErrorHandlerLogger errorHandlerLogger)
+    @Provides @Singleton @ForLive1B Retrofit provideLive1BRestAdapter(Retrofit.Builder builder)
+//                                                                     @ForLive1B Endpoint server,
+//                                                                     RequestHeaders requestHeaders,
+//                                                                     RetrofitErrorHandlerLogger errorHandlerLogger)
     {
         return builder
-                .setEndpoint(server)
-                .setRequestInterceptor(requestHeaders)
-                .setErrorHandler(errorHandlerLogger)
+                .baseUrl("https://live.tradehero.mobi/")
+//                .setRequestInterceptor(requestHeaders)
+//                .setErrorHandler(errorHandlerLogger)
                 .build();
     }
 }

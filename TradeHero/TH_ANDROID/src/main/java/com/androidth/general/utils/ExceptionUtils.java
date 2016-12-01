@@ -2,15 +2,13 @@ package com.androidth.general.utils;
 
 import android.support.annotation.NonNull;
 
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.mime.TypedByteArray;
 
 public class ExceptionUtils
 {
@@ -42,10 +40,13 @@ public class ExceptionUtils
         if(throwable==null){
             return "Cannot parse the error message";
         }
-        if(throwable instanceof RetrofitError){
+        if(throwable instanceof THRetrofitException){
             try{
-                RetrofitError err = (RetrofitError) throwable;
-                String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                THRetrofitException err = (THRetrofitException) throwable;
+//                String string =  new String(((TypedByteArray)err.getResponse().body()).getBytes());
+                //Retrofit 2 way
+                String string =  err.getResponse().body().toString();
+
                 JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
                 JsonElement element = obj.get(identifier);
 
@@ -73,9 +74,11 @@ public class ExceptionUtils
 
     @NonNull public static JsonElement getJsonElementFromThrowable(@NonNull Throwable throwable, @NonNull String identifier){
 
-        if(throwable instanceof RetrofitError){
-            RetrofitError err = (RetrofitError) throwable;
-            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+        //Retrofit 2 way
+        if(throwable instanceof THRetrofitException){
+            THRetrofitException err = (THRetrofitException) throwable;
+//            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+            String string =  err.getResponse().body().toString();
             JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
             JsonElement element = obj.get(identifier);
             return element;

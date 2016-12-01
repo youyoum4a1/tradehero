@@ -30,6 +30,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.androidth.general.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.persistence.leaderboard.LeaderboardCacheRx;
 import com.androidth.general.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.androidth.general.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -439,8 +439,8 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     @Override protected void onError(@NonNull PagedLeaderboardKey key, @NonNull Throwable error)
     {
         super.onError(key, error);
-        if (!(error instanceof RetrofitError) || ((RetrofitError) error).getResponse() == null
-                || ((RetrofitError) error).getResponse().getStatus() != 404)
+        if (!(error instanceof THRetrofitException) || ((THRetrofitException) error).getResponse() == null
+                || ((THRetrofitException) error).getResponse().code() != 404)
         {
             Timber.e(error, "Failed fetching leaderboard");
         }

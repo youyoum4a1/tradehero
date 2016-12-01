@@ -2,16 +2,17 @@ package com.androidth.general.models.sms.nexmo;
 
 import com.androidth.general.models.sms.twilio.TwilioSMSSentConfirmationDTO;
 
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
 
 public interface NexmoServiceRx
 {
-    @FormUrlEncoded @POST("/sms/json")
+    @FormUrlEncoded
+    @POST("api/sms/json")
     Observable<NexmoSMSSentConfirmationDTO> sendMessage(
             @Field("api_key") String apiKey,
             @Field("api_secret") String apiSecret,
@@ -19,7 +20,7 @@ public interface NexmoServiceRx
             @Field("to") String toNumber,
             @Field("text") String messageBody);
 
-    @FormUrlEncoded @POST("/sms/json")
+    @FormUrlEncoded @POST("api/sms/json")
     Observable<NexmoSMSSentConfirmationDTO> sendMessage(
             @Field("api_key") String apiKey,
             @Field("api_secret") String apiSecret,

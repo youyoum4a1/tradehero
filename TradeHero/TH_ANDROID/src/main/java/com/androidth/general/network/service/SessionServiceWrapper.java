@@ -33,6 +33,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Singleton public class SessionServiceWrapper
@@ -69,6 +70,7 @@ import timber.log.Timber;
     @NonNull public Observable<SystemStatusDTO> getSystemStatusRx()
     {
         return sessionServiceRx.getSystemStatus()
+                .subscribeOn(Schedulers.io())//to avoid NetworkOnMainThreadException
                 .onErrorReturn(new Func1<Throwable, SystemStatusDTO>()
                 {
                     @Override public SystemStatusDTO call(Throwable throwable)

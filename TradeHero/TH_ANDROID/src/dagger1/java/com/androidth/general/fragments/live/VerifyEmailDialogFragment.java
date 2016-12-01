@@ -32,9 +32,9 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedInput;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -264,10 +264,20 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
                 String errorMessage = "Email verify error";
                 try{
                     errorMessage = e.getMessage();
-                    if(e instanceof RetrofitError){
-                        errorMessage = getStringFromResponse(((RetrofitError)e).getResponse());
-                        Log.e(getTag(),"Email verify error:"+ errorMessage);
+//                    if(e instanceof RetrofitError){
+//                        errorMessage = getStringFromResponse(((RetrofitError)e).getResponse());
+//                        Log.e(getTag(),"Email verify error:"+ errorMessage);
+//                    }
+                    if(e instanceof HttpException){
+                        errorMessage = ((HttpException)e).getMessage();
+                        //This means your call returned a non 2XX status code.
+                    }else if (e instanceof IOException){
+                        //Retrofit.Kind.NETWORK and Retrofit.Kind.CONVERSION
+                        errorMessage = "Something went wrong with call or (de)serialization.";
+                    }else {
+                        errorMessage = e.getMessage();
                     }
+
                 }catch (Exception exception){}
 
                 dismissWithResult(errorMessage);
@@ -275,7 +285,7 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
             @Override
             public void onNext(Response response) {
-                Log.v(getTag(), "JEFF SUCCESS EMAIL "+response.getStatus());
+                Log.v(getTag(), "JEFF SUCCESS EMAIL "+response.message());
                 String responseString = getStringFromResponse(response);
                 Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString+"...");
                 if(responseString.equals("Verified")){
@@ -349,23 +359,25 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
     }
 
     private String getStringFromResponse(Response response) {
-        TypedInput body = response.getBody();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
-            StringBuilder out = new StringBuilder();
-            String newLine = System.getProperty("line.separator");
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.append(line);
-                out.append(newLine);
-            }
+//        TypedInput body = response.getBody();
+//        try {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
+//            StringBuilder out = new StringBuilder();
+//            String newLine = System.getProperty("line.separator");
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                out.append(line);
+//                out.append(newLine);
+//            }
+//
+//            // Prints the correct String representation of body.
+//            return out.toString().replace("\"", "").trim();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-            // Prints the correct String representation of body.
-            return out.toString().replace("\"", "").trim();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        //Retrofit 2 way
+        return response.message();
     }
 
 //    @Nullable protected Subscription getEmailSubscription()

@@ -83,7 +83,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;

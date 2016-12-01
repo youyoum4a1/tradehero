@@ -2,9 +2,10 @@ package com.androidth.general.common.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import java.util.Collection;
 import javax.inject.Inject;
-import retrofit.client.Header;
+
+import okhttp3.Headers;
+import retrofit2.http.Header;
 
 public class RetrofitHelper
 {
@@ -15,15 +16,36 @@ public class RetrofitHelper
     }
     //</editor-fold>
 
-    @Nullable public Header findHeaderByName(
-            @NonNull Collection<? extends Header> headers,
+//    @Nullable public Header findHeaderByName(
+//            @NonNull Collection<? extends Header> headers,
+//            @NonNull String name)
+//    {
+//        for (Header header : headers)
+//        {
+//            if (header.getName() != null && header.getName().equals(name))
+//            {
+//                return header;
+//            }
+//            //Retrofit 2 way
+//            if (header.value() != null && header.value().equals(name))
+//            {
+//                return header;
+//            }
+//        }
+//        return null;
+//    }
+
+    //Retrofit 2 way
+    @Nullable public static String findHeaderCodeByName(
+            @NonNull Headers headers,
             @NonNull String name)
     {
-        for (Header header : headers)
+        for (int i=0; i<headers.size(); i++)
         {
-            if (header.getName() != null && header.getName().equals(name))
+            String headerName = headers.name(i);
+            if (headerName != null && headerName.equals(name))
             {
-                return header;
+                return headers.value(i);
             }
         }
         return null;

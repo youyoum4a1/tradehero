@@ -1,6 +1,9 @@
 package com.androidth.general.utils;
 
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
@@ -19,42 +22,12 @@ public final class NetworkUtils
         try
         {
             SSLContext context = SSLContext.getInstance("TLS");
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(
-                    TrustManagerFactory.getDefaultAlgorithm());
-// Initialise the TMF as you normally would, for example:
-            tmf.init((KeyStore)null);
-            TrustManager[] trustManagers = tmf.getTrustManagers();
 
-            final X509TrustManager origTrustManager = (X509TrustManager)trustManagers[0];
+            X509TrustManager origTrustManager = getTrustManager();
 
-//            TrustManager[] wrappedTrustManagers =
-//
-//            X509TrustManager permissive = new X509TrustManager()
-//            {
-//                @Override public void checkClientTrusted(X509Certificate[] chain, String authType)
-//                        throws CertificateException
-//
-//                {
-//                }
-//
-//                @Override public void checkServerTrusted(X509Certificate[] chain, String authType)
-//                        throws CertificateException
-//                {
-//                    try {
-//                        chain[0].checkValidity();
-//                    } catch (Exception e) {
-//                        throw new CertificateException("Certificate not valid or trusted.");
-//                    }
-//                }
-//
-//                @Override public X509Certificate[] getAcceptedIssuers()
-//                {
-////                    return null;
-//                    return this.getAcceptedIssuers();
-//                }
-//            };
-////            context.init(null, new TrustManager[] {permissive}, new SecureRandom());
-
+            if(origTrustManager==null){
+                throw new AssertionError();
+            }
 
             TrustManager[] wrappedTrustManagers = new TrustManager[]{
                     new X509TrustManager() {
@@ -75,6 +48,7 @@ public final class NetworkUtils
             };
 
             context.init(null, wrappedTrustManagers, null);
+
             return context.getSocketFactory();
         }
         catch (Exception e)
@@ -83,5 +57,27 @@ public final class NetworkUtils
         }
     }
 
+    public static X509TrustManager getTrustManager(){
+
+        try{
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+// Initialise the TMF as you normally would, for example:
+            tmf.init((KeyStore)null);
+            TrustManager[] trustManagers = tmf.getTrustManagers();
+
+            final X509TrustManager origTrustManager = (X509TrustManager)trustManagers[0];
+
+            return origTrustManager;
+
+        }catch (NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }catch (KeyStoreException e){
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
 
 }

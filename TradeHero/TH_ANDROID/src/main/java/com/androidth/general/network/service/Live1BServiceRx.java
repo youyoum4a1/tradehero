@@ -5,25 +5,23 @@ import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.security.TransactionFormDTO;
 
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.Part;
-import retrofit.http.Path;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
 
 public interface Live1BServiceRx {
 
-    @GET("/liveTradingSituation")
+    @GET("api/liveTradingSituation")
     Observable<LiveTradingSituationDTO> getLiveTradingSituation();
 
-    @GET("/{validateURL}")
+    @GET("api/{validateURL}")
     Observable<Boolean>validateData(
             @Path("validateURL") String validateURL
     );
 
-    @POST("/securities/{exchange}/{securitySymbol}/buy")
+    @POST("api/securities/{exchange}/{securitySymbol}/buy")
     Observable<SecurityPositionTransactionDTO> buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,

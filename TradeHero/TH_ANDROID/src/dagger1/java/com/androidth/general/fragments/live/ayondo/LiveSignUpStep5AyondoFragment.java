@@ -78,7 +78,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import retrofit.client.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -1135,8 +1135,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @Override
             public void onNext(Response response) {
                 Log.v(getTag(), "On next Scan ref: "+dataType+":"+scanRef);
-                if(response.getStatus() == 200){
-                    Log.v(getTag(), "On next Scan ref: "+response.getStatus());
+                if(response.code() == 200){
+                    Log.v(getTag(), "On next Scan ref: "+response.message());
 //                    Observable.just(updateUILayout()).observeOn(AndroidSchedulers.mainThread()).subscribe();
 
                     getActivity().runOnUiThread(new Runnable() {

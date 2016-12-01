@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import retrofit.RetrofitError;
+
+import retrofit2.Response;
 
 public class IOUtils
 {
@@ -47,8 +48,10 @@ public class IOUtils
         return new String(streamToBytes(stream), "UTF-8");
     }
 
-    public static String errorToBodyString(@NonNull RetrofitError error) throws IOException
+    public static String errorToBodyString(@NonNull Response error) throws IOException
     {
-        return streamToString(error.getResponse().getBody().in());
+//        return streamToString(error.getResponse().getBody().in());
+        //retrofit 2 way
+        return error.body().toString();
     }
 }

@@ -15,7 +15,6 @@ import com.androidth.general.api.discussion.key.DiscussionListKeyFactory;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.persistence.message.MessageThreadHeaderCacheRx;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;

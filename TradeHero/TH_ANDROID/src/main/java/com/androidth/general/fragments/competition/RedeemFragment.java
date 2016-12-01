@@ -29,8 +29,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RetrofitError;
-import retrofit.mime.TypedByteArray;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 

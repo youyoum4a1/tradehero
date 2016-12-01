@@ -1,7 +1,7 @@
 package com.androidth.general.network.service;
 
-import retrofit.http.GET;
-import retrofit.http.Path;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -9,7 +9,7 @@ import rx.Observable;
  */
 public interface KycServicesRx {
 
-    @GET("/email/confirmation/{userId}/{email}")
+    @GET("api/email/confirmation/{userId}/{email}")
     Observable<Boolean> validatedEmail(
             @Path("userId") Integer userId,
             @Path("email") String email);

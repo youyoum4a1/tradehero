@@ -13,8 +13,8 @@ import com.androidth.general.api.timeline.TimelineItemShareRequestDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import java.util.Map;
 import javax.inject.Inject;
-import retrofit.http.Body;
-import retrofit.http.Path;
+import retrofit2.http.Body;
+import retrofit2.http.Path;
 import rx.Observable;
 
 public class DiscussionServiceRxStub implements DiscussionServiceRx

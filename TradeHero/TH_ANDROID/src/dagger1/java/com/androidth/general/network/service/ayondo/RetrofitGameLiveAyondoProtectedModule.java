@@ -3,7 +3,7 @@ package com.androidth.general.network.service.ayondo;
 import com.androidth.general.network.ForLive;
 import dagger.Module;
 import dagger.Provides;
-import retrofit.RestAdapter;
+import retrofit2.Retrofit;
 
 @Module(
         complete = false,
@@ -12,7 +12,7 @@ import retrofit.RestAdapter;
 public class RetrofitGameLiveAyondoProtectedModule
 {
     //<editor-fold desc="API Services">
-    @Provides LiveServiceAyondoRx provideLiveServiceAyondoRx (@ForLive RestAdapter adapter)
+    @Provides LiveServiceAyondoRx provideLiveServiceAyondoRx (@ForLive Retrofit adapter)
     {
         return adapter.create(LiveServiceAyondoRx .class);
     }

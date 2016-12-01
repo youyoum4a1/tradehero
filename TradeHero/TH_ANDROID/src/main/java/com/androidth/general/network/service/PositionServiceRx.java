@@ -1,15 +1,15 @@
 package com.androidth.general.network.service;
 
 import com.androidth.general.api.position.GetPositionsDTO;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 interface PositionServiceRx
 {
     //<editor-fold desc="Get One User Portfolio Positions List">
-    @GET("/users/{userId}/portfolios/{portfolioId}/positions")
+    @GET("api/users/{userId}/portfolios/{portfolioId}/positions")
     Observable<GetPositionsDTO> getPositions(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,

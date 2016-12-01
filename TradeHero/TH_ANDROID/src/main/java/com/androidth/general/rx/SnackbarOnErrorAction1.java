@@ -4,7 +4,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import retrofit.RetrofitError;
+import com.androidth.general.models.retrofit2.THRetrofitException;
+
 import rx.functions.Action1;
 
 public class SnackbarOnErrorAction1 implements Action1<Throwable> {
@@ -25,10 +26,10 @@ public class SnackbarOnErrorAction1 implements Action1<Throwable> {
         Snackbar snackbar;
         if(throwable!=null){
             String errorMessage = throwable.getLocalizedMessage();
-            if(throwable instanceof RetrofitError){
-                RetrofitError retrofitError = (RetrofitError) throwable;
+            if(throwable instanceof THRetrofitException){
+                THRetrofitException retrofitError = (THRetrofitException) throwable;
                 if(retrofitError.getResponse()!=null){
-                    int status = retrofitError.getResponse().getStatus();
+                    int status = retrofitError.getResponse().code();
                     switch(status){
                         case 401:
                             errorMessage = "Invalid username/password";

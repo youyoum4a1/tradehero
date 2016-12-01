@@ -5,14 +5,16 @@ import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
-import com.squareup.okhttp.Authenticator;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.androidth.general.utils.Constants;
 import java.io.IOException;
 import java.net.Proxy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import okhttp3.Authenticator;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
 import timber.log.Timber;
 
 import static com.androidth.general.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
@@ -28,8 +30,8 @@ public class ApiAuthenticator implements Authenticator
         this.accountManager = AccountManager.get(context);
     }
 
-    @Override public Request authenticate(Proxy proxy, Response response) throws IOException
-    {
+    @Override
+    public Request authenticate(Route route, Response response) throws IOException {
         Timber.d("Not authenticated, need re-authentication");
 
         Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
@@ -73,8 +75,4 @@ public class ApiAuthenticator implements Authenticator
         return null;
     }
 
-    @Override public Request authenticateProxy(Proxy proxy, Response response) throws IOException
-    {
-        return null;
-    }
 }

@@ -17,6 +17,8 @@ package com.androidth.general.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.api.misc.MediaType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.androidth.general.common.billing.googleplay.BaseIABPurchase;
 import com.androidth.general.common.billing.googleplay.IABSKU;
@@ -27,6 +29,10 @@ import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.billing.THProductPurchase;
 import org.json.JSONException;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 import timber.log.Timber;
 
 public class THIABPurchase
@@ -80,7 +86,15 @@ public class THIABPurchase
     @JsonIgnore @NonNull
     @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
-        return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
+        try{
+            return (OwnedPortfolioId) THJsonAdapter.getInstance()
+                    .fromBody(ResponseBody.create(okhttp3.MediaType.parse("text/plain"), developerPayload.toString()));
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
+
+//        return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
     }
 
     @JsonIgnore

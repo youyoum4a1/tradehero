@@ -61,9 +61,10 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Lazy;
-import retrofit.client.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 @Singleton public class UserServiceWrapper
 {
@@ -282,7 +283,8 @@ import rx.functions.Func1;
     //<editor-fold desc="Get User">
     @NonNull public Observable<UserProfileDTO> getUserRx(@NonNull UserBaseKey userKey)
     {
-        return userServiceRx.getUser(userKey.key);
+        return userServiceRx.getUser(userKey.key)
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 

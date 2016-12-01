@@ -62,6 +62,7 @@ import com.androidth.general.fragments.web.WebViewIntentFragment;
 import com.androidth.general.models.intent.THIntent;
 import com.androidth.general.models.intent.THIntentFactory;
 import com.androidth.general.models.intent.THIntentPassedListener;
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.models.security.ProviderTradableSecuritiesHelper;
 import com.androidth.general.network.service.ProviderServiceWrapper;
 import com.androidth.general.persistence.competition.CompetitionListCacheRx;
@@ -89,8 +90,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -392,9 +392,9 @@ public class MainCompetitionFragment extends DashboardFragment
                                 .map(competitionPreSeasonDTO -> Collections.singletonList(competitionPreSeasonDTO))
                                 .startWith(Observable.just(competitionPreSeasonDTOs))
                                 .onErrorReturn(throwable -> {
-                                    if (!(throwable instanceof RetrofitError)
-                                            || ((RetrofitError) throwable).getResponse() == null
-                                            || ((RetrofitError) throwable).getResponse().getStatus() != 404)
+                                    if (!(throwable instanceof THRetrofitException)
+                                            || ((THRetrofitException) throwable).getResponse() == null
+                                            || ((THRetrofitException) throwable).getResponse().code() != 404)
                                     {
                                         Timber.e(throwable, "Failed fetching preseason for %s", providerId);
                                     }
@@ -408,10 +408,10 @@ public class MainCompetitionFragment extends DashboardFragment
                                     {
                                         // When there is no prize pool, server returns HTTP404, which is a valid response
                                         boolean is404 = false;
-                                        if (throwable instanceof RetrofitError)
+                                        if (throwable instanceof THRetrofitException)
                                         {
-                                            Response response = ((RetrofitError) throwable).getResponse();
-                                            is404 = response != null && response.getStatus() == 404;
+                                            Response response = ((THRetrofitException) throwable).getResponse();
+                                            is404 = response != null && response.code() == 404;
                                         }
                                         if (!is404)
                                         {

@@ -9,6 +9,7 @@ import com.androidth.general.api.market.SectorListType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @Singleton public class MarketServiceWrapper
 {
@@ -24,7 +25,7 @@ import rx.Observable;
     //<editor-fold desc="Get Exchanges with Top Securities">
     @NonNull public Observable<ExchangeCompactDTOList> getExchangesRx(@NonNull ExchangeListType exchangeListType)
     {
-        return marketServiceRx.getExchanges(exchangeListType.topNStocks);
+        return marketServiceRx.getExchanges(exchangeListType.topNStocks).subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 

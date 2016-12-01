@@ -13,10 +13,10 @@ import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
 import com.androidth.general.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.androidth.general.api.kyc.ayondo.AyondoLiveAvailabilityDTO;
 
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
 
 public interface LiveServiceAyondoRx
@@ -25,32 +25,32 @@ public interface LiveServiceAyondoRx
 
     //Use this instead LiveServiceRx
 
-    @GET("/kyc/ayondo/availability")
+    @GET("api/kyc/ayondo/availability")
     Observable<AyondoLiveAvailabilityDTO> getAvailability();
     //If user available or not. UserId is sent in header. Returns boolean
 
-    @GET("/kyc/ayondo/currentapplication")
+    @GET("api/kyc/ayondo/currentapplication")
     Observable<AyondoCurrentApplicationDTO> getCurrentApplication();
     //Returns JSON
     //applied
 
-    @POST("/applyBroker/ayondo")
+    @POST("api/applyBroker/ayondo")
     Observable<StepStatusesDTO> applyLiveBroker(
             @Body KYCForm kycForm);
 
-    @POST("/kyc/ayondo/createOrUpdateLead/{providerId}")
+    @POST("api/kyc/ayondo/createOrUpdateLead/{providerId}")
     Observable<BrokerApplicationDTO> createOrUpdateLead(
             @Path("providerId") int providerId,
             @Body AyondoLeadDTO ayondoLeadDTO);
 
-    @POST("/kyc/ayondo/checkidentity")
+    @POST("api/kyc/ayondo/checkidentity")
     Observable<AyondoIDCheckDTO> checkNeedIdentity(
             @Body AyondoLeadUserIdentityDTO ayondoLeadUserIdentityDTO);
 
-    @POST("/kyc/ayondo/checkaddress")
+    @POST("api/kyc/ayondo/checkaddress")
     Observable<AyondoAddressCheckDTO> checkNeedResidency(
             @Body AyondoLeadAddressDTO ayondoLeadAddressDTO);
 
-    @POST("/kyc/ayondo/createAccount/{providerId}")
+    @POST("api/kyc/ayondo/createAccount/{providerId}")
     Observable<BrokerApplicationDTO> submitApplication(@Body AyondoAccountCreationDTO ayondoAccountCreationDTO, @Path("providerId") int providerId);
 }

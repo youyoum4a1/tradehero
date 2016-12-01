@@ -4,23 +4,24 @@ import com.androidth.general.api.BaseResponseDTO;
 import com.androidth.general.api.notification.NotificationDTO;
 import com.androidth.general.api.notification.PaginatedNotificationDTO;
 import java.util.Map;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+//import retrofit2.http.QueryMap;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 interface NotificationServiceRx
 {
-    @GET("/notifications")
+    @GET("api/notifications")
     Observable<PaginatedNotificationDTO> getNotifications(@QueryMap Map<String, Object> options);
 
-    @GET("/notifications/{pushId}")
+    @GET("api/notifications/{pushId}")
     Observable<NotificationDTO> getNotificationDetail(@Path("pushId") int pushId);
 
-    @POST("/notifications/read/{readPushId}")
+    @POST("api/notifications/read/{readPushId}")
     Observable<BaseResponseDTO> markAsRead(@Path("readPushId") int readPushId);
 
-    @POST("/notifications/read/-1")
+    @POST("api/notifications/read/-1")
     Observable<BaseResponseDTO> markAsReadAll();
 }

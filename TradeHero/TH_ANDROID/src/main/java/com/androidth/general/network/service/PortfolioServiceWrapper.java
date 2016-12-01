@@ -16,6 +16,7 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @Singleton public class PortfolioServiceWrapper
 {
@@ -40,7 +41,8 @@ import rx.Observable;
     {
         return portfolioServiceRx.getPortfolios(userBaseKey.key, includeWatchList)
                 .map(new BaseDTOListProcessor<PortfolioCompactDTO, PortfolioCompactDTOList>(
-                        new DTOProcessorPortfolioReceived<>(userBaseKey)));
+                        new DTOProcessorPortfolioReceived<>(userBaseKey)))
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 

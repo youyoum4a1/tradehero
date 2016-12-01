@@ -10,11 +10,12 @@ import com.androidth.general.base.THApp;
 import com.androidth.general.inject.HierarchyInjector;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.Endpoint;
 
 public class ProviderPageIntent extends OneProviderIntent
 {
-    @Inject Endpoint apiServer;
+//    @Inject Endpoint apiServer;
+
+    @Inject String apiServer;
 
     //<editor-fold desc="Constructors">
     public ProviderPageIntent(
@@ -70,7 +71,8 @@ public class ProviderPageIntent extends OneProviderIntent
         Uri forwardUri = Uri.parse(path);
         if (forwardUri.getScheme() == null && forwardUri.getHost() == null)
         {
-            return apiServer.getUrl() + getForwardUriPath();
+//            return apiServer.getUrl() + getForwardUriPath();
+            return apiServer + getForwardUriPath();
         }
         else
         {

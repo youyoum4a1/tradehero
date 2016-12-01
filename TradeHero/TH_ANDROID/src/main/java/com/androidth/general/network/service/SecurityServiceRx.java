@@ -10,23 +10,23 @@ import com.androidth.general.api.security.SecurityCompactDTOList;
 import com.androidth.general.api.security.TransactionFormDTO;
 import java.util.List;
 import java.util.Map;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface SecurityServiceRx
 {
     //<editor-fold desc="Get Multiple Securities">
-    @GET("/securities/multi/")
+    @GET("api/securities/multi/")
     Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
             @Query("securityIds") String commaSeparatedIntegerIds);
     //</editor-fold>
 
     //<editor-fold desc="Get Basic Trending">
-    @GET("/securities/trending/")
+    @GET("api/securities/trending/")
     Observable<SecurityCompactDTOList> getTrendingSecurities(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
@@ -34,7 +34,7 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Trending By Volume">
-    @GET("/securities/trendingVol/")
+    @GET("api/securities/trendingVol/")
     Observable<SecurityCompactDTOList> getTrendingSecuritiesByVolume(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
@@ -42,7 +42,7 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Trending By Price">
-    @GET("/securities/trendingPrice/")
+    @GET("api/securities/trendingPrice/")
     Observable<SecurityCompactDTOList> getTrendingSecuritiesByPrice(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
@@ -50,7 +50,7 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Trending For All">
-    @GET("/securities/trendingExchange/")
+    @GET("api/securities/trendingExchange/")
     Observable<SecurityCompactDTOList> getTrendingSecuritiesAllInExchange(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
@@ -58,7 +58,7 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Search Securities">
-    @GET("/securities/search")
+    @GET("api/securities/search")
     Observable<SecurityCompactDTOList> searchSecurities(
             @Query("q") String searchString,
             @Query("page") Integer page,
@@ -66,14 +66,14 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get List By Sector and Exchange">
-    @GET("/securities/bySectorAndExchange")
+    @GET("api/securities/bySectorAndExchange")
     Observable<SecurityCompactDTOList> getBySectorAndExchange(
             @Query("exchange") Integer exchangeId,
             @Query("sector") Integer sectorId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
-    @GET("/securities/bySectorsAndExchanges")
+    @GET("api/securities/bySectorsAndExchanges")
     Observable<SecurityCompactDTOList> getBySectorsAndExchanges(
             @Query("exchanges") String commaSeparatedExchangeIds,
             @Query("sectors") String commaSeparatedSectorIds,
@@ -82,31 +82,31 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @GET("/securities/applicablePortfolios")
+    @GET("api/securities/applicablePortfolios")
     Observable<OwnedPortfolioIdList> getApplicablePortfolioIds(
             @Query("exch") String exchange,
             @Query("symbol") String securitySymbol);
 
-    @GET("/securities/positions")
+    @GET("api/securities/positions")
     Observable<PositionDTOList> getPositions(
             @Query("exch") String exchange,
             @Query("symbol") String securitySymbol);
 
-    @GET("/securities/compact")
+    @GET("api/securities/compact")
     Observable<SecurityCompactDTO> getCompactSecurity(
             @Query("exch") String exchange,
             @Query("symbol") String securitySymbol);
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-//    @POST("/securities/{exchange}/{securitySymbol}/newbuy")
-    @POST("/securities/{exchange}/{securitySymbol}/v2/buy")
+//    @POST("api/securities/{exchange}/{securitySymbol}/newbuy")
+    @POST("api/securities/{exchange}/{securitySymbol}/v2/buy")
     Observable<SecurityPositionTransactionDTO> buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
 
-    @POST("/securities/{exchange}/{securitySymbol}/v2/fxbuynew")
+    @POST("api/securities/{exchange}/{securitySymbol}/v2/fxbuynew")
     Observable<SecurityPositionTransactionDTO> buyFx(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
@@ -114,14 +114,14 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
-//    @POST("/securities/{exchange}/{securitySymbol}/newsell")
-    @POST("/securities/{exchange}/{securitySymbol}/v2/sell")
+//    @POST("api/securities/{exchange}/{securitySymbol}/newsell")
+    @POST("api/securities/{exchange}/{securitySymbol}/v2/sell")
     Observable<SecurityPositionTransactionDTO> sell(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
 
-    @POST("/securities/{exchange}/{securitySymbol}/v2/fxsellnew")
+    @POST("api/securities/{exchange}/{securitySymbol}/v2/fxsellnew")
     Observable<SecurityPositionTransactionDTO> sellFx(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
@@ -129,19 +129,19 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Basic FX Trending">
-    @GET("/securities/trendingFx")
+    @GET("api/securities/trendingFx")
     Observable<SecurityCompactDTOList> getFXSecurities();
     //</editor-fold>
 
     //<editor-fold desc="Get FX KChart">
-    @GET("/FX/{securitySymbol}/{granularity}/history")
+    @GET("api/FX/{securitySymbol}/{granularity}/history")
     Observable<FXChartDTO> getFXHistory(
             @Path("securitySymbol") String securitySymbol,
             @Path("granularity") String granularity);
     //</editor-fold>
 
     //<editor-fold desc="Get FX All Price">
-    @GET("/FX/batchFxQuote")
+    @GET("api/FX/batchFxQuote")
     Observable<List<QuoteDTO>> getFXSecuritiesAllPrice();
     //</editor-fold>
 }

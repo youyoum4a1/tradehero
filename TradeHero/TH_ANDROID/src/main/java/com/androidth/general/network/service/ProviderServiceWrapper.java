@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 @Singleton public class ProviderServiceWrapper
 {
@@ -54,11 +55,12 @@ import rx.functions.Action1;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    @NonNull public Observable<ProviderDTOList> getProvidersRx()
+    @NonNull public Observable<ProviderDTOList> getProvidersRxMainThread()
     {
         return this.providerServiceRx.getProviders()
                 .map(new BaseDTOListProcessor<ProviderDTO, ProviderDTOList>(
-                        new DTOProcessorProviderReceived(currentUserId)));
+                        new DTOProcessorProviderReceived(currentUserId)))
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 

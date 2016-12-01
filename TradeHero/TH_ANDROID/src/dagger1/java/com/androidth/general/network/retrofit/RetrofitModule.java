@@ -10,7 +10,6 @@ import com.androidth.general.api.social.UserFriendsDTO;
 import com.androidth.general.api.social.UserFriendsDTODeserialiser;
 import com.androidth.general.api.social.UserFriendsDTOJacksonModule;
 import com.androidth.general.common.annotation.ForApp;
-import com.androidth.general.common.log.RetrofitErrorHandlerLogger;
 import com.androidth.general.common.persistence.prefs.StringPreference;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.network.ApiAuthenticator;
@@ -29,9 +28,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Authenticator;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
 
@@ -41,13 +37,14 @@ import javax.net.ssl.HostnameVerifier;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import retrofit.Endpoint;
-import retrofit.Endpoints;
-import retrofit.RestAdapter;
-import retrofit.client.Client;
-import retrofit.client.OkClient;
-import retrofit.converter.Converter;
-import retrofit.converter.JacksonConverter;
+import okhttp3.Authenticator;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Converter;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @Module(
         includes = {
@@ -89,6 +86,9 @@ public class RetrofitModule
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
 
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         // TODO confirm this is correct here
         objectMapper.setVisibilityChecker(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
@@ -99,51 +99,80 @@ public class RetrofitModule
         return objectMapper;
     }
 
-    @Provides @Singleton Converter provideConverter(@ForApp ObjectMapper objectMapper)
+//    @Provides @Singleton
+//    Converter.Factory provideConverter(@ForApp ObjectMapper objectMapper)
+//    {
+//        return JacksonConverterFactory.create(objectMapper);
+//    }
+
+//    @Provides @Singleton Endpoint provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
+//    {
+//        return Endpoints.newFixedEndpoint(serverEndpointPreference.get());
+//    }
+//
+//    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Endpoint server)
+//    {
+//        return LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT + NetworkConstants.COMPETITION_PATH;
+//    }
+
+    @Provides @Singleton String provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
     {
-        return new JacksonConverter(objectMapper);
+        return serverEndpointPreference.get();
     }
 
-    @Provides @Singleton Endpoint provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
-    {
-        return Endpoints.newFixedEndpoint(serverEndpointPreference.get());
-    }
-
-    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Endpoint server)
+    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl()
     {
         return LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT + NetworkConstants.COMPETITION_PATH;
     }
 
-    @Provides RestAdapter.Builder provideRestAdapterBuilder(
-            Client client,
-            Converter converter,
-            RetrofitSynchronousErrorHandler errorHandler)
+    @Provides
+    Retrofit.Builder provideRestAdapterBuilder(
+            OkHttpClient client,
+            ObjectMapper objectMapper)
+//            Converter converter
+//            RetrofitSynchronousErrorHandler errorHandler)
     {
-        return new RestAdapter.Builder()
-                .setConverter(converter)
-                .setClient(client)
-                .setErrorHandler(errorHandler)
-                .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL);
+        return new Retrofit.Builder()
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(client)
+//                .setErrorHandler(errorHandler)
+//                .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL)
+                ;
     }
 
-    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder,
-            Endpoint server,
-            RequestHeaders requestHeaders,
-            RetrofitErrorHandlerLogger errorHandlerLogger)
+    @Provides @Singleton Retrofit provideRestAdapter(Retrofit.Builder builder,
+//            Endpoint server,
+            RequestHeaders requestHeaders
+//            RetrofitErrorHandlerLogger errorHandlerLogger
+    )
     {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(requestHeaders)
+                .build();
+
         return builder
-                .setEndpoint(server)
-                .setRequestInterceptor(requestHeaders)
-                .setErrorHandler(errorHandlerLogger)
+                .baseUrl("https://www.tradehero.mobi/")
+                .client(client)
+//                .setRequestInterceptor(requestHeaders)
+//                .setErrorHandler(errorHandlerLogger)
                 .build();
     }
 
-    @Provides @Singleton Client provideOkClient(OkHttpClient okHttpClient)
+    @Provides @Singleton OkHttpClient.Builder provideOkClient(OkHttpClient okHttpClient)
     {
-        return new OkClient(okHttpClient);
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
+        return client.newBuilder();
     }
 
-    @Provides @Singleton Cache provideHttpCache(Context context)
+    @Provides @Singleton
+    Cache provideHttpCache(Context context)
     {
         File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
         return new Cache(httpCacheDirectory, 10 * 1024 * 1024);
@@ -151,12 +180,22 @@ public class RetrofitModule
 
     @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator, HostnameVerifier hostNameVerifier)
     {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setCache(cache);
-        okHttpClient.setHostnameVerifier(hostNameVerifier);
-        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
-        okHttpClient.setAuthenticator(authenticator);
-        return okHttpClient;
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        okHttpClient.setCache(cache);
+//        okHttpClient.setHostnameVerifier(hostNameVerifier);
+//        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
+//        okHttpClient.setAuthenticator(authenticator);
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .cache(cache)
+                .hostnameVerifier(hostNameVerifier)
+                .sslSocketFactory(NetworkUtils.createBadSslSocketFactory(), NetworkUtils.getTrustManager())
+                .authenticator(authenticator)
+                .build();
+
+        return client;
     }
 
     @Provides @Singleton Authenticator provideAuthenticator(Lazy<ApiAuthenticator> apiAuthenticator)

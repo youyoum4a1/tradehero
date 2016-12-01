@@ -260,19 +260,23 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
+                        .subscribeOn(Schedulers.io())
                         .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
-                .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<ProviderDTOList>()
                         {
                             @Override public void call(ProviderDTOList list)
                             {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        linkWith(list);
-                                    }
-                                });
+                                linkWith(list);
+//                                getActivity().runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        linkWith(list);
+//                                    }
+//                                });
                             }
                         },
                         new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));

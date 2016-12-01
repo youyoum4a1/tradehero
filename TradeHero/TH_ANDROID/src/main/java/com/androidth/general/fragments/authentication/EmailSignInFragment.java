@@ -35,6 +35,7 @@ import com.androidth.general.auth.AuthDataUtil;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.inject.HierarchyInjector;
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.androidth.general.network.service.SessionServiceWrapper;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.rx.EmptyAction1;
@@ -65,8 +66,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.Lazy;
-import retrofit.RetrofitError;
-import retrofit.mime.TypedByteArray;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -400,8 +399,10 @@ public class EmailSignInFragment extends Fragment
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
                         error -> {
-                            RetrofitError err = (RetrofitError) error;
-                            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                            THRetrofitException err = (THRetrofitException) error;
+//                            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                            //Retrofit 2 way
+                            String string = err.getResponse().body().toString();
                             JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
                             JsonElement element = obj.get("Message");
                             String title = element.getAsString();

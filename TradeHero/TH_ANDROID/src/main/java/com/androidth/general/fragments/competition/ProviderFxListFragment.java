@@ -18,6 +18,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 {
@@ -54,6 +55,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
                                 return observable.delay(TrendingFXFragment.MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS);
                             }
                         }))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<QuoteDTO>>()

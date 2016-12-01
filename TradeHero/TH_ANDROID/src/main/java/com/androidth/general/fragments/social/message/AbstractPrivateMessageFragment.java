@@ -42,7 +42,6 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;

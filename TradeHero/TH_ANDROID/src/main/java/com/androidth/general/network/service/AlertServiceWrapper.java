@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 @Singleton public class AlertServiceWrapper
 {
@@ -37,7 +38,8 @@ import rx.functions.Action1;
     //<editor-fold desc="Get Alerts">
     @NonNull public Observable<AlertCompactDTOList> getAlertsRx(@NonNull UserBaseKey userBaseKey)
     {
-        return alertServiceRx.getAlerts(userBaseKey.key);
+        return alertServiceRx.getAlerts(userBaseKey.key)
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 

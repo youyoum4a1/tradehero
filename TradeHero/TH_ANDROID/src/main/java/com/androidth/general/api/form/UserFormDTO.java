@@ -10,7 +10,9 @@ import com.androidth.general.models.graphics.BitmapTypedOutput;
 import com.androidth.general.persistence.prefs.SavedPushDeviceIdentifier;
 import com.androidth.general.utils.Constants;
 import javax.inject.Inject;
-import retrofit.mime.TypedOutput;
+
+import okhttp3.RequestBody;
+//import retrofit.mime.TypedOutput;
 
 public class UserFormDTO extends LoginSignUpFormDTO
 {
@@ -32,7 +34,9 @@ public class UserFormDTO extends LoginSignUpFormDTO
     public String website;
     public String deviceToken;
 
-    public TypedOutput profilePicture;
+//    public TypedOutput profilePicture;
+
+    public RequestBody profilePicture;
 
     public UserFormDTO(@NonNull AuthData authData, String email, boolean useOnlyHeroCount, String deviceToken,
             DeviceType clientType, String clientVersion, String username, String password, String passwordConfirmation, String firstName,

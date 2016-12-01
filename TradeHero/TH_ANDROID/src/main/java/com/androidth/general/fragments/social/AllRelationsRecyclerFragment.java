@@ -7,6 +7,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.androidth.general.models.retrofit2.THRetrofitException;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.common.fragment.HasSelectedItem;
 import com.androidth.general.common.persistence.DTOCacheRx;
@@ -28,7 +30,6 @@ import com.androidth.general.persistence.user.AllowableRecipientPaginatedCacheRx
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -112,9 +113,9 @@ public class AllRelationsRecyclerFragment extends BasePagedRecyclerRxFragment<
                                     @Override public void call(Throwable throwable)
                                     {
                                         try{
-                                            if (throwable instanceof RetrofitError
-                                                    && ((RetrofitError) throwable).getResponse() != null
-                                                    && ((RetrofitError) throwable).getResponse().getStatus() == 404)
+                                            if (throwable instanceof THRetrofitException
+                                                    && ((THRetrofitException) throwable).getResponse() != null
+                                                    && ((THRetrofitException) throwable).getResponse().code() == 404)
                                             {
                                                 pushPrivateMessageFragment(baseKey, null);
                                             }

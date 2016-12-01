@@ -25,6 +25,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @Singleton public class WatchlistServiceWrapper
 {
@@ -99,7 +100,8 @@ import rx.Observable;
                     skipCacheSecurityPerPagedWatchlistKey.page,
                     skipCacheSecurityPerPagedWatchlistKey.perPage,
                     skipCacheSecurityPerPagedWatchlistKey.securityId,
-                    skipCacheSecurityPerPagedWatchlistKey.skipCache);
+                    skipCacheSecurityPerPagedWatchlistKey.skipCache)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
         else if (pagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
         {
@@ -108,7 +110,8 @@ import rx.Observable;
                     securityPerPagedWatchlistKey.page,
                     securityPerPagedWatchlistKey.perPage,
                     securityPerPagedWatchlistKey.securityId,
-                    null);
+                    null)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
         else if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
         {
@@ -117,9 +120,11 @@ import rx.Observable;
                     perPagedWatchlistKey.page,
                     perPagedWatchlistKey.perPage,
                     null,
-                    null);
+                    null)
+                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
         }
-        return watchlistServiceRx.getAllByUser(pagedWatchlistKey.page, null, null, null);
+        return watchlistServiceRx.getAllByUser(pagedWatchlistKey.page, null, null, null)
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 
@@ -131,7 +136,8 @@ import rx.Observable;
                         watchlistPositionCache.get(),
                         currentUserId.toUserBaseKey(),
                         portfolioCache.get(),
-                        userWatchlistPositionCache.get()));
+                        userWatchlistPositionCache.get()))
+                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
     }
     //</editor-fold>
 }

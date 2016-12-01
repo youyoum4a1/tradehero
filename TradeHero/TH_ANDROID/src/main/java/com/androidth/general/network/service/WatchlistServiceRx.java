@@ -4,19 +4,21 @@ import com.androidth.general.api.security.SecurityIntegerIdListForm;
 import com.androidth.general.api.watchlist.WatchlistPositionDTO;
 import com.androidth.general.api.watchlist.WatchlistPositionDTOList;
 import com.androidth.general.api.watchlist.WatchlistPositionFormDTO;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit2.http.Body;
+
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface WatchlistServiceRx
 {
     //<editor-fold desc="Add a watch item">
-    @POST("/watchlistPositions")
+    @POST("api/watchlistPositions")
     Observable<WatchlistPositionDTO> createWatchlistEntry(
             @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
     //</editor-fold>
@@ -29,13 +31,13 @@ public interface WatchlistServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Batch Create Watchlist Positions">
-    @POST("/batchCreateWatchlistPositions")
+    @POST("api/batchCreateWatchlistPositions")
     Observable<WatchlistPositionDTOList> batchCreate(
             @Body SecurityIntegerIdListForm securityIntegerIds);
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
-    @GET("/watchlistPositions")
+    @GET("api/watchlistPositions")
     Observable<WatchlistPositionDTOList> getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,

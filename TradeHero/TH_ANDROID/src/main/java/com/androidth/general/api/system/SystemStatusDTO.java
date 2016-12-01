@@ -12,5 +12,6 @@ public class SystemStatusDTO implements DTO
     public boolean alertsAreFree = DEFAULT_ALERTS_ARE_FREE;
     public String androidAppPackageNameInUse;
 
+    public boolean awardRealReferralDollars;
     public PriceDTO friendReferralAward;
 }

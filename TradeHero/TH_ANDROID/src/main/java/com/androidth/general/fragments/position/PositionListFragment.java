@@ -934,6 +934,7 @@ public class PositionListFragment
         {
             return portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey))
                     .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
                     .map(new Func1<Pair<OwnedPortfolioId, PortfolioDTO>, PortfolioDTO>()
                     {
                         @Override public PortfolioDTO call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
@@ -1124,6 +1125,7 @@ public class PositionListFragment
     @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
     {
         return getPositionsCache.fetch(getPositionsDTOKey)
+                .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<GetPositionsDTO, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>() {
                     @Override
                     public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(GetPositionsDTO getPositionsDTO) {
