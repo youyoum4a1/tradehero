@@ -38,8 +38,7 @@ import rx.schedulers.Schedulers;
     //<editor-fold desc="Get Alerts">
     @NonNull public Observable<AlertCompactDTOList> getAlertsRx(@NonNull UserBaseKey userBaseKey)
     {
-        return alertServiceRx.getAlerts(userBaseKey.key)
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+        return alertServiceRx.getAlerts(userBaseKey.key);
     }
     //</editor-fold>
 

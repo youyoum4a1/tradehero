@@ -59,8 +59,8 @@ interface LeaderboardServiceRx
     @GET("api/leaderboards/{leaderboardId}/users/{userId}")
     Observable<LeaderboardDTO> getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
-            @Query("lbType") Integer lbType,
             @Path("userId") int userId,
+            @Query("lbType") Integer lbType,
             @Query("sortType") Integer sortType);
     //</editor-fold>
 

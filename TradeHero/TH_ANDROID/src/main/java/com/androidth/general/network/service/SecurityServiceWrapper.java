@@ -87,32 +87,28 @@ import rx.schedulers.Schedulers;
                 received = this.securityServiceRx.getTrendingSecurities(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage)
-                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
                 received = this.securityServiceRx.getTrendingSecuritiesByPrice(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage)
-                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
                 received = this.securityServiceRx.getTrendingSecuritiesByVolume(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage)
-                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
                 received = this.securityServiceRx.getTrendingSecuritiesAllInExchange(
                         trendingKey.exchange,
                         trendingKey.getPage(),
-                        trendingKey.perPage)
-                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        trendingKey.perPage);
             }
             else
             {
@@ -125,8 +121,7 @@ import rx.schedulers.Schedulers;
             if (key.page != null && key.page == 1)
             {
                 received = this.securityServiceRx
-                        .getFXSecurities()
-                        .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        .getFXSecurities();
             }
             else
             {
@@ -139,14 +134,12 @@ import rx.schedulers.Schedulers;
             received = this.securityServiceRx.searchSecurities(
                     searchKey.searchString,
                     searchKey.getPage(),
-                    searchKey.perPage)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    searchKey.perPage);
         }
         else if (key instanceof ProviderSecurityListType)
         {
             received = providerServiceWrapper
-                    .getProviderSecuritiesRx((ProviderSecurityListType) key)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    .getProviderSecuritiesRx((ProviderSecurityListType) key);
         }
         else if (key instanceof ExchangeSectorSecurityListType)
         {
@@ -155,8 +148,7 @@ import rx.schedulers.Schedulers;
                     exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
                     exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
-                    key.perPage)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    key.perPage);
         }
         else if (key instanceof ExchangeSectorSecurityListTypeNew)
         {
@@ -165,8 +157,7 @@ import rx.schedulers.Schedulers;
                     exchangeKey.getCommaSeparatedExchangeIds(),
                     exchangeKey.getCommaSeparatedSectorIds(),
                     exchangeKey.getPage(),
-                    exchangeKey.perPage)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    exchangeKey.perPage);
         }
         else
         {

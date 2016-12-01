@@ -100,8 +100,7 @@ import rx.schedulers.Schedulers;
                     skipCacheSecurityPerPagedWatchlistKey.page,
                     skipCacheSecurityPerPagedWatchlistKey.perPage,
                     skipCacheSecurityPerPagedWatchlistKey.securityId,
-                    skipCacheSecurityPerPagedWatchlistKey.skipCache)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    skipCacheSecurityPerPagedWatchlistKey.skipCache);
         }
         else if (pagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
         {
@@ -110,8 +109,7 @@ import rx.schedulers.Schedulers;
                     securityPerPagedWatchlistKey.page,
                     securityPerPagedWatchlistKey.perPage,
                     securityPerPagedWatchlistKey.securityId,
-                    null)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    null);
         }
         else if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
         {
@@ -120,11 +118,9 @@ import rx.schedulers.Schedulers;
                     perPagedWatchlistKey.page,
                     perPagedWatchlistKey.perPage,
                     null,
-                    null)
-                    .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                    null);
         }
-        return watchlistServiceRx.getAllByUser(pagedWatchlistKey.page, null, null, null)
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+        return watchlistServiceRx.getAllByUser(pagedWatchlistKey.page, null, null, null);
     }
     //</editor-fold>
 
@@ -136,8 +132,7 @@ import rx.schedulers.Schedulers;
                         watchlistPositionCache.get(),
                         currentUserId.toUserBaseKey(),
                         portfolioCache.get(),
-                        userWatchlistPositionCache.get()))
-                .subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+                        userWatchlistPositionCache.get()));
     }
     //</editor-fold>
 }

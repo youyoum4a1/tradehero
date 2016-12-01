@@ -31,7 +31,7 @@ public class AchievementServiceWrapper
     //<editor-fold desc="Get Level Defs">
     @NonNull public Observable<LevelDefDTOList> getLevelDefsRx()
     {
-        return achievementServiceRx.getLevelDefs().subscribeOn(Schedulers.io());//to avoid NetworkOnMainThreadException
+        return achievementServiceRx.getLevelDefs();
     }
     //</editor-fold>
 
