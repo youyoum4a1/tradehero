@@ -121,6 +121,7 @@ public class RetrofitProtectedModule
     {
         return builder
 //                .setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
+                .baseUrl(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .build().create(TranslationServiceBingRx.class);
     }
 
