@@ -3,6 +3,7 @@ package com.androidth.general.fragments.trade;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ import com.androidth.general.utils.broadcast.GAnalyticsProvider;
 import com.androidth.general.utils.route.THRouter;
 import com.tradehero.route.RouteProperty;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -136,8 +138,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected AbstractBuySellPopupDialogFragment abstractBuySellPopupDialogFragment;
 
     protected boolean poppedPortfolioChanged = false;
-    private PublishSubject<Void> quoteRepeatSubject;
-    private Observable<Void> quoteRepeatDelayedObservable;
+    private PublishSubject<Throwable> quoteRepeatSubject;
+    private Observable<Throwable> quoteRepeatDelayedObservable;
     public Observable<LiveQuoteDTO> quoteObservable;
     public Observable<SecurityCompactDTO> securityObservable;
 
@@ -590,6 +592,31 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 //                        });
 //                    }
 //                })
+
+                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Throwable> errors) {
+                        return errors.flatMap(error -> {
+                            // For IOExceptions, we  retry
+                            if (error instanceof IOException) {
+                                return errors.flatMap(new Func1<Throwable, Observable<?>>() {
+                                    @Override
+                                    public Observable<?> call(Throwable throwable) {
+//                                        quoteRepeatSubject.onNext(throwable);
+//                                        return quoteRepeatDelayedObservable;
+                                        Log.v("", "!!!Retrying coz of error");
+                                        return createQuoteObservable();
+
+                                    }
+                                });
+                            }
+
+                            Log.v("", "!!!NOT retrying");
+                            // For anything else, don't retry
+                            return Observable.error(error);
+                        });
+                    }
+                })
                 .share()
                 .cache(1);
     }

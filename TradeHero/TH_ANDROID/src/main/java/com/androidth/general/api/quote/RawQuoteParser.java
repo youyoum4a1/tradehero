@@ -46,7 +46,13 @@ public class RawQuoteParser extends RawResponseParser
 
     @Nullable public LiveQuoteDTO parse(@NonNull Response<ResponseBody> response) throws IOException
     {
-        String rawResponse = getResponseBodyToString(response.body());
+        String rawResponse = "";
+        try{
+            rawResponse = getResponseBodyToString(response.body());
+        }catch (Exception e){
+//            throw new IOException("Contents not found");
+            return null;
+        }
         SignatureContainer signatureContainer = objectMapper.readValue(rawResponse, SignatureContainer.class);
 
         //wont work because ResponseBody stream disappears
