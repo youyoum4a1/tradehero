@@ -98,10 +98,7 @@ public class StockChartActivity extends FragmentActivity
         ChartFragment.putButtonSetVisibility(args, getButtonSetVisibility(getIntent(), View.VISIBLE));
         fragment.setArguments(args);
         fragmentTransaction.add(R.id.stock_chart, fragment);
-        Log.v("", "!!!Chart fragment adding");
-//        if(!fragment.isAdded()){
-//            fragmentTransaction.commitAllowingStateLoss();
-//        }
+        fragmentTransaction.commitAllowingStateLoss();
 
     }
 
