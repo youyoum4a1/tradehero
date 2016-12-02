@@ -5,7 +5,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Query;
 import rx.Observable;
 
-import static com.androidth.general.utils.Constants.AUTHORIZATION;
+import static com.androidth.general.network.NetworkConstants.AUTHORIZATION;
 
 interface TranslationServiceBingRx
 {

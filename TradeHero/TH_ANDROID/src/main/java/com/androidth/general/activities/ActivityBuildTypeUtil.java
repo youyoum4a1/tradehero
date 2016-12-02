@@ -3,15 +3,12 @@ package com.androidth.general.activities;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.androidth.general.network.NetworkConstants;
 import com.crashlytics.android.Crashlytics;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.utils.Constants;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.Date;
-
-import io.fabric.sdk.android.Fabric;
 
 public class ActivityBuildTypeUtil {
 
@@ -27,7 +24,7 @@ public class ActivityBuildTypeUtil {
 //        Fabric.with(context, new TwitterCore(authConfig));
         //Crashlytics.start(context);
 
-        Crashlytics.getInstance().setString(Constants.TH_CLIENT_TYPE, String.format("%s:%s", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.name()));
+        Crashlytics.getInstance().setString(NetworkConstants.TH_CLIENT_TYPE, String.format("%s:%s", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.name()));
     }
 
     public static void setUpCrashReports(@NonNull UserBaseKey currentUserKey)

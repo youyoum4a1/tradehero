@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.Constants;
@@ -39,8 +40,8 @@ public class SignalRManager {
         this.connection.setCredentials(new Credentials() {
             @Override
             public void prepareRequest(Request request) {
-                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
+                request.addHeader(NetworkConstants.AUTHORIZATION, requestHeaders.headerTokenLive());
+                request.addHeader(NetworkConstants.USER_ID, currentUserId.get().toString());
             }
         });
         this.hubProxy = this.connection.createHubProxy(hubName);

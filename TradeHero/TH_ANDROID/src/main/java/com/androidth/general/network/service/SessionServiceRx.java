@@ -16,7 +16,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import rx.Observable;
 
-import static com.androidth.general.utils.Constants.AUTHORIZATION;
+import static com.androidth.general.network.NetworkConstants.AUTHORIZATION;
 
 interface SessionServiceRx
 {
@@ -39,7 +39,7 @@ interface SessionServiceRx
     //<editor-fold desc="Update Authorization Tokens">
     @POST("api/updateAuthorizationTokens")
     Observable<BaseResponseDTO> updateAuthorizationTokens(
-            @Header(Constants.AUTHORIZATION) String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Body LoginSignUpFormDTO userFormDTO);
     //</editor-fold>
 

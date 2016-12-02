@@ -21,6 +21,7 @@ import com.androidth.general.network.ServerEndpoint;
 import com.androidth.general.network.service.RetrofitProtectedModule;
 import com.androidth.general.network.service.SocialLinker;
 import com.androidth.general.network.service.SocialServiceWrapper;
+import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.NetworkUtils;
 import com.androidth.general.utils.RetrofitConstants;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -123,7 +124,7 @@ public class RetrofitModule
 //    {
 //        return LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT + NetworkConstants.COMPETITION_PATH;
 //    }
-
+//
     @Provides @Singleton String provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
     {
         return serverEndpointPreference.get();
@@ -152,21 +153,24 @@ public class RetrofitModule
 
     @Provides @Singleton Retrofit provideRestAdapter(Retrofit.Builder builder,
 //            Endpoint server,
-            RequestHeaders requestHeaders
+                                                     RequestHeaders requestHeaders,
+                                                     OkHttpClient.Builder okHttpClientBuilder
 //            RetrofitErrorHandlerLogger errorHandlerLogger
     )
     {
-        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+//        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//
+//        OkHttpClient client = new OkHttpClient.Builder()
+//                .addInterceptor(httpLoggingInterceptor)
+//                .addInterceptor(requestHeaders)
+//                .build();
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(requestHeaders)
-                .build();
+        okHttpClientBuilder.addInterceptor(requestHeaders);
 
         return builder
-                .baseUrl("https://www.tradehero.mobi/")
-                .client(client)
+                .baseUrl(NetworkConstants.BASE_URL)
+                .client(okHttpClientBuilder.build())
 //                .setRequestInterceptor(requestHeaders)
 //                .setErrorHandler(errorHandlerLogger)
                 .addCallAdapterFactory(new RxThreadCallAdapter(Schedulers.io(), AndroidSchedulers.mainThread()))

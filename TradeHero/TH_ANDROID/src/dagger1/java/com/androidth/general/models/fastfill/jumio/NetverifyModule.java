@@ -26,22 +26,27 @@ import retrofit2.Retrofit;
 public class NetverifyModule
 {
     private Retrofit createNetverifyRestAdapter(
-            Retrofit.Builder builder)
+            Retrofit.Builder builder,
+            OkHttpClient.Builder okHttpClientBuilder)
 //            RetrofitErrorHandlerLogger errorHandlerLogger)
     {
+
+        okHttpClientBuilder.addInterceptor(new NetverifyRetrofitRequestInterceptor());
+
         return builder
 //                .setEndpoint(Endpoints.newFixedEndpoint(NetverifyConstants.NETVERIFY_END_POINT))
 //                .setRequestInterceptor(new NetverifyRetrofitRequestInterceptor())
 //                .setLogLevel(RestAdapter.LogLevel.FULL) //to activate logging
 //                .setErrorHandler(errorHandlerLogger)
                 .baseUrl(NetverifyConstants.NETVERIFY_END_POINT)
+                .client(okHttpClientBuilder.build())
                 .build();
     }
 
-    @Provides NetverifyServiceRx provideNetverifyServiceRx(Retrofit.Builder builder)
+    @Provides NetverifyServiceRx provideNetverifyServiceRx(Retrofit.Builder builder, OkHttpClient.Builder okHttpClientBuilder)
 //            RetrofitErrorHandlerLogger errorHandlerLogger)
     {
-        return createNetverifyRestAdapter(builder).create(NetverifyServiceRx.class);
+        return createNetverifyRestAdapter(builder, okHttpClientBuilder).create(NetverifyServiceRx.class);
     }
 
     @Provides @ForDocumentChecker Picasso provideNetverifyPicasso(Context context, @ForPicasso LruCache lruFileCache, OkHttpClient okHttpClient)

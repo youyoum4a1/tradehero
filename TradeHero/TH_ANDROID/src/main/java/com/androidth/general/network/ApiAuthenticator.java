@@ -59,7 +59,7 @@ public class ApiAuthenticator implements Authenticator
                 else
                 {
                     return response.request().newBuilder()
-                            .header(Constants.AUTHORIZATION, token)
+                            .header(NetworkConstants.AUTHORIZATION, token)
                             .build();
                 }
             }

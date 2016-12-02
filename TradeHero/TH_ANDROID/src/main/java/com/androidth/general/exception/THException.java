@@ -3,6 +3,7 @@ package com.androidth.general.exception;
 import android.support.annotation.StringRes;
 
 import com.androidth.general.models.retrofit2.THRetrofitException;
+import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.utils.ExceptionUtils;
 import com.facebook.FacebookOperationCanceledException;
 import com.androidth.general.common.utils.RetrofitHelper;
@@ -78,7 +79,7 @@ public class THException extends Exception
 //                        }
 
                         //Retrofit 2 way
-                        String headerCode = RetrofitHelper.findHeaderCodeByName(headers, Constants.TH_ERROR_CODE);
+                        String headerCode = RetrofitHelper.findHeaderCodeByName(headers, NetworkConstants.TH_ERROR_CODE);
                         if(headerCode!=null){
                             ResponseErrorCode errorCode = ResponseErrorCode.getByCode(headerCode);
                             if (errorCode != null)

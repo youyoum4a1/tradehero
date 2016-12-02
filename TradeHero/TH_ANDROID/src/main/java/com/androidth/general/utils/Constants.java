@@ -33,23 +33,9 @@ public class Constants
 //        public static final String BASE_STATIC_CONTENT_URL = "https://dev.tradehero.mobi/";//DEV
 //    public static final String BASE_STATIC_CONTENT_URL = "http://192.168.1.10:1857/";//VJ local
 
-    public static final String PRIVACY_TERMS_OF_SERVICE = NetworkConstants.TRADEHERO_ENDPOINT + "privacy";
-    public static final String PRIVACY_TERMS_OF_USE = NetworkConstants.TRADEHERO_ENDPOINT + "terms";
-    public static final String APP_HOME = NetworkConstants.TRADEHERO_ENDPOINT + "AppHome";
-
-    // Request Header
-    public static final String ACCEPT_ENCODING = "Accept-Encoding";
-    public static final String ACCEPT_ENCODING_GZIP = "gzip";
-    public static final String TH_CLIENT_VERSION = "TH-Client-Version";
-    public static final String AUTHORIZATION = "Authorization";
-    public static final String TH_LANGUAGE_CODE = "TH-Language-Code";
-    public static final String TH_CLIENT_TYPE = "TH-Client-Type";
-    public static final String USER_ID = "UserId";
-
-    // Response Header
-    public static final String CONTENT_ENCODING = "Content-Encoding";
-    public static final String CONTENT_ENCODING_GZIP = ACCEPT_ENCODING_GZIP;
-    public static final String TH_ERROR_CODE = "TH-Error-Code";
+    public static final String PRIVACY_TERMS_OF_SERVICE = NetworkConstants.BASE_URL + "privacy";
+    public static final String PRIVACY_TERMS_OF_USE = NetworkConstants.BASE_URL + "terms";
+    public static final String APP_HOME = NetworkConstants.BASE_URL + "AppHome";
 
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 

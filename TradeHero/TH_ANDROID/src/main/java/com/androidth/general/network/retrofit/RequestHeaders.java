@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 
+import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.persistence.prefs.LanguageCode;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.VersionUtils;
@@ -51,7 +52,7 @@ public class RequestHeaders implements Interceptor
                 String token = accountManager.peekAuthToken(accounts[0], PARAM_AUTHTOKEN_TYPE);
                 if (token != null)
                 {
-                    request.addHeader(Constants.AUTHORIZATION, token);
+                    request.addHeader(NetworkConstants.AUTHORIZATION, token);
                 }
             }
         }catch (SecurityException e){
@@ -59,10 +60,10 @@ public class RequestHeaders implements Interceptor
             e.printStackTrace();
         }
 
-        request.addHeader(Constants.TH_CLIENT_VERSION, version);
-        request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
+        request.addHeader(NetworkConstants.TH_CLIENT_VERSION, version);
+        request.addHeader(NetworkConstants.TH_LANGUAGE_CODE, languageCode);
         // OkHttp will apparently add "Accept-Encoding: gzip" itself
-        request.addHeader(Constants.TH_CLIENT_TYPE, String.valueOf(Constants.DEVICE_TYPE.getServerValue()));
+        request.addHeader(NetworkConstants.TH_CLIENT_TYPE, String.valueOf(Constants.DEVICE_TYPE.getServerValue()));
 
         return chain.proceed(request.build());
     }
@@ -86,7 +87,7 @@ public class RequestHeaders implements Interceptor
                 String token = accountManager.peekAuthToken(accounts[0], PARAM_AUTHTOKEN_TYPE);
                 if (token != null)
                 {
-                    request.newBuilder().addHeader(Constants.AUTHORIZATION, token);
+                    request.newBuilder().addHeader(NetworkConstants.AUTHORIZATION, token);
                 }
             }
             return request;

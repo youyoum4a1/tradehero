@@ -3,6 +3,7 @@ package com.androidth.general.network.retrofit;
 import com.androidth.general.common.persistence.prefs.StringPreference;
 import com.androidth.general.network.ForLive;
 import com.androidth.general.network.ForLive1B;
+import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.network.ServerEndpointLive;
 import com.androidth.general.network.ServerEndpointLive1B;
 
@@ -35,7 +36,7 @@ public class RetrofitGameLiveModule
     {
         return builder
 //                .setEndpoint(server)
-                .baseUrl("https://live.tradehero.mobi/")
+                .baseUrl(NetworkConstants.BASE_URL_LIVE)
 //                .setRequestInterceptor(requestHeaders)
 //                .setErrorHandler(errorHandlerLogger)
                 .build();
@@ -52,7 +53,7 @@ public class RetrofitGameLiveModule
 //                                                                     RetrofitErrorHandlerLogger errorHandlerLogger)
     {
         return builder
-                .baseUrl("https://live.tradehero.mobi/")
+                .baseUrl(NetworkConstants.BASE_URL_LIVE)
 //                .setRequestInterceptor(requestHeaders)
 //                .setErrorHandler(errorHandlerLogger)
                 .build();
