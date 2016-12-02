@@ -602,16 +602,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 return errors.flatMap(new Func1<Throwable, Observable<?>>() {
                                     @Override
                                     public Observable<?> call(Throwable throwable) {
-//                                        quoteRepeatSubject.onNext(throwable);
-//                                        return quoteRepeatDelayedObservable;
                                         Log.v("", "!!!Retrying coz of error");
                                         return createQuoteObservable();
-
                                     }
                                 });
                             }
 
-                            Log.v("", "!!!NOT retrying");
                             // For anything else, don't retry
                             return Observable.error(error);
                         });
