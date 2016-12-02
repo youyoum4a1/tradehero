@@ -108,7 +108,8 @@
 -dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
--dontwarn retrofit.**
+-dontwarn retrofit2.**
+-dontwarn okhttp3.**
 -dontwarn com.squareup.**
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.hamcrest.**

@@ -101,13 +101,15 @@
   public static *** d(...);
 }
 
--assumenosideeffects class android.util.Log {
-    public static int v(...);
-    public static int i(...);
-    public static int w(...);
-    public static int d(...);
-    public static int e(...);
-}
+#-assumenosideeffects class android.util.Log {
+#    public static int v(...);
+#    public static int i(...);
+#    public static int w(...);
+#    public static int d(...);
+#    public static int e(...);
+#}
+
+-assumenosideeffects class android.util.Log { *; }
 
 -keep class !com.tradehero.** { *; }
 -dontwarn java.nio.files.**
@@ -120,7 +122,8 @@
 -dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
--dontwarn retrofit.**
+-dontwarn retrofit2.**
+-dontwarn okhttp3.**
 -dontwarn com.squareup.**
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.hamcrest.**
