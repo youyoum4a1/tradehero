@@ -113,7 +113,7 @@ public class SignalRManager {
             this.connection.received(new MessageReceivedHandler() {
                 @Override
                 public void onMessageReceived(JsonElement jsonElement) {
-                    Log.v("SignalR", "Received! "+jsonElement);
+                    Log.v("SignalR", "Received!");
                 }
             });
 
@@ -197,7 +197,7 @@ public class SignalRManager {
             this.connection.received(new MessageReceivedHandler() {
                 @Override
                 public void onMessageReceived(JsonElement jsonElement) {
-                    Log.v("SignalR", "Received! "+jsonElement);
+                    Log.v("SignalR", "Received!");
                 }
             });
             this.connection.error(new ErrorCallback() {
@@ -253,7 +253,7 @@ public class SignalRManager {
         this.connection.received(new MessageReceivedHandler() {
             @Override
             public void onMessageReceived(JsonElement jsonElement) {
-                Log.v("SignalR", "Received! "+jsonElement);
+                Log.v("SignalR", "Received!");
             }
         });
         this.connection.error(new ErrorCallback() {

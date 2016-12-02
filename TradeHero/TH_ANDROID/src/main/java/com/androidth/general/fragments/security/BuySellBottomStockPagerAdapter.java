@@ -90,7 +90,6 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 ChartFragment.putButtonSetVisibility(args, View.VISIBLE);
                 ChartFragment.putChartTimeSpan(args, getDefaultChartTimeSpan());
 
-                Log.v("", "!!!Chart fragment adapter adding");
                 break;
             case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();

@@ -2,7 +2,13 @@ package com.androidth.general.network.retrofit;
 
 import android.content.Context;
 import com.androidth.general.persistence.prefs.LanguageCode;
+
+import java.io.IOException;
+
 import javax.inject.Inject;
+
+import okhttp3.Interceptor;
+import okhttp3.Response;
 import timber.log.Timber;
 
 public class SlowRequestHeaders extends RequestHeaders
@@ -16,9 +22,8 @@ public class SlowRequestHeaders extends RequestHeaders
         super(context, languageCode);
     }
 
-    @Override public void intercept(RequestFacade request)
-    {
-        super.intercept(request);
+    @Override
+    public Response intercept(Chain chain) throws IOException {
         try
         {
             Timber.d("Slowing for %d millisec", SLEEP_MILLI_SEC);
@@ -28,5 +33,6 @@ public class SlowRequestHeaders extends RequestHeaders
         {
             Timber.e(e, "Interrupted");
         }
+        return super.intercept(chain);
     }
 }

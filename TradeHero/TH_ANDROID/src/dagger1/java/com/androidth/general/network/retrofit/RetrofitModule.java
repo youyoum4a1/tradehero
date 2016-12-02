@@ -2,6 +2,7 @@ package com.androidth.general.network.retrofit;
 
 import android.content.Context;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.api.ObjectMapperWrapper;
 import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTODeserialiser;
@@ -180,7 +181,11 @@ public class RetrofitModule
     @Provides @Singleton OkHttpClient.Builder provideOkClient(OkHttpClient okHttpClient)
     {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        if(BuildConfig.DEBUG){
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        }else{
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
         return client.newBuilder();
     }
@@ -200,7 +205,13 @@ public class RetrofitModule
 //        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
 //        okHttpClient.setAuthenticator(authenticator);
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        if(BuildConfig.DEBUG){
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        }else{
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .cache(cache)
