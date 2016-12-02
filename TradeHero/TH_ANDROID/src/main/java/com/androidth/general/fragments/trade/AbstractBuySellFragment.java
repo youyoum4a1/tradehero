@@ -60,7 +60,6 @@ import com.androidth.general.persistence.timing.TimingIntervalPreference;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.DeviceUtil;
@@ -150,6 +149,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     private boolean isInCompetition;
     private static Subscription portfolioSubscription;
 
+    private int numOfRetries;
+    private final int retryLimit = 5;
+
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
         args.putBundle(BUNDLE_KEY_REQUISITE, requisite.getArgs());
@@ -230,7 +232,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 linkWith(quote);
                             }
                         },
-                        new ToastOnErrorAction1()));
+                        new TimberOnErrorAction1("No stock quote")));
 
         onStopSubscriptions.add(securityObservable
                 .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
@@ -593,16 +595,21 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 //                    }
 //                })
 
+
                 .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
                     @Override
                     public Observable<?> call(Observable<? extends Throwable> errors) {
+
                         return errors.flatMap(error -> {
                             // For IOExceptions, we  retry
-                            if (error instanceof IOException) {
+                            if (error instanceof IOException && numOfRetries < retryLimit) {
+
+                                numOfRetries++;
                                 return errors.flatMap(new Func1<Throwable, Observable<?>>() {
                                     @Override
                                     public Observable<?> call(Throwable throwable) {
-                                        Log.v("", "!!!Retrying coz of error");
+                                        throwable.printStackTrace();
+                                        Log.v("", "!!!Retrying coz of error ");
                                         return createQuoteObservable();
                                     }
                                 });

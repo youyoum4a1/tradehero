@@ -38,6 +38,7 @@ import com.androidth.general.network.service.QuoteServiceWrapper;
 import com.androidth.general.network.service.SecurityServiceWrapper;
 import com.androidth.general.persistence.position.PositionListCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
+import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.widget.KChartsView;
@@ -173,7 +174,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
         displayPositionStatus();
     }
 
-    protected void fetchQuote()
+    private void fetchQuote()
     {
         onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
@@ -195,7 +196,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
                                 displayPositionStatus();
                             }
                         },
-                        new ToastOnErrorAction1()));
+                        new TimberOnErrorAction1("")));
     }
 
     private void initTimeSpanButton()

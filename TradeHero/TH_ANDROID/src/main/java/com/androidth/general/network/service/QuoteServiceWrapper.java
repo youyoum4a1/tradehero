@@ -57,8 +57,8 @@ import rx.schedulers.Schedulers;
 //                        quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol()))
 //                .flatMap(rawQuoteParser);
         return quoteServiceRx.getRawQuote(securityId)
-                .onErrorResumeNext(
-                        quoteServiceRx.getRawQuote(0))
+//                .onErrorResumeNext(
+//                        quoteServiceRx.getRawQuote(0))
                 .flatMap(rawQuoteParser);
     }
 

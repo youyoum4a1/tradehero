@@ -50,8 +50,7 @@ public class RawQuoteParser extends RawResponseParser
         try{
             rawResponse = getResponseBodyToString(response.body());
         }catch (Exception e){
-//            throw new IOException("Contents not found");
-            return null;
+            throw new IOException("Contents not found");
         }
         SignatureContainer signatureContainer = objectMapper.readValue(rawResponse, SignatureContainer.class);
 
