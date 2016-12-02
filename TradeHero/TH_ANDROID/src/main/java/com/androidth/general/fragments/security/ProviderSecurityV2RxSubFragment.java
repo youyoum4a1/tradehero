@@ -112,7 +112,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                         String str[] = getSecurityIds(currentVisibleItemsList);
                         signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str);
 
-                        signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
+                        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_EVENT_UPDATE_QUOTE, new SubscriptionHandler1<SignatureContainer2>() {
 
                             @Override
                             public void run(SignatureContainer2 signatureContainer2) {
@@ -221,6 +221,16 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             }
         });
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(signalRManager!=null){
+            //TODO Jeff
+//            signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_REMOVE_FROM_GROUPS,
+//                    Integer.toString(securityCompactDTO.getResourceId()), currentUserId.get());
+        }
     }
 
     @Override public void onDestroyView()

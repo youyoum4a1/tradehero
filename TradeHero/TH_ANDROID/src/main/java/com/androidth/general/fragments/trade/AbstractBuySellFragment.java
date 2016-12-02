@@ -474,6 +474,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             quoteSubscription.unsubscribe();
         }
 
+        if(signalRManager!=null){
+            signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_REMOVE_FROM_GROUP,
+                    Integer.toString(securityCompactDTO.getResourceId()), currentUserId.get());
+        }
 
         super.onStop();
     }
@@ -542,10 +546,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                             }
                         }, SignatureContainer2.class);
                     }
-
-//            signalRManager.getConnection().start().done(actionVoid -> {
-//                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
-//            });
 
                 }, new TimberOnErrorAction1("SignalR prices error")));
     }

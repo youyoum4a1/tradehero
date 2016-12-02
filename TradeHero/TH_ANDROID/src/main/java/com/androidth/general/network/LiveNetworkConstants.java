@@ -19,6 +19,12 @@ public class LiveNetworkConstants
     public static final String PROXY_METHOD_ADD_TO_GROUPS = "AddToGroups";
     public static final String PROXY_METHOD_ADD_TO_GROUP = "AddToGroup";
 
+    public static final String PROXY_METHOD_REMOVE_FROM_GROUP = "RemoveFromGroup";
+    public static final String PROXY_METHOD_REMOVE_FROM_GROUPS = "RemoveFromGroups";
+
     public static final String PROXY_METHOD_UPDATE_POSITIONS = "UpdatePositions";
     public static final String PROXY_METHOD_UPDATE_PROFILE = "UpdatePortfolio";
+
+    public static final String PROXY_EVENT_UPDATE_QUOTE = "UpdateQuote";
+
 }
