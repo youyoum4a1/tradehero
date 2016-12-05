@@ -11,6 +11,7 @@ import com.androidth.general.api.social.UserFriendsDTO;
 import com.androidth.general.api.social.UserFriendsDTODeserialiser;
 import com.androidth.general.api.social.UserFriendsDTOJacksonModule;
 import com.androidth.general.common.annotation.ForApp;
+import com.androidth.general.common.log.RetrofitErrorHandlerLogger;
 import com.androidth.general.common.persistence.prefs.StringPreference;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.network.ApiAuthenticator;
@@ -155,19 +156,12 @@ public class RetrofitModule
     @Provides @Singleton Retrofit provideRestAdapter(Retrofit.Builder builder,
 //            Endpoint server,
                                                      RequestHeaders requestHeaders,
-                                                     OkHttpClient.Builder okHttpClientBuilder
-//            RetrofitErrorHandlerLogger errorHandlerLogger
+                                                     OkHttpClient.Builder okHttpClientBuilder,
+                                                     RetrofitErrorHandlerLogger errorHandlerLogger
     )
     {
-//        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-//        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(httpLoggingInterceptor)
-//                .addInterceptor(requestHeaders)
-//                .build();
-
         okHttpClientBuilder.addInterceptor(requestHeaders);
+        okHttpClientBuilder.addInterceptor(errorHandlerLogger);
 
         return builder
                 .baseUrl(NetworkConstants.BASE_URL)
