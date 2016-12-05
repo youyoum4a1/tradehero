@@ -6,12 +6,15 @@ import android.accounts.OnAccountsUpdateListener;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.androidth.general.BuildConfig;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.base.THApp;
@@ -98,7 +101,12 @@ public class BaseActivity extends AppCompatActivity
 
         if (requireLogin())
         {
-            accountManager.addOnAccountsUpdatedListener(this, null, true);
+            try{
+                accountManager.addOnAccountsUpdatedListener(this, null, true);
+            }catch (SecurityException e){
+                e.printStackTrace();
+            }
+
         }
         localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, ActivityUtil.getIntentFilterUpgrade());
         localBroadcastManager.registerReceiver(socialTokenBroadcastListener, ActivityUtil.getIntentFilterSocialToken());
@@ -173,9 +181,16 @@ public class BaseActivity extends AppCompatActivity
                             {
                                 if (event.isPositive())
                                 {
-                                    THToast.show(R.string.update_guide);
-                                    MarketUtil.showAppOnMarket(BaseActivity.this);
-                                    finish();
+//                                    THToast.show(R.string.update_guide);
+//                                    MarketUtil.showAppOnMarket(BaseActivity.this);
+//                                    finish();
+
+                                    try {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
+                                    }
+                                    catch (android.content.ActivityNotFoundException anfe) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+                                    }
                                 }
                             }
                         },

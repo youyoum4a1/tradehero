@@ -63,7 +63,7 @@ public class AlertDialogRxUtil
                 .setTitle(R.string.upgrade_needed)
                 .setMessage(R.string.please_update)
                 .setPositiveButton(R.string.update_now)
-                .setNegativeButton(R.string.later)
+//                .setNegativeButton(R.string.later)//force upgrade
                 .setCanceledOnTouchOutside(true)
                 .build();
     }
