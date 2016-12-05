@@ -27,6 +27,8 @@
 
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
+  <string name="suggest_update">Did you know there\'s a new version of %1$s? Go check it out now to get the most out of our product</string>
+  <string name="update_available">Update available</string>
   <string name="upgrade_needed">Upgrade needed</string>
   <string name="update_now">Update now</string>
   <string name="update_guide">Please reinstall TradeHero</string>

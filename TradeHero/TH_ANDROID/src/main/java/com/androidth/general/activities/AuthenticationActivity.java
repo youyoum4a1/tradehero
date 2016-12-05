@@ -1,13 +1,17 @@
 package com.androidth.general.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Pair;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
@@ -66,18 +70,21 @@ public class AuthenticationActivity extends BaseActivity
     private ProgressDialog progressDialog;
     @Nullable Uri deepLink;
 
+    private boolean hasCompletedLogin = false;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authentication_layout);
 
-
         dtoCacheUtil.clearUserCaches();
 
         selectedSocialNetworkSubject = PublishSubject.create();
         authenticationObservable = selectedSocialNetworkSubject
-                .flatMap(socialNetworkEnum -> handleConnectionRequest(socialNetworkEnum));
+                .flatMap(socialNetworkEnum -> {
+                    return handleConnectionRequest(socialNetworkEnum);
+                });
 
         deepLink = getIntent().getData();
         Bundle args = new Bundle();
@@ -154,17 +161,23 @@ public class AuthenticationActivity extends BaseActivity
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleConnectionRequest(final SocialNetworkEnum socialNetworkEnum)
     {
+        if(hasCompletedLogin){
+            ActivityHelper.launchDashboardWithFinish(AuthenticationActivity.this, deepLink);
+            return Observable.empty();
+        }
+
         progressDialog = ProgressDialog.show(
                 this,
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
                 true);
+
         return enumToAuthProviderMap.get(socialNetworkEnum)
                 .logIn(this)
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<AuthData, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
+                .flatMap(new Func1<AuthData, Observable<? extends Pair<AuthData, UserLoginDTO>>>()
                 {
-                    @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(AuthData authData)
+                    @Override public Observable<? extends Pair<AuthData, UserLoginDTO>> call(AuthData authData)
                     {
                         progressDialog.setMessage(
                                 getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
@@ -173,30 +186,38 @@ public class AuthenticationActivity extends BaseActivity
                     }
                 })
                 .doOnError(new TimberAndToastOnErrorAction1("Error on logging in"))
-                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
-                {
-                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
-                    {
-                        trackSocialRegistration(socialNetworkEnum);
-                    }
-                })
+//                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+//                {
+//                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+//                    {
+//                        trackSocialRegistration(socialNetworkEnum);
+//                    }
+//                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
-                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                .doOnNext(new Action1<Pair<AuthData, UserLoginDTO>>()
                 {
-                    @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
+                    @Override public void call(Pair<AuthData, UserLoginDTO> authDataUserProfileDTOPair)
                     {
                         AuthDataUtil.saveAccountAndResult(
                                 AuthenticationActivity.this,
                                 authDataUserProfileDTOPair.first,
-                                authDataUserProfileDTOPair.second.email);
+                                authDataUserProfileDTOPair.second.profileDTO.email);
+
+                        hasCompletedLogin = true;
+
+                        if(authDataUserProfileDTOPair.second.suggestUpgrade){
+                            suggestUpgradeMessageDialog(AuthenticationActivity.this, authDataUserProfileDTOPair);
+                        }else{
+                            ActivityHelper.launchDashboardWithFinish(AuthenticationActivity.this, deepLink);
+                        }
+
                     }
                 })
-                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
-                {
-                    @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
-                    {
-                        ActivityHelper.launchDashboardWithFinish(AuthenticationActivity.this, deepLink);
+                .flatMap(new Func1<Pair<AuthData, UserLoginDTO>, Observable<? extends Pair<AuthData, UserProfileDTO>>>() {
+                    @Override
+                    public Observable<? extends Pair<AuthData, UserProfileDTO>> call(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair) {
+                        return Observable.just(Pair.create(authDataUserLoginDTOPair.first, authDataUserLoginDTOPair.second.profileDTO));
                     }
                 })
                 ;
@@ -209,7 +230,7 @@ public class AuthenticationActivity extends BaseActivity
                 .build();
     }
 
-    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> safeSignUpAndLogin(
+    @NonNull protected Observable<Pair<AuthData, UserLoginDTO>> safeSignUpAndLogin(
             @NonNull final LoginSignUpFormDTO loginSignUpFormDTO,
             @NonNull ProgressDialog progressDialog)
     {
@@ -217,11 +238,11 @@ public class AuthenticationActivity extends BaseActivity
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(new SocialNetworkSpecificExtensions(loginSignUpFormDTO.authData, progressDialog))
-                .map(new Func1<UserLoginDTO, Pair<AuthData, UserProfileDTO>>()
+                .map(new Func1<UserLoginDTO, Pair<AuthData, UserLoginDTO>>()
                 {
-                    @Override public Pair<AuthData, UserProfileDTO> call(UserLoginDTO userLoginDTO)
+                    @Override public Pair<AuthData, UserLoginDTO> call(UserLoginDTO userLoginDTO)
                     {
-                        return Pair.create(loginSignUpFormDTO.authData, userLoginDTO.profileDTO);
+                        return Pair.create(loginSignUpFormDTO.authData, userLoginDTO);
                     }
                 });
     }
@@ -319,5 +340,41 @@ public class AuthenticationActivity extends BaseActivity
 //                this,
 //                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL,
 //                        socialNetworkEnum.name()));
+    }
+
+    private void suggestUpgradeMessageDialog(Activity activity, Pair<AuthData, UserLoginDTO> authAndUserProfilePair){
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(activity)
+                        .setTitle(R.string.update_available)
+                        .setMessage(activity.getString(R.string.suggest_update, "TradeHero"))
+                        .setPositiveButton(activity.getString(R.string.update_now), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
+                                }
+                                catch (android.content.ActivityNotFoundException anfe) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if(authAndUserProfilePair!=null){
+                                    ActivityHelper.launchDashboardWithFinish(
+                                            activity,
+                                            deepLink);
+                                }
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        });
     }
 }

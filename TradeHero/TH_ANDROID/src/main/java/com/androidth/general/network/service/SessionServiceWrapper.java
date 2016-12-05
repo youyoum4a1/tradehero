@@ -110,13 +110,16 @@ import timber.log.Timber;
         switch (loginSignUpFormDTO.authData.socialNetworkEnum)
         {
             case TH:
-                userLoginDTOObservable = sessionServiceRx.login(authorizationHeader, loginSignUpFormDTO);
+                userLoginDTOObservable = sessionServiceRx.login(authorizationHeader, loginSignUpFormDTO)
+                        .map(createUserLoginProcessor(loginSignUpFormDTO.authData));
                 break;
             default:
-                userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO);
+                userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO)
+                        .map(createUserLoginProcessor(loginSignUpFormDTO.authData));
         }
 
-        return userLoginDTOObservable.map(createUserLoginProcessor(loginSignUpFormDTO.authData));
+//        return userLoginDTOObservable.map(createUserLoginProcessor(loginSignUpFormDTO.authData));
+        return userLoginDTOObservable;
     }
 
     @NonNull public Observable<UserLoginDTO> signUpAndLoginOrUpdateTokensRx(

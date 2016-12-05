@@ -32,7 +32,11 @@ public class THException extends Exception
     {
         initCause(new Exception(message));
     }
-    //</editor-fold>
+
+    public THException(ExceptionCode exceptionCode){
+        this.code = exceptionCode;
+        super.initCause(new Throwable(exceptionCode.toString()));
+    }
 
     @Override public Throwable initCause(Throwable throwable)
     {
@@ -160,6 +164,7 @@ public class THException extends Exception
         DoNotRunBelow(R.string.please_update),
         RenewSocialToken(R.string.please_update_token_title),
         ExpiredFBAccessToken(R.string.error_renew_fb_access_token),
+        SuggestUpdate(R.string.suggest_update)
         ;
 
         private final boolean canContinue;

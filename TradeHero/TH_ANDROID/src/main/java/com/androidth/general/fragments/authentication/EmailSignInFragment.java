@@ -1,8 +1,11 @@
 package com.androidth.general.fragments.authentication;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -22,17 +26,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.activities.AuthenticationActivity;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
+import com.androidth.general.api.users.UserLoginDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.api.users.password.ForgotPasswordDTO;
 import com.androidth.general.api.users.password.ForgotPasswordFormDTO;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.AuthDataUtil;
 import com.androidth.general.common.utils.THToast;
+import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.retrofit2.THRetrofitException;
@@ -46,6 +53,7 @@ import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.rx.view.DismissDialogAction1;
 import com.androidth.general.utils.AlertDialogRxUtil;
+import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
@@ -66,6 +74,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.Lazy;
+import okhttp3.OkHttpClient;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -73,6 +82,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
+import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -91,8 +101,10 @@ public class EmailSignInFragment extends Fragment
     @Inject SessionServiceWrapper sessionServiceWrapper;
 
     @Bind(R.id.authentication_sign_in_email) ValidatedText email;
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.coordinator) CoordinatorLayout coordinatorLayout;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
     TextValidator emailValidator;
     @Bind(R.id.et_pwd_login) ValidatedText password;
     @Bind(R.id.authentication_sign_in_email_til) TextInputLayout emailLayout;
@@ -101,12 +113,12 @@ public class EmailSignInFragment extends Fragment
     @Bind(R.id.btn_login) View loginButton;
     SubscriptionList onStopSubscriptions;
 
-
-
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
     @Nullable Uri deepLink;
 
+    private Pair<AuthData, UserProfileDTO> currentFetchedAuthAndUserProfile;
 
+    private boolean hasCompletedLogin = false;
 
     public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
     {
@@ -127,6 +139,16 @@ public class EmailSignInFragment extends Fragment
         //analytics.tagScreen(AnalyticsConstants.Login_Form);
         //analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
         deepLink = getDeepLink(getArguments());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(hasCompletedLogin) {
+            ActivityHelper.launchDashboardWithFinish(
+                    getActivity(),
+                    deepLink);
+        }
     }
 
     @Override public void onAttach(Activity activity)
@@ -173,16 +195,31 @@ public class EmailSignInFragment extends Fragment
             Timber.e(e, "Failed to set guide background");
             view.setBackgroundColor(getResources().getColor(R.color.authentication_guide_bg_color));
         }
+
+        if(BuildConfig.DEBUG){
+            email.setText("jeffrey@tradehero.mobi");
+            password.setText("Jeff11");
+        }
     }
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleClick(@NonNull OnClickEvent event)
     {
-        DeviceUtil.dismissKeyboard(event.view());
-        AuthData authData = new AuthData(email.getText().toString(), password.getText().toString());
-        LoginSignUpFormDTO signUpFormDTO = loginSignUpFormDTOProvider.get()
-                .authData(authData)
-                .build();
-        return signInProper(signUpFormDTO);
+        if(hasCompletedLogin){
+
+            ActivityHelper.launchDashboardWithFinish(
+                    getActivity(),
+                    deepLink);
+
+            return Observable.empty();
+        }else{
+            DeviceUtil.dismissKeyboard(event.view());
+            AuthData authData = new AuthData(email.getText().toString(), password.getText().toString());
+            LoginSignUpFormDTO signUpFormDTO = loginSignUpFormDTOProvider.get()
+                    .authData(authData)
+                    .build();
+            return signInProper(signUpFormDTO);
+        }
+
     }
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> signInProper(LoginSignUpFormDTO loginSignUpFormDTO)
@@ -190,16 +227,75 @@ public class EmailSignInFragment extends Fragment
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_tradehero_only), true);
         final AuthData authData = loginSignUpFormDTO.authData;
-        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                authData.getTHToken(), loginSignUpFormDTO)
-                .map(userLoginDTO -> userLoginDTO.profileDTO);
+//        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+//            authData.getTHToken(), loginSignUpFormDTO)
+//            .map(new Func1<UserLoginDTO, UserProfileDTO>() {
+//                @Override
+//                public UserProfileDTO call(UserLoginDTO userLoginDTO) {
+//                    return userLoginDTO.profileDTO;
+//                }
+//            });
+//
+//        return Observable.zip(Observable.just(authData), userLoginDTOObservable,
+//                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+//                {
+//                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData t1, UserProfileDTO t2)
+//                    {
+//                        return Pair.create(t1, t2);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+//                {
+//                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+//                    {
+//                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL, null);
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+//                {
+//                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+//                    {
+//                        AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
+//                        ActivityHelper.launchDashboardWithFinish(
+//                                getActivity(),
+//                                deepLink);
+//                    }
+//                })
+//                .doOnError(new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+////                        Log.v(getTag(), "Login failed: "+throwable.getMessage());
+//                        new SnackbarOnErrorAction1(coordinatorLayout,
+//                                "Unable to login with provided credentials.",
+//                                Snackbar.LENGTH_LONG).call(throwable);
+//                    }
+//                })
+//                .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
+
+
+
+        Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                authData.getTHToken(), loginSignUpFormDTO);
 
         return Observable.zip(Observable.just(authData), userLoginDTOObservable,
-                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+                new Func2<AuthData, UserLoginDTO, Pair<AuthData, UserProfileDTO>>()
                 {
-                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData t1, UserProfileDTO t2)
+                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData1, UserLoginDTO userLoginDTO)
                     {
-                        return Pair.create(t1, t2);
+                        if(userLoginDTO.suggestUpgrade){
+
+                            currentFetchedAuthAndUserProfile = Pair.create(authData1, userLoginDTO.profileDTO);
+                            AuthDataUtil.saveAccountAndResult(getActivity(), authData1, userLoginDTO.profileDTO.email);
+
+                            THException thException = new THException(THException.ExceptionCode.SuggestUpdate);
+
+                            hasCompletedLogin = true;
+                            throw Exceptions.propagate(thException);
+                        }else{
+                            return Pair.create(authData1, userLoginDTO.profileDTO);
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -225,12 +321,29 @@ public class EmailSignInFragment extends Fragment
                     @Override
                     public void call(Throwable throwable) {
 //                        Log.v(getTag(), "Login failed: "+throwable.getMessage());
-                        new SnackbarOnErrorAction1(coordinatorLayout,
-                                "Unable to login with provided credentials.",
-                                Snackbar.LENGTH_LONG).call(throwable);
+
+                        if(throwable.getCause() instanceof THException) {
+                            THException thException = (THException)throwable.getCause();
+
+                            if(thException.getCode() == THException.ExceptionCode.SuggestUpdate){
+                                suggestUpgradeMessageDialog(getActivity(), currentFetchedAuthAndUserProfile);
+                            }else{
+                                new SnackbarOnErrorAction1(coordinatorLayout,
+                                        "User login details error",
+                                        Snackbar.LENGTH_LONG).call(throwable);
+                            }
+
+                        }else{
+                            new SnackbarOnErrorAction1(coordinatorLayout,
+                                    "Unable to login with provided credentials.",
+                                    Snackbar.LENGTH_LONG).call(throwable);
+                        }
+
                     }
                 })
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
+
+
     }
 
     @Override public void onStart()
@@ -280,7 +393,6 @@ public class EmailSignInFragment extends Fragment
                         })
                         .retry())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(new ToastOnErrorAction1())
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new ToastOnErrorAction1()));
@@ -475,5 +587,44 @@ public class EmailSignInFragment extends Fragment
                                 .build();
                     }
                 });
+    }
+
+    private void suggestUpgradeMessageDialog(Activity activity, Pair<AuthData, UserProfileDTO> authAndUserProfilePair){
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.update_available)
+                        .setMessage(activity.getString(R.string.suggest_update, "TradeHero"))
+                        .setPositiveButton(getContext().getString(R.string.update_now), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
+                                }
+                                catch (android.content.ActivityNotFoundException anfe) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if(authAndUserProfilePair!=null){
+                                    AuthDataUtil.saveAccountAndResult(activity,
+                                            authAndUserProfilePair.first,
+                                            authAndUserProfilePair.second.email);
+                                    ActivityHelper.launchDashboardWithFinish(
+                                            activity,
+                                            deepLink);
+                                }
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        });
     }
 }
