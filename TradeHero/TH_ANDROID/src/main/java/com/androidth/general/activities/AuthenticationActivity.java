@@ -98,6 +98,13 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
+
+        if(hasCompletedLogin) {
+            ActivityHelper.launchDashboardWithFinish(
+                    this,
+                    deepLink);
+        }
+
         //setTitle("");
         //TODO Add code for Google Analytics
         //analytics.tagScreen(AnalyticsConstants.Login_Register);
